@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>씨유에탑 영어단어장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --primary-light: #EFF6FF;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warn: #F59E0B;
+  --gray: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F9FAFB;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #f0f2f5; color: #1f2937; display: flex; justify-content: center; }
+#app-container { width: 100%; max-width: 420px; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+.header { background: #fff; padding: 16px; border-bottom: 1px solid var(--border); text-align: center; }
+.header-brand { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.header-sub { font-size: 13px; color: var(--gray); font-weight: 500; }
+.nav-tabs { display: flex; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+.nav-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 13px; font-weight: 500; color: var(--gray); border-bottom: 2px solid transparent; cursor: pointer; }
+.nav-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+.tab-content { flex: 1; padding: 16px; display: none; }
+.tab-content.active { display: block; }
+.range-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: none; }
+.range-bar::-webkit-scrollbar { display: none; }
+.range-btn { flex-shrink: 0; padding: 6px 12px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 600; background: #fff; border: 1px solid var(--border); border-radius: 20px; color: var(--gray); cursor: pointer; }
+.range-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.search-box { display: flex; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; }
+.search-input { border: none; outline: none; width: 100%; font-size: 14px; background: transparent; }
+.filter-bar { display: flex; gap: 6px; margin-bottom: 12px; }
+.filter-btn { flex: 1; padding: 8px 0; font-size: 12px; font-weight: 500; background: #fff; border: 1px solid var(--border); border-radius: 6px; color: var(--gray); cursor: pointer; }
+.filter-btn.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); font-weight: 600; }
+.word-list { display: flex; flex-direction: column; gap: 10px; }
+.word-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; transition: opacity 0.2s; }
+.word-card.known { opacity: 0.35; }
+.wc-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+.chk-btn { width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; font-size: 12px; color: transparent; user-select: none; }
+.word-card.known .chk-btn { border-color: var(--success); background: var(--success); color: #fff; }
+.wc-info { display: flex; flex-direction: column; gap: 2px; }
+.wc-eng { font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 700; color: #111827; }
+.wc-kor { font-size: 14px; color: #4b5563; }
+.wc-right { display: flex; align-items: center; gap: 4px; }
+.ibtn { background: none; border: none; width: 32px; height: 32px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.ibtn:active { background: #f3f4f6; }
+.fav-star { color: #d1d5db; }
+.fav-star.active { color: var(--warn); }
+.fc-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 320px; }
+.fc-card { width: 100%; height: 220px; background: #fff; border: 1px solid var(--border); border-radius: 16px; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; cursor: pointer; user-select: none; margin-bottom: 24px; }
+.fc-fav-pos { position: absolute; top: 12px; right: 12px; z-index: 2; }
+.fc-word { font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 700; color: #111827; margin-bottom: 12px; word-break: break-all; }
+.fc-mean { font-size: 18px; color: var(--primary); font-weight: 500; min-height: 27px; }
+.fc-hint { font-size: 12px; color: var(--gray); position: absolute; bottom: 12px; }
+.fc-nav { display: flex; width: 100%; gap: 10px; }
+.fc-nav-btn { flex: 1; padding: 12px 0; font-size: 15px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; text-align: center; background: var(--primary); color: #fff; }
+.fc-nav-btn.sec { background: #e5e7eb; color: #374151; }
+.qz-container, .ts-container { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; min-height: 300px; display: flex; flex-direction: column; }
+.qz-progress, .ts-progress { height: 6px; background: #e5e7eb; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qz-bar, .ts-bar { height: 100%; width: 0%; background: var(--primary); transition: width 0.2s; }
+.qz-status, .ts-status { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); margin-bottom: 20px; font-weight: 500; }
+.qz-word { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 24px; color: #111827; }
+.qz-options { display: flex; flex-direction: column; gap: 10px; }
+.qz-opt { width: 100%; padding: 14px; text-align: left; font-size: 14px; background: #fff; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: 500; color: #374151; }
+.qz-opt.correct { background: var(--success); color: #fff; border-color: var(--success); }
+.qz-opt.wrong { background: var(--danger); color: #fff; border-color: var(--danger); }
+.res-container { text-align: center; padding: 24px 0; }
+.res-emoji { font-size: 48px; margin-bottom: 12px; }
+.res-score { font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+.res-pct { font-size: 14px; color: var(--gray); margin-bottom: 24px; }
+.btn-block { width: 100%; padding: 12px 0; font-size: 15px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; text-align: center; background: var(--primary); color: #fff; margin-top: 12px; }
+.ts-setup { display: flex; flex-direction: column; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 14px; font-weight: 600; color: #374151; }
+.form-input { padding: 10px 12px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+.ts-word { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #111827; }
+.ts-input-box { width: 100%; padding: 12px; font-size: 15px; border: 1px solid var(--border); border-radius: 8px; outline: none; text-align: center; margin-bottom: 16px; }
+.ts-input-box:focus { border-color: var(--primary); }
+.wrong-list { text-align: left; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+.wrong-title { font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 10px; }
+.wrong-item { font-size: 13px; padding: 6px 0; border-bottom: 1px dashed var(--border); color: #4b5563; }
+.wrong-item .w-eng { font-family: 'Nunito', sans-serif; font-weight: 700; color: #111827; }
+</style>
+</head>
+<body>
+
+<div id="app-container">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub" id="hdr-sub">씨유에탑 중등3-8 · 총 0단어</div>
+  </div>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" id="tb-list" onclick="switchTab('list')">단어목록</div>
+    <div class="nav-tab" id="tb-flash" onclick="switchTab('flash')">플래시카드</div>
+    <div class="nav-tab" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</div>
+    <div class="nav-tab" id="tb-test" onclick="switchTab('test')">📝 테스트</div>
+  </div>
+
+  <!-- 탭 1: 단어목록 -->
+  <div class="tab-content active" id="tab-list">
+    <div class="range-bar" id="lrbar"></div>
+    <div class="search-box">
+      <input type="text" class="search-input" id="lsearch" placeholder="영어 또는 한글 단어 검색..." oninput="renderList()">
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" id="f-all" onclick="setLF('all')">전체</button>
+      <button class="filter-btn" id="f-not" onclick="setLF('not')">모름</button>
+      <button class="filter-btn" id="f-fav" onclick="setLF('fav')">⭐즐겨찾기</button>
+    </div>
+    <div class="word-list" id="wlist-box"></div>
+  </div>
+
+  <!-- 탭 2: 플래시카드 -->
+  <div class="tab-content" id="tab-flash">
+    <div class="range-bar" id="fcrbar"></div>
+    <div class="fc-container">
+      <div class="fc-card" id="fccard">
+        <button class="ibtn fc-fav-pos" id="fcfav">★</button>
+        <div class="fc-word" id="fcword">-</div>
+        <div class="fc-mean" id="fcmean"></div>
+        <div class="fc-hint" id="fchint">탭하여 뜻 보기</div>
+      </div>
+      <div class="fc-nav">
+        <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+        <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+        <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 탭 3: 퀴즈모드 -->
+  <div class="tab-content" id="tab-quiz">
+    <div class="qz-container" id="qz-box"></div>
+  </div>
+
+  <!-- 탭 4: 테스트 -->
+  <div class="tab-content" id="tab-test">
+    <div class="ts-container" id="ts-box"></div>
+  </div>
+</div>
+
+<script>
+var rawWords = [
+  {word:"additional",meaning:"추가의"},{word:"extra",meaning:"추가의"},{word:"break",meaning:"어기다, 쉬는 시간"},{word:"violate",meaning:"어기다"},{word:"disobey",meaning:"어기다"},{word:"charger",meaning:"충전기"},{word:"common",meaning:"공유지, 흔한, 공동의"},{word:"community",meaning:"지역사회, 공동체"},{word:"company",meaning:"동료, 동행"},{word:"disappear",meaning:"사라지다"},{word:"vanish",meaning:"사라지다"},{word:"appear",meaning:"나타나다"},{word:"either",meaning:"(부정문)역시, 또한"},{word:"fairly",meaning:"공정하게, 공평하게"},{word:"justly",meaning:"공정하게"},{word:"equitably",meaning:"공정하게"},{word:"unfairly",meaning:"불공정하게"},{word:"fill",meaning:"채우다"},{word:"empty",meaning:"비우다"},{word:"grassland",meaning:"풀밭, 초지"},
+  {word:"graze",meaning:"풀을 뜯다"},{word:"grow",meaning:"증가하다, 늘어나다"},{word:"increase",meaning:"증가하다, 늘어나다"},{word:"growl",meaning:"꼬르륵 소리가 나다"},{word:"harsh",meaning:"혹독한, 가혹한"},{word:"merciless",meaning:"가혹한"},{word:"severe",meaning:"가혹한"},{word:"cruel",meaning:"가혹한"},{word:"lay (-laid-laid)",meaning:"~을 놓다, (알을)낳다"},{word:"lie (-lay-lain)",meaning:"위치해 있다, 누워있다"},{word:"sit",meaning:"위치해 있다"},{word:"be located",meaning:"위치해 있다"},{word:"be situated",meaning:"위치해 있다"},{word:"luckily",meaning:"다행히도"},{word:"fortunately",meaning:"다행히도"},{word:"local",meaning:"지역의, 현지의"},{word:"messy",meaning:"지저분한, 엉망인"},{word:"mind",meaning:"꺼려하다, 상관하다"},{word:"neighborhood",meaning:"근처, 동네"},{word:"neighbor",meaning:"이웃(사람)"},
+  {word:"notice",meaning:"알아채다, 주목하다"},{word:"perceive",meaning:"알아채다"},{word:"detect",meaning:"알아채다"},{word:"overlook",meaning:"간과하다"},{word:"at last",meaning:"마침내, 결국"},{word:"in the end",meaning:"마침내, 결국"},{word:"after all",meaning:"마침내, 결국"},{word:"finally",meaning:"마침내, 결국"},{word:"eventually",meaning:"마침내, 결국"},{word:"in the long run",meaning:"마침내, 결국"},{word:"happen",meaning:"발생하다"},{word:"occur",meaning:"발생하다"},{word:"mayor",meaning:"시장"},{word:"inviting",meaning:"매력적인, 솔깃한"},{word:"attractive",meaning:"매력적인, 솔깃한"},{word:"tempting",meaning:"매력적인, 솔깃한"},{word:"silence",meaning:"고요, 적막"},{word:"silent",meaning:"고요한"},{word:"quiet",meaning:"고요한"},{word:"tranquil",meaning:"고요한"},
+  {word:"shame",meaning:"부끄러움"},{word:"order",meaning:"명령, 지시"},{word:"command",meaning:"명령, 지시"},{word:"instruction",meaning:"명령, 지시"},{word:"by the way",meaning:"그런데"},{word:"enough",meaning:"충분한"},{word:"sufficient",meaning:"충분한"},{word:"abundant",meaning:"충분한"},{word:"insufficient",meaning:"불충분한"},{word:"patient",meaning:"인내심 있는, 환자"},{word:"impatient",meaning:"안달하는, 못견디는"},{word:"per",meaning:"~당, 마다"},{word:"pleasure",meaning:"기쁨"},{word:"enjoyment",meaning:"기쁨"},{word:"delight",meaning:"기쁨"},{word:"plenty",meaning:"풍부한 양"},{word:"abundance",meaning:"풍부한 양"},{word:"plenty of",meaning:"많은"},{word:"pollute",meaning:"오염시키다"},{word:"pollution",meaning:"오염"},
+  {word:"pollutant",meaning:"오염물질"},{word:"contaminate",meaning:"오염시키다"},{word:"contamination",meaning:"오염"},{word:"raise",meaning:"기르다, ~을 올리다"},{word:"bring up",meaning:"기르다"},{word:"grow",meaning:"기르다"},{word:"rear",meaning:"기르다"},{word:"resource",meaning:"자원"},{word:"rise",meaning:"오르다, 증가하다"},{word:"increase",meaning:"증가하다"},{word:"drop",meaning:"감소하다"},{word:"decrease",meaning:"감소하다"},{word:"seasick",meaning:"뱃멀미가 나는"},{word:"lesson",meaning:"교훈, 수업"},{word:"senior citizen",meaning:"어르신"},{word:"share",meaning:"나누다, 공유하다"},{word:"spot",meaning:"장소, 자리"},{word:"support",meaning:"유지하다, 부양하다"},{word:"talent",meaning:"재능"},{word:"gift",meaning:"재능"},
+  {word:"things",meaning:"상황"},{word:"therefore",meaning:"그러므로"},{word:"hence",meaning:"그러므로"},{word:"thus",meaning:"그러므로"},{word:"consequently",meaning:"그러므로"},{word:"accordingly",meaning:"그러므로"},{word:"tip",meaning:"조언, 방법, 끝"},{word:"advice",meaning:"조언"},{word:"tradition",meaning:"전통"},{word:"traditional",meaning:"전통의"},{word:"value",meaning:"소중히 여기다"},{word:"cherish",meaning:"소중히 여기다"},{word:"treasure",meaning:"소중히 여기다"},{word:"be allowed to~",meaning:"허락받다"},{word:"allow",meaning:"허락하다"},{word:"permit",meaning:"허락하다"},{word:"approve",meaning:"허락하다"},{word:"consent",meaning:"허락하다"},{word:"assent",meaning:"허락하다"},{word:"let",meaning:"허락하다"},
+  {word:"support",meaning:"지지, 지원"},{word:"space",meaning:"공간"},{word:"area",meaning:"공간"},{word:"place",meaning:"공간"},{word:"in harmony",meaning:"조화롭게"},{word:"harmoniously",meaning:"조화롭게"},{word:"in balance",meaning:"조화롭게"},{word:"in tune",meaning:"조화롭게"},{word:"in accord",meaning:"조화롭게"},{word:"in secret",meaning:"몰래, 비밀리에"},{word:"secretly",meaning:"몰래, 은밀하게"},{word:"publicly",meaning:"공개적으로"},{word:"openly",meaning:"공개적으로"},{word:"view",meaning:"전망, 경관"},{word:"landscape",meaning:"경관"},{word:"scenery",meaning:"경관"},{word:"villager",meaning:"마을 사람"},{word:"volunteer",meaning:"자원봉사하다"},{word:"while",meaning:"반면에"},{word:"keep ~ in mind",meaning:"~를 명심하다"},
+  {word:"the number of ~",meaning:"~의 수"},{word:"a number of ~",meaning:"많은"},{word:"to make matters worse",meaning:"설상가상으로"},{word:"anger",meaning:"화"},{word:"rage",meaning:"화, 격노"},{word:"outrage",meaning:"화, 격노"},{word:"fury",meaning:"화, 격노"},{word:"resentment",meaning:"화, 격노"},{word:"space",meaning:"공간"},{word:"area",meaning:"공간"},{word:"active",meaning:"활동중인, 활발한"},{word:"inactive",meaning:"활동하지 않는"},{word:"actively",meaning:"적극적으로, 활발히"},{word:"passively",meaning:"수동적으로"},{word:"ash",meaning:"재"},{word:"attraction",meaning:"명소"},{word:"chance",meaning:"가능성, 기회"},{word:"possibility",meaning:"가능성"},{word:"likelihood",meaning:"가능성"},{word:"potential",meaning:"가능성"},
+  {word:"probability",meaning:"가능성"},{word:"circle",meaning:"~를 둘러싸다"},{word:"surround",meaning:"둘러싸다"},{word:"encircle",meaning:"둘러싸다"},{word:"enclose",meaning:"둘러싸다"},{word:"crop",meaning:"농작물"},{word:"deadly",meaning:"치명적인"},{word:"lethal",meaning:"치명적인"},{word:"fatal",meaning:"치명적인"},{word:"mortal",meaning:"치명적인"},{word:"destroy",meaning:"파괴하다"},{word:"ruin",meaning:"파괴하다"},{word:"devastate",meaning:"파괴하다"},{word:"destruct",meaning:"파괴하다"},{word:"disaster",meaning:"재난, 재해"},{word:"catastrophe",meaning:"재난, 재해"},{word:"disturb",meaning:"방해하다"},{word:"interrupt",meaning:"방해하다"},{word:"hinder",meaning:"방해하다"},{word:"intrude",meaning:"방해하다"},
+  {word:"interfere",meaning:"방해하다"},{word:"earthquake",meaning:"지진"},{word:"effect",meaning:"영향, 효과"},{word:"have an effect on~",meaning:"~에 영향을 미치다"},{word:"influence",meaning:"영향을 주다"},{word:"affect",meaning:"영향을 주다"},{word:"affection",meaning:"애정, 애착"},{word:"electricity",meaning:"전기"},{word:"erupt",meaning:"분출하다, 분화하다"},{word:"explode",meaning:"분출하다, 폭발하다"},{word:"burst out",meaning:"분출하다"},{word:"eruption",meaning:"분출, 분화"},{word:"entire",meaning:"전체의, 온"},{word:"whole",meaning:"전체의"},{word:"fix",meaning:"해결하다, 고치다"},{word:"solve",meaning:"해결하다"},{word:"settle",meaning:"해결하다"},{word:"resolve",meaning:"해결하다"},{word:"flood",meaning:"홍수"},{word:"drought",meaning:"가뭄"},
+  {word:"flat",meaning:"평평한, 납작한"},{word:"even",meaning:"평평한"},{word:"uneven",meaning:"울퉁불퉁한"},{word:"fantastic",meaning:"환상적인"},{word:"wonderful",meaning:"환상적인"},{word:"excellent",meaning:"환상적인"},{word:"hit",meaning:"강타하다, 덮치다"},{word:"strike",meaning:"강타하다, 덮치다"},{word:"heat",meaning:"열, 열기"},{word:"chill",meaning:"냉기, 한기"},{word:"lie (-lay-lain)",meaning:"위치해 있다, 누워있다"},{word:"sit",meaning:"위치해 있다"},{word:"be located",meaning:"위치해 있다"},{word:"be situated",meaning:"위치해 있다"},{word:"locate",meaning:"위치를 찾아내다, 놓다"},{word:"spot",meaning:"위치를 찾아내다"},{word:"position",meaning:"놓다"},{word:"situate",meaning:"놓다"},{word:"place",meaning:"놓다"},{word:"occur",meaning:"일어나다, 발생하다"},
+  {word:"happen",meaning:"일어나다, 발생하다"},{word:"take place",meaning:"일어나다, 발생하다"},{word:"overnight",meaning:"하룻밤 사이에"},{word:"have~in common",meaning:"~을 공통적으로 가지다"},{word:"name A after B",meaning:"B를 따서 A의 이름을 짓다"},{word:"for sure",meaning:"확실히"},{word:"surely",meaning:"확실히"},{word:"certainly",meaning:"확실히"},{word:"definitely",meaning:"확실히"},{word:"keep ~ing",meaning:"계속해서 ~하다"},{word:"carry on",meaning:"계속해서 ~하다"},{word:"continue",meaning:"계속해서 ~하다"},{word:"do harm",meaning:"해를 입히다"},{word:"damage",meaning:"해를 입히다"},{word:"issue",meaning:"발표하다, 발령하다"},{word:"pattern",meaning:"양상, 패턴"},{word:"planet",meaning:"행성"},{word:"produce",meaning:"만들어내다, 생산하다"},{word:"generate",meaning:"만들어내다, 생산하다"},{word:"public",meaning:"공공의, 대중의"},
+  {word:"rainfall",meaning:"강우(량)"},{word:"precipitation",meaning:"강우량"},{word:"realistic",meaning:"사실적인, 현실적인"},{word:"reach",meaning:"~에 이르다"},{word:"arrive at",meaning:"~에 이르다"},{word:"get to",meaning:"~에 이르다"},{word:"relieve",meaning:"완화하다, 줄이다"},{word:"relax",meaning:"완화하다"},{word:"ease",meaning:"완화하다"},{word:"alleviate",meaning:"완화하다"},{word:"resident",meaning:"주민, 거주자"},{word:"inhabitant",meaning:"주민, 거주자"},{word:"ring",meaning:"고리"},{word:"scenery",meaning:"경관, 풍경"},{word:"landscape",meaning:"경관, 풍경"},{word:"scene",meaning:"경관, 풍경"},{word:"view",meaning:"경관, 풍경"},{word:"dust",meaning:"먼지"},{word:"soil",meaning:"흙, 토양"},{word:"sea level",meaning:"해수면"},
+  {word:"solar system",meaning:"태양계"},{word:"spread",meaning:"퍼지다, 확산되다"},{word:"typhoon",meaning:"태풍"},{word:"still",meaning:"그럼에도 불구하고"},{word:"yet",meaning:"그럼에도 불구하고"},{word:"nevertheless",meaning:"그럼에도 불구하고"},{word:"nonetheless",meaning:"그럼에도 불구하고"},{word:"even so",meaning:"그럼에도 불구하고"},{word:"stuck",meaning:"갇힌, 꼼짝 못하는"},{word:"sudden",meaning:"갑작스러운"},{word:"unexpected",meaning:"갑작스러운"},{word:"abrupt",meaning:"갑작스러운"},{word:"gradual",meaning:"전진적인"},{word:"threaten",meaning:"위협하다"},{word:"threat",meaning:"위협"},{word:"tourist attraction",meaning:"관광 명소"},{word:"traffic",meaning:"교통, 운항"},{word:"underwater",meaning:"물속에"},{word:"unusually",meaning:"비정상적으로"},{word:"abnormally",meaning:"비정상적으로"},
+  {word:"usually",meaning:"정상적으로, 평범하게"},{word:"normally",meaning:"정상적으로, 평범하게"},{word:"volcanic",meaning:"화산의"},{word:"volcano",meaning:"화산"},{word:"volume",meaning:"부피, 용적, (책의)권"},{word:"warning",meaning:"경고"},{word:"shoot A into B",meaning:"A를 B로 내뿜다"},{word:"prevent A from ~ing",meaning:"A가 ~하는 것을 막다"},{word:"stop A from ~ing",meaning:"A가 ~하는 것을 막다"},{word:"keep A from ~ing",meaning:"A가 ~하는 것을 막다"},{word:"prohibit A from~ing",meaning:"A가 ~하는 것을 막다"},{word:"inhibit A from ~ing",meaning:"A가 ~하는 것을 막다"},{word:"millions of",meaning:"수백만의"},{word:"thousands of",meaning:"수천개의"},{word:"turn A into B",meaning:"A를 B로 바꾸다"},{word:"transform A into B",meaning:"A를 B로 바꾸다"},{word:"change A into B",meaning:"A를 B로 바꾸다"},{word:"in harmony with",meaning:"~와 조화를 이루어"},{word:"on one’s way back",meaning:"돌아오는 길에"},{word:"so far",meaning:"지금까지"},
+  {word:"banner",meaning:"현수막"},{word:"challenging",meaning:"도전적인"},{word:"challenge",meaning:"도전, 도전하다"},{word:"chase",meaning:"추구하다"},{word:"seek",meaning:"추구하다"},{word:"pursue",meaning:"추구하다"},{word:"choose",meaning:"선택하다, 고르다"},{word:"select",meaning:"선택하다"},{word:"completely",meaning:"완전히, 전적으로"},{word:"entirely",meaning:"완전히"},{word:"fully",meaning:"완전히"},{word:"absolutely",meaning:"완전히"},{word:"thoroughly",meaning:"완전히"},{word:"connect",meaning:"연결하다"},{word:"decision",meaning:"결정, 판단"},{word:"resolution",meaning:"결정"},{word:"determination",meaning:"결정"},{word:"explain",meaning:"설명하다"},{word:"account for",meaning:"설명하다"},{word:"express",meaning:"표현하다"},
+  {word:"represent",meaning:"표현하다"},{word:"manifest",meaning:"표현하다"},{word:"finalist",meaning:"결승전 진출자"},{word:"found",meaning:"설립하다, 세우다"},{word:"hang",meaning:"걸다, 매달다"},{word:"imagination",meaning:"상상(력)"},{word:"imagine",meaning:"상상하다"},{word:"imaginary",meaning:"상상의, 가상의"},{word:"imaginative",meaning:"상상력이 풍부한"},{word:"imaginable",meaning:"상상할 수 있는"},{word:"impatient",meaning:"짜증난, 참지 못하는"},{word:"annoyed",meaning:"짜증난"},{word:"irritated",meaning:"짜증난"},{word:"improve",meaning:"향상시키다"},{word:"enhance",meaning:"향상시키다"},{word:"upgrade",meaning:"향상시키다"},{word:"include",meaning:"포함하다"},{word:"contain",meaning:"포함하다"},{word:"involve",meaning:"포함하다"},{word:"interest",meaning:"흥미, 관심"},
+  {word:"lifelong",meaning:"평생 동안의, 일생의"},{word:"local",meaning:"지역의, 현지의"},{word:"main",meaning:"주요한, 주된"},{word:"major",meaning:"주요한"},{word:"chief",meaning:"주요한"},{word:"prime",meaning:"주요한"},{word:"primary",meaning:"주요한"},{word:"principal",meaning:"주요한"},{word:"apply for~",meaning:"~에 지원하다"},{word:"be ashamed of~",meaning:"~을 부끄러워하다"},{word:"miss",meaning:"놓치다"},{word:"mistaken",meaning:"잘못 알고있는"},{word:"wrong",meaning:"잘못 알고있는"},{word:"FALSE",meaning:"잘못 알고있는"},{word:"incorrect",meaning:"잘못 알고있는"},{word:"inaccurate",meaning:"잘못 알고있는"},{word:"misguided",meaning:"잘못 알고있는"},{word:"be worth -ing",meaning:"~할 가치가 있다"},{word:"be worthy of -ing",meaning:"~할 가치가 있다"},{word:"be worthwhile to V",meaning:"~할 가치가 있다"},
+  {word:"do one’s hair",meaning:"머리를 손질하다"},{word:"even if",meaning:"비록 ~하더라도"},{word:"go after",meaning:"~을 추구하다"},{word:"go by",meaning:"지나가다, 흐르다"},{word:"pass",meaning:"지나가다"},{word:"offer",meaning:"제안, 제의"},{word:"suggestion",meaning:"제안"},{word:"proposal",meaning:"제안"},{word:"proposition",meaning:"제안"},{word:"opportunity",meaning:"기회"},{word:"chance",meaning:"기회"},{word:"professional",meaning:"전문적인, 전문가의"},{word:"expert",meaning:"전문적인"},{word:"technical",meaning:"전문적인"},{word:"skilled",meaning:"전문적인"},{word:"specialized",meaning:"전문적인"},{word:"specialistic",meaning:"전문적인"},{word:"protect",meaning:"보호하다"},{word:"shelter",meaning:"보호하다"},{word:"guard",meaning:"보호하다"},
+  {word:"conserve",meaning:"보호하다"},{word:"shield",meaning:"보호하다"},{word:"preserve",meaning:"보호하다"},{word:"protection",meaning:"보호"},{word:"preservation",meaning:"보호"},{word:"conservation",meaning:"보호"},{word:"quite",meaning:"꽤, 상당히"},{word:"fairly",meaning:"꽤"},{word:"pretty",meaning:"꽤"},{word:"rather",meaning:"꽤"},{word:"read",meaning:"~라고 적혀있다"},{word:"receive",meaning:"받다"},{word:"regret",meaning:"후회하다"},{word:"repent",meaning:"후회하다"},{word:"repair",meaning:"고치다, 수리하다"},{word:"fix",meaning:"고치다"},{word:"mend",meaning:"고치다"},{word:"after a while",meaning:"얼마 후에"},{word:"keep out",meaning:"~에 들어가지 않다"},{word:"feel in control",meaning:"자신에 차 있다"},
+  {word:"rest",meaning:"나머지"},{word:"remains",meaning:"나머지"},{word:"serious",meaning:"진지한, 심각한"},{word:"earnest",meaning:"진지한"},{word:"strongly",meaning:"강하게"},{word:"severely",meaning:"강하게, 심하게"},{word:"stuck",meaning:"갇힌, 꼼짝 못하는"},{word:"suit",meaning:"정장"},{word:"terribly",meaning:"대단히, 몹시"},{word:"awfully",meaning:"대단히, 몹시"},{word:"extremely",meaning:"대단히, 몹시"},{word:"dreadfully",meaning:"대단히, 몹시"},{word:"traffic jam",meaning:"교통 체증"},{word:"tryout",meaning:"선발 심사, 예선"},{word:"unkind",meaning:"불친절한"},{word:"while",meaning:"반면에"},{word:"whereas",meaning:"반면에"},{word:"on the other hand",meaning:"반면에"},{word:"wild",meaning:"야생의 열광하는"},{word:"wonder",meaning:"궁금하다"},
+  {word:"hang out with~",meaning:"~와 시간을 보내다"},{word:"make it",meaning:"해내다, 성공하다"},{word:"not~ anymore",meaning:"더 이상 ~ 않다"},{word:"no more",meaning:"더 이상 ~ 않다"},{word:"of all time",meaning:"역대, 시대를 통틀어"},{word:"over and over",meaning:"반복해서"},{word:"repeatedly",meaning:"반복해서"},{word:"again and again",meaning:"반복해서"},{word:"prepare for~",meaning:"~을 준비하다"},{word:"thanks to~",meaning:"~덕분에"},{word:"used to V",meaning:"~이었다, 하곤했다"},{word:"be used to V",meaning:"#NAME?"},{word:"be used to -ing",meaning:"#NAME?"},{word:"throughout",meaning:"~내내"},{word:"particular",meaning:"특별한"},{word:"coast",meaning:"해안"},{word:"ahead",meaning:"앞에"},{word:"thumping",meaning:"쿵쾅거리는"},{word:"breathe",meaning:"숨을 쉬다"},{word:"breath",meaning:"숨"},
+  {word:"manage",meaning:"간신히 ~하다"},{word:"entrance",meaning:"입구"},{word:"cast",meaning:"깁스"},{word:"relief",meaning:"안심, 안도"},{word:"in other words",meaning:"다시 말해서, 즉"},{word:"day in and day out",meaning:"매일"},{word:"set off",meaning:"출발하다"},{word:"depart",meaning:"출발하다"},{word:"side by side",meaning:"나란히"},{word:"inch by inch",meaning:"조금씩"},{word:"actually",meaning:"실제로"},{word:"actual",meaning:"실제의"},{word:"available",meaning:"구할 수 있는"},{word:"unavailable",meaning:"구할 수 없는"},{word:"book",meaning:"예약하다"},{word:"arrange",meaning:"예약하다"},{word:"reserve",meaning:"예약하다"},{word:"chance",meaning:"기회"},{word:"opportunity",meaning:"기회"},{word:"conversation",meaning:"대화"},
+  {word:"cupboard",meaning:"찬장"},{word:"deliver",meaning:"배달하다"},{word:"delivery",meaning:"배달"},{word:"even",meaning:"심지어 ~조차"},{word:"expression",meaning:"표현"},{word:"express",meaning:"표현하다"},{word:"facial",meaning:"얼굴의, 표면의"},{word:"finally",meaning:"마침내, 결국"},{word:"at last",meaning:"마침내, 결국"},{word:"eventually",meaning:"마침내, 결국"},{word:"in the end",meaning:"마침내, 결국"},{word:"in the long run",meaning:"마침내, 결국"},{word:"ultimately",meaning:"마침내, 결국"},{word:"floor",meaning:"바닥, 층"},{word:"form",meaning:"형식"},{word:"type",meaning:"형식"},{word:"fried",meaning:"기름에 튀긴"},{word:"human",meaning:"인간의, 인간적인"},{word:"humane",meaning:"인도적인"},{word:"invite",meaning:"초대하다"},
+  {word:"invitation",meaning:"초대"},{word:"inviting",meaning:"매력적인"},{word:"joke",meaning:"농담"},{word:"kid",meaning:"농담"},{word:"joy",meaning:"기쁨"},{word:"pleasure",meaning:"기쁨"},{word:"delight",meaning:"기쁨"},{word:"laughter",meaning:"웃음"},{word:"chuckle",meaning:"낄낄거리며 웃다"},{word:"giggle",meaning:"낄낄거리며 웃다"},{word:"luck",meaning:"행운"},{word:"fortune",meaning:"행운"},{word:"meaningful",meaning:"의미 있는"},{word:"meaningless",meaning:"무의미한"},{word:"mean",meaning:"의미하다"},{word:"means (명)",meaning:"수단"},{word:"meaning (명)",meaning:"의미"},{word:"promise",meaning:"약속하다, 약속"},{word:"quite",meaning:"꽤, 상당히"},{word:"quiet",meaning:"조용한"},
+  {word:"realize",meaning:"깨닫다"},{word:"represent",meaning:"나타내다"},{word:"stand for",meaning:"나타내다"},{word:"roll",meaning:"구르다"},{word:"safe",meaning:"안전한"},{word:"safety",meaning:"안전"},{word:"dangerous",meaning:"위험한"},{word:"since",meaning:"~부터, ~이후"},{word:"stick",meaning:"막대기, 달라붙다"},{word:"a rod",meaning:"막대기"},{word:"stick to",meaning:"집착하다, 고집하다"},{word:"symbol",meaning:"상징"},{word:"tear",meaning:"눈물"},{word:"shed tears",meaning:"눈물을 흘리다"},{word:"text",meaning:"글, 문자 메시지"},{word:"tightly",meaning:"단단히, 꽉"},{word:"tone",meaning:"어조, 말투"},{word:"travel",meaning:"여행하다, 여행"},{word:"type",meaning:"타자 치다, 입력하다"},{word:"various",meaning:"다양한"},
+  {word:"diverse",meaning:"다양한"},{word:"different",meaning:"다양한"},{word:"visually",meaning:"시각적으로"},{word:"visual",meaning:"시각의"},{word:"whole",meaning:"전체의"},{word:"entire",meaning:"전체의"},{word:"partial",meaning:"부분의"},{word:"wonder",meaning:"궁금해 하다"},{word:"wander",meaning:"거닐다"},{word:"a group of",meaning:"한 무리의"},{word:"a band of",meaning:"한 무리의 (사람))"},{word:"break wind",meaning:"방귀를 뀌다"},{word:"fart",meaning:"방귀를 뀌다, 방귀"},{word:"care for",meaning:"~을 좋아하다"},{word:"care about",meaning:"신경 쓰다"},{word:"take care of",meaning:"돌보다"},{word:"can’t wait for",meaning:"~을 몹시 기다리다"},{word:"look forward to~ing",meaning:"~을 몹시 기다리다"},{word:"keep in touch",meaning:"계속 연락하다"},{word:"laugh out loud",meaning:"큰 소리로 웃다"},
+  {word:"lots of",meaning:"많은"},{word:"plenty of",meaning:"많은"},{word:"a lot of",meaning:"많은"},{word:"such as",meaning:"~와 같은"},{word:"like",meaning:"~와 같은"},{word:"these days",meaning:"요즘"},{word:"nowadays",meaning:"요즘"},{word:"recently",meaning:"요즘"},{word:"lately",meaning:"요즘"},{word:"take a look at",meaning:"~을 보다"},{word:"admit",meaning:"인정하다"},{word:"agree",meaning:"인정하다"},{word:"acknowledge",meaning:"인정하다"},{word:"admit",meaning:"인정하다"},{word:"recognize",meaning:"인정하다"},{word:"assign",meaning:"맡기다, 배정하다"},{word:"assignment",meaning:"과제, 임무"},{word:"awful",meaning:"끔찍한, 지독한"},{word:"bean",meaning:"콩"},{word:"bet",meaning:"~이 틀림없다"},
+  {word:"bring",meaning:"가져오다"},{word:"complain",meaning:"불평하다"},{word:"complaint",meaning:"불평"},{word:"corner",meaning:"모퉁이, 구석"},{word:"dirty",meaning:"지저분한, 더러운"},{word:"messy",meaning:"지저분한"},{word:"double",meaning:"두 배가 되다"},{word:"dust",meaning:"먼지"},{word:"empty",meaning:"텅 빈"},{word:"fill",meaning:"채우다"},{word:"fix",meaning:"고치다, 수리하다"},{word:"repair",meaning:"고치다, 수리하다"},{word:"mend",meaning:"고치다, 수리하다"},{word:"flower pot",meaning:"화분"},{word:"hang",meaning:"걸다, 매달다"},{word:"heavy",meaning:"무거운"},{word:"light",meaning:"가벼운"},{word:"helpful",meaning:"도움이 되는"},{word:"beneficial",meaning:"도움이 되는"},{word:"supportive",meaning:"도움이 되는"},
+  {word:"advantageous",meaning:"도움이 되는"},{word:"helpless",meaning:"무력한"},{word:"unhelpful",meaning:"쓸모없는"},{word:"hit",meaning:"생각이 떠오르다"},{word:"imagine",meaning:"상상하다"},{word:"imagination",meaning:"상상, 상상력"},{word:"imaginary",meaning:"상상의, 가상의"},{word:"imaginable",meaning:"상상할 수 있는"},{word:"imaginative",meaning:"창의적인"},{word:"lettuce",meaning:"상추"},{word:"list",meaning:"명단, 목록"},{word:"lot",meaning:"지역, 부지"},{word:"parking lot",meaning:"주차장"},{word:"mess",meaning:"쓰레기 더미, 혼잡"},{word:"mess up",meaning:"엉망으로 만들다"},{word:"get into a mess",meaning:"곤란에 빠지다"},{word:"neighborhood",meaning:"이웃"},{word:"newspaper",meaning:"신문"},{word:"nursing home",meaning:"양로원"},{word:"plant",meaning:"심다"},
+  {word:"pond",meaning:"연못"},{word:"pull",meaning:"뽑다, 잡아당기다"},{word:"row",meaning:"열, 줄"},{word:"seed",meaning:"씨앗"},{word:"sow",meaning:"씨 뿌리다"},{word:"sight",meaning:"광경, 풍경"},{word:"sneeze",meaning:"재채기하다"},{word:"string",meaning:"끈, 줄"},{word:"cord",meaning:"끈, 줄"},{word:"rope",meaning:"끈, 줄"},{word:"strap",meaning:"끈, 줄"},{word:"suddenly",meaning:"갑자기"},{word:"all of a sudden",meaning:"갑자기"},{word:"abruptly",meaning:"갑자기"},{word:"unexpectedly",meaning:"갑자기"},{word:"suggest",meaning:"제안하다"},{word:"propose",meaning:"제안하다"},{word:"put forward",meaning:"제안하다"},{word:"sweaty",meaning:"땀에 젖은, 땀이 나는"},{word:"tough",meaning:"힘든, 어려운"},
+  {word:"rough",meaning:"거친, 힘든"},{word:"town",meaning:"마을"},{word:"trash",meaning:"쓰레기"},{word:"waste",meaning:"쓰레기"},{word:"garbage",meaning:"쓰레기"},{word:"litter",meaning:"쓰레기"},{word:"junk",meaning:"쓰레기"},{word:"ugly",meaning:"불쾌한"},{word:"disgusting",meaning:"불쾌한"},{word:"unpleasant",meaning:"불쾌한"},{word:"nasty",meaning:"불쾌한"},{word:"offensive",meaning:"불쾌한"},{word:"volunteer",meaning:"자원하다"},{word:"voluntary",meaning:"자발적인"},{word:"water",meaning:"물을 주다"},{word:"wrap",meaning:"포장지, 포장하다"},{word:"be full of",meaning:"~으로 가득 차다"},{word:"be filled with",meaning:"~으로 가득 차다"},{word:"be ready to",meaning:"~할 준비가 되어 있다"},{word:"clean up",meaning:"치우다, 청소하다"},
+  {word:"divide A into B",meaning:"A를 B로 나누다"},{word:"hold tight",meaning:"꽉 잡다"},{word:"grip",meaning:"꽉 잡다"},{word:"grasp",meaning:"꽉 잡다, 이해하다"},{word:"in charge of",meaning:"~을 맡아서, 담당해서"},{word:"responsible for",meaning:"~을 맡아서, 책임지고"},{word:"pop up",meaning:"불쑥 나타나다"},{word:"set up",meaning:"~을 세우다, 설치하다"},{word:"thanks to",meaning:"~덕분에"},{word:"due to",meaning:"~덕분에, 때문에"},{word:"accept",meaning:"받아들이다"},{word:"receive",meaning:"받아들이다"},{word:"reject",meaning:"거절하다"},{word:"decline",meaning:"거절하다"},{word:"refuse",meaning:"거절하다"},{word:"turn down",meaning:"거절하다"},{word:"act",meaning:"행동, 연기"},{word:"actually",meaning:"실제로, 사실은"},{word:"in fact",meaning:"실제로, 사실은"},{word:"in reality",meaning:"실제로, 사실은"},
+  {word:"as a matter of fact",meaning:"실제로, 사실은"},{word:"airport",meaning:"공항"},{word:"award",meaning:"상, 수여하다"},{word:"backward",meaning:"뒤로"},{word:"forward",meaning:"앞으로"},{word:"bomb",meaning:"폭탄"},{word:"brain",meaning:"뇌, 두뇌"},{word:"ceremony",meaning:"의식, 식"},{word:"cheerful",meaning:"쾌활한"},{word:"joyful",meaning:"쾌활한"},{word:"bright",meaning:"쾌활한"},{word:"merry",meaning:"쾌활한"},{word:"cross",meaning:"교차하다"},{word:"daughter",meaning:"딸"},{word:"discovery",meaning:"발견"},{word:"finding",meaning:"발견"},{word:"eager",meaning:"간절히 바라는"},{word:"eager for",meaning:"~을 열망하여"},{word:"anxious for",meaning:"~을 열망하여"},{word:"be eager to",meaning:"매우 ~하고 싶어 하다"},
+  {word:"economic",meaning:"경제의"},{word:"economy",meaning:"경제"},{word:"economical",meaning:"경제적인, 실속 있는"},{word:"economics",meaning:"경제학"},{word:"economist",meaning:"경제학자"},{word:"float",meaning:"뜨다, 띄우다"},{word:"honor",meaning:"명예"},{word:"fame",meaning:"명예"},{word:"reputation",meaning:"명예"},{word:"dishonor",meaning:"불명예"},{word:"disgrace",meaning:"불명예"},{word:"humor",meaning:"유머, 익살"},{word:"imaginative",meaning:"창의적인"},{word:"creative",meaning:"창의적인"},{word:"original",meaning:"창의적인"},{word:"ingenious",meaning:"창의적인"},{word:"increase",meaning:"증가시키다, 늘리다"},{word:"decrease",meaning:"감소하다"},{word:"diminish",meaning:"감소하다"},{word:"decline",meaning:"감소하다"},
+  {word:"invention",meaning:"발명, 발명품"},{word:"magnet",meaning:"자석"},{word:"navy",meaning:"해군"},{word:"practice",meaning:"연습, 연습하다"},{word:"prize",meaning:"상"},{word:"award",meaning:"상"},{word:"reward",meaning:"상"},{word:"race",meaning:"경주, 달리기"},{word:"receive",meaning:"받다"},{word:"recipient",meaning:"수상자"},{word:"reception",meaning:"수신"},{word:"repeatedly",meaning:"반복적으로"},{word:"over and over again",meaning:"반복적으로"},{word:"again and again",meaning:"반복적으로"},{word:"research",meaning:"연구, 조사"},{word:"sail",meaning:"항해하다"},{word:"sense",meaning:"감각"},{word:"solve",meaning:"풀다, 해결하다"},{word:"speech",meaning:"연설, 담화"},{word:"give a speech",meaning:"연설하다"},
+  {word:"succeed",meaning:"성공하다"},{word:"success",meaning:"성공"},{word:"successful",meaning:"성공적인"},{word:"talent show",meaning:"장기 자랑"},{word:"trillion",meaning:"1조"},{word:"million",meaning:"백만"},{word:"billion",meaning:"십억"},{word:"university",meaning:"대학교"},{word:"unusual",meaning:"특이한"},{word:"bizarre",meaning:"특이한"},{word:"odd",meaning:"특이한"},{word:"uncommon",meaning:"특이한"},{word:"worth",meaning:"~의 가치가 있는"},{word:"worthy",meaning:"~의 가치가 있는"},{word:"worthwhile",meaning:"~의 가치가 있는"},{word:"worthless",meaning:"가치 없는"},{word:"a number of",meaning:"다수의, 얼마간의"},{word:"the number of",meaning:"~의 수"},{word:"at the same time",meaning:"동시에"},{word:"simultaneously",meaning:"동시에"},
+  {word:"at once",meaning:"동시에"},{word:"keep A from ~ing",meaning:"A가~하지 못하게 하다"},{word:"stop A from ~ing",meaning:"A가~하지 못하게 하다"},{word:"prevent A from ~ing",meaning:"A가~하지 못하게 하다"},{word:"prohibit A from ~ing",meaning:"A가~하지 못하게 하다"},{word:"look forward to~",meaning:"~을 기대하다"},{word:"take part in",meaning:"~에 참가하다"},{word:"participate in",meaning:"~에 참가하다"},{word:"join",meaning:"~에 참가하다"},{word:"enter",meaning:"~에 참가하다"},{word:"ability",meaning:"능력"},{word:"capacity",meaning:"능력"},{word:"capability",meaning:"능력"},{word:"accept",meaning:"받아들이다"},{word:"advice",meaning:"조언"},{word:"tip",meaning:"조언"},{word:"suggestion",meaning:"조언"},{word:"advise",meaning:"조언하다"},{word:"against",meaning:"~에 반대하여"},{word:"for",meaning:"~에 찬성하여"},
+  {word:"allow",meaning:"허락하다"},{word:"permit",meaning:"허락하다"},{word:"admit",meaning:"허락하다"},{word:"forbid",meaning:"금지하다"},{word:"ban",meaning:"금지하다"},{word:"prohibit",meaning:"금지하다"},{word:"baker",meaning:"제빵사"},{word:"board",meaning:"판, 칠판"},{word:"career",meaning:"직업"},{word:"profession",meaning:"직업"},{word:"vocation",meaning:"직업"},{word:"occupation",meaning:"직업"},{word:"challenge",meaning:"도전, 도전하다"},{word:"challenging",meaning:"도전적인, 힘든"},{word:"face a challenge",meaning:"도전에 직면하다"},{word:"accept the challenge",meaning:"도전에 응하다"},{word:"make a challenge",meaning:"도전하다"},{word:"colored",meaning:"유색인종의"},{word:"competition",meaning:"대회"},{word:"contest",meaning:"대회"},
+  {word:"tournament",meaning:"대회"},{word:"compete",meaning:"경쟁하다"},{word:"competitive",meaning:"경쟁적인"},{word:"competitor",meaning:"경쟁자, 선수"},{word:"competent",meaning:"유능한"},{word:"competence",meaning:"능력"},{word:"courage",meaning:"용기"},{word:"courageous",meaning:"용기 있는"},{word:"encourage",meaning:"격려하다"},{word:"discourage",meaning:"낙심시키다"},{word:"enter",meaning:"참가하다"},{word:"take part in",meaning:"참가하다"},{word:"participate in",meaning:"참가하다"},{word:"join",meaning:"참가하다"},{word:"expert",meaning:"전문가"},{word:"specialist",meaning:"전문가"},{word:"professional",meaning:"전문가"},{word:"face",meaning:"직면하다"},{word:"be faced with",meaning:"직면하다"},{word:"confront",meaning:"직면하다"},
+  {word:"goal",meaning:"목표"},{word:"target",meaning:"목표"},{word:"objective",meaning:"목표"},{word:"aim",meaning:"목표"},{word:"hidden",meaning:"숨겨진, 비밀의"},{word:"impress",meaning:"감명을 주다"},{word:"impression",meaning:"인상"},{word:"impressive",meaning:"인상적인"},{word:"impressed",meaning:"감명 받는"},{word:"install",meaning:"설치하다"},{word:"set up",meaning:"설치하다"},{word:"judge",meaning:"판사, 판단하다"},{word:"laughter",meaning:"웃음"},{word:"line",meaning:"(연극 등의)대사"},{word:"magician",meaning:"마술사"},{word:"manager",meaning:"관리자, 경영자"},{word:"manage",meaning:"관리"},{word:"management",meaning:"관리하다"},{word:"meat",meaning:"고기"},{word:"offer",meaning:"제의"},
+  {word:"suggestion",meaning:"제의"},{word:"proposal",meaning:"제의"},{word:"permission",meaning:"허락"},{word:"approval",meaning:"허락"},{word:"grant",meaning:"허락"},{word:"presentation",meaning:"발표"},{word:"present",meaning:"발표하다, 존재하는"},{word:"presence",meaning:"존재"},{word:"represent",meaning:"대표하다"},{word:"product",meaning:"상품, 제품"},{word:"produce",meaning:"생산하다"},{word:"producer",meaning:"생산자"},{word:"productive",meaning:"생산적인"},{word:"programmer",meaning:"계획 작성자"},{word:"program",meaning:"계획, 예정"},{word:"record",meaning:"기록"},{word:"reporter",meaning:"기자"},{word:"journalist",meaning:"기자"},{word:"role",meaning:"역할"},{word:"space",meaning:"우주"},
+  {word:"universe",meaning:"우주"},{word:"cosmos",meaning:"우주"},{word:"specific",meaning:"특정한"},{word:"general",meaning:"일반적인"},{word:"break down",meaning:"~을 부수다"},{word:"get over",meaning:"극복하다"},{word:"overcome",meaning:"극복하다"},{word:"give up",meaning:"포기하다"},{word:"quit",meaning:"포기하다"},{word:"abandon",meaning:"포기하다"},{word:"have no choice but to V",meaning:"~할 수밖에 없다"},{word:"have no option but to V",meaning:"~할 수밖에 없다"},{word:"cannot help ~ing",meaning:"~할 수밖에 없다"},{word:"cannot help but V",meaning:"~할 수밖에 없다"},{word:"cannot but v",meaning:"~할 수밖에 없다"},{word:"keep in mind",meaning:"~을 명심하다"},{word:"bear in mind",meaning:"~을 명심하다"},{word:"look down",meaning:"우울해 보이다"},{word:"look depressed",meaning:"우울해 보이다"},{word:"look blue",meaning:"우울해 보이다"},
+  {word:"look gloomy",meaning:"우울해 보이다"},{word:"look down on",meaning:"무시하다"},{word:"look up",meaning:"올려다보다"},{word:"look up to",meaning:"존경하다"},{word:"stand up for",meaning:"~을 지지하다"},{word:"support",meaning:"~을 지지하다"},{word:"advocate",meaning:"~을 지지하다"},{word:"back",meaning:"~을 지지하다"},{word:"stand by",meaning:"~을 지지하다"},{word:"thanks to",meaning:"~덕분에"},{word:"speech",meaning:"연설"},{word:"address",meaning:"연설"},{word:"give a speech",meaning:"연설하다"},{word:"make a speech",meaning:"연설하다"},{word:"decorate",meaning:"장식하다"},{word:"ornament",meaning:"장식하다"},{word:"adorn",meaning:"장식하다"},{word:"beautify",meaning:"장식하다"},{word:"decoration",meaning:"장식"},{word:"figure",meaning:"인물, 거물"},
+  {word:"keep ~ing",meaning:"계속 ~하다"},{word:"go on ~ing",meaning:"계속 ~하다"},{word:"laugh at",meaning:"비웃다"},{word:"be afraid",meaning:"두려워하다"},{word:"be scared",meaning:"두려워하다"},{word:"be in fear",meaning:"두려워하다"},{word:"be frightened",meaning:"두려워하다"},{word:"recognize",meaning:"인정하다"},{word:"acknowledge",meaning:"인정하다"},{word:"admit",meaning:"인정하다"},{word:"appreciate",meaning:"인정하다"},{word:"accept",meaning:"인정하다"},{word:"recognized",meaning:"인정받은"},{word:"recognition",meaning:"인정"},{word:"recognizable",meaning:"인식할 수 있는"},{word:"control",meaning:"조종하다"},{word:"manipulate",meaning:"조종하다"},{word:"disappointed",meaning:"실망한"},{word:"frustrated",meaning:"실망한"},{word:"discouraged",meaning:"실망한"},
+  {word:"chance",meaning:"기회"},{word:"opportunity",meaning:"기회"},{word:"character",meaning:"등장인물"},{word:"clothes",meaning:"옷, 의복"},{word:"cloth",meaning:"천"},{word:"clothing",meaning:"의류"},{word:"else",meaning:"그밖에"},{word:"fairy",meaning:"요정"},{word:"fairly",meaning:"공평히, 꽤"},{word:"fool",meaning:"바보"},{word:"idiot",meaning:"바보"},{word:"foolish",meaning:"어리석은"},{word:"instead",meaning:"대신에"},{word:"invite",meaning:"초대하다"},{word:"invitation",meaning:"초대"},{word:"inviting",meaning:"매력적인"},{word:"lesson",meaning:"교훈"},{word:"lessen",meaning:"줄이다"},{word:"matter",meaning:"중요하다"},{word:"count",meaning:"중요하다"},
+  {word:"mess",meaning:"엉망진창, 난장판"},{word:"rest",meaning:"나머지"},{word:"save",meaning:"구하다"},{word:"serve",meaning:"제공하다"},{word:"shout",meaning:"소리치다"},{word:"stuck",meaning:"꼼짝 못하는"},{word:"unhappily",meaning:"불행하게"},{word:"unfortunately",meaning:"불행하게"},{word:"wheel",meaning:"바퀴"},{word:"witch",meaning:"마녀"},{word:"be better off",meaning:"더 잘 살다"},{word:"be made of",meaning:"~로 만들어지다"},{word:"be made from",meaning:"~로 만들어지다"},{word:"by the name of",meaning:"~라는 이름의"},{word:"feel like ~ing",meaning:"~하고 싶다"},{word:"from now on",meaning:"이제[지금]부터 계속"},{word:"give it a try",meaning:"시도하다"},{word:"give it a go",meaning:"시도하다"},{word:"make an attempt",meaning:"시도하다"},{word:"hand in hand",meaning:"손에 손을 잡고"},
+  {word:"hundreds of",meaning:"수백의"},{word:"dozens of",meaning:"수십의"},{word:"thousands of",meaning:"수천의"},{word:"tens of thousands of",meaning:"수만의"},{word:"millions of",meaning:"수백만의"},{word:"on one’s way to",meaning:"~하러 가는 길[도중]에"},{word:"run away",meaning:"달아나다"},{word:"flee",meaning:"달아나다"},{word:"turn A into B",meaning:"A를 B로 바꾸다"},{word:"convert A into B",meaning:"A를 B로 바꾸다"},{word:"across ~",meaning:"~을 가로질러"},{word:"across from",meaning:"~의 맞은편에"},{word:"cross",meaning:"건너다"},{word:"add",meaning:"더하다, 추가하다"},{word:"addition",meaning:"추가"},{word:"additional",meaning:"부가적인"},{word:"boil",meaning:"끓이다"},{word:"bookshelf",meaning:"책꽂이"},{word:"bottom",meaning:"바닥"},{word:"carry",meaning:"나르다, 운반하다"},
+  {word:"center",meaning:"중심, 중앙"},{word:"choose",meaning:"선택하다"},{word:"select",meaning:"선택하다"},{word:"circle",meaning:"원, 동그라미"},{word:"complain",meaning:"불평하다"},{word:"grumble",meaning:"불평하다"},{word:"complaint",meaning:"불평"},{word:"control",meaning:"관리하다, 통제하다"},{word:"decide",meaning:"결심하다"},{word:"determine",meaning:"결심하다"},{word:"make up one’s mind",meaning:"결심하다"},{word:"decision",meaning:"결심"},{word:"decisive",meaning:"결정적인, 단호한"},{word:"indecisive",meaning:"우유부단한"},{word:"divide",meaning:"나누다"},{word:"split",meaning:"나누다"},{word:"division",meaning:"분단"},{word:"unite",meaning:"통합하다"},{word:"dot",meaning:"점"},{word:"spot",meaning:"점"},
+  {word:"speck",meaning:"점"},{word:"each",meaning:"각각의, 각자의"},{word:"equal",meaning:"같은, 동일한"},{word:"exercise",meaning:"운동하다"},{word:"work out",meaning:"운동하다"},{word:"face",meaning:"마주하다, 얼굴"},{word:"finally",meaning:"마지막으로"},{word:"in the end",meaning:"마지막으로"},{word:"lastly",meaning:"마지막으로"},{word:"hang",meaning:"걸다, 매달다"},{word:"hanger",meaning:"옷걸이"},{word:"hurt",meaning:"다치게 하다"},{word:"injure",meaning:"다치게 하다"},{word:"hurtful",meaning:"해로운"},{word:"kite",meaning:"연"},{word:"length",meaning:"길이"},{word:"lengthy",meaning:"긴"},{word:"lengthen",meaning:"연장하다"},{word:"one another",meaning:"서로"},{word:"each other",meaning:"서로"}
+];
+
+var seriesName = "씨유에탑 중등3-8";
+var storageKey = "cutop_jungdeung3_8";
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+var ranges = buildRanges(rawWords);
+
+var lri = 0, fri = 0, tri = 0;
+var currentFilter = "all"; 
+var localData = {};
+
+function loadData() {
+  var saved = localStorage.getItem(storageKey);
+  if (saved) {
+    try { localData = JSON.parse(saved); } catch(e) { localData = {}; }
+  }
+}
+function saveData() {
+  localStorage.setItem(storageKey, JSON.stringify(localData));
+}
+function getWordKey(w) {
+  return w.word + "|" + w.meaning;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+function speakFc() {
+  speak(document.getElementById("fcword").textContent);
+}
+
+function renderRangeBar(id, curIdx, callbackName) {
+  var bar = document.getElementById(id);
+  var html = "";
+  ranges.forEach(function(r, idx) {
+    var cls = idx === curIdx ? "range-btn active" : "range-btn";
+    html += '<button class="' + cls + '" onclick="' + callbackName + '(' + idx + ')">' + r.label + '</button>';
+  });
+  bar.innerHTML = html;
+}
+
+function setLR(i) { lri = i; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setFR(i) { fri = i; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+function setTR(i) { tri = i; renderRangeBar("tsrbar", tri, "setTR"); }
+
+function setLF(f) {
+  currentFilter = f;
+  ["all","not","fav"].forEach(function(n) {
+    document.getElementById("f-"+n).classList.toggle("active", n===f);
+  });
+  renderList();
+}
+
+function toggleKnown(wkey, idx) {
+  if (!localData[wkey]) localData[wkey] = {};
+  localData[wkey].status = localData[wkey].status === "known" ? "" : "known";
+  saveData();
+  var card = document.getElementById("wc-" + idx);
+  if (card) card.classList.toggle("known", localData[wkey].status === "known");
+}
+
+function toggleFav(wkey, idx) {
+  if (!localData[wkey]) localData[wkey] = {};
+  localData[wkey].fav = !localData[wkey].fav;
+  saveData();
+  var btn = document.getElementById("wfav-" + idx);
+  if (btn) btn.classList.toggle("active", localData[wkey].fav);
+}
+
+function renderList() {
+  var container = document.getElementById("wlist-box");
+  var q = document.getElementById("lsearch").value.toLowerCase().trim();
+  var rng = ranges[lri];
+  var html = "";
+
+  for (var i = rng.s; i < rng.e; i++) {
+    var w = rawWords[i];
+    var k = getWordKey(w);
+    var d = localData[k] || {};
+
+    if (currentFilter === "not" && d.status === "known") continue;
+    if (currentFilter === "fav" && !d.fav) continue;
+
+    if (q) {
+      if (w.word.toLowerCase().indexOf(q) === -1 && w.meaning.toLowerCase().indexOf(q) === -1) continue;
+    }
+
+    var isK = d.status === "known";
+    var isF = !!d.fav;
+
+    html += '<div class="word-card' + (isK?' known':'') + '" id="wc-' + i + '">';
+    html += '  <div class="wc-left">';
+    html += '    <div class="chk-btn" onclick="toggleKnown(\'' + esc(k) + '\', ' + i + ')">✓</div>';
+    html += '    <div class="wc-info">';
+    html += '      <div class="wc-eng">' + esc(w.word) + '</div>';
+    html += '      <div class="wc-kor">' + esc(w.meaning) + '</div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '  <div class="wc-right">';
+    html += '    <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '    <button class="ibtn fav-star' + (isF?' active':'') + '" id="wfav-' + i + '" onclick="toggleFav(\'' + esc(k) + '\', ' + i + ')">★</button>';
+    html += '  </div>';
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
+
+var fcList = [], fci = 0, fcFlipped = false;
+function initFC() {
+  var rng = ranges[fri];
+  fcList = rawWords.slice(rng.s, rng.e);
+  fci = 0;
+  showFC();
+}
+function showFC() {
+  if (fcList.length === 0) {
+    document.getElementById("fcword").textContent = "단어 없음";
+    document.getElementById("fcmean").textContent = "";
+    return;
+  }
+  var w = fcList[fci];
+  var k = getWordKey(w);
+  var d = localData[k] || {};
+  
+  document.getElementById("fcword").textContent = w.word;
+  document.getElementById("fcmean").textContent = "";
+  document.getElementById("fchint").textContent = "탭하여 뜻 보기";
+  var f = document.getElementById("fcfav");
+  f.classList.toggle("active", !!d.fav);
+  f.setAttribute("data-k", k);
+  fcFlipped = false;
+}
+function fcFlip() {
+  if (fcFlipped || fcList.length === 0) return;
+  fcFlipped = true;
+  var w = fcList[fci];
+  document.getElementById("fcmean").textContent = w.meaning;
+  document.getElementById("fchint").textContent = "다음 카드는 스와이프 하세요";
+  speak(w.word);
+}
+function fcNext() { if(fcList.length===0)return; fci = (fci+1)%fcList.length; showFC(); }
+function fcPrev() { if(fcList.length===0)return; fci = (fci-1+fcList.length)%fcList.length; showFC(); }
+
+var qPool = [], qIdx = 0, qCorrects = 0, qLocked = false;
+function initQuiz() {
+  qPool = rawWords.slice(0);
+  qPool.sort(function(){ return Math.random()-0.5; });
+  qPool = qPool.slice(0, 10);
+  qIdx = 0; qCorrects = 0; qLocked = false;
+  nextQuiz();
+}
+function nextQuiz() {
+  qLocked = false;
+  var box = document.getElementById("qz-box");
+  if (qIdx >= qPool.length) {
+    var pct = Math.round((qCorrects/qPool.length)*100);
+    var emo = pct===100?'🏆':(pct>=80?'🎉':(pct>=60?'👍':'💪'));
+    var html = '<div class="res-container">';
+    html += '<div class="res-emoji">' + emo + '</div>';
+    html += '<div class="res-score">' + qCorrects + ' / ' + qPool.length + '</div>';
+    html += '<div class="res-pct">' + pct + '점 완료!</div>';
+    html += '<button class="btn-block" onclick="initQuiz()">↩ 다시 풀기</button>';
+    html += '</div>';
+    box.innerHTML = html;
+    return;
+  }
+  var w = qPool[qIdx];
+  var opts = [w.meaning];
+  while (opts.length < 4) {
+    var rw = rawWords[Math.floor(Math.random()*rawWords.length)].meaning;
+    if (opts.indexOf(rw) === -1) opts.push(rw);
+  }
+  opts.sort(function(){ return Math.random()-0.5; });
+
+  var pct = Math.round((qIdx/qPool.length)*100);
+  var html = '<div class="qz-progress"><div class="qz-bar" style="width:'+pct+'%"></div></div>';
+  html += '<div class="qz-status"><span>문제 '+(qIdx+1)+'/'+qPool.length+'</span><span>✅ 맞춘수: '+qCorrects+'</span></div>';
+  html += '<div class="qz-word">' + esc(w.word) + '</div>';
+  html += '<div class="qz-options">';
+  opts.forEach(function(o) {
+    var isCor = o === w.meaning ? "1" : "0";
+    html += '<button class="qz-opt" data-cor="' + isCor + '" onclick="qAns(this)">' + esc(o) + '</button>';
+  });
+  html += '</div>';
+  box.innerHTML = html;
+}
+function qAns(btn) {
+  if (qLocked) return;
+  qLocked = true;
+  var isCor = btn.getAttribute("data-cor") === "1";
+  if (isCor) {
+    btn.classList.add("correct");
+    qCorrects++;
+    speak(qPool[qIdx].word);
+  } else {
+    btn.classList.add("wrong");
+    var opts = document.getElementsByClassName("qz-opt");
+    for(var i=0; i<opts.length; i++) {
+      if(opts[i].getAttribute("data-cor") === "1") opts[i].classList.add("correct");
+    }
+  }
+  setTimeout(function(){
+    qIdx++;
+    nextQuiz();
+  }, 1000);
+}
+
+var tName = "", tPool = [], tIdx = 0, tCorrects = 0, tWrongs = [];
+function renderSetup() {
+  var box = document.getElementById("ts-box");
+  var html = '<div class="ts-setup">';
+  html += '  <div class="form-group">';
+  html += '    <label class="form-label">학생 이름</label>';
+  html += '    <input type="text" id="ts-name" class="form-input" placeholder="이름을 입력하세요" value="' + esc(tName) + '">';
+  html += '  </div>';
+  html += '  <div class="form-group">';
+  html += '    <label class="form-label">테스트 범위</label>';
+  html += '    <div class="range-bar" id="tsrbar"></div>';
+  html += '  </div>';
+  html += '  <button class="btn-block" onclick="startTest()">테스트 시작 ▶</button>';
+  html += '</div>';
+  box.innerHTML = html;
+  renderRangeBar("tsrbar", tri, "setTR");
+}
+function startTest() {
+  var nInput = document.getElementById("ts-name");
+  if (!nInput || !nInput.value.trim()) { alert("이름을 입력해주세요."); return; }
+  tName = nInput.value.trim();
+  
+  var rng = ranges[tri];
+  var subPool = rawWords.slice(rng.s, rng.e);
+  subPool.sort(function(){ return Math.random()-0.5; });
+  
+  var maxQ = Math.min(50, subPool.length);
+  tPool = subPool.slice(0, maxQ);
+  
+  tIdx = 0; tCorrects = 0; tWrongs = [];
+  nextTest();
+}
+function nextTest() {
+  var box = document.getElementById("ts-box");
+  if (tIdx >= tPool.length) {
+    var pct = Math.round((tCorrects/tPool.length)*100);
+    var emo = pct===100?'🏆':(pct>=80?'🎉':(pct>=60?'👍':'💪'));
+    
+    var html = '<div class="res-container">';
+    html += '<div class="res-emoji">' + emo + '</div>';
+    html += '<div class="res-score">' + tCorrects + ' / ' + tPool.length + '</div>';
+    html += '<div class="res-pct">' + pct + '점 완료!</div>';
+    html += '<button class="btn-block" style="background:#25D366;" onclick="copyResult()">📋 카톡으로 결과 복사</button>';
+    html += '<button class="btn-block" onclick="renderSetup()">↩ 다시 테스트</button>';
+    
+    if (tWrongs.length > 0) {
+      html += '<div class="wrong-list"><div class="wrong-title">❌ 틀린 단어 ('+tWrongs.length+'개)</div>';
+      tWrongs.forEach(function(w) {
+        html += '<div class="wrong-item"><span class="w-eng">'+esc(w.w.word)+'</span> → 입력: <span style="color:var(--danger)">'+esc(w.input || '(빈칸)')+'</span> / 정답: <span style="color:var(--success)">'+esc(w.w.meaning)+'</span></div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+    box.innerHTML = html;
+    return;
+  }
+  
+  var w = tPool[tIdx];
+  var pct = Math.round((tIdx/tPool.length)*100);
+  
+  var html = '<div class="ts-progress"><div class="ts-bar" style="width:'+pct+'%"></div></div>';
+  html += '<div class="ts-status"><span>문제 '+(tIdx+1)+'/'+tPool.length+'</span><span>✅ 맞춤수: '+tCorrects+'</span></div>';
+  html += '<div class="ts-word">' + esc(w.word) + '</div>';
+  html += '<input type="text" id="ts-input" class="ts-input-box" autocomplete="off" placeholder="뜻을 입력하고 Enter" onkeydown="tsKey(event)">';
+  html += '<button class="btn-block" onclick="submitTest()">확인</button>';
+  
+  box.innerHTML = html;
+  speak(w.word);
+  setTimeout(function(){ var inp = document.getElementById("ts-input"); if(inp)inp.focus(); }, 100);
+}
+function tsKey(e) { if (e.keyCode === 13) submitTest(); }
+
+function isSim(input, correct) {
+  var norm = function(s) {
+    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+  };
+  var a = norm(input), c = norm(correct);
+  if (a === c) return true;
+  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+  return false;
+}
+
+function submitTest() {
+  var inp = document.getElementById("ts-input");
+  if (!inp) return;
+  var val = inp.value.trim();
+  var w = tPool[tIdx];
+  
+  if (isSim(val, w.meaning)) {
+    tCorrects++;
+  } else {
+    tWrongs.push({ w: w, input: val });
+  }
+  tIdx++;
+  nextTest();
+}
+
+function copyResult() {
+  var dStr = new Date().toISOString().slice(0,10);
+  var pct = Math.round((tCorrects/tPool.length)*100);
+  
+  var t = "[" + seriesName + "] 테스트 결과\n";
+  t += "날짜: " + dStr + "\n";
+  t += "이름: " + tName + "\n";
+  t += "점수: " + tCorrects + "/" + tPool.length + " (" + pct + "점)\n";
+  t += "─────────────────\n";
+  if (tWrongs.length > 0) {
+    t += "❌ 틀린 단어 (" + tWrongs.length + "개)\n";
+    tWrongs.forEach(function(x) {
+      t += "  " + x.w.word + " → 입력:" + (x.input || "(빈칸)") + " / 정답:" + x.w.meaning + "\n";
+    });
+  } else {
+    t += "❌ 틀린 단어 없음! 퍼펙트! 🎉\n";
+  }
+  t += "─────────────────\n";
+  
+  var rights = [];
+  tPool.forEach(function(p) {
+    var isW = false;
+    for(var i=0; i<tWrongs.length; i++) {
+      if(tWrongs[i].w.word === p.word && tWrongs[i].w.meaning === p.meaning) { isW = true; break; }
+    }
+    if(!isW) rights.push(p.word);
+  });
+  
+  t += "✅ 맞은 단어: " + rights.join(", ");
+  
+  var dummy = document.createElement("textarea");
+  document.body.appendChild(dummy);
+  dummy.value = t;
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+  alert("결과가 클립보드에 복사되었습니다. 카톡 창에 붙여넣기 하세요!");
+}
+
+function switchTab(t) {
+  ["list","flash","quiz","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="quiz")  { initQuiz(); }
+  if (t==="test")  { renderSetup(); }
+}
+
+(function(){
+  loadData();
+  document.getElementById("hdr-sub").textContent = seriesName + " · 총 " + rawWords.length + "단어";
+  renderRangeBar("lrbar", lri, "setLR");
+  renderList();
+
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  
+  var fcTX = 0;
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+
+  document.getElementById("fcfav").addEventListener("click", function(e) {
+    var k = this.getAttribute("data-k");
+    if (!k) return;
+    if (!localData[k]) localData[k] = {};
+    localData[k].fav = !localData[k].fav;
+    saveData();
+    this.classList.toggle("active", localData[k].fav);
+  });
+})();
+</script>
+</body>
+</html>
