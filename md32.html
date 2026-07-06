@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>씨유에탑 영어단어장</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warn: #F59E0B;
+      --gray: #6B7280;
+      --border: #E5E7EB;
+      --bg: #F9FAFB;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f0f2f5;
+      color: #1f2937;
+      display: flex;
+      justify-content: center;
+    }
+    .en { font-family: 'Nunito', sans-serif; }
+    #app {
+      width: 100%;
+      max-width: 420px;
+      min-height: 100vh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .header {
+      background: #ffffff;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .header-brand {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: var(--gray);
+    }
+    .nav-tabs {
+      display: flex;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      text-align: center;
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+      font-weight: 700;
+    }
+    .tab-content {
+      flex: 1;
+      display: none;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+    }
+    .range-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .range-bar::-webkit-scrollbar { display: none; }
+    .range-btn {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .range-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .search-box {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .filter-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+      font-weight: 700;
+    }
+    .word-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .word-card {
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .word-card.known {
+      opacity: 0.35;
+    }
+    .chk-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    .word-card.known .chk-btn {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+    .word-info {
+      flex: 1;
+    }
+    .word-eng {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 2px;
+    }
+    .word-kor {
+      font-size: 14px;
+      color: #4b5563;
+    }
+    .ibtn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .fav-btn {
+      color: #d1d5db;
+    }
+    .fav-btn.active {
+      color: var(--warn);
+    }
+    .fc-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+    .fc-card {
+      width: 100%;
+      height: 240px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .fc-fav {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 22px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #d1d5db;
+    }
+    .fc-fav.active {
+      color: var(--warn);
+    }
+    .fc-eng {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .fc-kor {
+      font-size: 18px;
+      color: var(--gray);
+    }
+    .fc-nav {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+    }
+    .fc-nav-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .fc-nav-btn.sec {
+      background: var(--gray);
+    }
+    .qz-container, .ts-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .qz-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 24px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .qz-word {
+      font-size: 26px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .qz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .qz-opt {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .qz-opt.correct {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+    .qz-opt.wrong {
+      background: var(--danger);
+      color: white;
+      border-color: var(--danger);
+    }
+    .res-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .res-emoji { font-size: 48px; margin-bottom: 10px; }
+    .res-score { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .res-pct { font-size: 16px; color: var(--gray); margin-bottom: 20px; }
+    .btn-block {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      background: var(--primary);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      outline: none;
+    }
+    .ts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: var(--gray);
+    }
+    .pbar-bg {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+    .pbar-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      width: 0%;
+    }
+    .ts-box {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 30px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .ts-word {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .wrong-list {
+      text-align: left;
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+    .wrong-item {
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">중등3_2 · 총 1000단어</div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tb-list" onclick="switchTab('list')">단어목록</button>
+    <button class="tab-btn" id="tb-flash" onclick="switchTab('flash')">플래시카드</button>
+    <button class="tab-btn" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</button>
+    <button class="tab-btn" id="tb-test" onclick="switchTab('test')">📝 테스트</button>
+  </div>
+
+  <!-- 탭 1: 단어목록 -->
+  <div class="tab-content active" id="tab-list">
+    <div class="range-bar" id="lrbar"></div>
+    <input type="text" class="search-box" id="lsearch" placeholder="영어 또는 한글 검색..." oninput="renderList()">
+    <div class="filter-bar">
+      <button class="filter-btn active" id="lf-all" onclick="setLFilter('all')">전체</button>
+      <button class="filter-btn" id="lf-not" onclick="setLFilter('not')">모름</button>
+      <button class="filter-btn" id="lf-fav" onclick="setLFilter('fav')">⭐즐겨찾기</button>
+    </div>
+    <div class="word-list" id="lwlist"></div>
+  </div>
+
+  <!-- 탭 2: 플래시카드 -->
+  <div class="tab-content" id="tab-flash">
+    <div class="range-bar" id="fcrbar"></div>
+    <div class="fc-container">
+      <div class="fc-card" id="fccard">
+        <button class="fc-fav" id="fcfav">★</button>
+        <div class="fc-eng en" id="fcword"></div>
+        <div class="fc-kor" id="fcmean"></div>
+      </div>
+      <div class="fc-nav">
+        <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+        <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+        <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 탭 3: 퀴즈모드 -->
+  <div class="tab-content" id="tab-quiz">
+    <div class="qz-container" id="qzmain"></div>
+  </div>
+
+  <!-- 탭 4: 테스트 -->
+  <div class="tab-content" id="tab-test">
+    <div class="ts-container" id="tsmain"></div>
+  </div>
+</div>
+
+<script>
+  var rawWords = [{"word": "allow", "meaning": "허락하다"}, {"word": "permit", "meaning": "허락하다"}, {"word": "approve", "meaning": "승인하다"}, {"word": "allowance", "meaning": "용돈"}, {"word": "payment", "meaning": "지불"}, {"word": "app", "meaning": "어플리케이션"}, {"word": "apply", "meaning": "지원하다, 적용하다"}, {"word": "applicant", "meaning": "지원자"}, {"word": "application", "meaning": "지원(서), 신청(서)"}, {"word": "appliance", "meaning": "가전제품"}, {"word": "appreciate", "meaning": "감사하다, 감상하다"}, {"word": "approach", "meaning": "접근하다"}, {"word": "appropriate", "meaning": "적절한"}, {"word": "approve", "meaning": "찬성하다, 승인하다"}, {"word": "approximate", "meaning": "대략의"}, {"word": "apt", "meaning": "적절한, ~하기 쉬운"}, {"word": "attitude", "meaning": "태도, 자세"}, {"word": "aptitude", "meaning": "적성"}, {"word": "adapt", "meaning": "적응하다, 각색하다"}, {"word": "adopt", "meaning": "입양하다, 채택하다"}, {"word": "area", "meaning": "지역, 영역"}, {"word": "arena", "meaning": "경기장, 무대"}, {"word": "argue", "meaning": "주장하다, 말다툼하다"}, {"word": "argument", "meaning": "주장, 말다툼"}, {"word": "arm", "meaning": "팔, 무기"}, {"word": "arms", "meaning": "무기"}, {"word": "army", "meaning": "군대"}, {"word": "armor", "meaning": "갑옷"}, {"word": "armchair", "meaning": "안락의자"}, {"word": "alarm", "meaning": "경보(기), 불안하게 하다"}, {"word": "art", "meaning": "예술, 미술, 기술"}, {"word": "artist", "meaning": "예술가, 화가"}, {"word": "artificial", "meaning": "인공의, 인위적인"}, {"word": "article", "meaning": "기사, 논설, 물품, 조항"}, {"word": "particle", "meaning": "입자, 극소량"}, {"word": "ask", "meaning": "묻다, 요청하다"}, {"word": "demand", "meaning": "요구하다, 수요"}, {"word": "command", "meaning": "명령하다, 지휘하다"}, {"word": "recommend", "meaning": "추천하다"}, {"word": "aspect", "meaning": "측면, 방향"}, {"word": "respect", "meaning": "존경하다, 존중하다"}, {"word": "prospect", "meaning": "전망, 가능성"}, {"word": "inspect", "meaning": "검사하다, 시찰하다"}, {"word": "suspect", "meaning": "의심하다, 용의자"}, {"word": "spectacle", "meaning": "구경거리, 장관"}, {"word": "spectacles", "meaning": "안경"}, {"word": "spectator", "meaning": "관객, 구경꾼"}, {"word": "conspicuous", "meaning": "눈에 띄는, 뚜렷한"}, {"word": "aspire", "meaning": "열망하다, 갈망하다"}, {"word": "inspire", "meaning": "영감을 주다, 고취하다"}, {"word": "expire", "meaning": "만료되다, 끝나다"}, {"word": "respire", "meaning": "호흡하다"}, {"word": "conspire", "meaning": "공모하다, 음모를 꾸미다"}, {"word": "perspire", "meaning": "땀을 흘리다"}, {"word": "assure", "meaning": "보장하다, 확언하다"}, {"word": "ensure", "meaning": "보장하다, 반드시 ~하게 하다"}, {"word": "insure", "meaning": "보험에 들다"}, {"word": "attach", "meaning": "붙이다, 첨부하다"}, {"word": "detach", "meaning": "분리하다, 떼다"}, {"word": "attack", "meaning": "공격하다, 공격"}, {"word": "attain", "meaning": "달성하다, 이루다"}, {"word": "obtain", "meaning": "얻다, 획득하다"}, {"word": "contain", "meaning": "포함하다, 억제하다"}, {"word": "maintain", "meaning": "유지하다, 주장하다"}, {"word": "sustain", "meaning": "지탱하다, 유지하다"}, {"word": "retain", "meaning": "보유하다, 유지하다"}, {"word": "entertain", "meaning": "즐겁게 하다, 대접하다"}, {"word": "attempt", "meaning": "시도하다, 시도"}, {"word": "tempt", "meaning": "유혹하다, 부추기다"}, {"word": "attend", "meaning": "참석하다, 주의를 기울이다, 시중들다"}, {"word": "attention", "meaning": "주의, 주목"}, {"word": "attendant", "meaning": "종업원, 안내원, 수행원"}, {"word": "extend", "meaning": "연장하다, 확장하다"}, {"word": "intend", "meaning": "의도하다, ~할 작정이다"}, {"word": "pretend", "meaning": "~인 척하다"}, {"word": "tend", "meaning": "~하는 경향이 있다, 돌보다"}, {"word": "contend", "meaning": "다투다, 주장하다"}, {"word": "attract", "meaning": "끌다, 매혹하다"}, {"word": "attractive", "meaning": "매력적인"}, {"word": "attraction", "meaning": "매력, 명소"}, {"word": "distract", "meaning": "산만하게 하다"}, {"word": "abstract", "meaning": "추상적인, 개요"}, {"word": "contract", "meaning": "계약(서), 수축하다"}, {"word": "extract", "meaning": "추출하다, 발췌"}, {"word": "track", "meaning": "길, 자국, 추적하다"}, {"word": "trace", "meaning": "추적하다, 흔적"}, {"word": "trait", "meaning": "특성, 특징"}, {"word": "portray", "meaning": "묘사하다, 그리다"}, {"word": "audience", "meaning": "청중, 관객"}, {"word": "auditorium", "meaning": "강당"}, {"word": "audio", "meaning": "오디오의, 음향의"}, {"word": "obey", "meaning": "복종하다, 따르다"}, {"word": "author", "meaning": "저자, 작가"}, {"word": "authority", "meaning": "권위, 권한, 당국"}, {"word": "authorize", "meaning": "권한을 부여하다, 승인하다"}, {"word": "auto", "meaning": "자동차"}, {"word": "automobile", "meaning": "자동차"}, {"word": "automatic", "meaning": "자동의"}, {"word": "autograph", "meaning": "자필 서명"}, {"word": "autonomous", "meaning": "자치의, 자율적인"}, {"word": "avail", "meaning": "도움이 되다, 이익"}, {"word": "available", "meaning": "이용 가능한, 시간이 있는"}, {"word": "evalute", "meaning": "평가하다"}, {"word": "devalue", "meaning": "가치를 떨어뜨려 평가하다"}, {"word": "prevail", "meaning": "만연하다, 우세하다"}, {"word": "valid", "meaning": "유효한, 타당한"}, {"word": "value", "meaning": "가치, 소중히 여기다"}, {"word": "valuable", "meaning": "가치 있는, 귀중품"}, {"word": "invaluable", "meaning": "매우 귀중한"}, {"word": "avenue", "meaning": "대로, 수단"}, {"word": "revenue", "meaning": "수입, 수익"}, {"word": "convenient", "meaning": "편리한"}, {"word": "prevent", "meaning": "예방하다, 막다"}, {"word": "event", "meaning": "사건, 행사"}, {"word": "invent", "meaning": "발명하다"}, {"word": "venture", "meaning": "모험(적 사업)"}, {"word": "adventure", "meaning": "모험"}, {"word": "average", "meaning": "평균, 평균의"}, {"word": "avoid", "meaning": "피하다"}, {"word": "void", "meaning": "빈, 공석의, 무효로 하다"}, {"word": "vacant", "meaning": "비어 있는, 사람이 없는"}, {"word": "vacation", "meaning": "방학, 휴가"}, {"word": "vacuum", "meaning": "진공, 진공청소기로 청소하다"}, {"word": "vanish", "meaning": "사라지다"}, {"word": "evacuate", "meaning": "대피시키다"}, {"word": "award", "meaning": "상, 수여하다"}, {"word": "reward", "meaning": "보상, 보상하다"}, {"word": "aware", "meaning": "알고 있는, 의식하는"}, {"word": "beware", "meaning": "조심하다"}, {"word": "warn", "meaning": "경고하다"}, {"word": "axis", "meaning": "축"}, {"word": "axle", "meaning": "차축"}, {"word": "baby", "meaning": "아기"}, {"word": "babe", "meaning": "아기"}, {"word": "back", "meaning": "등, 뒤, 지지하다"}, {"word": "backward", "meaning": "뒤쪽으로, 퇴보하는"}, {"word": "background", "meaning": "배경"}, {"word": "backup", "meaning": "지원, 백업"}, {"word": "bad", "meaning": "나쁜"}, {"word": "badly", "meaning": "나쁘게, 심하게"}, {"word": "bag", "meaning": "가방, 부대"}, {"word": "baggage", "meaning": "수하물, 짐"}, {"word": "bake", "meaning": "굽다"}, {"word": "bakery", "meaning": "빵집"}, {"word": "balance", "meaning": "균형, 잔고, 균형을 잡다"}, {"word": "imbalance", "meaning": "불균형"}, {"word": "ball", "meaning": "공, 무도회"}, {"word": "balloon", "meaning": "풍선"}, {"word": "bullet", "meaning": "총알"}, {"word": "bowl", "meaning": "사발, 그릇"}, {"word": "bowling", "meaning": "볼링"}, {"word": "band", "meaning": "밴드, 끈, 무리"}, {"word": "bandage", "meaning": "붕대"}, {"word": "bind", "meaning": "묶다, 결합하다"}, {"word": "bundle", "meaning": "묶음, 다발"}, {"word": "bond", "meaning": "유대, 채권, 결합"}, {"word": "bank", "meaning": "은행, 둑, 제방"}, {"word": "bankrupt", "meaning": "파산한"}, {"word": "bar", "meaning": "막대기, 술집, 법정, 막다"}, {"word": "barrier", "meaning": "장벽, 장애물"}, {"word": "barrel", "meaning": "통, 배럴"}, {"word": "barbecue", "meaning": "바비큐"}, {"word": "bargain", "meaning": "싸게 산 물건, 흥정하다"}, {"word": "embarrass", "meaning": "당황하게 하다"}, {"word": "bare", "meaning": "가장 자리에 위치한, 벌거벗은"}, {"word": "barely", "meaning": "간신히, 거의 ~않다"}, {"word": "base", "meaning": "기초, 토대"}, {"word": "basis", "meaning": "기초, 기준"}, {"word": "basic", "meaning": "기초적인, 기본적인"}, {"word": "basement", "meaning": "지하실"}, {"word": "basket", "meaning": "바구니"}, {"word": "basketball", "meaning": "농구"}, {"word": "bath", "meaning": "목욕"}, {"word": "bathroom", "meaning": "욕실, 화장실"}, {"word": "bathe", "meaning": "목욕하다"}, {"word": "battery", "meaning": "배터리, 건전지"}, {"word": "battle", "meaning": "전투, 싸움"}, {"word": "combat", "meaning": "전투, 싸우다"}, {"word": "debate", "meaning": "토론, 토론하다"}, {"word": "rebate", "meaning": "할인, 환급"}, {"word": "bay", "meaning": "만"}, {"word": "beach", "meaning": "해변"}, {"word": "beam", "meaning": "빛줄기, 대들보, 활짝 웃다"}, {"word": "bear", "meaning": "곰, 참다, (아이를) 낳다, (품고) 있다"}, {"word": "birth", "meaning": "출생, 탄생"}, {"word": "burden", "meaning": "짐, 부담"}, {"word": "beast", "meaning": "짐승, 야수"}, {"word": "beat", "meaning": "치다, 이기다, 심장이 뛰다"}, {"word": "beauty", "meaning": "아름다움, 미인"}, {"word": "beautiful", "meaning": "아름다운"}, {"word": "beautify", "meaning": "아름답게 하다"}, {"word": "bed", "meaning": "침대"}, {"word": "bedroom", "meaning": "침실"}, {"word": "bee", "meaning": "꿀벌"}, {"word": "beef", "meaning": "소고기"}, {"word": "beer", "meaning": "맥주"}, {"word": "before", "meaning": "~전에"}, {"word": "beforehand", "meaning": "미리, 사전에"}, {"word": "beg", "meaning": "구걸하다, 간청하다"}, {"word": "beggar", "meaning": "거지"}, {"word": "begin", "meaning": "시작하다"}, {"word": "beginning", "meaning": "시작, 초반"}, {"word": "behave", "meaning": "행동하다, 처신하다"}, {"word": "behavior", "meaning": "행동, 거지"}, {"word": "behind", "meaning": "~뒤에"}, {"word": "believe", "meaning": "믿다"}, {"word": "belief", "meaning": "믿음, 신념"}, {"word": "believable", "meaning": "믿을 수 있는"}, {"word": "bell", "meaning": "종, 벨"}, {"word": "belong", "meaning": "~에 속하다"}, {"word": "belongings", "meaning": "소지품, 소유물"}, {"word": "below", "meaning": "~아래에"}, {"word": "bench", "meaning": "벤치, 긴 의자"}, {"word": "bend", "meaning": "구부리다"}, {"word": "beneath", "meaning": "~아래에"}, {"word": "benefit", "meaning": "이익, 혜택, 유익하다"}, {"word": "beneficial", "meaning": "유익한, 이로운"}, {"word": "berry", "meaning": "딸기류의 열매"}, {"word": "beside", "meaning": "~옆에"}, {"word": "besides", "meaning": "게다가, ~외에도"}, {"word": "best", "meaning": "가장 좋은, 최선"}, {"word": "bet", "meaning": "돈을 걸다, 확신하다"}, {"word": "betray", "meaning": "배신하다"}, {"word": "between", "meaning": "~사이에"}, {"word": "beyond", "meaning": "~을 넘어서"}, {"word": "bible", "meaning": "성경"}, {"word": "biblical", "meaning": "성경의"}, {"word": "bibliography", "meaning": "참고문헌 목록"}, {"word": "bicycle", "meaning": "자전거"}, {"word": "cycle", "meaning": "순환, 자전거를 타다"}, {"word": "recycle", "meaning": "재활용하다"}, {"word": "big", "meaning": "큰"}, {"word": "bill", "meaning": "청구서, 지폐, 법안, 새의 부리"}, {"word": "billion", "meaning": "10억"}, {"word": "biography", "meaning": "전기, 일대기"}, {"word": "autobiography", "meaning": "자서전"}, {"word": "biology", "meaning": "생물학"}, {"word": "biologist", "meaning": "생물학자"}, {"word": "bird", "meaning": "새"}, {"word": "birth", "meaning": "탄생"}, {"word": "birthday", "meaning": "생일"}, {"word": "biscuit", "meaning": "비스킷"}, {"word": "bite", "meaning": "물다, 한 입"}, {"word": "bitter", "meaning": "쓴, 쓰라린"}, {"word": "black", "meaning": "검은색"}, {"word": "blackboard", "meaning": "칠판"}, {"word": "blame", "meaning": "비난하다, ~의 탓으로 돌리다"}, {"word": "blank", "meaning": "빈칸, 공백의"}, {"word": "blanket", "meaning": "담요"}, {"word": "bleed", "meaning": "피를 흘리다"}, {"word": "blood", "meaning": "피, 혈액"}, {"word": "bloody", "meaning": "피비린내 나는"}, {"word": "bless", "meaning": "축복하다"}, {"word": "blessing", "meaning": "축복"}, {"word": "blind", "meaning": "눈이 먼, 맹목적인"}, {"word": "blink", "meaning": "눈을 깜빡이다"}, {"word": "block", "meaning": "블록, 덩어리, 막다"}, {"word": "blonde", "meaning": "금발의"}, {"word": "blow", "meaning": "불다, 강타"}, {"word": "blue", "meaning": "파란색"}, {"word": "board", "meaning": "판자, 이사회, 탑승하다"}, {"word": "boat", "meaning": "배, 보트"}, {"word": "body", "meaning": "몸, 신체, 신체 기관"}, {"word": "boil", "meaning": "끓다, 끓이다"}, {"word": "bold", "meaning": "대담한, 선이 굵은"}, {"word": "bomb", "meaning": "폭탄, 폭격하다"}, {"word": "bone", "meaning": "뼈"}, {"word": "book", "meaning": "책, 예약하다"}, {"word": "bookstore", "meaning": "서점"}, {"word": "bookcase", "meaning": "책장"}, {"word": "booklet", "meaning": "소책자"}, {"word": "boom", "meaning": "호황, 폭발적 인기"}, {"word": "boot", "meaning": "부츠, 장화"}, {"word": "border", "meaning": "국경, 가장자리"}, {"word": "bore", "meaning": "지루하게 하다"}, {"word": "bored", "meaning": "지루해하는"}, {"word": "boring", "meaning": "지루한"}, {"word": "born", "meaning": "태어난"}, {"word": "borrow", "meaning": "빌리다"}, {"word": "boss", "meaning": "상사, 우두머리"}, {"word": "both", "meaning": "양쪽 모두"}, {"word": "bother", "meaning": "괴롭히다, 신경 쓰이다"}, {"word": "bottle", "meaning": "병"}, {"word": "bottom", "meaning": "바닥, 아래"}, {"word": "bound", "meaning": "꼭 ~하게 되어 있는, ~행의"}, {"word": "boundary", "meaning": "경계(선)"}, {"word": "bow", "meaning": "절하다, 활, 나비넥타이"}, {"word": "box", "meaning": "상자"}, {"word": "boy", "meaning": "소년"}, {"word": "boyfriend", "meaning": "남자친구"}, {"word": "brain", "meaning": "뇌, 두뇌"}, {"word": "brake", "meaning": "브레이크, 제동을 걸다"}, {"word": "branch", "meaning": "나뭇가지, 지점, 분과"}, {"word": "brand", "meaning": "상표, 브랜드"}, {"word": "brass", "meaning": "황동, 놋쇠"}, {"word": "brave", "meaning": "용감한"}, {"word": "bravery", "meaning": "용기"}, {"word": "bread", "meaning": "빵"}, {"word": "break", "meaning": "깨뜨리다, 고장 내다, 휴식"}, {"word": "breakdown", "meaning": "고장, 붕괴"}, {"word": "breakfast", "meaning": "아침 식사"}, {"word": "breakthrough", "meaning": "돌파구, 큰 발전"}, {"word": "outbreak", "meaning": "발발, 발생"}, {"word": "breast", "meaning": "가슴"}, {"word": "breath", "meaning": "숨, 호흡"}, {"word": "breathe", "meaning": "숨을 쉬다"}, {"word": "breeze", "meaning": "산들바람"}, {"word": "brick", "meaning": "벽돌"}, {"word": "bride", "meaning": "신부"}, {"word": "bridegroom", "meaning": "신랑"}, {"word": "bridge", "meaning": "다리, 교량"}, {"word": "brief", "meaning": "짧은, 간결한"}, {"word": "briefly", "meaning": "간단히"}, {"word": "briefcase", "meaning": "서류가방"}, {"word": "bright", "meaning": "밝은, 똑똑한"}, {"word": "brighten", "meaning": "밝아지다"}, {"word": "brilliant", "meaning": "훌륭한, 눈부신"}, {"word": "bring", "meaning": "가져오다, 데려오다"}, {"word": "broad", "meaning": "넓은"}, {"word": "broadcast", "meaning": "방송하다, 방송"}, {"word": "broaden", "meaning": "넓히다"}, {"word": "brother", "meaning": "형제, 남동생, 형"}, {"word": "brown", "meaning": "갈색"}, {"word": "brush", "meaning": "붓, 솔, 솔질을 하다"}, {"word": "bubble", "meaning": "거품"}, {"word": "bucket", "meaning": "양동이"}, {"word": "bud", "meaning": "봉오리, 싹"}, {"word": "budget", "meaning": "예산"}, {"word": "bug", "meaning": "벌레, 오류"}, {"word": "build", "meaning": "짓다, 건축하다"}, {"word": "building", "meaning": "건물"}, {"word": "bulb", "meaning": "전구"}, {"word": "bulk", "meaning": "대부분, 대량"}, {"word": "bull", "meaning": "황소"}, {"word": "bump", "meaning": "부딪히다, 혹"}, {"word": "bunch", "meaning": "다발, 송이"}, {"word": "burden", "meaning": "짐, 부담"}, {"word": "bureau", "meaning": "사무소, 국"}, {"word": "bureaucracy", "meaning": "관료주의"}, {"word": "burn", "meaning": "태우다, 타다, 화상"}, {"word": "burst", "meaning": "터지다, 폭발하다"}, {"word": "bury", "meaning": "묻다, 매장하다"}, {"word": "burial", "meaning": "매장, 장례식"}, {"word": "bus", "meaning": "버스"}, {"word": "bush", "meaning": "덤불, 관목"}, {"word": "business", "meaning": "사업, 일"}, {"word": "businessman", "meaning": "사업가"}, {"word": "busy", "meaning": "바쁜"}, {"word": "but", "meaning": "그러나, ~을 제외하고"}, {"word": "butcher", "meaning": "정육점 주인"}, {"word": "butter", "meaning": "버터"}, {"word": "butterfly", "meaning": "나비"}, {"word": "button", "meaning": "단추, 버튼"}, {"word": "buy", "meaning": "사다"}, {"word": "buyer", "meaning": "구매자"}, {"word": "by", "meaning": "~에 의해, ~옆에, ~까지"}, {"word": "cab", "meaning": "택시"}, {"word": "cabin", "meaning": "오두막집, 객실"}, {"word": "cabinet", "meaning": "보관장, 캐비닛, 내각"}, {"word": "cable", "meaning": "케이블, 전선"}, {"word": "cage", "meaning": "새장, 우리"}, {"word": "cake", "meaning": "케이크"}, {"word": "calculate", "meaning": "계산하다"}, {"word": "calculation", "meaning": "계산"}, {"word": "calculator", "meaning": "계산기"}, {"word": "calendar", "meaning": "달력"}, {"word": "call", "meaning": "전화하다, 부르다, 통화"}, {"word": "calm", "meaning": "차분한, 진정시키다"}, {"word": "camel", "meaning": "낙타"}, {"word": "camera", "meaning": "카메라"}, {"word": "camp", "meaning": "캠프, 야영하다"}, {"word": "campaign", "meaning": "캠페인, 운동"}, {"word": "campus", "meaning": "캠퍼스, 교정"}, {"word": "can", "meaning": "~할 수 있다, 깡통"}, {"word": "canal", "meaning": "운하"}, {"word": "cancel", "meaning": "취소하다"}, {"word": "cancer", "meaning": "암"}, {"word": "candidate", "meaning": "후보자"}, {"word": "candle", "meaning": "양초"}, {"word": "candy", "meaning": "사탕"}, {"word": "cannon", "meaning": "대포"}, {"word": "canoe", "meaning": "카누"}, {"word": "canvas", "meaning": "캔버스, 천막"}, {"word": "cap", "meaning": "모자, 뚜껑"}, {"word": "capable", "meaning": "~할 능력이 있는"}, {"word": "capability", "meaning": "능력"}, {"word": "capacity", "meaning": "용량, 능력"}, {"word": "cape", "meaning": "망토, 곶"}, {"word": "capital", "meaning": "수도, 자본, 대문자, 주요한"}, {"word": "capitalism", "meaning": "자본주의"}, {"word": "captain", "meaning": "선장, 주장"}, {"word": "caption", "meaning": "자막, 설명"}, {"word": "capture", "meaning": "포획하다, 붙잡다"}, {"word": "car", "meaning": "자동차"}, {"word": "carbon", "meaning": "탄소"}, {"word": "card", "meaning": "카드"}, {"word": "cardboard", "meaning": "판지"}, {"word": "care", "meaning": "돌봄, 상관하다, 배려"}, {"word": "careful", "meaning": "조심스러운"}, {"word": "careless", "meaning": "부주의한"}, {"word": "career", "meaning": "경력, 직업"}, {"word": "cargo", "meaning": "화물"}, {"word": "carpenter", "meaning": "목수"}, {"word": "carpet", "meaning": "양단단자, 카펫"}, {"word": "carriage", "meaning": "마차, 탈것"}, {"word": "carrier", "meaning": "운송 회사, 운반기"}, {"word": "carrot", "meaning": "당근"}, {"word": "carry", "meaning": "나르다, 휴대하다"}, {"word": "cart", "meaning": "수레, 카트"}, {"word": "cartoon", "meaning": "만화"}, {"word": "carve", "meaning": "조각하다"}, {"word": "case", "meaning": "상자, 경우, 사건, 소송"}, {"word": "cash", "meaning": "현금"}, {"word": "cashier", "meaning": "계산원"}, {"word": "cassette", "meaning": "카세트"}, {"word": "cast", "meaning": "던지다, 배역을 맡기다"}, {"word": "caste", "meaning": "카스트 계급"}, {"word": "castle", "meaning": "성"}, {"word": "casual", "meaning": "격식 없는, 우연한"}, {"word": "cat", "meaning": "고양이"}, {"word": "catch", "meaning": "잡다"}, {"word": "cattle", "meaning": "소(의 무리)"}, {"word": "cause", "meaning": "원인, 야기하다"}, {"word": "caution", "meaning": "조심, 경고"}, {"word": "cautious", "meaning": "신중한"}, {"word": "cave", "meaning": "동굴"}, {"word": "cease", "meaning": "그만두다, 중지하다"}, {"word": "ceiling", "meaning": "천장"}, {"word": "celebrate", "meaning": "축하하다"}, {"word": "celebration", "meaning": "축하"}, {"word": "celebrity", "meaning": "명사, 연예인"}, {"word": "cell", "meaning": "세포, 작은 방, 전지"}, {"word": "cellar", "meaning": "지하 저장고"}, {"word": "cement", "meaning": "시멘트"}, {"word": "cemetery", "meaning": "공동묘지"}, {"word": "censor", "meaning": "검열관, 검열하다"}, {"word": "censorship", "meaning": "검열"}, {"word": "century", "meaning": "1세기, 100년"}, {"word": "cent", "meaning": "센트"}, {"word": "centigrade", "meaning": "섭씨의"}, {"word": "centimeter", "meaning": "센티미터"}, {"word": "center", "meaning": "중심, 중앙"}, {"word": "central", "meaning": "중앙의, 주요한"}, {"word": "ceramic", "meaning": "도자기"}, {"word": "cereal", "meaning": "시리얼, 곡물"}, {"word": "ceremony", "meaning": "의식, 식"}, {"word": "certain", "meaning": "확실한, 특정한"}, {"word": "certainly", "meaning": "틀림없이"}, {"word": "certainty", "meaning": "확실성"}, {"word": "certificate", "meaning": "증명서"}, {"word": "chain", "meaning": "사슬, 체인, 연쇄"}, {"word": "chair", "meaning": "의자"}, {"word": "chairman", "meaning": "의장, 회장"}, {"word": "chalk", "meaning": "분필"}, {"word": "challenge", "meaning": "도전, 도전하다"}, {"word": "chamber", "meaning": "방, 회의실"}, {"word": "champion", "meaning": "챔피언"}, {"word": "chance", "meaning": "기회, 가능성, 우연"}, {"word": "change", "meaning": "바꾸다, 변화, 거스름돈"}, {"word": "changeable", "meaning": "변하기 쉬운"}, {"word": "channel", "meaning": "채널, 경로"}, {"word": "chaos", "meaning": "혼돈, 카오스"}, {"word": "chaotic", "meaning": "혼돈 상태의"}, {"word": "chapel", "meaning": "예배당"}, {"word": "chapter", "meaning": "장, 챕터"}, {"word": "character", "meaning": "성격, 특징, 등장인물, 글자"}, {"word": "characteristic", "meaning": "특징, 특유의"}, {"word": "characterize", "meaning": "특징짓다"}, {"word": "charcoal", "meaning": "숯"}, {"word": "charge", "meaning": "요금, 책임, 충전하다, 기소하다"}, {"word": "charity", "meaning": "자선(단체)"}, {"word": "charitable", "meaning": "자선적인"}, {"word": "charm", "meaning": "매력"}, {"word": "charming", "meaning": "매력적인"}, {"word": "chart", "meaning": "도표, 차트"}, {"word": "chase", "meaning": "추적하다, 쫓고 쫓기다"}, {"word": "chat", "meaning": "채팅하다, 잡담"}, {"word": "cheap", "meaning": "값싼"}, {"word": "cheat", "meaning": "속이다, 부정행위를 하다"}, {"word": "check", "meaning": "확인하다, 수표, 점검"}, {"word": "cheek", "meaning": "뺨, 볼"}, {"word": "cheer", "meaning": "환호하다, 격려하다"}, {"word": "cheerful", "meaning": "쾌활한"}, {"word": "cheese", "meaning": "치즈"}, {"word": "chef", "meaning": "주방장, 요리사"}, {"word": "chemical", "meaning": "화학의, 화학 물질"}, {"word": "chemistry", "meaning": "화학"}, {"word": "chemist", "meaning": "화학자"}, {"word": "cherish", "meaning": "소중히 여기다"}, {"word": "cherry", "meaning": "체리, 버찌"}, {"word": "chess", "meaning": "체스"}, {"word": "chest", "meaning": "가슴, 큰 상자"}, {"word": "chew", "meaning": "씹다"}, {"word": "chicken", "meaning": "닭, 닭고기"}, {"word": "chief", "meaning": "주요한, 우두머리"}, {"word": "chiefly", "meaning": "주로"}, {"word": "child", "meaning": "아이, 어린이"}, {"word": "childhood", "meaning": "유년 시절"}, {"word": "childish", "meaning": "유치한"}, {"word": "childlike", "meaning": "아이 같은, 순진한"}, {"word": "chill", "meaning": "냉기, 한기"}, {"word": "chilly", "meaning": "쌀쌀한"}, {"word": "chimney", "meaning": "굴뚝"}, {"word": "chin", "meaning": "턱"}, {"word": "china", "meaning": "도자기"}, {"word": "chip", "meaning": "조각, 칩"}, {"word": "chocolate", "meaning": "초콜릿"}, {"word": "choice", "meaning": "선택"}, {"word": "choir", "meaning": "합창단"}, {"word": "choke", "meaning": "숨이 막히다, 질식시키다"}, {"word": "choose", "meaning": "선택하다, 고르다"}, {"word": "chop", "meaning": "자르다, 잘게 썰다"}, {"word": "chopsticks", "meaning": "젓가락"}, {"word": "chorus", "meaning": "후렴, 합창"}, {"word": "christ", "meaning": "그리스도"}, {"word": "christian", "meaning": "기독교도, 기독교의"}, {"word": "christianity", "meaning": "기독교"}, {"word": "christmas", "meaning": "크리스마스"}, {"word": "chronic", "meaning": "만성적인"}, {"word": "chronicle", "meaning": "연대기"}, {"word": "chronology", "meaning": "연대순 배열"}, {"word": "church", "meaning": "교회"}, {"word": "cigar", "meaning": "시가"}, {"word": "cigarette", "meaning": "담배"}, {"word": "cinema", "meaning": "영화관"}, {"word": "circle", "meaning": "원, 집단, 회전하다"}, {"word": "circular", "meaning": "원형의, 순환하는"}, {"word": "circulate", "meaning": "순환하다, 유포되다"}, {"word": "circulation", "meaning": "순환, 발행 부수"}, {"word": "circuit", "meaning": "순회, 회로"}, {"word": "circumstance", "meaning": "환경, 상황"}, {"word": "circus", "meaning": "서커스"}, {"word": "cite", "meaning": "인용하다"}, {"word": "citation", "meaning": "인용"}, {"word": "city", "meaning": "도시"}, {"word": "citizen", "meaning": "시민"}, {"word": "civil", "meaning": "시민의, 민간의"}, {"word": "civilian", "meaning": "민간인"}, {"word": "civilize", "meaning": "문명화하다"}, {"word": "civilization", "meaning": "문명"}, {"word": "claim", "meaning": "주장하다, 요구하다, 주장"}, {"word": "exclaim", "meaning": "외치다"}, {"word": "proclaim", "meaning": "선언하다"}, {"word": "clap", "meaning": "박수를 치다"}, {"word": "clarify", "meaning": "명확하게 하다"}, {"word": "clarity", "meaning": "명확성"}, {"word": "clash", "meaning": "충돌, 충돌하다"}, {"word": "clasp", "meaning": "움켜쥐다, 버클"}, {"word": "class", "meaning": "학급, 수업, 계층"}, {"word": "classroom", "meaning": "교실"}, {"word": "classic", "meaning": "고전적인, 명작"}, {"word": "classical", "meaning": "고전의, 클래식의"}, {"word": "classify", "meaning": "분류하다"}, {"word": "classification", "meaning": "분류"}, {"word": "clause", "meaning": "절, 조항"}, {"word": "claw", "meaning": "발톱"}, {"word": "clay", "meaning": "찰흙, 진흙"}, {"word": "clean", "meaning": "깨끗한, 청소하다"}, {"word": "cleaner", "meaning": "청소부, 세제"}, {"word": "cleanse", "meaning": "깨끗이 하다"}, {"word": "clear", "meaning": "맑은, 명확한, 치우다"}, {"word": "clearly", "meaning": "명확하게"}, {"word": "clerk", "meaning": "점원, 사무원"}, {"word": "clever", "meaning": "영리한, 똑똑한"}, {"word": "click", "meaning": "클릭하다"}, {"word": "client", "meaning": "의뢰인, 고객"}, {"word": "cliff", "meaning": "절벽"}, {"word": "climate", "meaning": "기후"}, {"word": "climb", "meaning": "오르다, 등반"}, {"word": "climber", "meaning": "등반가"}, {"word": "cling", "meaning": "매달리다, 집착하다"}, {"word": "clinic", "meaning": "진료소, 병원"}, {"word": "clinical", "meaning": "임상의"}, {"word": "clip", "meaning": "클립, 자르다"}, {"word": "cloak", "meaning": "망토, 가리다"}, {"word": "clock", "meaning": "시계"}, {"word": "clockwise", "meaning": "시계 방향으로"}, {"word": "counterclockwise", "meaning": "시계 반대 방향으로"}, {"word": "close", "meaning": "닫다, 가까운, 친밀한"}, {"word": "closely", "meaning": "면밀히, 밀접하게"}, {"word": "closet", "meaning": "벽장"}, {"word": "cloth", "meaning": "직물, 천"}, {"word": "clothes", "meaning": "옷, 의복"}, {"word": "clothing", "meaning": "의류"}, {"word": "cloud", "meaning": "구름"}, {"word": "cloudy", "meaning": "흐린"}, {"word": "clown", "meaning": "광대"}, {"word": "club", "meaning": "클럽, 동호회"}, {"word": "clue", "meaning": "단서, 힌트"}, {"word": "cluster", "meaning": "무리, 송이"}, {"word": "coach", "meaning": "코치, 마차, 지도하다"}, {"word": "coal", "meaning": "석탄"}, {"word": "coarse", "meaning": "거친, 조잡한"}, {"word": "coast", "meaning": "해안"}, {"word": "coastal", "meaning": "해안의"}, {"word": "coat", "meaning": "코트, 외투, 칠하다"}, {"word": "cock", "meaning": "수탉"}, {"word": "code", "meaning": "암호, 법전, 코드"}, {"word": "coffee", "meaning": "커피"}, {"word": "coffin", "meaning": "관"}, {"word": "coin", "meaning": "동전, 주조하다"}, {"word": "coincide", "meaning": "동시에 일어나다, 일치하다"}, {"word": "coincidence", "meaning": "우연의 일치"}, {"word": "cold", "meaning": "추운, 감기"}, {"word": "collaborate", "meaning": "협력하다"}, {"word": "collaboration", "meaning": "협력"}, {"word": "collapse", "meaning": "무너지다, 붕괴"}, {"word": "collar", "meaning": "깃, 칼라"}, {"word": "colleague", "meaning": "동료"}, {"word": "collect", "meaning": "수집하다, 모으다"}, {"word": "collection", "meaning": "수집(품)"}, {"word": "collective", "meaning": "집단적인"}, {"word": "collector", "meaning": "수집가"}, {"word": "college", "meaning": "대학, 단과대학"}, {"word": "collide", "meaning": "충돌하다"}, {"word": "collision", "meaning": "충돌"}, {"word": "colony", "meaning": "식민지, 집단"}, {"word": "colonial", "meaning": "식민지의"}, {"word": "colonize", "meaning": "식민지화하다"}, {"word": "color", "meaning": "색, 색깔"}, {"word": "colorful", "meaning": "다채로운"}, {"word": "colt", "meaning": "망아지"}, {"word": "column", "meaning": "기둥, 열, 칼럼"}, {"word": "combine", "meaning": "결합하다"}, {"word": "combination", "meaning": "결합, 조합"}, {"word": "come", "meaning": "오다, 되다"}, {"word": "comedy", "meaning": "코미디, 희극"}, {"word": "comic", "meaning": "만화의, 웃기는"}, {"word": "comet", "meaning": "혜성"}, {"word": "comfort", "meaning": "위안, 안락, 위로하다"}, {"word": "comfortable", "meaning": "편안한"}, {"word": "comic", "meaning": "만화책"}, {"word": "command", "meaning": "명령, 지휘, 명령하다"}, {"word": "commander", "meaning": "지휘관"}, {"word": "commemorate", "meaning": "기념하다"}, {"word": "commence", "meaning": "시작하다"}, {"word": "commend", "meaning": "칭찬하다"}, {"word": "comment", "meaning": "논평, 주해, 의견을 말하다"}, {"word": "commerce", "meaning": "상업, 무역"}, {"word": "commercial", "meaning": "상업의, 광고 방송"}, {"word": "commit", "meaning": "(죄를) 범하다, 약속하다, 전념하다"}, {"word": "commitment", "meaning": "약속, 전념, 헌신"}, {"word": "committee", "meaning": "위원회"}, {"word": "commodity", "meaning": "상품, 물품"}, {"word": "common", "meaning": "공통의, 흔한, 보통의"}, {"word": "commonly", "meaning": "흔히, 보통"}, {"word": "commonplace", "meaning": "아주 흔한"}, {"word": "communicate", "meaning": "의사소통하다, 전달하다"}, {"word": "communication", "meaning": "의사소통, 통신"}, {"word": "community", "meaning": "지역사회, 공동체"}, {"word": "commute", "meaning": "통근하다"}, {"word": "commuter", "meaning": "통근자"}, {"word": "compact", "meaning": "소형의, 조밀한"}, {"word": "companion", "meaning": "동반자, 친구"}, {"word": "company", "meaning": "회사, 동행, 함께 있음"}, {"word": "compare", "meaning": "비교하다, 비유하다"}, {"word": "comparison", "meaning": "비교"}, {"word": "comparable", "meaning": "비교할 만한"}, {"word": "comparative", "meaning": "비교의, 상대적인"}, {"word": "compartment", "meaning": "객실, 칸막이"}, {"word": "compass", "meaning": "나침반, 컴퍼스, 범위"}, {"word": "compassion", "meaning": "연민, 동정"}, {"word": "compassionate", "meaning": "동정하는"}, {"word": "compatible", "meaning": "양립 가능한, 호환되는"}, {"word": "compel", "meaning": "강요하다"}, {"word": "compensate", "meaning": "보상하다"}, {"word": "compensation", "meaning": "보상(금)"}, {"word": "compete", "meaning": "경쟁하다"}, {"word": "competition", "meaning": "경쟁(대회)"}, {"word": "competitive", "meaning": "경쟁적인, 경쟁력 있는"}, {"word": "competitor", "meaning": "경쟁자"}, {"word": "competent", "meaning": "유능한, 역량 있는"}, {"word": "competence", "meaning": "능력, 역량"}, {"word": "compile", "meaning": "엮다, 편집하다"}, {"word": "complain", "meaning": "불평하다"}, {"word": "complaint", "meaning": "불평, 항의"}, {"word": "complement", "meaning": "보완하다, 보어"}, {"word": "complimentary", "meaning": "보완적인"}, {"word": "complete", "meaning": "완전한, 완료하다"}, {"word": "completely", "meaning": "완전히"}, {"word": "completion", "meaning": "완료, 완성"}, {"word": "complex", "meaning": "복잡한, 복합 건물, 콤플렉스"}, {"word": "complexity", "meaning": "복잡성"}, {"word": "compliment", "meaning": "칭찬, 칭찬하다"}, {"word": "complimentary", "meaning": "칭찬하는, 무료의"}, {"word": "comply", "meaning": "(법을) 따르다, 준수하다"}, {"word": "compliance", "meaning": "준수"}, {"word": "component", "meaning": "구성 요소, 부품"}, {"word": "compose", "meaning": "구성하다, 작곡하다, 작문하다"}, {"word": "composition", "meaning": "구성, 작곡, 작문"}, {"word": "composer", "meaning": "작곡가"}, {"word": "compound", "meaning": "화합물, 복합의, 혼합하다"}, {"word": "comprehend", "meaning": "이해하다"}, {"word": "comprehension", "meaning": "이해(력)"}, {"word": "comprehensive", "meaning": "종합적인, 포괄적인"}, {"word": "compress", "meaning": "압축하다"}, {"word": "compromise", "meaning": "타협하다, 타협"}, {"word": "compulsory", "meaning": "의무적인, 강제적인"}, {"word": "compute", "meaning": "계산하다, 산출하다"}, {"word": "computer", "meaning": "컴퓨터"}, {"word": "comrade", "meaning": "동료, 동지"}, {"word": "conceal", "meaning": "감추다, 숨기다"}, {"word": "concede", "meaning": "인정하다, 양보하다"}, {"word": "conceive", "meaning": "품다, 생각하다, 임신하다"}, {"word": "concept", "meaning": "개념"}, {"word": "conception", "meaning": "개념, 임신"}, {"word": "concentrate", "meaning": "집중하다"}, {"word": "concentration", "meaning": "집중(도)"}, {"word": "concern", "meaning": "우려, 관심사, 걱정시키다, 관련되다"}, {"word": "concerned", "meaning": "걱정하는, 관련된"}, {"word": "concerning", "meaning": "~에 관한"}, {"word": "concert", "meaning": "콘서트, 음악회, 협조"}, {"word": "concession", "meaning": "양보, 양해"}, {"word": "concise", "meaning": "간결한"}, {"word": "conclude", "meaning": "결론을 내리다, 끝내다"}, {"word": "conclusion", "meaning": "결론, 결말"}, {"word": "conclusive", "meaning": "결정적인, 확실한"}, {"word": "concrete", "meaning": "구체적인, 콘크리트"}, {"word": "concur", "meaning": "동의하다, 동시에 일어나다"}, {"word": "condemn", "meaning": "비난하다, 선고하다"}, {"word": "condense", "meaning": "응축하다, 요약하다"}, {"word": "condition", "meaning": "상태, 조건"}, {"word": "conditional", "meaning": "조건부의"}, {"word": "conduct", "meaning": "수행하다, 지휘하다, 행동, 수행"}, {"word": "conductor", "meaning": "지휘자, 전도체"}, {"word": "cone", "meaning": "원뿔"}, {"word": "confer", "meaning": "상의하다, 수여하다"}, {"word": "conference", "meaning": "회의, 회담"}, {"word": "confess", "meaning": "고백하다, 자백하다"}, {"word": "confession", "meaning": "고백, 자백"}, {"word": "confide", "meaning": "신뢰하다, 털어놓다"}, {"word": "confidence", "meaning": "신뢰, 자신감"}, {"word": "confident", "meaning": "자신감 있는"}, {"word": "confidential", "meaning": "비밀의, 기밀의"}, {"word": "confine", "meaning": "한정하다, 가두다"}, {"word": "confirm", "meaning": "확인하다, 확정하다"}, {"word": "confirmation", "meaning": "확인"}, {"word": "conflict", "meaning": "갈등, 충돌, 대립하다"}, {"word": "conform", "meaning": "따르다, 순응하다"}, {"word": "confront", "meaning": "직면하다, 맞서다"}, {"word": "confrontation", "meaning": "대립, 직면"}, {"word": "confuse", "meaning": "혼란스럽게 하다"}, {"word": "confused", "meaning": "혼란스러워하는"}, {"word": "confusing", "meaning": "혼란스러운"}, {"word": "confusion", "meaning": "혼란"}, {"word": "congratulate", "meaning": "축하하다"}, {"word": "congratulation", "meaning": "축하"}, {"word": "congress", "meaning": "의회, 국회"}, {"word": "conjunction", "meaning": "결합, 접속사"}, {"word": "connect", "meaning": "연결하다"}, {"word": "connection", "meaning": "연결, 관계"}, {"word": "conquer", "meaning": "정복하다"}, {"word": "conqueror", "meaning": "정복자"}, {"word": "conquest", "meaning": "정복"}, {"word": "conscience", "meaning": "양심"}, {"word": "conscientious", "meaning": "양심적인"}, {"word": "conscious", "meaning": "의식하고 있는, 의식이 있는"}, {"word": "consciousness", "meaning": "의식"}, {"word": "subconscious", "meaning": "잠재의식"}, {"word": "consecutive", "meaning": "연속적인"}, {"word": "consent", "meaning": "동의하다, 동의"}, {"word": "consequence", "meaning": "결과, 중요성"}, {"word": "consequent", "meaning": "결과로서 일어나는"}, {"word": "consequently", "meaning": "결과적으로"}, {"word": "conserve", "meaning": "보존하다, 아끼다"}, {"word": "conservation", "meaning": "보존, 보호"}, {"word": "conservative", "meaning": "보수적인"}, {"word": "consider", "meaning": "고려하다, ~로 여기다"}, {"word": "considerable", "meaning": "상당한"}, {"word": "considerably", "meaning": "상당히"}, {"word": "considerate", "meaning": "사려 깊은, 배려하는"}, {"word": "consideration", "meaning": "고려, 배려"}, {"word": "considering", "meaning": "~을 고려하면"}, {"word": "consist", "meaning": "구성되다, 일치하다"}, {"word": "consistent", "meaning": "일관된"}, {"word": "console", "meaning": "위로하다"}, {"word": "consolation", "meaning": "위로"}, {"word": "consolidate", "meaning": "통합하다, 강화하다"}, {"word": "consonant", "meaning": "자음"}, {"word": "conspicuous", "meaning": "눈에 띄는"}, {"word": "conspire", "meaning": "공모하다"}, {"word": "constant", "meaning": "끊임없는, 변함없는"}, {"word": "constantly", "meaning": "끊임없이"}, {"word": "constitute", "meaning": "구성하다, 제정하다"}, {"word": "constitution", "meaning": "헌법, 구성, 체질"}, {"word": "constitutional", "meaning": "헌법의"}, {"word": "constrain", "meaning": "강요하다, 제약하다"}, {"word": "constraint", "meaning": "제약"}, {"word": "construct", "meaning": "건설하다, 구성하다"}, {"word": "construction", "meaning": "건설, 공사"}, {"word": "constructive", "meaning": "건설적인"}, {"word": "consult", "meaning": "상담하다, 진찰받다, 참고하다"}, {"word": "consultant", "meaning": "상담가, 컨설턴트"}, {"word": "consultation", "meaning": "상담, 협의"}, {"word": "consume", "meaning": "소비하다, 먹다"}, {"word": "consumer", "meaning": "소비자"}, {"word": "consumption", "meaning": "소비"}, {"word": "contact", "meaning": "접촉, 연락, 연락하다"}, {"word": "contain", "meaning": "포함하다"}, {"word": "container", "meaning": "용기, 컨테이너"}, {"word": "contaminate", "meaning": "오염시키다"}, {"word": "contamination", "meaning": "오염"}, {"word": "contemplate", "meaning": "심사숙고하다"}, {"word": "contemporary", "meaning": "현대의, 동시대의"}, {"word": "contend", "meaning": "주장하다, 다투다"}, {"word": "content", "meaning": "내용물, 목차, 만족하는"}, {"word": "contentment", "meaning": "만족"}, {"word": "contest", "meaning": "대회, 시합, 경쟁하다"}, {"word": "contestant", "meaning": "참가자"}, {"word": "context", "meaning": "맥락, 문맥"}, {"word": "continent", "meaning": "대륙"}, {"word": "continental", "meaning": "대륙의"}, {"word": "continue", "meaning": "계속하다, 이어지다"}, {"word": "continuous", "meaning": "끊임없는, 연속적인"}, {"word": "continual", "meaning": "반복되는, 끊임없는"}, {"word": "contract", "meaning": "계약, 수축하다"}, {"word": "contractor", "meaning": "계약자, 도급업자"}, {"word": "contradict", "meaning": "반박하다, 모순되다"}, {"word": "contradiction", "meaning": "모순, 반박"}, {"word": "contradictory", "meaning": "모순되는"}, {"word": "contrary", "meaning": "반대의, 반대"}, {"word": "contrast", "meaning": "대조, 대조를 이루다"}, {"word": "contribute", "meaning": "기부하다, 기여하다"}, {"word": "contribution", "meaning": "기부(금), 기여"}, {"word": "control", "meaning": "통제하다, 조절하다, 지배"}, {"word": "controversy", "meaning": "논란, 논쟁"}, {"word": "controversial", "meaning": "논란이 많은"}, {"word": "convene", "meaning": "소집하다"}, {"word": "convenient", "meaning": "편리한"}, {"word": "convenience", "meaning": "편의, 편리"}, {"word": "convention", "meaning": "관습, 총회, 조약"}, {"word": "conventional", "meaning": "관습적인, 전통적인"}, {"word": "converge", "meaning": "모여들다, 집중되다"}, {"word": "conversation", "meaning": "대화"}, {"word": "converse", "meaning": "대화하다, 반대의"}, {"word": "convert", "meaning": "전환하다, 개종하다"}, {"word": "conversion", "meaning": "전환, 개종"}, {"word": "convey", "meaning": "전달하다, 운반하다"}, {"word": "convict", "meaning": "유죄를 선고하다, 죄수"}, {"word": "conviction", "meaning": "유죄 선고, 신념"}, {"word": "convince", "meaning": "납득시키다, 확신시키다"}, {"word": "convinced", "meaning": "확신하는"}, {"word": "convincing", "meaning": "설득력 있는"}, {"word": "cook", "meaning": "요리하다, 요리사"}, {"word": "cooker", "meaning": "요리 도구"}, {"word": "cookie", "meaning": "쿠키"}, {"word": "cool", "meaning": "시원한, 멋진, 식히다"}, {"word": "cooperate", "meaning": "협력하다"}, {"word": "cooperation", "meaning": "협력"}, {"word": "cooperative", "meaning": "협력적인"}, {"word": "coordinate", "meaning": "조정하다, 조직하다, 좌표"}, {"word": "cope", "meaning": "대처하다, 맞서다"}, {"word": "copper", "meaning": "구리, 동"}, {"word": "copy", "meaning": "복사, 사본, 복사하다"}, {"word": "copyright", "meaning": "저작권"}, {"word": "cord", "meaning": "끈, 코드"}, {"word": "core", "meaning": "핵심, 핵심의"}, {"word": "corn", "meaning": "옥수수, 곡물"}, {"word": "corner", "meaning": "구석, 모퉁이"}, {"word": "corporation", "meaning": "기업, 법인"}, {"word": "corporate", "meaning": "기업의, 공동의"}, {"word": "corps", "meaning": "군단, 단체"}, {"word": "corpse", "meaning": "시체, 송장"}, {"word": "correct", "meaning": "맞는, 정확한, 수정하다"}, {"word": "correction", "meaning": "수정, 정정"}, {"word": "correctly", "meaning": "올바르게"}, {"word": "correlate", "meaning": "상관관계가 있다"}, {"word": "correspond", "meaning": "일치하다, 편지를 주고받다"}, {"word": "correspondence", "meaning": "서신 왕래, 일치"}, {"word": "correspondent", "meaning": "통신원, 특파원"}, {"word": "corridor", "meaning": "복도"}, {"word": "corrupt", "meaning": "부패한, 타락시키다"}, {"word": "corruption", "meaning": "부패, 타락"}, {"word": "cosmetic", "meaning": "화장품, 미용의"}, {"word": "cosmic", "meaning": "우주의"}, {"word": "cosmos", "meaning": "우주"}, {"word": "cost", "meaning": "비용, 비용이 들다"}, {"word": "costly", "meaning": "값비싼"}, {"word": "costume", "meaning": "의상, 복장"}, {"word": "cottage", "meaning": "오두막집, 시골집"}, {"word": "cotton", "meaning": "면, 솜, 면직물"}, {"word": "couch", "meaning": "소파"}, {"word": "cough", "meaning": "기침, 기침하다"}, {"word": "council", "meaning": "의회, 위원회"}, {"word": "counsel", "meaning": "상담, 조언, 조언하다"}, {"word": "counselor", "meaning": "상담사"}, {"word": "count", "meaning": "세다, 계산하다, 중요하다"}, {"word": "counter", "meaning": "계산대, 반대의, 반격하다"}, {"word": "countless", "meaning": "무수한, 셀 수 없는"}, {"word": "country", "meaning": "나라, 국가, 시골"}, {"word": "countryside", "meaning": "시골, 지방"}, {"word": "county", "meaning": "자치주, 군"}, {"word": "couple", "meaning": "커플, 두 개, 부부"}, {"word": "courage", "meaning": "용기"}, {"word": "courageous", "meaning": "용기 있는"}, {"word": "encourage", "meaning": "격려하다, 부추기다"}, {"word": "discourage", "meaning": "낙담시키다, 막다"}, {"word": "course", "meaning": "강좌, 과정, 항로"}, {"word": "court", "meaning": "법정, 코트, 궁전"}, {"word": "courtesy", "meaning": "예의, 공손"}, {"word": "cousin", "meaning": "사촌"}, {"word": "cover", "meaning": "덮다, 덮개, 다루다"}, {"word": "coverage", "meaning": "보도, 범위"}, {"word": "cow", "meaning": "암소"}, {"word": "coward", "meaning": "겁쟁이"}, {"word": "crab", "meaning": "게"}, {"word": "crack", "meaning": "갈라진 틈, 깨지다"}, {"word": "cradle", "meaning": "요람"}, {"word": "craft", "meaning": "공예, 기술, 선박"}, {"word": "crash", "meaning": "충돌, 추락, 충돌하다"}, {"word": "crater", "meaning": "분화구"}, {"word": "crawl", "meaning": "기어가다"}, {"word": "crazy", "meaning": "미친, 열광적인"}, {"word": "cream", "meaning": "크림"}, {"word": "create", "meaning": "창조하다, 만들다"}, {"word": "creation", "meaning": "창조(물)"}, {"word": "creative", "meaning": "창의적인"}, {"word": "creature", "meaning": "생물, 피조물"}, {"word": "creator", "meaning": "창조자"}, {"word": "creature", "meaning": "생명체"}, {"word": "credibility", "meaning": "신뢰성"}, {"word": "credit", "meaning": "신용, 학점, 입금하다"}, {"word": "creed", "meaning": "신조, 교리"}, {"word": "creek", "meaning": "시내, 개울"}, {"word": "creep", "meaning": "살금살금 기어가다"}, {"word": "crew", "meaning": "승무원, 팀"}, {"word": "cricket", "meaning": "크리켓, 귀뚜라미"}, {"word": "crime", "meaning": "범죄"}, {"word": "criminal", "meaning": "범죄자, 범죄의"}, {"word": "crisis", "meaning": "위기"}, {"word": "crisp", "meaning": "바삭바삭한"}, {"word": "criterion", "meaning": "기준"}, {"word": "criteria", "meaning": "기준들"}, {"word": "critic", "meaning": "비평가, 평론가"}, {"word": "critical", "meaning": "비판적인, 결정적인, 위태로운"}, {"word": "criticism", "meaning": "비판, 비평"}, {"word": "criticize", "meaning": "비판하다, 비평하다"}, {"word": "crop", "meaning": "농작물, 수확량"}, {"word": "cross", "meaning": "건너다, 십자가, 가로지르다"}, {"word": "crossing", "meaning": "횡단보도, 교차점"}, {"word": "crossroad", "meaning": "교차로"}, {"word": "crow", "meaning": "까마귀"}, {"word": "crowd", "meaning": "군중, 무리, 가득 메우다"}, {"word": "crowded", "meaning": "붐비는"}, {"word": "crown", "meaning": "왕관"}, {"word": "crucial", "meaning": "중대한, 결정적인"}, {"word": "crude", "meaning": "원유, 대충 만든, 상스러운"}, {"word": "cruel", "meaning": "잔인한"}, {"word": "cruelty", "meaning": "잔인함"}, {"word": "cruise", "meaning": "유람선 여행, 순항하다"}, {"word": "crush", "meaning": "으깨다, 진압하다"}, {"word": "cry", "meaning": "울다, 외치다"}, {"word": "crystal", "meaning": "수정, 결정"}, {"word": "cube", "meaning": "정육면체"}, {"word": "cuckoo", "meaning": "뻐꾸기"}, {"word": "cucumber", "meaning": "오이"}, {"word": "cue", "meaning": "신호, 단서"}, {"word": "cultivate", "meaning": "경작하다, 재배하다, 기르다"}, {"word": "cultivation", "meaning": "경작, 재배"}, {"word": "culture", "meaning": "문화"}, {"word": "cultural", "meaning": "문화의"}, {"word": "cunning", "meaning": "교활한, 정교한"}, {"word": "cup", "meaning": "컵, 잔"}, {"word": "board", "meaning": "찬장"}, {"word": "cure", "meaning": "치료하다, 치료법"}, {"word": "curable", "meaning": "치료할 수 있는"}, {"word": "curious", "meaning": "호기심이 많은"}, {"word": "curiosity", "meaning": "호기심"}, {"word": "curl", "meaning": "곱슬하게 하다, 곱슬머리"}, {"word": "currency", "meaning": "통화, 화폐"}, {"word": "current", "meaning": "현재의, 흐름, 해류, 전류"}, {"word": "currently", "meaning": "현재"}, {"word": "curriculum", "meaning": "교육과정"}, {"word": "curse", "meaning": "저주, 욕설, 저주하다"}, {"word": "curtain", "meaning": "커튼, 막"}, {"word": "curve", "meaning": "곡선, 커브"}, {"word": "cushion", "meaning": "쿠션, 방석"}, {"word": "custody", "meaning": "양육권, 구금"}, {"word": "custom", "meaning": "관습, 풍습, 세관"}, {"word": "customs", "meaning": "세관, 관세"}, {"word": "customer", "meaning": "고객"}, {"word": "customary", "meaning": "관습적인"}, {"word": "cut", "meaning": "자르다, 베이다"}, {"word": "cute", "meaning": "귀여운"}, {"word": "cynic", "meaning": "냉소주의자"}, {"word": "cynical", "meaning": "냉소적인"}, {"word": "dairy", "meaning": "낙농장의, 유제품의"}, {"word": "dam", "meaning": "댐"}, {"word": "damage", "meaning": "손상, 피해, 손상을 입히다"}, {"word": "damn", "meaning": "비난하다, 욕하다"}, {"word": "damp", "meaning": "축축한, 습기 찬"}, {"word": "dance", "meaning": "춤, 춤추다"}, {"word": "dancer", "meaning": "무용수"}, {"word": "danger", "meaning": "위험"}, {"word": "dangerous", "meaning": "위험한"}, {"word": "dare", "meaning": "감히 ~하다"}, {"word": "dark", "meaning": "어두운, 어둠"}, {"word": "darken", "meaning": "어둡게 하다"}, {"word": "darkness", "meaning": "어둠"}, {"word": "darling", "meaning": "가장 사랑하는 사람"}, {"word": "dart", "meaning": "화살, 쏜살같이 달리다"}, {"word": "dash", "meaning": "돌진하다, 돌진"}, {"word": "data", "meaning": "데이터, 자료"}, {"word": "date", "meaning": "날짜, 데이트, 날짜를 적다"}, {"word": "daughter", "meaning": "딸"}, {"word": "dawn", "meaning": "새벽, 동이 트다"}, {"word": "day", "meaning": "날, 하루, 낮"}, {"word": "daily", "meaning": "매일의, 매일"}, {"word": "daylight", "meaning": "낮 시간, 햇빛"}, {"word": "daytime", "meaning": "낮, 주간"}, {"word": "dead", "meaning": "죽은"}, {"word": "deadly", "meaning": "치명적인"}, {"word": "deaf", "meaning": "귀가 먹은"}, {"word": "deal", "meaning": "다루다, 거래하다, 거래"}, {"word": "dealer", "meaning": "상인, 딜러"}, {"word": "dear", "meaning": "친애하는, 비싼"}, {"word": "death", "meaning": "죽음"}, {"word": "debate", "meaning": "토론, 토론하다"}, {"word": "debt", "meaning": "빚, 부채"}, {"word": "debtor", "meaning": "채무자"}, {"word": "decade", "meaning": "10년"}, {"word": "decay", "meaning": "부패하다, 쇠퇴하다"}, {"word": "deceive", "meaning": "속이다"}, {"word": "deceit", "meaning": "속임수"}, {"word": "deception", "meaning": "속임수, 사기"}, {"word": "decent", "meaning": "괜찮은, 품위 있는"}, {"word": "decide", "meaning": "결정하다"}, {"word": "decision", "meaning": "결정"}, {"word": "decisive", "meaning": "결정적인"}, {"word": "deck", "meaning": "갑판"}, {"word": "declare", "meaning": "선언하다, 신고하다"}, {"word": "declaration", "meaning": "선언"}, {"word": "decline", "meaning": "거절하다, 감소하다, 감소"}, {"word": "decorate", "meaning": "장식하다"}, {"word": "decoration", "meaning": "장식"}, {"word": "decrease", "meaning": "감소하다, 감소"}, {"word": "decree", "meaning": "법령, 판결, 명하다"}, {"word": "dedicate", "meaning": "헌신하다, 바치다"}, {"word": "dedication", "meaning": "헌신"}, {"word": "deduct", "meaning": "공제하다, 빼다"}, {"word": "deduction", "meaning": "공제, 추론"}, {"word": "deed", "meaning": "행위, 행동"}, {"word": "deem", "meaning": "~로 여기다, 생각하다"}, {"word": "deep", "meaning": "깊은"}, {"word": "deepen", "meaning": "깊게 하다"}, {"word": "deeply", "meaning": "깊이"}, {"word": "deer", "meaning": "사슴"}, {"word": "defeat", "meaning": "패배시키다, 패배"}, {"word": "defect", "meaning": "결함, 결점"}, {"word": "defective", "meaning": "결함이 있는"}, {"word": "defend", "meaning": "방어하다, 변호하다"}, {"word": "defense", "meaning": "방어, 변호"}, {"word": "defendant", "meaning": "피고인"}, {"word": "defensive", "meaning": "방어적인"}, {"word": "defer", "meaning": "미루다, 연기하다, 경의를 표하다"}, {"word": "defy", "meaning": "반대하다, 거역하다"}, {"word": "deficit", "meaning": "적자, 부족액"}, {"word": "define", "meaning": "정의하다, 한정하다"}, {"word": "definition", "meaning": "정의"}, {"word": "definite", "meaning": "명확한, 확실한"}, {"word": "definitely", "meaning": "절대로, 분명히"}, {"word": "deform", "meaning": "변형시키다"}, {"word": "deformity", "meaning": "변형, 기형"}, {"word": "defraud", "meaning": "사취하다, 속여 빼앗다"}, {"word": "defy", "meaning": "거역하다, 반항하다"}, {"word": "degenerate", "meaning": "악화되다, 퇴화하다"}, {"word": "degrade", "meaning": "비하하다, 품위를 떨어뜨리다"}, {"word": "degree", "meaning": "도, 정도, 학위"}, {"word": "delay", "meaning": "미루다, 연기하다, 지연"}, {"word": "delegate", "meaning": "대표자, 위임하다"}, {"word": "delegation", "meaning": "대표단"}, {"word": "delete", "meaning": "삭제하다"}, {"word": "deliberate", "meaning": "고의적인, 신중한"}, {"word": "deliberately", "meaning": "고의로, 신중하게"}, {"word": "delicate", "meaning": "섬세한, 정교한, 취약한"}, {"word": "delicious", "meaning": "맛있는"}, {"word": "delight", "meaning": "기쁨, 즐겁게 하다"}, {"word": "delighted", "meaning": "기뻐하는"}, {"word": "delightful", "meaning": "기쁜, 즐거운"}, {"word": "deliver", "meaning": "배달하다, 연설하다"}, {"word": "delivery", "meaning": "배달, 출산"}, {"word": "delude", "meaning": "속이다, 착각하게 하다"}, {"word": "delusion", "meaning": "망상, 착각"}, {"word": "demand", "meaning": "요구하다, 수요"}, {"word": "demanding", "meaning": "요구가 많은, 힘든"}, {"word": "democracy", "meaning": "민주주의"}, {"word": "democrat", "meaning": "민주주의자"}, {"word": "democratic", "meaning": "민주적인"}, {"word": "demolish", "meaning": "철거하다, 무너뜨리다"}, {"word": "demonstrate", "meaning": "입증하다, 시위하다, 설명하다"}, {"word": "demonstration", "meaning": "설명, 시위"}, {"word": "denounce", "meaning": "맹렬히 비난하다"}, {"word": "dense", "meaning": "빽빽한, 밀집한"}, {"word": "density", "meaning": "밀도"}, {"word": "dentist", "meaning": "치과의사"}, {"word": "deny", "meaning": "부인하다, 거절하다"}, {"word": "denial", "meaning": "부인, 거절"}, {"word": "depart", "meaning": "출발하다"}, {"word": "departure", "meaning": "출발"}, {"word": "department", "meaning": "부서, 학과"}, {"word": "depend", "meaning": "의존하다, ~에 달려 있다"}, {"word": "dependent", "meaning": "의존하는"}, {"word": "dependence", "meaning": "의존"}, {"word": "independence", "meaning": "독립"}, {"word": "independent", "meaning": "독립적인"}, {"word": "depict", "meaning": "묘사하다, 그리다"}, {"word": "deplore", "meaning": "한탄하다, 비판하다"}, {"word": "deposit", "meaning": "예금하다, 보증금, 예금"}, {"word": "depress", "meaning": "우울하게 하다, 낙담시키다"}, {"word": "depressed", "meaning": "우울한"}, {"word": "depression", "meaning": "우울증, 불황"}, {"word": "deprive", "meaning": "박탈하다, 빼앗다"}, {"word": "depth", "meaning": "깊이"}, {"word": "deputy", "meaning": "대리인, 부-"}, {"word": "derive", "meaning": "끌어내다, 유래하다"}, {"word": "descend", "meaning": "내려가다"}, {"word": "descendant", "meaning": "자손, 후손"}, {"word": "descent", "meaning": "하강, 혈통"}, {"word": "describe", "meaning": "묘사하다, 설명하다"}, {"word": "description", "meaning": "묘사, 설명"}, {"word": "descriptive", "meaning": "묘사적인"}, {"word": "desert", "meaning": "사막, 버리다"}, {"word": "deserve", "meaning": "~할 자격이 있다"}, {"word": "design", "meaning": "디자인하다, 설계하다, 디자인"}, {"word": "designer", "meaning": "디자이너"}, {"word": "designate", "meaning": "지정하다, 지명하다"}, {"word": "desire", "meaning": "바라다, 욕망"}, {"word": "desirable", "meaning": "바람직한"}, {"word": "desk", "meaning": "책상"}, {"word": "desolate", "meaning": "황량한, 적막한"}, {"word": "despair", "meaning": "절망, 절망하다"}, {"word": "desperate", "meaning": "필사적인, 절망적인"}, {"word": "desperately", "meaning": "필사적으로"}, {"word": "despise", "meaning": "경멸하다"}, {"word": "despite", "meaning": "~에도 불구하고"}, {"word": "dessert", "meaning": "디저트, 후식"}, {"word": "destine", "meaning": "운명 짓다"}, {"word": "destination", "meaning": "목적지"}, {"word": "destiny", "meaning": "운명"}, {"word": "destroy", "meaning": "파괴하다"}, {"word": "destruction", "meaning": "파괴"}, {"word": "destructive", "meaning": "파괴적인"}, {"word": "detach", "meaning": "떼어내다, 분리하다"}, {"word": "detail", "meaning": "세부 사항, 상세히 말하다"}, {"word": "detailed", "meaning": "상세한"}, {"word": "detain", "meaning": "구금하다, 지체하게 하다"}, {"word": "detect", "meaning": "감지하다, 발견하다"}, {"word": "detective", "meaning": "탐정, 형사"}, {"word": "deter", "meaning": "단념시키다, 막다"}, {"word": "detergent", "meaning": "세제"}, {"word": "deteriorate", "meaning": "악화되다"}, {"word": "determine", "meaning": "결정하다, 알아내다"}, {"word": "determination", "meaning": "결정, 결단력"}, {"word": "determined", "meaning": "단호한"}, {"word": "detest", "meaning": "혐오하다"}, {"word": "devastate", "meaning": "황폐화시키다"}, {"word": "develop", "meaning": "발전하다, 개발하다"}, {"word": "development", "meaning": "발전, 개발"}, {"word": "deviate", "meaning": "벗어나다, 일탈하다"}, {"word": "device", "meaning": "장치, 기기"}, {"word": "devise", "meaning": "고안하다"}, {"word": "devil", "meaning": "악마"}, {"word": "devote", "meaning": "헌신하다, 바치다"}, {"word": "devoted", "meaning": "헌신적인"}, {"word": "devotion", "meaning": "헌신, 전념"}, {"word": "devour", "meaning": "집어삼키다, 게걸스럽게 먹다"}, {"word": "dew", "meaning": "이슬"}, {"word": "diagnose", "meaning": "진단하다"}, {"word": "diagnosis", "meaning": "진단"}, {"word": "diagram", "meaning": "도표, 다이어그램"}, {"word": "dial", "meaning": "다이얼, 전화를 걸다"}, {"word": "dialect", "meaning": "방언, 사투리"}, {"word": "dialogue", "meaning": "대화"}, {"word": "diameter", "meaning": "지름, 직경"}, {"word": "diamond", "meaning": "다이아몬드"}, {"word": "diary", "meaning": "일기"}, {"word": "dictate", "meaning": "받아쓰게 하다, 지시하다"}, {"word": "dictation", "meaning": "받아쓰기"}, {"word": "dictator", "meaning": "독재자"}, {"word": "dictionary", "meaning": "사전"}, {"word": "die", "meaning": "죽다"}, {"word": "diet", "meaning": "식단, 다이어트, 국회"}, {"word": "differ", "meaning": "다르다"}, {"word": "difference", "meaning": "차이"}, {"word": "different", "meaning": "다른"}, {"word": "differently", "meaning": "다르게"}, {"word": "differentiate", "meaning": "구별하다"}, {"word": "difficult", "meaning": "어려운"}, {"word": "difficulty", "meaning": "어려움, 고충"}, {"word": "diffuse", "meaning": "분산시키다, 널리 퍼진"}, {"word": "dig", "meaning": "파다"}, {"word": "digest", "meaning": "소화하다, 요약하다"}, {"word": "digestion", "meaning": "소화"}, {"word": "digital", "meaning": "디지털의"}, {"word": "dignity", "meaning": "존엄성, 품위"}, {"word": "dignify", "meaning": "위엄 있게 만들다"}, {"word": "dilemma", "meaning": "딜레마, 진퇴양난"}, {"word": "diligent", "meaning": "부지런한"}, {"word": "diligence", "meaning": "근면, 부지런함"}, {"word": "dilute", "meaning": "희석하다"}, {"word": "dim", "meaning": "어둑한, 흐릿한"}, {"word": "dimension", "meaning": "차원, 크기"}, {"word": "diminish", "meaning": "줄어들다, 축소하다"}, {"word": "dine", "meaning": "식사하다"}, {"word": "dinner", "meaning": "저녁 식사"}, {"word": "dining", "meaning": "식사"}, {"word": "dinosaur", "meaning": "공룡"}, {"word": "dip", "meaning": "살짝 담그다"}, {"word": "diploma", "meaning": "졸업장, 수료증"}, {"word": "diplomacy", "meaning": "외교"}, {"word": "diplomat", "meaning": "외교관"}, {"word": "diplomatic", "meaning": "외교의"}, {"word": "direct", "meaning": "직접적인, 지시하다, 감독하다"}, {"word": "direction", "meaning": "방향, 지시"}, {"word": "directly", "meaning": "직접, 곧바로"}, {"word": "director", "meaning": "감독, 이사"}, {"word": "directory", "meaning": "주소록, 디렉터리"}, {"word": "dirt", "meaning": "먼지, 흙"}, {"word": "dirty", "meaning": "더러운"}, {"word": "disability", "meaning": "장애, 무능"}, {"word": "disable", "meaning": "무력하게 하다"}, {"word": "disadvantage", "meaning": "불이익, 불리한 점"}, {"word": "disagree", "meaning": "동의하지 않다"}, {"word": "disagreement", "meaning": "불일치, 불화"}, {"word": "disappear", "meaning": "사라지다"}, {"word": "disappearance", "meaning": "실종, 사라짐"}, {"word": "disappoint", "meaning": "실망시키다"}, {"word": "disappointed", "meaning": "실망한"}, {"word": "disappointment", "meaning": "실망"}, {"word": "disapprove", "meaning": "반대하다, 못마땅해하다"}, {"word": "disaster", "meaning": "재난, 재앙"}, {"word": "disastrous", "meaning": "처참한, 재난의"}, {"word": "disc", "meaning": "디스크, 원반"}, {"word": "discard", "meaning": "버리다, 폐기하다"}, {"word": "discern", "meaning": "식별하다, 알아차리다"}, {"word": "discharge", "meaning": "방출하다, 해고하다, 퇴원시키다"}, {"word": "disciple", "meaning": "제자"}, {"word": "discipline", "meaning": "규율, 훈련, 학문 분과"}, {"word": "disclose", "meaning": "드러내다, 폭로하다"}, {"word": "disclosure", "meaning": "폭로"}, {"word": "discomfort", "meaning": "불편(함)"}, {"word": "disconnect", "meaning": "연결을 끊다"}, {"word": "discontent", "meaning": "불만"}, {"word": "discount", "meaning": "할인, 할인하다"}, {"word": "discourage", "meaning": "낙담시키다"}, {"word": "discourse", "meaning": "담론, 대화"}, {"word": "discover", "meaning": "발견하다"}, {"word": "discovery", "meaning": "발견"}, {"word": "discredit", "meaning": "신용을 떨어뜨리다"}, {"word": "discreet", "meaning": "신중한, 조심스러운"}, {"word": "discrepancy", "meaning": "불일치, 차이"}, {"word": "discriminate", "meaning": "차별하다, 식별하다"}, {"word": "discrimination", "meaning": "차별, 식별"}, {"word": "discuss", "meaning": "토론하다, 상의하다"}, {"word": "discussion", "meaning": "토론, 상의"}, {"word": "disdain", "meaning": "경멸하다, 경멸"}, {"word": "disease", "meaning": "질병"}, {"word": "disgrace", "meaning": "불명예, 수치"}, {"word": "disguise", "meaning": "변장하다, 숨기다, 변장"}, {"word": "disgust", "meaning": "혐오감, 혐오감을 주다"}, {"word": "disgusted", "meaning": "혐오감을 느끼는"}, {"word": "dish", "meaning": "접시, 요리"}, {"word": "dislike", "meaning": "싫어하다, 반감"}, {"word": "dismay", "meaning": "실망, 경악, 낙담시키다"}, {"word": "dismiss", "meaning": "해고하다, 묵살하다"}, {"word": "disorder", "meaning": "무질서, 장애"}, {"word": "dispatch", "meaning": "파견하다, 발송하다"}, {"word": "dispel", "meaning": "떨쳐버리다, 없애다"}, {"word": "dispense", "meaning": "분배하다, 조제하다"}, {"word": "disperse", "meaning": "흩어지다, 분산시키다"}, {"word": "displace", "meaning": "대체하다, 쫓아내다"}, {"word": "display", "meaning": "전시하다, 드러내다, 전시"}, {"word": "displease", "meaning": "불쾌하게 하다"}, {"word": "dispose", "meaning": "배치하다, 처분하다"}, {"word": "disposal", "meaning": "처분, 폐기"}, {"word": "disposition", "meaning": "기질, 배치"}, {"word": "dispute", "meaning": "분쟁, 논란, 반박하다"}, {"word": "disregard", "meaning": "무시하다, 무시"}, {"word": "disrupt", "meaning": "방해하다, 중단시키다"}, {"word": "dissatisfy", "meaning": "불만을 품게 하다"}, {"word": "dissect", "meaning": "해부하다, 분석하다"}, {"word": "disseminate", "meaning": "퍼뜨리다, 전파하다"}, {"word": "dissent", "meaning": "반대, 반대하다"}, {"word": "dissolve", "meaning": "녹이다, 해산하다"}, {"word": "distance", "meaning": "거리"}, {"word": "distant", "meaning": "먼"}, {"word": "distaste", "meaning": "불쾌감, 혐오"}, {"word": "distend", "meaning": "팽창하다"}, {"word": "distinct", "meaning": "뚜렷한, 별개의"}, {"word": "distinction", "meaning": "차이, 구별, 탁월함"}, {"word": "distinctive", "meaning": "독특한, 구별되는"}, {"word": "distinguish", "meaning": "구별하다, 식별하다"}, {"word": "distinguished", "meaning": "유명한, 저명한"}, {"word": "distort", "meaning": "왜곡하다"}, {"word": "distortion", "meaning": "왜곡"}, {"word": "distract", "meaning": "산만하게 하다"}, {"word": "distraction", "meaning": "집중을 방해하는 것, 오락"}, {"word": "distress", "meaning": "고통, 괴롭히다"}, {"word": "distribute", "meaning": "분배하다, 유통하다"}, {"word": "distribution", "meaning": "분배, 유통"}, {"word": "district", "meaning": "구역, 지역"}, {"word": "distrust", "meaning": "불신, 의심하다"}, {"word": "disturb", "meaning": "방해하다"}, {"word": "disturbance", "meaning": "방해, 소란"}, {"word": "ditch", "meaning": "배수로, 도랑"}, {"word": "dive", "meaning": "다이빙하다, 뛰어들다"}, {"word": "diver", "meaning": "다이버"}, {"word": "diverge", "meaning": "갈라지다, 나뉘다"}, {"word": "diverse", "meaning": "다양한"}, {"word": "diversity", "meaning": "다양성"}, {"word": "diversify", "meaning": "다양화하다"}, {"word": "divert", "meaning": "방향을 바꾸다, 전환하다"}, {"word": "divide", "meaning": "나누다"}, {"word": "division", "meaning": "분할, 나눗셈, 부서"}, {"word": "divine", "meaning": "신성한"}, {"word": "divorce", "meaning": "이혼, 이혼하다"}, {"word": "dizzy", "meaning": "어지러운"}, {"word": "do", "meaning": "하다, 충분하다"}, {"word": "dock", "meaning": "부두, 선창"}, {"word": "doctor", "meaning": "의사, 박사"}, {"word": "doctrine", "meaning": "교리, 원칙"}, {"word": "document", "meaning": "문서, 서류"}, {"word": "documentary", "meaning": "다큐멘터리"}, {"word": "dog", "meaning": "개"}, {"word": "doll", "meaning": "인형"}, {"word": "dollar", "meaning": "달러"}, {"word": "dolphin", "meaning": "돌고래"}, {"word": "domain", "meaning": "영역, 영토"}, {"word": "domestic", "meaning": "국내의, 가정의, 길들여진"}, {"word": "dominate", "meaning": "지배하다, 우세하다"}, {"word": "dominant", "meaning": "지배적인, 우세한"}, {"word": "domination", "meaning": "지배"}, {"word": "donate", "meaning": "기부하다, 기증하다"}, {"word": "donation", "meaning": "기부, 기증"}, {"word": "donor", "meaning": "기부자, 기증자"}, {"word": "donkey", "meaning": "당나귀"}, {"word": "doom", "meaning": "비운, 파멸, 파멸을 맞게 하다"}, {"word": "door", "meaning": "문"}, {"word": "doorway", "meaning": "출입구"}, {"word": "dose", "meaning": "복용량, 투여하다"}, {"word": "dot", "meaning": "점"}, {"word": "double", "meaning": "두 배의, 두 배로 하다"}, {"word": "doubt", "meaning": "의심, 의심하다"}, {"word": "doubtful", "meaning": "의심스러운"}, {"word": "dough", "meaning": "밀가루 반죽"}, {"word": "dove", "meaning": "비둘기"}, {"word": "down", "meaning": "아래로"}, {"word": "downstairs", "meaning": "아래층으로, 아래층"}, {"word": "downtown", "meaning": "시내의, 시내 중심가"}, {"word": "downward", "meaning": "하향의, 아래쪽으로"}, {"word": "doze", "meaning": "깜빡 졸다"}, {"word": "dozen", "meaning": "다스, 12개"}, {"word": "draft", "meaning": "초안, 초고, 초안을 작성하다"}, {"word": "drag", "meaning": "끌다, 끌고 가다"}, {"word": "dragon", "meaning": "용"}, {"word": "drain", "meaning": "배수하다, 물을 빼다"}, {"word": "drama", "meaning": "드라마, 연극"}, {"word": "dramatic", "meaning": "극적인"}, {"word": "dramatically", "meaning": "극적으로"}, {"word": "drastic", "meaning": "과감한, 급격한"}, {"word": "draw", "meaning": "그리다, 끌어당기다, 비기다"}, {"word": "drawer", "meaning": "서랍"}, {"word": "drawing", "meaning": "그림, 데생"}, {"word": "dread", "meaning": "두려워하다, 공포"}, {"word": "dreadful", "meaning": "무서운, 끔찍한"}, {"word": "dream", "meaning": "꿈, 꿈을 꾸다"}, {"word": "dress", "meaning": "드레스, 옷을 입다"}, {"word": "drift", "meaning": "표류하다, 이동, 표류"}, {"word": "drill", "meaning": "드릴, 훈련, 구멍을 뚫다, 훈련하다"}, {"word": "drink", "meaning": "마시다, 음료"}, {"word": "drip", "meaning": "뚝뚝 떨어지다"}, {"word": "drive", "meaning": "운전하다, 몰아가다, 운전"}, {"word": "driver", "meaning": "운전자"}, {"word": "driveway", "meaning": "진입로"}, {"word": "drop", "meaning": "떨어뜨리다, 떨어지다, 물방울"}, {"word": "drown", "meaning": "익사하다, 익사시키다"}, {"word": "drowsy", "meaning": "졸리는"}, {"word": "drug", "meaning": "약, 마약"}, {"word": "drum", "meaning": "드럼, 북"}, {"word": "dry", "meaning": "마른, 건조한, 말리다"}, {"word": "dryer", "meaning": "건조기"}, {"word": "dual", "meaning": "이중의, 두 개의"}, {"word": "dubious", "meaning": "의심스러운, 모호한"}, {"word": "duck", "meaning": "오리"}, {"word": "due", "meaning": "~하기로 되어 있는, 만기의, 지불해야 하는"}, {"word": "dull", "meaning": "지루한, 흐릿한, 무딘"}, {"word": "dumb", "meaning": "벙어리의, 바보 같은"}, {"word": "dump", "meaning": "내버리다, 쓰레기 더미"}, {"word": "duplicate", "meaning": "복사하다, 복사본"}, {"word": "durable", "meaning": "내구성이 있는, 오래가는"}, {"word": "duration", "meaning": "지속 시간, 기간"}, {"word": "during", "meaning": "~동안"}, {"word": "dusk", "meaning": "황혼, 땅거미"}, {"word": "dust", "meaning": "먼지, 먼지를 털다"}, {"word": "dusty", "meaning": "먼지 투성이의"}, {"word": "duty", "meaning": "의무, 직무, 관세"}, {"word": "dwarf", "meaning": "난쟁이"}, {"word": "dwell", "meaning": "살다, 거주하다"}, {"word": "dweller", "meaning": "거주자"}, {"word": "dwelling", "meaning": "주거, 주택"}, {"word": "dye", "meaning": "염료, 염색하다"}, {"word": "dynamic", "meaning": "역동적인"}, {"word": "dynasty", "meaning": "왕조"}, {"word": "each", "meaning": "각각의, 각각"}, {"word": "eager", "meaning": "열망하는, 간절히 바라는"}, {"word": "eagle", "meaning": "독수리"}, {"word": "ear", "meaning": "귀, 이삭"}, {"word": "early", "meaning": "이른, 일찍"}, {"word": "earn", "meaning": "(돈을) 벌다, 얻다"}, {"word": "earnings", "meaning": "소득, 수입"}, {"word": "earnest", "meaning": "진지한, 성실한"}, {"word": "earth", "meaning": "지구, 땅, 흙"}, {"word": "earthenware", "meaning": "토기, 도자기"}, {"word": "earthquake", "meaning": "지진"}, {"word": "ease", "meaning": "편안함, 완화시키다"}, {"word": "easy", "meaning": "쉬운"}, {"word": "easily", "meaning": "쉽게"}, {"word": "east", "meaning": "동쪽, 동쪽의"}, {"word": "eastern", "meaning": "동쪽의"}, {"word": "eat", "meaning": "먹다"}, {"word": "eccentric", "meaning": "괴짜의, 특이한"}, {"word": "echo", "meaning": "메아리, 울려 퍼지다"}, {"word": "eclipse", "meaning": "일식, 월식"}, {"word": "ecology", "meaning": "생태학, 생태계"}, {"word": "ecological", "meaning": "생태계의"}, {"word": "economy", "meaning": "경제, 절약"}, {"word": "economic", "meaning": "경제의"}, {"word": "economical", "meaning": "절약하는, 경제적인"}, {"word": "economics", "meaning": "경제학"}, {"word": "economist", "meaning": "경제학자"}, {"word": "edge", "meaning": "가장자리, 칼날"}, {"word": "edible", "meaning": "먹을 수 있는"}, {"word": "edit", "meaning": "편집하다"}, {"word": "edition", "meaning": "판, 에디션"}, {"word": "editor", "meaning": "편집자"}, {"word": "editorial", "meaning": "사설, 편집의"}, {"word": "educate", "meaning": "교육하다"}, {"word": "education", "meaning": "교육"}, {"word": "educational", "meaning": "교육적인"}, {"word": "educator", "meaning": "교육자"}, {"word": "eel", "meaning": "장어"}, {"word": "effect", "meaning": "효과, 결과, 영향"}, {"word": "effective", "meaning": "효과적인"}, {"word": "effectively", "meaning": "효과적으로"}, {"word": "efficiency", "meaning": "효율성"}, {"word": "efficient", "meaning": "효율적인"}, {"word": "effort", "meaning": "노력"}, {"word": "egg", "meaning": "달걀, 알"}, {"word": "ego", "meaning": "자아"}, {"word": "eight", "meaning": "여덟"}, {"word": "eighteen", "meaning": "열여덟"}, {"word": "eighty", "meaning": "여든"}, {"word": "either", "meaning": "양쪽 중 하나"}, {"word": "elaborate", "meaning": "정교한, 상세히 설명하다"}, {"word": "elastic", "meaning": "탄력 있는, 고무줄"}, {"word": "elbow", "meaning": "팔꿈치"}, {"word": "elder", "meaning": "나이가 더 많은, 연장자"}, {"word": "elderly", "meaning": "연세가 드신"}, {"word": "eldest", "meaning": "가장 나이가 많은"}, {"word": "elect", "meaning": "선출하다"}, {"word": "election", "meaning": "선거"}, {"word": "electric", "meaning": "전기의"}, {"word": "electrical", "meaning": "전기의"}, {"word": "electricity", "meaning": "전기"}, {"word": "electron", "meaning": "전자"}, {"word": "electronic", "meaning": "전자의"}, {"word": "elegant", "meaning": "우아한"}, {"word": "elegance", "meaning": "우아함"}, {"word": "element", "meaning": "요소, 성분"}, {"word": "elementary", "meaning": "초보의, 기초적인"}, {"word": "elephant", "meaning": "코끼리"}, {"word": "elevate", "meaning": "올리다, 높이다"}, {"word": "elevator", "meaning": "엘리베이터"}, {"word": "elevation", "meaning": "고도, 높이"}, {"word": "eleven", "meaning": "열하나"}, {"word": "eligible", "meaning": "자격이 있는"}, {"word": "eliminate", "meaning": "제거하다, 없애다"}, {"word": "elimination", "meaning": "제거"}, {"word": "elite", "meaning": "엘리트"}, {"word": "eloquent", "meaning": "웅변조의, 말재주가 있는"}, {"word": "else", "meaning": "그 밖에"}, {"word": "elsewhere", "meaning": "다른 곳에서"}, {"word": "elude", "meaning": "교묘히 피하다"}, {"word": "embarrass", "meaning": "당황스럽게 만들다"}, {"word": "embarrassed", "meaning": "당황한"}, {"word": "embarrassing", "meaning": "당황스러운"}, {"word": "embarrassment", "meaning": "당황스러움"}, {"word": "embassy", "meaning": "대사관"}, {"word": "embed", "meaning": "박아 넣다, 끼워 넣다"}, {"word": "embody", "meaning": "구현하다, 구체화하다"}, {"word": "embrace", "meaning": "포옹하다, 받아들이다"}, {"word": "embroider", "meaning": "자수를 놓다"}, {"word": "embryo", "meaning": "배아, 배"}, {"word": "emerge", "meaning": "나타나다, 드러나다"}, {"word": "emergence", "meaning": "출현"}, {"word": "emergency", "meaning": "비상사태, 긴급 상황"}, {"word": "emigrate", "meaning": "(타국으로) 이주하다"}, {"word": "eminent", "meaning": "저명한, 탁월한"}, {"word": "emit", "meaning": "내뿜다, 방출하다"}, {"word": "emission", "meaning": "방출, 배출"}, {"word": "emotion", "meaning": "감정, 정서"}, {"word": "emotional", "meaning": "감정적인, 정서적인"}, {"word": "emperor", "meaning": "황제"}, {"word": "empire", "meaning": "제국"}, {"word": "emphasis", "meaning": "강조"}, {"word": "emphasize", "meaning": "강조하다"}, {"word": "emphatic", "meaning": "강조하는, 단호한"}, {"word": "empire", "meaning": "제국"}, {"word": "employ", "meaning": "고용하다, 이용하다"}, {"word": "employee", "meaning": "직원, 피고용인"}, {"word": "employer", "meaning": "고용주"}, {"word": "employment", "meaning": "고용"}, {"word": "unemployment", "meaning": "실업"}, {"word": "empower", "meaning": "권한을 부여하다"}, {"word": "empty", "meaning": "비어 있는, 비우다"}, {"word": "emulate", "meaning": "모방하다, 경쟁하다"}, {"word": "enable", "meaning": "가능하게 하다"}, {"word": "enact", "meaning": "제정하다, 상연하다"}, {"word": "enchant", "meaning": "매혹하다"}, {"word": "enclose", "meaning": "동봉하다, 에워싸다"}, {"word": "enclosure", "meaning": "동봉, 울타리를 친 땅"}, {"word": "encounter", "meaning": "맞닥뜨리다, 부딪히다, 만남"}, {"word": "encourage", "meaning": "격려하다"}, {"word": "encouragement", "meaning": "격려"}, {"word": "encyclopedia", "meaning": "백과사전"}, {"word": "end", "meaning": "끝, 목표, 끝내다"}, {"word": "ending", "meaning": "결말, 끝"}, {"word": "endless", "meaning": "끝없는"}, {"word": "endeavor", "meaning": "노력, 노력하다"}, {"word": "endure", "meaning": "견디다, 인내하다"}, {"word": "endurance", "meaning": "인내(력)"}, {"word": "enemy", "meaning": "적"}, {"word": "energy", "meaning": "에너지, 활력"}, {"word": "energetic", "meaning": "활기찬"}, {"word": "enforce", "meaning": "집행하다, 강요하다"}, {"word": "enforcement", "meaning": "집행, 강제"}, {"word": "engage", "meaning": "관여하다, 약혼하다, 끌어들이다"}, {"word": "engaged", "meaning": "약혼한, 바쁜"}, {"word": "engagement", "meaning": "약혼, 약속"}, {"word": "engine", "meaning": "엔진, 발동기"}, {"word": "engineer", "meaning": "엔지니어, 기술자"}, {"word": "engineering", "meaning": "공학"}, {"word": "engrave", "meaning": "새기다, 조각하다"}, {"word": "engross", "meaning": "몰두시키다"}, {"word": "enhance", "meaning": "향상시키다, 높이다"}, {"word": "enjoy", "meaning": "즐기다"}, {"word": "enjoyable", "meaning": "즐거운"}, {"word": "enjoyment", "meaning": "즐거움"}, {"word": "enlarge", "meaning": "확대하다"}, {"word": "enlighten", "meaning": "계몽하다, 깨우치게 하다"}, {"word": "enormous", "meaning": "거대한, 엄청난"}, {"word": "enough", "meaning": "충분한, 충분히"}, {"word": "enquire", "meaning": "문의하다"}, {"word": "enrich", "meaning": "풍요롭게 하다"}, {"word": "enroll", "meaning": "등록하다, 입학하다"}, {"word": "enrollment", "meaning": "등록"}, {"word": "ensemble", "meaning": "앙상블, 전체적 어울림"}, {"word": "ensue", "meaning": "뒤이어 일어나다"}, {"word": "ensure", "meaning": "보장하다"}, {"word": "entail", "meaning": "수반하다"}, {"word": "enter", "meaning": "들어가다, 입력하다"}, {"word": "entrance", "meaning": "입구, 입학"}, {"word": "entry", "meaning": "입장, 진입, 참가작"}, {"word": "enterprise", "meaning": "기업, 사업"}, {"word": "entertain", "meaning": "즐겁게 하다"}, {"word": "entertainment", "meaning": "오락, 연예"}, {"word": "entertainer", "meaning": "연예인"}, {"word": "enthusiasm", "meaning": "열정, 열의"}, {"word": "enthusiastic", "meaning": "열정적인"}, {"word": "entire", "meaning": "전체의, 완전한"}, {"word": "entirely", "meaning": "전적으로"}, {"word": "entitle", "meaning": "자격을 주다, 제목을 붙이다"}, {"word": "entity", "meaning": "독립체, 실체"}, {"word": "entreat", "meaning": "간청하다"}, {"word": "entrust", "meaning": "위임하다, 맡기다"}, {"word": "envelope", "meaning": "봉투"}, {"word": "environ", "meaning": "둘러싸다"}, {"word": "environment", "meaning": "환경"}, {"word": "environmental", "meaning": "환경의"}, {"word": "envisage", "meaning": "마음속에 그리다"}, {"word": "envy", "meaning": "부러움, 부러워하다"}, {"word": "envious", "meaning": "부러워하는"}, {"word": "epic", "meaning": "서사시, 서사시적인"}, {"word": "epidemic", "meaning": "유행병, 전염병"}, {"word": "episode", "meaning": "일화, 에피소드"}, {"word": "equal", "meaning": "같은, 평등한, ~와 같다"}, {"word": "equality", "meaning": "평등"}, {"word": "equally", "meaning": "동등하게"}, {"word": "equation", "meaning": "방정식, 동일시"}, {"word": "equator", "meaning": "적도"}, {"word": "equip", "meaning": "장비를 갖추다"}, {"word": "equipment", "meaning": "장비, 설비"}, {"word": "equity", "meaning": "공평, 자산 가치"}, {"word": "equivalent", "meaning": "동등한, 상당하는 것"}, {"word": "era", "meaning": "시대, 연대"}, {"word": "eradicate", "meaning": "근절하다, 뿌리뽑다"}, {"word": "erase", "meaning": "지우다"}, {"word": "eraser", "meaning": "지우개"}, {"word": "erect", "meaning": "똑바로 선, 세우다"}, {"word": "erode", "meaning": "침식하다, 부식하다"}, {"word": "erosion", "meaning": "침식"}, {"word": "err", "meaning": "실수하다"}, {"word": "error", "meaning": "실수, 오류"}, {"word": "errand", "meaning": "심부름"}, {"word": "erratic", "meaning": "변덕스러운"}, {"word": "erroneous", "meaning": "잘못된"}, {"word": "erupt", "meaning": "분출하다, 폭발하다"}, {"word": "eruption", "meaning": "분출, 폭발"}, {"word": "escalate", "meaning": "확대되다, 고조되다"}, {"word": "escape", "meaning": "달아나다, 탈출하다, 탈출"}, {"word": "escort", "meaning": "호위하다, 호위대"}, {"word": "especial", "meaning": "특별한"}, {"word": "especially", "meaning": "특히"}, {"word": "essay", "meaning": "수필, 에세이"}, {"word": "essence", "meaning": "본질, 정수"}, {"word": "essential", "meaning": "본질적인, 필수적인"}, {"word": "essentially", "meaning": "본질적으로"}, {"word": "establish", "meaning": "설립하다, 확립하다"}, {"word": "establishment", "meaning": "설립, 기관"}, {"word": "estate", "meaning": "부동산, 재산"}, {"word": "esteem", "meaning": "존경, 존경하다"}, {"word": "estimate", "meaning": "추정하다, 견적, 추정"}, {"word": "estimation", "meaning": "판단, 평가"}, {"word": "eternal", "meaning": "영원한"}, {"word": "eternity", "meaning": "영원"}, {"word": "ethics", "meaning": "윤리학, 윤리"}, {"word": "ethical", "meaning": "윤리적인"}, {"word": "ethnic", "meaning": "민족의, 인종의"}, {"word": "etiquette", "meaning": "예의범절, 에티켓"}, {"word": "evacuate", "meaning": "대피시키다"}, {"word": "evade", "meaning": "피하다, 회피하다"}, {"word": "evasion", "meaning": "회피"}, {"word": "evaluate", "meaning": "평가하다"}, {"word": "evaluation", "meaning": "평가"}, {"word": "evaporate", "meaning": "증발하다"}, {"word": "eve", "meaning": "전날 밤, 전야"}, {"word": "even", "meaning": "~조차, 훨씬, 평평한, 짝수의"}, {"word": "evening", "meaning": "저녁"}, {"word": "event", "meaning": "사건, 행사"}, {"word": "eventual", "meaning": "궁극적인, 최종적인"}, {"word": "eventually", "meaning": "결국"}, {"word": "ever", "meaning": "언젠가, 이제까지"}, {"word": "evergreen", "meaning": "상록수, 상록의"}, {"word": "every", "meaning": "모든"}, {"word": "everybody", "meaning": "모든 사람"}, {"word": "everyone", "meaning": "모든 사람"}, {"word": "everything", "meaning": "모든 것"}, {"word": "everywhere", "meaning": "모든 곳"}, {"word": "evidence", "meaning": "증거"}, {"word": "evident", "meaning": "분명한, 명백한"}, {"word": "evidently", "meaning": "명백히"}, {"word": "evil", "meaning": "악한, 악"}, {"word": "evoke", "meaning": "자아내다, 환기시키다"}, {"word": "evolve", "meaning": "진화하다, 발전하다"}, {"word": "evolution", "meaning": "진화"}, {"word": "exact", "meaning": "정확한"}, {"word": "exactly", "meaning": "정확히"}, {"word": "exaggerate", "meaning": "과장하다"}, {"word": "exaggeration", "meaning": "과장"}, {"word": "examine", "meaning": "검사하다, 진찰하다, 시험하다"}, {"word": "examination", "meaning": "시험, 검사"}, {"word": "examiner", "meaning": "시험관, 검사관"}, {"word": "example", "meaning": "예, 본보기"}, {"word": "exasperate", "meaning": "몹시 화나게 하다"}, {"word": "excavate", "meaning": "발굴하다, 파내다"}, {"word": "exceed", "meaning": "넘다, 초과하다"}, {"word": "exceedingly", "meaning": "지나치게, 매우"}, {"word": "excel", "meaning": "탁월하다, 뛰어나다"}, {"word": "excellent", "meaning": "훌륭한, 탁월한"}, {"word": "excellence", "meaning": "탁월함"}, {"word": "except", "meaning": "~을 제외하고"}, {"word": "exception", "meaning": "예외"}, {"word": "exceptional", "meaning": "예외적인, 뛰어난"}, {"word": "excerpt", "meaning": "발췌, 인용"}, {"word": "excess", "meaning": "초과, 과잉"}, {"word": "excessive", "meaning": "과도한"}, {"word": "exchange", "meaning": "교환하다, 환전하다, 교환"}, {"word": "excite", "meaning": "흥분시키다, 자극하다"}, {"word": "excited", "meaning": "신이 난, 흥분한"}, {"word": "excitement", "meaning": "흥분, 활기"}, {"word": "exciting", "meaning": "흥미진진한"}, {"word": "exclaim", "meaning": "외치다, 소리치다"}, {"word": "exclamation", "meaning": "외침, 감탄"}, {"word": "exclude", "meaning": "제외하다, 배제하다"}, {"word": "exclusion", "meaning": "제외, 배제"}, {"word": "exclusive", "meaning": "독점적인, 배타적인"}, {"word": "exclusively", "meaning": "독점적으로"}, {"word": "excrete", "meaning": "배설하다"}, {"word": "excursion", "meaning": "소풍, 짧은 여행"}, {"word": "excuse", "meaning": "변명, 구실, 용서하다, 변명하다"}, {"word": "execute", "meaning": "실행하다, 처형하다"}, {"word": "execution", "meaning": "실행, 처형"}, {"word": "executive", "meaning": "임원, 경영진, 행정부의"}, {"word": "exemplify", "meaning": "예증하다, 전형적인 예가 되다"}, {"word": "exempt", "meaning": "면제된, 면제하다"}, {"word": "exert", "meaning": "발휘하다, 행사하다"}, {"word": "exertion", "meaning": "발휘, 노력"}, {"word": "exhale", "meaning": "숨을 내쉬다"}, {"word": "exhaust", "meaning": "고갈시키다, 지치게 하다, 배기가스"}, {"word": "exhausted", "meaning": "기진맥진한"}, {"word": "exhaustion", "meaning": "기진맥진, 고갈"}, {"word": "exhaustive", "meaning": "철저한"}, {"word": "exhibit", "meaning": "전시하다, 드러내다, 전시품"}, {"word": "exhibition", "meaning": "전시회"}, {"word": "exhilarate", "meaning": "활력을 주다"}, {"word": "exile", "meaning": "망명, 추방, 망명하게 하다"}, {"word": "exist", "meaning": "존재하다"}, {"word": "existence", "meaning": "존재"}, {"word": "exit", "meaning": "출구, 퇴장하다"}, {"word": "exotic", "meaning": "이국적인"}, {"word": "expand", "meaning": "확장하다, 팽창하다"}, {"word": "expansion", "meaning": "확장, 팽창"}, {"word": "expanse", "meaning": "광활한 공간"}, {"word": "expect", "meaning": "기대하다, 예상하다"}, {"word": "expectation", "meaning": "기대, 예상"}, {"word": "expedite", "meaning": "신속히 처리하다"}, {"word": "expedition", "meaning": "탐험(대)"}, {"word": "expel", "meaning": "추방하다, 퇴학시키다"}, {"word": "expend", "meaning": "소비하다, 쓰다"}, {"word": "expenditure", "meaning": "지출, 비용"}, {"word": "expense", "meaning": "비용, 지출"}, {"word": "expensive", "meaning": "비싼"}, {"word": "experience", "meaning": "경험, 경험하다"}, {"word": "experienced", "meaning": "경험이 많은"}, {"word": "experiment", "meaning": "실험, 실험하다"}, {"word": "experimental", "meaning": "실험적인"}, {"word": "expert", "meaning": "전문가, 전문적인"}, {"word": "expertise", "meaning": "전문 지식"}, {"word": "expire", "meaning": "만료되다"}, {"word": "expiration", "meaning": "만료"}, {"word": "explain", "meaning": "설명하다"}, {"word": "explanation", "meaning": "설명"}, {"word": "explicit", "meaning": "명시적인, 명확한"}, {"word": "explode", "meaning": "폭발하다"}, {"word": "explosion", "meaning": "폭발"}, {"word": "explosive", "meaning": "폭발물, 폭발성의"}, {"word": "exploit", "meaning": "이용하다, 착취하다, 공훈"}, {"word": "exploitation", "meaning": "착취, 개발"}, {"word": "explore", "meaning": "탐험하다, 탐구하다"}, {"word": "exploration", "meaning": "탐험, 탐구"}, {"word": "explorer", "meaning": "탐험가"}, {"word": "export", "meaning": "수출하다, 수출"}, {"word": "expose", "meaning": "노출시키다, 폭로하다"}, {"word": "exposure", "meaning": "노출, 폭로"}, {"word": "exposition", "meaning": "전시회, 설명"}, {"word": "expound", "meaning": "상세히 설명하다"}, {"word": "express", "meaning": "표현하다, 나타내다, 급행의"}, {"word": "expression", "meaning": "표현, 표정"}, {"word": "expressive", "meaning": "표현력이 있는"}, {"word": "exquisite", "meaning": "정교한, 매우 아름다운"}, {"word": "extend", "meaning": "연장하다, 확장하다"}, {"word": "extension", "meaning": "연장, 내선 번호"}, {"word": "extensive", "meaning": "광범위한"}, {"word": "extent", "meaning": "정도, 범위"}, {"word": "exterior", "meaning": "외부의, 외부"}, {"word": "exterminate", "meaning": "근절하다, 몰살하다"}, {"word": "external", "meaning": "외부의"}, {"word": "extinct", "meaning": "멸종된, 활동을 멈춘"}, {"word": "extinction", "meaning": "멸종"}, {"word": "extinguish", "meaning": "끄다, 소멸시키다"}, {"word": "extinguisher", "meaning": "소화기"}, {"word": "extol", "meaning": "칭찬하다"}, {"word": "extort", "meaning": "갈취하다"}, {"word": "extra", "meaning": "여분의, 추가의, 여분의 것"}, {"word": "extract", "meaning": "추출하다, 발췌하다, 추출물"}, {"word": "extraction", "meaning": "추출, 혈통"}, {"word": "extraordinary", "meaning": "비범한, 기이한"}, {"word": "extravagant", "meaning": "낭비하는, 사치스러운"}, {"word": "extreme", "meaning": "극단적인, 극도, 극단"}, {"word": "extremely", "meaning": "극도로, 매우"}, {"word": "eye", "meaning": "눈, 시선"}, {"word": "eyebrow", "meaning": "눈썹"}, {"word": "eyesight", "meaning": "시력"}, {"word": "eyewitness", "meaning": "목격자"}];
+
+  var SLUG = "jungdeung3_2";
+  var STORE_KEY = "cutop_" + SLUG;
+
+  var progressData = {};
+  function loadProg() {
+    var s = localStorage.getItem(STORE_KEY);
+    if (s) { try { progressData = JSON.parse(s); } catch(e) { progressData = {}; } }
+  }
+  function saveProg() {
+    localStorage.setItem(STORE_KEY, JSON.stringify(progressData));
+  }
+  function getProg(w) {
+    var k = w.word + "|" + w.meaning;
+    return progressData[k] || { status: "", fav: false };
+  }
+  function setProg(w, field, val) {
+    var k = w.word + "|" + w.meaning;
+    if (!progressData[k]) progressData[k] = { status: "", fav: false };
+    progressData[k][field] = val;
+    saveProg();
+  }
+
+  function buildRanges(ws) {
+    var r = [{ label: "전체", s: 0, e: ws.length }];
+    for (var i = 0; i < ws.length; i += 50) {
+      r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+    }
+    return r;
+  }
+  var ranges = buildRanges(rawWords);
+
+  var lri = 0, fri = 0;
+  var lfilter = "all";
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+
+  function speak(t) {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(t);
+    u.lang = "en-US";
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  }
+  function speakFc() {
+    speak(document.getElementById("fcword").textContent);
+  }
+
+  function renderRangeBar(id, curIdx, clickFnStr) {
+    var el = document.getElementById(id);
+    var h = "";
+    ranges.forEach(function(r, idx) {
+      var act = idx === curIdx ? " active" : "";
+      h += '<button class="range-btn' + act + '" onclick="' + clickFnStr + '(' + idx + ')">' + esc(r.label) + '</button>';
+    });
+    el.innerHTML = h;
+  }
+
+  function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  function setFR(idx) { fri = idx; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+
+  function setLFilter(f) {
+    ["all","not","fav"].forEach(function(n) {
+      document.getElementById("lf-"+n).classList.toggle("active", n===f);
+    });
+    lfilter = f;
+    renderList();
+  }
+
+  function toggleKnown(idx) {
+    var w = rawWords[idx];
+    var p = getProg(w);
+    var n = p.status === "known" ? "" : "known";
+    setProg(w, "status", n);
+    document.getElementById("wcard-"+idx).classList.toggle("known", n==="known");
+  }
+
+  function toggleFav(idx, isList) {
+    var w = rawWords[idx];
+    var p = getProg(w);
+    var n = !p.fav;
+    setProg(w, "fav", n);
+    if (isList) {
+      document.getElementById("fav-"+idx).classList.toggle("active", n);
+    } else {
+      document.getElementById("fcfav").classList.toggle("active", n);
+    }
+  }
+
+  function renderList() {
+    var q = document.getElementById("lsearch").value.toLowerCase().trim();
+    var r = ranges[lri];
+    var listEl = document.getElementById("lwlist");
+    var h = "";
+
+    for (var i = r.s; i < r.e; i++) {
+      var w = rawWords[i];
+      var p = getProg(w);
+
+      if (lfilter === "not" && p.status === "known") continue;
+      if (lfilter === "fav" && !p.fav) continue;
+
+      if (q) {
+        if (w.word.toLowerCase().indexOf(q) === -1 && w.meaning.toLowerCase().indexOf(q) === -1) continue;
+      }
+
+      var cls = p.status === "known" ? " word-card known" : " word-card";
+      var fcls = p.fav ? " ibtn fav-btn active" : " ibtn fav-btn";
+
+      h += '<div class="' + cls + '" id="wcard-' + i + '">' +
+           '  <button class="chk-btn" onclick="toggleKnown(' + i + ')">✔</button>' +
+           '  <div class="word-info">' +
+           '    <div class="word-eng en">' + esc(w.word) + '</div>' +
+           '    <div class="word-kor">' + esc(w.meaning) + '</div>' +
+           '  </div>' +
+           '  <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>' +
+           '  <button class="' + fcls + '" id="fav-' + i + '" onclick="toggleFav(' + i + ', true)">★</button>' +
+           '</div>';
+    }
+    listEl.innerHTML = h;
+  }
+
+  var fcWords = [];
+  var fci = 0;
+  var fcFlipped = false;
+  var fcTX = 0;
+
+  function initFC() {
+    var r = ranges[fri];
+    fcWords = [];
+    for (var i = r.s; i < r.e; i++) {
+      fcWords.push({ idx: i, word: rawWords[i].word, meaning: rawWords[i].meaning });
+    }
+    fci = 0;
+    renderFC();
+  }
+
+  function renderFC() {
+    if (fcWords.length === 0) {
+      document.getElementById("fcword").textContent = "단어가 없습니다";
+      document.getElementById("fcmean").textContent = "";
+      document.getElementById("fcfav").style.display = "none";
+      return;
+    }
+    document.getElementById("fcfav").style.display = "block";
+    var item = fcWords[fci];
+    var p = getProg(rawWords[item.idx]);
+    
+    document.getElementById("fcword").textContent = item.word;
+    document.getElementById("fcmean").textContent = "";
+    document.getElementById("fcfav").classList.toggle("active", p.fav);
+    fcFlipped = false;
+  }
+
+  function fcFlip() {
+    if (fcFlipped || fcWords.length === 0) return;
+    fcFlipped = true;
+    document.getElementById("fcmean").textContent = fcWords[fci].meaning;
+    speak(fcWords[fci].word);
+  }
+
+  function fcNext() {
+    if (fcWords.length === 0) return;
+    fci = (fci + 1) % fcWords.length;
+    renderFC();
+  }
+
+  function fcPrev() {
+    if (fcWords.length === 0) return;
+    fci = (fci - 1 + fcWords.length) % fcWords.length;
+    renderFC();
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  var qWords = [];
+  var qci = 0;
+  var qScore = 0;
+  var qLocked = false;
+
+  function initQuiz() {
+    var pool = shuffle(rawWords);
+    qWords = pool.slice(0, Math.min(10, pool.length));
+    qci = 0;
+    qScore = 0;
+    renderQuiz();
+  }
+
+  function renderQuiz() {
+    var container = document.getElementById("qzmain");
+    if (qci >= qWords.length) {
+      var pct = Math.round((qScore / qWords.length) * 100);
+      var emo = pct === 100 ? "🏆" : pct >= 80 ? "🎉" : pct >= 60 ? "👍" : "💪";
+      container.innerHTML = '<div class="res-card">' +
+                            '  <div class="res-emoji">' + emo + '</div>' +
+                            '  <div class="res-score">' + qScore + ' / ' + qWords.length + '</div>' +
+                            '  <div class="res-pct">' + pct + '점</div>' +
+                            '  <button class="btn-block" onclick="initQuiz()">↩ 다시 풀기</button>' +
+                            '</div>';
+      return;
+    }
+    qLocked = false;
+    var correctWord = qWords[qci];
+    var options = [correctWord.meaning];
+    var wrongPool = rawWords.filter(function(w) { return w.meaning !== correctWord.meaning; });
+    var sw = shuffle(wrongPool).slice(0, 3);
+    sw.forEach(function(w) { options.push(w.meaning); });
+    options = shuffle(options);
+
+    var h = '<div class="ts-header"><span>퀴즈 모드</span><span>' + (qci+1) + '/' + qWords.length + '</span></div>' +
+            '<div class="qz-card"><div class="qz-word en">' + esc(correctWord.word) + '</div></div>' +
+            '<div class="qz-options">';
+    options.forEach(function(opt) {
+      var isCor = opt === correctWord.meaning ? "1" : "0";
+      h += '<button class="qz-opt" data-cor="' + isCor + '" onclick="qAns(this)">' + esc(opt) + '</button>';
+    });
+    h += '</div>';
+    container.innerHTML = h;
+  }
+
+  function qAns(btn) {
+    if (qLocked) return;
+    qLocked = true;
+    var isCor = btn.dataset.cor === "1";
+    if (isCor) {
+      btn.className = "qz-opt correct";
+      qScore++;
+      speak(qWords[qci].word);
+    } else {
+      btn.className = "qz-opt wrong";
+      var opts = document.getElementsByClassName("qz-opt");
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].dataset.cor === "1") opts[i].className = "qz-opt correct";
+      }
+    }
+    setTimeout(function() {
+      qci++;
+      renderQuiz();
+    }, 1000);
+  }
+
+  var tRangeIdx = 0;
+  var tWords = [];
+  var tci = 0;
+  var tScore = 0;
+  var tWrong = [];
+  var tRight = [];
+  var tName = "";
+
+  function renderSetup() {
+    var container = document.getElementById("tsmain");
+    var h = '<div class="form-group">' +
+            '  <label>이름 입력</label>' +
+            '  <input type="text" class="form-control" id="tname" placeholder="이름을 입력하세요" value="' + esc(tName) + '">' +
+            '</div>' +
+            '<div class="form-group">' +
+            '  <label>테스트 범위</label>' +
+            '  <div class="range-bar" id="trbar"></div>' +
+            '</div>' +
+            '<button class="btn-block" style="margin-top:10px;" onclick="startTest()">테스트 시작 ▶</button>';
+    container.innerHTML = h;
+    renderRangeBar("trbar", tRangeIdx, "setTIndex");
+  }
+
+  function setTIndex(idx) { tRangeIdx = idx; renderRangeBar("trbar", tRangeIdx, "setTIndex"); }
+
+  function startTest() {
+    var nameInput = document.getElementById("tname").value.trim();
+    if (!nameInput) { alert("이름을 입력해주세요."); return; }
+    tName = nameInput;
+
+    var r = ranges[tRangeIdx];
+    var pool = [];
+    for (var i = r.s; i < r.e; i++) pool.push(rawWords[i]);
+    pool = shuffle(pool);
+
+    tWords = pool.slice(0, Math.min(50, pool.length));
+    tci = 0;
+    tScore = 0;
+    tWrong = [];
+    tRight = [];
+
+    renderTestProgress();
+  }
+
+  function renderTestProgress() {
+    var container = document.getElementById("tsmain");
+    if (tci >= tWords.length) {
+      renderTestResult();
+      return;
+    }
+    var curWord = tWords[tci];
+    var pct = Math.round((tci / tWords.length) * 100);
+
+    var h = '<div class="ts-header">' +
+            '  <span>현재문제: ' + (tci+1) + '/' + tWords.length + '</span>' +
+            '  <span>✅ 맞춤수: ' + tScore + '</span>' +
+            '</div>' +
+            '<div class="pbar-bg"><div class="pbar-fill" style="width:' + pct + '%;"></div></div>' +
+            '<div class="ts-box">' +
+            '  <div class="ts-word en">' + esc(curWord.word) + '</div>' +
+            '  <input type="text" class="form-control" id="tans" placeholder="뜻을 입력하고 Enter" autocomplete="off" onkeydown="testKey(event)">' +
+            '</div>' +
+            '<button class="btn-block" onclick="submitTestAns()">다음 문제 ➔</button>';
+    container.innerHTML = h;
+    document.getElementById("tans").focus();
+    speak(curWord.word);
+  }
+
+  function testKey(e) { if (e.keyCode === 13) submitTestAns(); }
+
+  function isSim(input, correct) {
+    var norm = function(s) {
+      return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+    };
+    var a = norm(input), c = norm(correct);
+    if (a === c) return true;
+    if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+    var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+    if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+    return false;
+  }
+
+  function submitTestAns() {
+    var ansInput = document.getElementById("tans").value.trim();
+    var curWord = tWords[tci];
+    var ok = isSim(ansInput, curWord.meaning);
+
+    if (ok) {
+      tScore++;
+      tRight.push(curWord.word);
+    } else {
+      tWrong.push({ word: curWord.word, input: ansInput || "(빈칸)", correct: curWord.meaning });
+    }
+    tci++;
+    renderTestProgress();
+  }
+
+  function renderTestResult() {
+    var container = document.getElementById("tsmain");
+    var pct = Math.round((tScore / tWords.length) * 100);
+    var emo = pct === 100 ? "🏆" : pct >= 80 ? "🎉" : pct >= 60 ? "👍" : "💪";
+
+    var h = '<div class="res-card">' +
+            '  <div class="res-emoji">' + emo + '</div>' +
+            '  <div class="res-score">' + tScore + ' / ' + tWords.length + '</div>' +
+            '  <div class="res-pct">' + pct + '점</div>' +
+            '  <button class="btn-block" style="background:#25D366; margin-bottom:10px;" onclick="copyKakao()">📋 카톡으로 결과 복사</button>' +
+            '  <button class="btn-block sec" onclick="renderSetup()">↩ 다시 테스트</button>';
+
+    if (tWrong.length > 0) {
+      h += '<div class="wrong-list">';
+      tWrong.forEach(function(item) {
+        h += '<div class="wrong-item">❌ ' + esc(item.word) + ' → 입력:' + esc(item.input) + ' / 정답:' + esc(item.correct) + '</div>';
+      });
+      h += '</div>';
+    }
+    h += '</div>';
+    container.innerHTML = h;
+  }
+
+  function copyKakao() {
+    var dt = new Date();
+    var dtStr = dt.getFullYear() + "-" + (dt.getMonth()+1) + "-" + dt.getDate();
+    var pct = Math.round((tScore / tWords.length) * 100);
+
+    var txt = "[씨유에탑 중등3_2] 테스트 결과\n" +
+              "날짜: " + dtStr + "\n" +
+              "이름: " + tName + "\n" +
+              "점수: " + tScore + "/" + tWords.length + " (" + pct + "점)\n" +
+              "─────────────────\n" +
+              "❌ 틀린 단어 (" + tWrong.length + "개)\n";
+    
+    tWrong.forEach(function(item) {
+      txt += "  " + item.word + " → 입력:" + item.input + " / 정답:" + item.correct + "\n";
+    });
+
+    txt += "─────────────────\n" +
+           "✅ 맞은 단어: " + tRight.join(", ");
+
+    var ta = document.createElement("textarea");
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    alert("결과가 복사되었습니다. 카톡에 붙여넣으세요!");
+  }
+
+  function switchTab(t) {
+    ["list","flash","quiz","test"].forEach(function(n) {
+      document.getElementById("tb-"+n).classList.toggle("active", n===t);
+      document.getElementById("tab-"+n).classList.toggle("active", n===t);
+    });
+    if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+    if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+    if (t==="quiz")  { initQuiz(); }
+    if (t==="test")  { renderSetup(); }
+  }
+
+  loadProg();
+  renderRangeBar("lrbar", lri, "setLR");
+  renderList();
+
+  (function(){
+    var card = document.getElementById("fccard");
+    card.addEventListener("click", function(e) {
+      if (e.target.id === "fcfav") {
+        toggleFav(fcWords[fci].idx, false);
+        return;
+      }
+      fcFlip();
+    });
+    card.addEventListener("touchstart", function(e) {
+      fcTX = e.touches[0].clientX;
+    }, {passive:true});
+    card.addEventListener("touchend", function(e) {
+      var dx = e.changedTouches[0].clientX - fcTX;
+      if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+    }, {passive:true});
+  })();
+</script>
+
+</body>
+</html>
