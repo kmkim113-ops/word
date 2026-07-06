@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>씨유에탑 영어단어장</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --primary-light: #EFF6FF;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warn: #F59E0B;
+  --gray: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F9FAFB;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #ECEFF1; display: flex; justify-content: center; min-height: 100vh; }
+.phone-container { width: 100%; max-width: 420px; background: var(--bg); display: flex; flex-direction: column; min-height: 100vh; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.header { background: #fff; padding: 16px; text-align: center; border-bottom: 1px solid var(--border); }
+.header-brand { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1.25rem; color: var(--primary); margin-bottom: 4px; }
+.header-sub { font-size: 0.85rem; color: var(--gray); font-weight: 500; }
+.nav-tabs { display: flex; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+.tab-btn { flex: 1; padding: 12px 0; text-align: center; border: none; background: none; font-size: 0.9rem; font-weight: 500; color: var(--gray); cursor: pointer; border-bottom: 2px solid transparent; }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+.tab-content { flex: 1; padding: 16px; display: none; overflow-y: auto; }
+.tab-content.active { display: block; }
+.range-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scrollbar-width: none; }
+.range-bar::-webkit-scrollbar { display: none; }
+.range-btn { padding: 6px 12px; border: 1px solid var(--border); background: #fff; border-radius: 20px; font-size: 0.8rem; font-family: 'Nunito', sans-serif; white-space: nowrap; cursor: pointer; color: var(--gray); }
+.range-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 700; }
+.search-box { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; margin-bottom: 12px; outline: none; }
+.search-box:focus { border-color: var(--primary); }
+.filter-bar { display: flex; gap: 6px; margin-bottom: 16px; }
+.filter-btn { flex: 1; padding: 8px 0; border: 1px solid var(--border); background: #fff; border-radius: 6px; font-size: 0.8rem; cursor: pointer; color: var(--gray); font-weight: 500; }
+.filter-btn.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); font-weight: 700; }
+.word-list { display: flex; flex-direction: column; gap: 10px; }
+.word-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; transition: opacity 0.2s; }
+.word-card.known { opacity: 0.35; }
+.word-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+.chk-btn { border: 1px solid var(--border); background: #fff; color: var(--gray); width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; }
+.chk-btn.active { background: var(--success); color: #fff; border-color: var(--success); }
+.word-info { display: flex; flex-direction: column; gap: 4px; }
+.w-eng { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1.1rem; color: #111827; }
+.w-kor { font-size: 0.9rem; color: var(--gray); }
+.word-right { display: flex; align-items: center; gap: 6px; }
+.ibtn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
+.fav-btn { color: #D1D5DB; }
+.fav-btn.active { color: var(--warn); }
+.fc-area { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; margin-top: 20px; }
+.fc-card { width: 100%; height: 220px; background: #fff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 20px; text-align: center; cursor: pointer; user-select: none; }
+.fc-fav-pos { position: absolute; top: 16px; right: 16px; font-size: 1.3rem; }
+.fc-word { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1.6rem; color: #111827; margin-bottom: 12px; }
+.fc-meaning { font-size: 1.1rem; color: var(--primary); font-weight: 500; min-height: 1.5em; }
+.fc-hint { font-size: 0.8rem; color: #9CA3AF; position: absolute; bottom: 16px; }
+.fc-nav { display: flex; width: 100%; gap: 12px; margin-top: 24px; }
+.fc-nav-btn { flex: 1; padding: 12px 0; border: none; background: var(--primary); color: #fff; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; text-align: center; }
+.fc-nav-btn.sec { background: #E5E7EB; color: #374151; }
+.quiz-box { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-top: 10px; }
+.q-progress { font-size: 0.85rem; color: var(--gray); text-align: right; margin-bottom: 8px; }
+.q-word { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1.5rem; text-align: center; color: #111827; margin: 20px 0; }
+.q-options { display: flex; flex-direction: column; gap: 10px; }
+.q-opt { width: 100%; padding: 12px 16px; border: 1px solid var(--border); background: #fff; border-radius: 8px; text-align: left; font-size: 0.95rem; cursor: pointer; font-weight: 500; }
+.q-opt.correct { background: var(--success) !important; color: #fff; border-color: var(--success); }
+.q-opt.wrong { background: var(--danger) !important; color: #fff; border-color: var(--danger); }
+.result-view { text-align: center; padding: 30px 10px; }
+.res-emoji { font-size: 4rem; margin-bottom: 16px; }
+.res-score { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+.res-pct { font-size: 1.1rem; color: var(--gray); margin-bottom: 24px; }
+.btn-block { width: 100%; padding: 12px 0; border: none; background: var(--primary); color: #fff; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; text-align: center; }
+.t-setup { display: flex; flex-direction: column; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 0.9rem; font-weight: 700; color: #374151; }
+.form-input { padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; outline: none; }
+.form-input:focus { border-color: var(--primary); }
+.t-stat { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; color: var(--gray); font-weight: 500; }
+.t-pbar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+.t-pbar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
+.t-word { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1.6rem; text-align: center; color: #111827; margin: 30px 0; }
+.wrong-list { text-align: left; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin: 20px 0; max-height: 200px; overflow-y: auto; }
+.wrong-title { font-size: 0.9rem; font-weight: 700; color: var(--danger); margin-bottom: 8px; }
+.wrong-item { font-size: 0.85rem; border-bottom: 1px dashed var(--border); padding: 6px 0; color: #374151; }
+.wrong-item:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<div class="phone-container">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">씨유에탑 수능기본1800-2 · 총 900단어</div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tb-list" onclick="switchTab('list')">단어목록</button>
+    <button class="tab-btn" id="tb-flash" onclick="switchTab('flash')">플래시카드</button>
+    <button class="tab-btn" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</button>
+    <button class="tab-btn" id="tb-test" onclick="switchTab('test')">📝 테스트</button>
+  </div>
+
+  <!-- 탭 1: 단어목록 -->
+  <div class="tab-content active" id="tab-list">
+    <div class="range-bar" id="lrbar"></div>
+    <input type="text" class="search-box" id="lsearch" placeholder="영어 또는 한글 뜻 검색..." oninput="renderList()">
+    <div class="filter-bar">
+      <button class="filter-btn active" id="lf-all" onclick="setLFilter('all')">전체</button>
+      <button class="filter-btn" id="lf-not" onclick="setLFilter('not')">모름</button>
+      <button class="filter-btn" id="lf-fav" onclick="setLFilter('fav')">⭐즐겨찾기</button>
+    </div>
+    <div class="word-list" id="wordlistArea"></div>
+  </div>
+
+  <!-- 탭 2: 플래시카드 -->
+  <div class="tab-content" id="tab-flash">
+    <div class="range-bar" id="fcrbar"></div>
+    <div class="fc-area">
+      <div class="fc-card" id="fccard">
+        <button class="ibtn fav-btn fc-fav-pos" id="fcfav">★</button>
+        <div class="fc-word" id="fcword">-</div>
+        <div class="fc-meaning" id="fcmeaning">-</div>
+        <div class="fc-hint" id="fchint">탭하면 뜻이 보입니다</div>
+      </div>
+      <div class="fc-nav">
+        <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+        <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+        <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 탭 3: 퀴즈모드 -->
+  <div class="tab-content" id="tab-quiz">
+    <div id="quizGameArea">
+      <div class="quiz-box">
+        <div class="q-progress" id="qprogress">0 / 10</div>
+        <div class="q-word" id="qword">-</div>
+        <div class="q-options" id="qoptions"></div>
+      </div>
+    </div>
+    <div id="quizResultArea" style="display:none;">
+      <div class="result-view">
+        <div class="res-emoji" id="qemoji">🏆</div>
+        <div class="res-score" id="qscore">0 / 10</div>
+        <div class="res-pct" id="qpct">0%</div>
+        <button class="btn-block" onclick="initQuiz()">↩ 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 탭 4: 📝 테스트 -->
+  <div class="tab-content" id="tab-test">
+    <div id="tSetupArea" class="t-setup"></div>
+    <div id="tPlayArea" style="display:none;">
+      <div class="t-stat">
+        <span id="tcount">현재문제: 0 / 0</span>
+        <span id="tokcnt" style="color:var(--success);">✅ 맞춤수: 0</span>
+      </div>
+      <div class="t-pbar-bg"><div class="t-pbar-fill" id="tpbar"></div></div>
+      <div class="t-word" id="tword">-</div>
+      <input type="text" class="search-box" id="tinput" autocomplete="off" placeholder="한글 뜻을 입력하세요" onkeydown="if(event.keyCode===13) nextTest()">
+      <button class="btn-block" onclick="nextTest()" style="margin-top:10px;">확인 (Enter)</button>
+    </div>
+    <div id="tResultArea" style="display:none;">
+      <div class="result-view">
+        <div class="res-emoji" id="temoji">🏆</div>
+        <div class="res-score" id="tscore">0 / 0</div>
+        <div class="res-pct" id="tpct">0%</div>
+        <div class="wrong-list" id="twrongbox" style="display:none;">
+          <div class="wrong-title">❌ 틀린 단어 확인</div>
+          <div id="twrongitems"></div>
+        </div>
+        <button class="btn-block" id="tkakaobtn" style="background:#25D366; margin-bottom:12px;" onclick="copyTestResult()">📋 카톡으로 결과 복사</button>
+        <button class="btn-block" onclick="renderSetup()">↩ 다시 테스트</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var rawWords = [
+  {"word": "descendant", "meaning": "자손, 후손"},
+  {"word": "pupil", "meaning": "학생,  눈동자"},
+  {"word": "beard", "meaning": "턱수염"},
+  {"word": "committee", "meaning": "위원회"},
+  {"word": "carbohydrate", "meaning": "탄수화물"},
+  {"word": "fiber", "meaning": "섬유질, 섬유"},
+  {"word": "beverage", "meaning": "음료"},
+  {"word": "mineral", "meaning": "광물, 미네랄"},
+  {"word": "nutrient", "meaning": "영양소"},
+  {"word": "protein", "meaning": "단백질"},
+  {"word": "ingredient", "meaning": "재료, 성분"},
+  {"word": "vitamin", "meaning": "비타민"},
+  {"word": "caloric", "meaning": "열량의, 칼로리의"},
+  {"word": "nutrition", "meaning": "영양"},
+  {"word": "obesity", "meaning": "비만"},
+  {"word": "well-being", "meaning": "행복, 안녕, 웰빙"},
+  {"word": "fitness", "meaning": "건강, 신체 단련"},
+  {"word": "appetite", "meaning": "식욕"},
+  {"word": "diabetes", "meaning": "당뇨병"},
+  {"word": "flavor", "meaning": "맛, 풍미"},
+  {"word": "texture", "meaning": "질감, 촉감"},
+  {"word": "recipe", "meaning": "요리법, 조리법"},
+  {"word": "diet", "meaning": "식단, 다이어트, 식사"},
+  {"word": "allergy", "meaning": "알레르기"},
+  {"word": "immunity", "meaning": "면역력, 면역"},
+  {"word": "infection", "meaning": "감염, 전염"},
+  {"word": "symptom", "meaning": "증상"},
+  {"word": "vaccine", "meaning": "백신"},
+  {"word": "bacteria", "meaning": "박테리아, 세균"},
+  {"word": "virus", "meaning": "바이러스"},
+  {"word": "antibiotic", "meaning": "항생제"},
+  {"word": "diagnosis", "meaning": "진단"},
+  {"word": "prescription", "meaning": "처방전, 처방"},
+  {"word": "therapy", "meaning": "치료, 요법"},
+  {"word": "medication", "meaning": "약물 치료, 약물"},
+  {"word": "dosage", "meaning": "복용량, 투여량"},
+  {"word": "side effect", "meaning": "부작용"},
+  {"word": "clinic", "meaning": "진료소, 병원"},
+  {"word": "physician", "meaning": "의사, 내과의사"},
+  {"word": "surgeon", "meaning": "외과의사"},
+  {"word": "surgery", "meaning": "수술"},
+  {"word": "operation", "meaning": "수술, 작동, 운영"},
+  {"word": "emergency", "meaning": "비상사태, 응급"},
+  {"word": "ambulance", "meaning": "구급차"},
+  {"word": "first aid", "meaning": "응급처치"},
+  {"word": "injury", "meaning": "부상, 상해"},
+  {"word": "wound", "meaning": "상처, 부상"},
+  {"word": "fracture", "meaning": "골절, 균열"},
+  {"word": "sprain", "meaning": "삐다, 염좌"},
+  {"word": "bruise", "meaning": "멍, 타박상"},
+  {"word": "pain", "meaning": "통증, 고통"},
+  {"word": "ache", "meaning": "아픔, 통증"},
+  {"word": "fever", "meaning": "열, 고열"},
+  {"word": "cough", "meaning": "기침, 기침하다"},
+  {"word": "sneeze", "meaning": "재채기하다"},
+  {"word": "dizzy", "meaning": "어지러운"},
+  {"word": "nausea", "meaning": "메스꺼움, 구역질"},
+  {"word": "fatigue", "meaning": "피로, 피곤"},
+  {"word": "insomnia", "meaning": "불면증"},
+  {"word": "stress", "meaning": "스트레스, 강조"},
+  {"word": "anxiety", "meaning": "불안, 걱정"},
+  {"word": "depression", "meaning": "우울증, 우울, 불황"},
+  {"word": "mental", "meaning": "정신의, 마음의"},
+  {"word": "physical", "meaning": "신체의, 물리적인"},
+  {"word": "psychology", "meaning": "심리학, 심리"},
+  {"word": "therapy", "meaning": "치료, 요법"},
+  {"word": "counseling", "meaning": "상담"},
+  {"word": "rehabilitation", "meaning": "재활"},
+  {"word": "disability", "meaning": "장애"},
+  {"word": "handicap", "meaning": "장애, 불리한 조건"},
+  {"word": "welfare", "meaning": "복지"},
+  {"word": "charity", "meaning": "자선단체, 자선"},
+  {"word": "donation", "meaning": "기부, 기증"},
+  {"word": "volunteer", "meaning": "자원봉사자, 자원하다"},
+  {"word": "community", "meaning": "지역사회, 공동체"},
+  {"word": "society", "meaning": "사회, 협회"},
+  {"word": "culture", "meaning": "문화"},
+  {"word": "tradition", "meaning": "전통"},
+  {"word": "heritage", "meaning": "유산"},
+  {"word": "custom", "meaning": "관습, 풍습, 세관"},
+  {"word": "habit", "meaning": "습관"},
+  {"word": "routine", "meaning": "일과, 일상적인"},
+  {"word": "lifestyle", "meaning": "생활 방식"},
+  {"word": "environment", "meaning": "환경"},
+  {"word": "ecology", "meaning": "생태학, 생태계"},
+  {"word": "nature", "meaning": "자연, 본성"},
+  {"word": "wildlife", "meaning": "야생동물"},
+  {"word": "habitat", "meaning": "서식지"},
+  {"word": "conservation", "meaning": "보존, 보호"},
+  {"word": "pollution", "meaning": "오염"},
+  {"word": "contamination", "meaning": "오염"},
+  {"word": "garbage", "meaning": "쓰레기"},
+  {"word": "trash", "meaning": "쓰레기"},
+  {"word": "waste", "meaning": "쓰레기, 낭비, 낭비하다"},
+  {"word": "recycling", "meaning": "재활용"},
+  {"word": "disposal", "meaning": "처분, 폐기"},
+  {"word": "landfill", "meaning": "쓰레기 매립지"},
+  {"word": "emission", "meaning": "배출, 방출"},
+  {"word": "climate", "meaning": "기후"},
+  {"word": "weather", "meaning": "날씨"},
+  {"word": "atmosphere", "meaning": "대기, 분위기"},
+  {"word": "global warming", "meaning": "지구 온난화"},
+  {"word": "greenhouse effect", "meaning": "온실 효과"},
+  {"word": "ozone layer", "meaning": "오존층"},
+  {"word": "acid rain", "meaning": "산성비"},
+  {"word": "deforestation", "meaning": "산림 파괴"},
+  {"word": "desertification", "meaning": "사막화"},
+  {"word": "drought", "meaning": "가뭄"},
+  {"word": "flood", "meaning": "홍수, 침수시키다"},
+  {"word": "earthquake", "meaning": "지진"},
+  {"word": "tsunami", "meaning": "쓰나미, 지진해일"},
+  {"word": "volcano", "meaning": "화산"},
+  {"word": "eruption", "meaning": "폭발, 분출"},
+  {"word": "disaster", "meaning": "재앙, 재난"},
+  {"word": "catastrophe", "meaning": "참사, 대재앙"},
+  {"word": "emergency", "meaning": "비상사태"},
+  {"word": "evacuation", "meaning": "대피, 피난"},
+  {"word": "shelter", "meaning": "대피소, 주거지, 보호하다"},
+  {"word": "rescue", "meaning": "구조, 구조하다"},
+  {"word": "survival", "meaning": "생존"},
+  {"word": "casualty", "meaning": "사상자, 피해자"},
+  {"word": "victim", "meaning": "희생자, 피해자"},
+  {"word": "survivor", "meaning": "생존자"},
+  {"word": "witness", "meaning": "목격자, 증인"},
+  {"word": "evidence", "meaning": "증거"},
+  {"word": "clue", "meaning": "단서, 실마리"},
+  {"word": "investigation", "meaning": "조사, 수사"},
+  {"word": "detective", "meaning": "형사, 탐정"},
+  {"word": "suspect", "meaning": "용의자, 의심하다"},
+  {"word": "crime", "meaning": "범죄"},
+  {"word": "offense", "meaning": "범죄, 위반, 공격"},
+  {"word": "felony", "meaning": "중범죄"},
+  {"word": "misdemeanor", "meaning": "경범죄"},
+  {"word": "theft", "meaning": "도둑질, 절도"},
+  {"word": "robbery", "meaning": "강도 (사건)"},
+  {"word": "burglary", "meaning": "빈집털이, 주거침입"},
+  {"word": "shoplifting", "meaning": "가게 좀도둑질"},
+  {"word": "fraud", "meaning": "사기"},
+  {"word": "corruption", "meaning": "부패, 타락"},
+  {"word": "bribery", "meaning": "뇌물 수수"},
+  {"word": "blackmail", "meaning": "협박, 갈취"},
+  {"word": "assault", "meaning": "폭행, 공격"},
+  {"word": "murder", "meaning": "살인, 살인하다"},
+  {"word": "kidnapping", "meaning": "납치, 유괴"},
+  {"word": "ransom", "meaning": "몸값"},
+  {"word": "hostage", "meaning": "인질"},
+  {"word": "hijacking", "meaning": "납치, 공중 납치"},
+  {"word": "terrorism", "meaning": "테러리즘"},
+  {"word": "arrest", "meaning": "체포, 체포하다"},
+  {"word": "warrant", "meaning": "영장, 정당하게 만들다"},
+  {"word": "custody", "meaning": "구금, 양육권"},
+  {"word": "interrogation", "meaning": "심문"},
+  {"word": "confession", "meaning": "자백, 고백"},
+  {"word": "trial", "meaning": "재판, 시험, 시도"},
+  {"word": "court", "meaning": "법정, 법원, 코트"},
+  {"word": "judge", "meaning": "판사, 심판, 판단하다"},
+  {"word": "jury", "meaning": "배심원단"},
+  {"word": "prosecutor", "meaning": "검사"},
+  {"word": "defense attorney", "meaning": "변호인, 피고측 변호사"},
+  {"word": "lawyer", "meaning": "변호사"},
+  {"word": "plaintiff", "meaning": "원고, 고소인"},
+  {"word": "defendant", "meaning": "피고인"},
+  {"word": "lawsuit", "meaning": "소송"},
+  {"word": "litigation", "meaning": "소송, 기소"},
+  {"word": "charge", "meaning": "기소, 혐의, 요금, 충전"},
+  {"word": "accusation", "meaning": "비난, 고발"},
+  {"word": "allegation", "meaning": "주장, 혐의"},
+  {"word": "plea", "meaning": "탄원, 답변"},
+  {"word": "verdict", "meaning": "판결, 평결"},
+  {"word": "sentence", "meaning": "선고, 문장, 선고하다"},
+  {"word": "conviction", "meaning": "유죄 판결, 확신"},
+  {"word": "acquittal", "meaning": "무죄 선고"},
+  {"word": "fine", "meaning": "벌금, 좋은, 미세한"},
+  {"word": "imprisonment", "meaning": "투옥, 감금"},
+  {"word": "prison", "meaning": "교도소, 감옥"},
+  {"word": "jail", "meaning": "교도소, 감옥"},
+  {"word": "inmate", "meaning": "수감자"},
+  {"word": "warden", "meaning": "교도소장, 관리인"},
+  {"word": "execution", "meaning": "처형, 집행, 수행"},
+  {"word": "pardon", "meaning": "사면, 용서, 사면하다"},
+  {"word": "parole", "meaning": "가석방"},
+  {"word": "probation", "meaning": "집행유예, 보호관찰, 수습 기간"},
+  {"word": "justice", "meaning": "정의, 사법, 재판관"},
+  {"word": "law", "meaning": "법, 법칙"},
+  {"word": "legislation", "meaning": "법률 제정, 법규"},
+  {"word": "statute", "meaning": "법령, 규정"},
+  {"word": "constitution", "meaning": "헌법, 구성, 체질"},
+  {"word": "amendment", "meaning": "개정안, 수정 조항"},
+  {"word": "right", "meaning": "권리, 오른쪽, 올바른"},
+  {"word": "liberty", "meaning": "자유"},
+  {"word": "freedom", "meaning": "자유"},
+  {"word": "equality", "meaning": "평등"},
+  {"word": "discrimination", "meaning": "차별, 식별력"},
+  {"word": "segregation", "meaning": "차별, 격리"},
+  {"word": "integration", "meaning": "통합"},
+  {"word": "civil rights", "meaning": "시민권, 민권"},
+  {"word": "human rights", "meaning": "인권"},
+  {"word": "democracy", "meaning": "민주주의"},
+  {"word": "republic", "meaning": "공화국"},
+  {"word": "monarchy", "meaning": "군주제, 군주국"},
+  {"word": "dictatorship", "meaning": "독재 정권, 독재"},
+  {"word": "tyranny", "meaning": "폭정, 압제"},
+  {"word": "government", "meaning": "정부"},
+  {"word": "administration", "meaning": "행정부, 관리, 행정"},
+  {"word": "regime", "meaning": "정권, 제도"},
+  {"word": "state", "meaning": "국가, 주, 상태, 진술하다"},
+  {"word": "nation", "meaning": "국가, 민족"},
+  {"word": "country", "meaning": "나라, 시골"},
+  {"word": "sovereignty", "meaning": "주권, 통치권"},
+  {"word": "independence", "meaning": "독립"},
+  {"word": "patriotism", "meaning": "애국심"},
+  {"word": "nationalism", "meaning": "민족주의, 국가주의"},
+  {"word": "citizenship", "meaning": "시민권"},
+  {"word": "politics", "meaning": "정치, 정치학"},
+  {"word": "politician", "meaning": "정치인"},
+  {"word": "statesman", "meaning": "정치가"},
+  {"word": "leader", "meaning": "지도자, 리더"},
+  {"word": "policy", "meaning": "정책, 방침"},
+  {"word": "campaign", "meaning": "선거 운동, 캠페인"},
+  {"word": "election", "meaning": "선거"},
+  {"word": "vote", "meaning": "투표, 투표하다"},
+  {"word": "ballot", "meaning": "투표용지, 투표"},
+  {"word": "candidate", "meaning": "후보자"},
+  {"word": "nominee", "meaning": "지명된 사람, 후보자"},
+  {"word": "opponent", "meaning": "반대자, 상대"},
+  {"word": "rival", "meaning": "경쟁자, 필적하다"},
+  {"word": "debate", "meaning": "토론, 논쟁"},
+  {"word": "controversy", "meaning": "논란, 말다툼"},
+  {"word": "dispute", "meaning": "분쟁, 논란, 반박하다"},
+  {"word": "conflict", "meaning": "갈등, 충돌"},
+  {"word": "crisis", "meaning": "위기"},
+  {"word": "scandal", "meaning": "스캔들, 추문"},
+  {"word": "corruption", "meaning": "부패, 타락"},
+  {"word": "reform", "meaning": "개혁, 개혁하다"},
+  {"word": "revolution", "meaning": "혁명, 회전"},
+  {"word": "protest", "meaning": "항의, 시위, 항의하다"},
+  {"word": "demonstration", "meaning": "시위, 데모, 설명"},
+  {"word": "strike", "meaning": "파업, 타격, 치다"},
+  {"word": "boycott", "meaning": "불매 운동, 보이콧"},
+  {"word": "petition", "meaning": "탄원서, 청원서"},
+  {"word": "lobbying", "meaning": "로비 활동"},
+  {"word": "propaganda", "meaning": "선전 (활동)"},
+  {"word": "censorship", "meaning": "검열"},
+  {"word": "diplomacy", "meaning": "외교"},
+  {"word": "ambassador", "meaning": "대사"},
+  {"word": "embassy", "meaning": "대사관"},
+  {"word": "consulate", "meaning": "영사관"},
+  {"word": "treaty", "meaning": "조약"},
+  {"word": "alliance", "meaning": "동맹, 연합"},
+  {"word": "summit", "meaning": "정상 회담, 정상"},
+  {"word": "sanction", "meaning": "제재, 허가"},
+  {"word": "embargo", "meaning": "통상 금지, 금수 조치"},
+  {"word": "international relations", "meaning": "국제 관계"},
+  {"word": "globalization", "meaning": "세계화"},
+  {"word": "foreign policy", "meaning": "대외 정책, 외교 정책"},
+  {"word": "united nations", "meaning": "국제연합, 유엔"},
+  {"word": "treaty", "meaning": "조약"},
+  {"word": "pact", "meaning": "조약, 협정"},
+  {"word": "accord", "meaning": "합의, 일치"},
+  {"word": "negotiation", "meaning": "협상"},
+  {"word": "compromise", "meaning": "타협, 타협하다"},
+  {"word": "mediator", "meaning": "중재자"},
+  {"word": "arbitrator", "meaning": "중재인"},
+  {"word": "settlement", "meaning": "합의, 정착지"},
+  {"word": "resolution", "meaning": "해결, 결의안, 결단력"},
+  {"word": "truce", "meaning": "휴전, 정전"},
+  {"word": "ceasefire", "meaning": "휴전, 정전"},
+  {"word": "peace", "meaning": "평화"},
+  {"word": "armistice", "meaning": "휴전 (협정)"},
+  {"word": "warfare", "meaning": "전쟁, 전투"},
+  {"word": "battle", "meaning": "전투, 싸움"},
+  {"word": "combat", "meaning": "전투, 싸우다"},
+  {"word": "clash", "meaning": "충돌, 충돌하다"},
+  {"word": "skirmish", "meaning": "소규모 충돌"},
+  {"word": "invasion", "meaning": "침략, 침입"},
+  {"word": "aggression", "meaning": "공격성, 침략"},
+  {"word": "hostility", "meaning": "적대감, 적대 행위"},
+  {"word": "defense", "meaning": "방어, 변호"},
+  {"word": "offense", "meaning": "공격, 위반, 범죄"},
+  {"word": "strategy", "meaning": "전략"},
+  {"word": "tactics", "meaning": "전술"},
+  {"word": "maneuver", "meaning": "책략, 작전 행동"},
+  {"word": "deployment", "meaning": "배치"},
+  {"word": "mobilization", "meaning": "동원"},
+  {"word": "conscription", "meaning": "징병제"},
+  {"word": "draft", "meaning": "초안, 징집, 초안을 작성하다"},
+  {"word": "enlistment", "meaning": "입대"},
+  {"word": "recruitment", "meaning": "채용, 모집"},
+  {"word": "soldier", "meaning": "군인"},
+  {"word": "officer", "meaning": "장교, 경찰관, 공무원"},
+  {"word": "commander", "meaning": "지휘관, 사령관"},
+  {"word": "general", "meaning": "장군, 일반적인"},
+  {"word": "admiral", "meaning": "제독, 해군 대장"},
+  {"word": "troops", "meaning": "군대, 부대"},
+  {"word": "army", "meaning": "육군, 군대"},
+  {"word": "navy", "meaning": "해군"},
+  {"word": "air force", "meaning": "공군"},
+  {"word": "marines", "meaning": "해병대"},
+  {"word": "infantry", "meaning": "보병대, 보병"},
+  {"word": "cavalry", "meaning": "기병대"},
+  {"word": "artillery", "meaning": "포병대, 대포"},
+  {"word": "fleet", "meaning": "함대, 빠른"},
+  {"word": "squadron", "meaning": "비행 대대, 소함대"},
+  {"word": "garrison", "meaning": "주둔군"},
+  {"word": "fortress", "meaning": "요새"},
+  {"word": "stronghold", "meaning": "요새, 근거지"},
+  {"word": "trench", "meaning": "참호"},
+  {"word": "bunker", "meaning": "벙커"},
+  {"word": "weapon", "meaning": "무기"},
+  {"word": "arms", "meaning": "무기, 팔"},
+  {"word": "ammunition", "meaning": "탄약"},
+  {"word": "artillery", "meaning": "포병대, 대포"},
+  {"word": "missile", "meaning": "미사일"},
+  {"word": "rocket", "meaning": "로켓"},
+  {"word": "torpedo", "meaning": "어뢰"},
+  {"word": "mine", "meaning": "지뢰, 광산, 나의 것"},
+  {"word": "grenade", "meaning": "수류탄"},
+  {"word": "rifle", "meaning": "소총"},
+  {"word": "pistol", "meaning": "권총"},
+  {"word": "shield", "meaning": "방패, 보호하다"},
+  {"word": "armor", "meaning": "갑옷"},
+  {"word": "helmet", "meaning": "헬멧, 투구"},
+  {"word": "casualty", "meaning": "사상자, 피해자"},
+  {"word": "fatality", "meaning": "사망자 (수)"},
+  {"word": "wounded", "meaning": "부상을 입은 (사람들)"},
+  {"word": "missing", "meaning": "실종된, 사라진"},
+  {"word": "prisoner of war", "meaning": "전쟁포로"},
+  {"word": "civilian", "meaning": "민간인"},
+  {"word": "refugee", "meaning": "난민"},
+  {"word": "atrocity", "meaning": "잔혹 행위"},
+  {"word": "massacre", "meaning": "학살, 대량 학살"},
+  {"word": "genocide", "meaning": "집단 학살"},
+  {"word": "devastation", "meaning": "황폐화, 파괴"},
+  {"word": "destruction", "meaning": "파괴"},
+  {"word": "ruin", "meaning": "파멸, 유적, 망치다"},
+  {"word": "defeat", "meaning": "패배, 패배시키다"},
+  {"word": "victory", "meaning": "승리"},
+  {"word": "conquest", "meaning": "정복"},
+  {"word": "surrender", "meaning": "항복, 항복하다"},
+  {"word": "occupation", "meaning": "점령, 직업"},
+  {"word": "annexation", "meaning": "병합, 합병"},
+  {"word": "liberation", "meaning": "해방"},
+  {"word": "independence", "meaning": "독립"},
+  {"word": "sovereignty", "meaning": "주권"},
+  {"word": "reconstruction", "meaning": "재건"},
+  {"word": "reconciliation", "meaning": "화해"},
+  {"word": "economy", "meaning": "경제, 절약"},
+  {"word": "economics", "meaning": "경제학"},
+  {"word": "economic", "meaning": "경제의"},
+  {"word": "economical", "meaning": "알뜰한, 절약하는"},
+  {"word": "finance", "meaning": "재정, 자금 조달"},
+  {"word": "financial", "meaning": "재정의, 금융의"},
+  {"word": "fiscal", "meaning": "국가 재정의, 회계의"},
+  {"word": "monetary", "meaning": "통화의, 화폐의"},
+  {"word": "currency", "meaning": "통화, 화폐, 통용"},
+  {"word": "capital", "meaning": "자본, 수도, 대문자"},
+  {"word": "wealth", "meaning": "부, 재산"},
+  {"word": "assets", "meaning": "자산, 재산"},
+  {"word": "property", "meaning": "재산, 부동산, 특성"},
+  {"word": "estate", "meaning": "재산, 사유지"},
+  {"word": "resource", "meaning": "자원"},
+  {"word": "commodity", "meaning": "상품, 원자재"},
+  {"word": "goods", "meaning": "상품, 제품"},
+  {"word": "merchandise", "meaning": "상품, 물품"},
+  {"word": "product", "meaning": "제품, 생산품"},
+  {"word": "production", "meaning": "생산"},
+  {"word": "consumption", "meaning": "소비"},
+  {"word": "consumer", "meaning": "소비자"},
+  {"word": "producer", "meaning": "생산자"},
+  {"word": "supply", "meaning": "공급, 공급하다"},
+  {"word": "demand", "meaning": "수요, 요구하다"},
+  {"word": "market", "meaning": "시장"},
+  {"word": "industry", "meaning": "산업, 근면"},
+  {"word": "sector", "meaning": "부문, 분야"},
+  {"word": "business", "meaning": "사업, 업무"},
+  {"word": "commerce", "meaning": "상업, 무역"},
+  {"word": "trade", "meaning": "무역, 거래"},
+  {"word": "transaction", "meaning": "거래, 매매"},
+  {"word": "deal", "meaning": "거래, 다루다"},
+  {"word": "agreement", "meaning": "협정, 동의"},
+  {"word": "contract", "meaning": "계약, 수축하다"},
+  {"word": "enterprise", "meaning": "기업, 사업"},
+  {"word": "corporation", "meaning": "대기업, 법인"},
+  {"word": "company", "meaning": "회사, 친구"},
+  {"word": "firm", "meaning": "회사, 단단한"},
+  {"word": "partnership", "meaning": "동업, 파트너십"},
+  {"word": "monopoly", "meaning": "독점"},
+  {"word": "competition", "meaning": "경쟁"},
+  {"word": "competitor", "meaning": "경쟁자, 경쟁 상대"},
+  {"word": "rivalry", "meaning": "경쟁 (의식)"},
+  {"word": "merger", "meaning": "합병"},
+  {"word": "acquisition", "meaning": "인수, 습득"},
+  {"word": "takeover", "meaning": "인수"},
+  {"word": "investment", "meaning": "투자"},
+  {"word": "investor", "meaning": "투자자"},
+  {"word": "share", "meaning": "주식, 몫, 공유하다"},
+  {"word": "stock", "meaning": "주식, 재고"},
+  {"word": "bond", "meaning": "채권, 유대"},
+  {"word": "dividend", "meaning": "배당금"},
+  {"word": "profit", "meaning": "이익, 수익"},
+  {"word": "revenue", "meaning": "수입, 세입"},
+  {"word": "earnings", "meaning": "소득, 수입"},
+  {"word": "income", "meaning": "수입, 소득"},
+  {"word": "turnover", "meaning": "매출액, 이직률"},
+  {"word": "cost", "meaning": "비용, 비용이 들다"},
+  {"word": "expense", "meaning": "비용, 지출"},
+  {"word": "expenditure", "meaning": "지출, 비용"},
+  {"word": "loss", "meaning": "손실, 분실"},
+  {"word": "deficit", "meaning": "적자, 부족액"},
+  {"word": "surplus", "meaning": "흑자, 과잉"},
+  {"word": "debt", "meaning": "빚, 부채"},
+  {"word": "liability", "meaning": "부채, 법적 책임, 골칫거리"},
+  {"word": "bankruptcy", "meaning": "파산"},
+  {"word": "insolvency", "meaning": "파산, 지급 불능"},
+  {"word": "recession", "meaning": "경기 침체, 불황"},
+  {"word": "depression", "meaning": "불황, 우울증"},
+  {"word": "inflation", "meaning": "인플레이션, 물가 상승"},
+  {"word": "deflation", "meaning": "디플레이션, 물가 하락"},
+  {"word": "stagnation", "meaning": "경기 침체, 정체"},
+  {"word": "growth", "meaning": "성장"},
+  {"word": "expansion", "meaning": "확장, 팽창"},
+  {"word": "boom", "meaning": "호황, 붐"},
+  {"word": "prosperity", "meaning": "번영, 번창"},
+  {"word": "wealth", "meaning": "부, 재산"},
+  {"word": "poverty", "meaning": "가난, 빈곤"},
+  {"word": "destitution", "meaning": "극빈, 빈곤"},
+  {"word": "employment", "meaning": "고용"},
+  {"word": "unemployment", "meaning": "실업"},
+  {"word": "job", "meaning": "직업, 일"},
+  {"word": "work", "meaning": "일, 작품, 일하다"},
+  {"word": "labor", "meaning": "노동"},
+  {"word": "workforce", "meaning": "노동력, 전 직원"},
+  {"word": "employee", "meaning": "직원, 피고용인"},
+  {"word": "employer", "meaning": "고용주"},
+  {"word": "wage", "meaning": "임금 (주로 시간제)"},
+  {"word": "salary", "meaning": "급여 (월급/연봉)"},
+  {"word": "earnings", "meaning": "소득, 수입"},
+  {"word": "income", "meaning": "수입, 소득"},
+  {"word": "benefit", "meaning": "수당, 복리후생, 이익"},
+  {"word": "pension", "meaning": "연금"},
+  {"word": "welfare", "meaning": "복지"},
+  {"word": "subsidy", "meaning": "보조금"},
+  {"word": "grant", "meaning": "보조금, 승인하다"},
+  {"word": "allowance", "meaning": "용돈, 수당"},
+  {"word": "budget", "meaning": "예산"},
+  {"word": "tax", "meaning": "세금"},
+  {"word": "taxation", "meaning": "과세, 세제"},
+  {"word": "tariff", "meaning": "관세"},
+  {"word": "duty", "meaning": "관세, 의무"},
+  {"word": "revenue", "meaning": "세입, 수입"},
+  {"word": "expenditure", "meaning": "지출"},
+  {"word": "debt", "meaning": "국채, 빚"},
+  {"word": "loan", "meaning": "대출, 대여"},
+  {"word": "mortgage", "meaning": "담보 대출"},
+  {"word": "credit", "meaning": "신용, 칭찬"},
+  {"word": "debit", "meaning": "직불, 출금"},
+  {"word": "balance", "meaning": "잔고, 균형"},
+  {"word": "account", "meaning": "계좌, 설명"},
+  {"word": "deposit", "meaning": "예금, 보증금, 예금하다"},
+  {"word": "withdrawal", "meaning": "인출, 철회"},
+  {"word": "interest", "meaning": "이자, 흥미"},
+  {"word": "principal", "meaning": "원금, 교장, 주요한"},
+  {"word": "rate", "meaning": "금리, 비율, 요금"},
+  {"word": "yield", "meaning": "수익률, 산출량, 양보하다"},
+  {"word": "return", "meaning": "수익, 반품, 돌아오다"},
+  {"word": "risk", "meaning": "위험"},
+  {"word": "speculation", "meaning": "투기, 추측"},
+  {"word": "gamble", "meaning": "도박"},
+  {"word": "lottery", "meaning": "복권"},
+  {"word": "insurance", "meaning": "보험"},
+  {"word": "premium", "meaning": "보험료, 할증료"},
+  {"word": "policy", "meaning": "보험증권, 정책"},
+  {"word": "claim", "meaning": "보험금 청구, 주장, 주장하다"},
+  {"word": "coverage", "meaning": "보장 범위, 보도"},
+  {"word": "compensation", "meaning": "보상(금)"},
+  {"word": "indemnity", "meaning": "보상, 배상"},
+  {"word": "liability", "meaning": "책임, 부채"},
+  {"word": "commerce", "meaning": "상업, 무역"},
+  {"word": "trade", "meaning": "무역, 거래"},
+  {"word": "export", "meaning": "수출, 수출하다"},
+  {"word": "import", "meaning": "수입, 수입하다"},
+  {"word": "tariff", "meaning": "관세"},
+  {"word": "quota", "meaning": "할당량"},
+  {"word": "embargo", "meaning": "통상 금지"},
+  {"word": "sanction", "meaning": "제재, 허가"},
+  {"word": "treaty", "meaning": "조약"},
+  {"word": "agreement", "meaning": "협정, 동의"},
+  {"word": "pact", "meaning": "조약, 협정"},
+  {"word": "customs", "meaning": "세관, 관습"},
+  {"word": "smuggling", "meaning": "밀수"},
+  {"word": "contraband", "meaning": "밀수품"},
+  {"word": "logistics", "meaning": "물류, 실행 계획"},
+  {"word": "transportation", "meaning": "운송, 교통수단"},
+  {"word": "shipping", "meaning": "배송, 해운"},
+  {"word": "delivery", "meaning": "배달"},
+  {"word": "freight", "meaning": "화물"},
+  {"word": "cargo", "meaning": "화물"},
+  {"word": "consignment", "meaning": "위탁 수하물, 위탁"},
+  {"word": "inventory", "meaning": "재고 (목록)"},
+  {"word": "warehouse", "meaning": "창고"},
+  {"word": "distribution", "meaning": "유통, 분배"},
+  {"word": "retail", "meaning": "소매"},
+  {"word": "wholesale", "meaning": "도매"},
+  {"word": "merchant", "meaning": "상인"},
+  {"word": "trader", "meaning": "무역상, 거래자"},
+  {"word": "dealer", "meaning": "판매상, 딜러"},
+  {"word": "vendor", "meaning": "행상인, 판매업체"},
+  {"word": "supplier", "meaning": "공급업체"},
+  {"word": "distributor", "meaning": "유통업체"},
+  {"word": "broker", "meaning": "중개인"},
+  {"word": "agent", "meaning": "대리인"},
+  {"word": "representative", "meaning": "대표자"},
+  {"word": "client", "meaning": "고객, 의뢰인"},
+  {"word": "customer", "meaning": "고객"},
+  {"word": "consumer", "meaning": "소비자"},
+  {"word": "buyer", "meaning": "구매자"},
+  {"word": "purchaser", "meaning": "구매자"},
+  {"word": "patron", "meaning": "단골고객, 후원자"},
+  {"word": "subscriber", "meaning": "구독자"},
+  {"word": "user", "meaning": "사용자"},
+  {"word": "end-user", "meaning": "최종 사용자"},
+  {"word": "audience", "meaning": "청중, 관객"},
+  {"word": "spectator", "meaning": "관객"},
+  {"word": "viewer", "meaning": "시청자"},
+  {"word": "listener", "meaning": "청취자"},
+  {"word": "reader", "meaning": "독자"},
+  {"word": "author", "meaning": "저자, 작가"},
+  {"word": "writer", "meaning": "작가"},
+  {"word": "publisher", "meaning": "출판사"},
+  {"word": "editor", "meaning": "편집자"},
+  {"word": "journalist", "meaning": "기자"},
+  {"word": "reporter", "meaning": "기자"},
+  {"word": "correspondent", "meaning": "특파원"},
+  {"word": "columnist", "meaning": "칼럼니스트"},
+  {"word": "critic", "meaning": "비평가"},
+  {"word": "reviewer", "meaning": "리뷰어, 비평가"},
+  {"word": "commentator", "meaning": "해설가"},
+  {"word": "announcer", "meaning": "아나운서"},
+  {"word": "anchor", "meaning": "앵커, 닻"},
+  {"word": "host", "meaning": "진행자, 주인"},
+  {"word": "presenter", "meaning": "진행자, 발표자"},
+  {"word": "speaker", "meaning": "연사, 연설가, 스피커"},
+  {"word": "lecturer", "meaning": "강사"},
+  {"word": "instructor", "meaning": "교사, 강사"},
+  {"word": "teacher", "meaning": "교사"},
+  {"word": "professor", "meaning": "교수"},
+  {"word": "scholar", "meaning": "학자"},
+  {"word": "academic", "meaning": "대학교수, 학업의"},
+  {"word": "researcher", "meaning": "연구원"},
+  {"word": "scientist", "meaning": "과학자"},
+  {"word": "engineer", "meaning": "엔지니어, 기술자"},
+  {"word": "technician", "meaning": "기술자"},
+  {"word": "mechanic", "meaning": "정비사"},
+  {"word": "operator", "meaning": "조작자, 전화 교환원"},
+  {"word": "driver", "meaning": "운전자"},
+  {"word": "pilot", "meaning": "조종사, 수로 안내인"},
+  {"word": "captain", "meaning": "선장, 기장, 주장, 대위"},
+  {"word": "sailor", "meaning": "선원"},
+  {"word": "crew", "meaning": "승무원"},
+  {"word": "flight attendant", "meaning": "승무원 (비행기)"},
+  {"word": "steward", "meaning": "승무원 (남자)"},
+  {"word": "stewardess", "meaning": "승무원 (여자)"},
+  {"word": "hotelier", "meaning": "호텔 경영자"},
+  {"word": "receptionist", "meaning": "접수원"},
+  {"word": "concierge", "meaning": "안내원, 안내 데스크"},
+  {"word": "porter", "meaning": "짐꾼"},
+  {"word": "bellhop", "meaning": "벨보이"},
+  {"word": "waiter", "meaning": "웨이터"},
+  {"word": "waitress", "meaning": "웨이트리스"},
+  {"word": "bartender", "meaning": "바텐더"},
+  {"word": "chef", "meaning": "요리사, 주방장"},
+  {"word": "cook", "meaning": "요리사, 요리하다"},
+  {"word": "baker", "meaning": "제빵사"},
+  {"word": "confectioner", "meaning": "제과업자"},
+  {"word": "butcher", "meaning": "정육점 주인"},
+  {"word": "grocer", "meaning": "식료품 상인"},
+  {"word": "greengrocer", "meaning": "채소 장수"},
+  {"word": "fishmonger", "meaning": "생선 장수"},
+  {"word": "florist", "meaning": "꽃집 주인"},
+  {"word": "hairdresser", "meaning": "미용사"},
+  {"word": "barber", "meaning": "이발사"},
+  {"word": "beautician", "meaning": "미용사, 피부관리사"},
+  {"word": "stylist", "meaning": "스타일리스트"},
+  {"word": "designer", "meaning": "디자이너"},
+  {"word": "tailor", "meaning": "재단사"},
+  {"word": "dressmaker", "meaning": "양장점 주인"},
+  {"word": "shoemaker", "meaning": "구두 수선공"},
+  {"word": "cobbler", "meaning": "구두 수선공"},
+  {"word": "jeweler", "meaning": "보석상"},
+  {"word": "goldsmith", "meaning": "금세공인"},
+  {"word": "silversmith", "meaning": "은세공인"},
+  {"word": "blacksmith", "meaning": "대장장이"},
+  {"word": "carpenter", "meaning": "목수"},
+  {"word": "plumber", "meaning": "배관공"},
+  {"word": "electrician", "meaning": "전기 기사"},
+  {"word": "mason", "meaning": "석공"},
+  {"word": "bricklayer", "meaning": "벽돌공"},
+  {"word": "painter", "meaning": "화가, 페인트공"},
+  {"word": "decorator", "meaning": "도배업자, 인테리어 업자"},
+  {"word": "architect", "meaning": "건축가"},
+  {"word": "builder", "meaning": "건축업자"},
+  {"word": "contractor", "meaning": "계약업체, 하청업자"},
+  {"word": "surveyor", "meaning": "측량사, 감정인"},
+  {"word": "real estate agent", "meaning": "부동산 중개인"},
+  {"word": "realtor", "meaning": "부동산 중개인"},
+  {"word": "broker", "meaning": "중개인"},
+  {"word": "underwriter", "meaning": "보험 인수업자"},
+  {"word": "actuary", "meaning": "보험 계리사"},
+  {"word": "accountant", "meaning": "회계사"},
+  {"word": "auditor", "meaning": "감사원, 청강생"},
+  {"word": "bookkeeper", "meaning": "장부 기입원"},
+  {"word": "cashier", "meaning": "계산원"},
+  {"word": "teller", "meaning": "은행 창구 직원"},
+  {"word": "clerk", "meaning": "사무원, 점원"},
+  {"word": "secretary", "meaning": "비서, 장관"},
+  {"word": "typist", "meaning": "타자수"},
+  {"word": "receptionist", "meaning": "접수원"},
+  {"word": "telephonist", "meaning": "전화 교환원"},
+  {"word": "operator", "meaning": "조작자, 교환원"},
+  {"word": "courier", "meaning": "택배원, 안내원"},
+  {"word": "messenger", "meaning": "메신저, 전령"},
+  {"word": "postman", "meaning": "우체부"},
+  {"word": "mail carrier", "meaning": "우체부"},
+  {"word": "delivery man", "meaning": "배달원"},
+  {"word": "porter", "meaning": "짐꾼, 문지기"},
+  {"word": "doorman", "meaning": "문지기"},
+  {"word": "concierge", "meaning": "안내원"},
+  {"word": "janitor", "meaning": "수호인, 관리인"},
+  {"word": "caretaker", "meaning": "관리인"},
+  {"word": "cleaner", "meaning": "청소부"},
+  {"word": "maid", "meaning": "가정부, 하녀"},
+  {"word": "housekeeper", "meaning": "가정부, 주부"},
+  {"word": "nanny", "meaning": "유모"},
+  {"word": "babysitter", "meaning": "보모, 베이비시터"},
+  {"word": "nursemaid", "meaning": "유모"},
+  {"word": "governess", "meaning": "가정교사 (여자)"},
+  {"word": "tutor", "meaning": "가정교사, 강사"},
+  {"word": "coach", "meaning": "코치, 마차, 지도하다"},
+  {"word": "trainer", "meaning": "트레이너"},
+  {"word": "instructor", "meaning": "강사"},
+  {"word": "educator", "meaning": "교육자"},
+  {"word": "pedagogue", "meaning": "교육자"},
+  {"word": "principal", "meaning": "교장, 주요한"},
+  {"word": "headmaster", "meaning": "교장 (남자)"},
+  {"word": "headmistress", "meaning": "교장 (여자)"},
+  {"word": "dean", "meaning": "학장"},
+  {"word": "chancellor", "meaning": "총장, 장관"},
+  {"word": "rector", "meaning": "총장, 교구 목사"},
+  {"word": "vicar", "meaning": "교구 목사"},
+  {"word": "curate", "meaning": "부목사"},
+  {"word": "priest", "meaning": "사제, 신부"},
+  {"word": "clergyman", "meaning": "성직자"},
+  {"word": "minister", "meaning": "목사, 장관"},
+  {"word": "pastor", "meaning": "목사"},
+  {"word": "preacher", "meaning": "설교자"},
+  {"word": "evangelist", "meaning": "전도사"},
+  {"word": "missionary", "meaning": "선교사"},
+  {"word": "monk", "meaning": "수도승"},
+  {"word": "friar", "meaning": "수도사"},
+  {"word": "nun", "meaning": "수녀"},
+  {"word": "abbot", "meaning": "수도원장 (남자)"},
+  {"word": "abbess", "meaning": "수도원장 (여자)"},
+  {"word": "bishop", "meaning": "주교"},
+  {"word": "archbishop", "meaning": "대주교"},
+  {"word": "cardinal", "meaning": "추기경, 주요한"},
+  {"word": "pope", "meaning": "교황"},
+  {"word": "caliph", "meaning": "칼리프"},
+  {"word": "sultan", "meaning": "술탄"},
+  {"word": "emir", "meaning": "에미르"},
+  {"word": "sheikh", "meaning": "셰이크"},
+  {"word": "imam", "meaning": "이맘"},
+  {"word": "rabbi", "meaning": "라비"},
+  {"word": "guru", "meaning": "구루, 스승"},
+  {"word": "yogi", "meaning": "요가 수행자"},
+  {"word": "fakir", "meaning": "고행자"},
+  {"word": "hermit", "meaning": "은둔자"},
+  {"word": "recluse", "meaning": "은둔자"},
+  {"word": "ascetic", "meaning": "금욕주의자"},
+  {"word": "saint", "meaning": "성인"},
+  {"word": "prophet", "meaning": "예언자"},
+  {"word": "seer", "meaning": "선견지명 있는 사람"},
+  {"word": "oracle", "meaning": "신탁, 신탁을 전하는 사람"},
+  {"word": "shaman", "meaning": "주술사, 샤먼"},
+  {"word": "witch doctor", "meaning": "주술사"},
+  {"word": "medicine man", "meaning": "주술사"},
+  {"word": "sorcerer", "meaning": "마법사"},
+  {"word": "sorceress", "meaning": "마녀"},
+  {"word": "wizard", "meaning": "마법사"},
+  {"word": "witch", "meaning": "마녀"},
+  {"word": "warlock", "meaning": "마법사 (남자)"},
+  {"word": "magician", "meaning": "마술사"},
+  {"word": "illusionist", "meaning": "마술사"},
+  {"word": "conjurer", "meaning": "마술사"},
+  {"word": "juggler", "meaning": "저글러"},
+  {"word": "acrobat", "meaning": "곡예사"},
+  {"word": "contortionist", "meaning": "연체 곡예사"},
+  {"word": "trapeze artist", "meaning": "공중그네 곡예사"},
+  {"word": "tightrope walker", "meaning": "줄타기 곡예사"},
+  {"word": "stuntman", "meaning": "스턴트맨"},
+  {"word": "stuntwoman", "meaning": "스턴트우먼"},
+  {"word": "daredevil", "meaning": "무모한 사람"},
+  {"word": "adventurer", "meaning": "모험가"},
+  {"word": "explorer", "meaning": "탐험가"},
+  {"word": "pioneer", "meaning": "개척자"},
+  {"word": "settler", "meaning": "정착민"},
+  {"word": "colonist", "meaning": "식민지 개척자"},
+  {"word": "immigrant", "meaning": "이민자"},
+  {"word": "emigrant", "meaning": "이민자 (나가는)"},
+  {"word": "migrant", "meaning": "이주자"},
+  {"word": "refugee", "meaning": "난민"},
+  {"word": "exile", "meaning": "망명객, 추방된 사람"},
+  {"word": "expatriate", "meaning": "국외 거주자"},
+  {"word": "foreigner", "meaning": "외국인"},
+  {"word": "alien", "meaning": "외계인, 외국인"},
+  {"word": "stranger", "meaning": "낯선 사람"},
+  {"word": "outsider", "meaning": "외부인"},
+  {"word": "intruder", "meaning": "침입자"},
+  {"word": "trespasser", "meaning": "무단 침입자"},
+  {"word": "invader", "meaning": "침략자"},
+  {"word": "conqueror", "meaning": "정복자"},
+  {"word": "subjugator", "meaning": "정복자, 복종시키는 사람"},
+  {"word": "oppressor", "meaning": "억압자"},
+  {"word": "tyrant", "meaning": "폭군, 독재자"},
+  {"word": "despot", "meaning": "독재자"},
+  {"word": "dictator", "meaning": "독재자"},
+  {"word": "autocrat", "meaning": "독재자, 전제 군주"},
+  {"word": "monarch", "meaning": "군주"},
+  {"word": "sovereign", "meaning": "군주, 주권자"},
+  {"word": "emperor", "meaning": "황제"},
+  {"word": "empress", "meaning": "황후, 여제"},
+  {"word": "king", "meaning": "왕"},
+  {"word": "queen", "meaning": "여왕"},
+  {"word": "prince", "meaning": "왕자"},
+  {"word": "princess", "meaning": "공주"},
+  {"word": "duke", "meaning": "공작"},
+  {"word": "duchess", "meaning": "공작부인"},
+  {"word": "marquis", "meaning": "후작"},
+  {"word": "marchioness", "meaning": "후작부인"},
+  {"word": "earl", "meaning": "백작"},
+  {"word": "count", "meaning": "백작"},
+  {"word": "countess", "meaning": "백작부인"},
+  {"word": "viscount", "meaning": "자작"},
+  {"word": "viscountess", "meaning": "자작부인"},
+  {"word": "baron", "meaning": "남작"},
+  {"word": "baroness", "meaning": "남작부인"},
+  {"word": "baronet", "meaning": "준남작"},
+  {"word": "knight", "meaning": "기사"},
+  {"word": "dame", "meaning": "데임, 부인"},
+  {"word": "noble", "meaning": "귀족, 고귀한"},
+  {"word": "nobleman", "meaning": "귀족 (남자)"},
+  {"word": "noblewoman", "meaning": "귀족 (여자)"},
+  {"word": "aristocrat", "meaning": "귀족"},
+  {"word": "patrician", "meaning": "귀족, 명문가 사람"},
+  {"word": "plebeian", "meaning": "평민, 서민"},
+  {"word": "commoner", "meaning": "평민"},
+  {"word": "peasant", "meaning": "소농, 농민"},
+  {"word": "serf", "meaning": "농노"},
+  {"word": "slave", "meaning": "노예"},
+  {"word": "bondman", "meaning": "남자 노예"},
+  {"word": "bondwoman", "meaning": "여자 노예"},
+  {"word": "master", "meaning": "주인, 거장"},
+  {"word": "mistress", "meaning": "여주인, 정부"},
+  {"word": "servant", "meaning": "하인, 종"},
+  {"word": "valet", "meaning": "하인, 시종"},
+  {"word": "footman", "meaning": "하인 (제복을 입은)"},
+  {"word": "page", "meaning": "시종, 페이지"},
+  {"word": "scullery maid", "meaning": "부엌데기"},
+  {"word": "housemaid", "meaning": "하녀"},
+  {"word": "chambermaid", "meaning": "객실 담당 하녀"},
+  {"word": "nursemaid", "meaning": "유모"},
+  {"word": "nanny", "meaning": "유모"},
+  {"word": "governess", "meaning": "가정교사 (여자)"},
+  {"word": "tutor", "meaning": "가정교사"},
+  {"word": "mentor", "meaning": "멘토, 스승"},
+  {"word": "protege", "meaning": "피보호자, 제자"},
+  {"word": "pupil", "meaning": "학생, 눈동자"},
+  {"word": "disciple", "meaning": "제자"},
+  {"word": "skeptical", "meaning": "회의적인"},
+  {"word": "hostile", "meaning": "적대적인"},
+  {"word": "breathtaking", "meaning": "숨 막히는"}
+];
+
+var storeKey = "cutop_suunggibon1800_2";
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+function speakFc() {
+  speak(document.getElementById("fcword").textContent);
+}
+
+function getProgress() {
+  var str = localStorage.getItem(storeKey);
+  if (!str) return {};
+  try { return JSON.parse(str); } catch(e) { return {}; }
+}
+
+function saveProgress(p) {
+  localStorage.setItem(storeKey, JSON.stringify(p));
+}
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+var ranges = buildRanges(rawWords);
+
+var lri = 0, fri = 0, tri = 0;
+var lFilter = "all";
+
+function switchTab(t) {
+  ["list","flash","quiz","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="quiz")  { initQuiz(); }
+  if (t==="test")  { renderSetup(); }
+}
+
+function renderRangeBar(barId, curIdx, clickFuncStr) {
+  var bar = document.getElementById(barId);
+  var html = "";
+  ranges.forEach(function(r, i) {
+    var act = (i === curIdx) ? " active" : "";
+    html += '<button class="range-btn' + act + '" onclick="' + clickFuncStr + '(' + i + ')">' + r.label + '</button>';
+  });
+  bar.innerHTML = html;
+}
+
+function setLR(i) { lri = i; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setFR(i) { fri = i; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+
+function setLFilter(f) {
+  lFilter = f;
+  ["all", "not", "fav"].forEach(function(n) {
+    document.getElementById("lf-"+n).classList.toggle("active", n===f);
+  });
+  renderList();
+}
+
+function toggleKnown(k) {
+  var p = getProgress();
+  if(!p[k]) p[k] = { status: "", fav: false };
+  p[k].status = (p[k].status === "known") ? "" : "known";
+  saveProgress(p);
+  renderList();
+}
+
+function toggleFav(k, e) {
+  if(e) e.stopPropagation();
+  var p = getProgress();
+  if(!p[k]) p[k] = { status: "", fav: false };
+  p[k].fav = !p[k].fav;
+  saveProgress(p);
+  renderList();
+}
+
+function renderList() {
+  var area = document.getElementById("wordlistArea");
+  var q = document.getElementById("lsearch").value.toLowerCase().trim();
+  var p = getProgress();
+  var r = ranges[lri];
+  var html = "";
+
+  for (var i = r.s; i < r.e; i++) {
+    var w = rawWords[i];
+    var k = w.word + "|" + w.meaning;
+    var info = p[k] || { status: "", fav: false };
+
+    if (lFilter === "not" && info.status === "known") continue;
+    if (lFilter === "fav" && !info.fav) continue;
+
+    if (q) {
+      if (w.word.toLowerCase().indexOf(q) === -1 && w.meaning.toLowerCase().indexOf(q) === -1) {
+        continue;
+      }
+    }
+
+    var cKnown = (info.status === "known") ? " known" : "";
+    var cChkActive = (info.status === "known") ? " active" : "";
+    var cFavActive = info.fav ? " active" : "";
+
+    html += '<div class="word-card' + cKnown + '">';
+    html += '  <div class="word-left">';
+    html += '    <button class="chk-btn' + cChkActive + '" data-k="' + esc(k) + '" onclick="toggleKnown(this.dataset.k)">✔</button>';
+    html += '    <div class="word-info">';
+    html += '      <div class="w-eng">' + esc(w.word) + '</div>';
+    html += '      <div class="w-kor">' + esc(w.meaning) + '</div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '  <div class="word-right">';
+    html += '    <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '    <button class="ibtn fav-btn' + cFavActive + '" data-k="' + esc(k) + '" onclick="toggleFav(this.dataset.k, event)">★</button>';
+    html += '  </div>';
+    html += '</div>';
+  }
+  area.innerHTML = html;
+}
+
+var fcWords = [];
+var fci = 0;
+var fcFlipped = false;
+var fcTX = 0;
+
+function initFC() {
+  var r = ranges[fri];
+  fcWords = rawWords.slice(r.s, r.e);
+  fci = 0;
+  showFC();
+}
+
+function showFC() {
+  if (fcWords.length === 0) {
+    document.getElementById("fcword").textContent = "단어 없음";
+    document.getElementById("fcmeaning").textContent = "";
+    document.getElementById("fcfav").style.display = "none";
+    return;
+  }
+  document.getElementById("fcfav").style.display = "block";
+  var w = fcWords[fci];
+  var k = w.word + "|" + w.meaning;
+  var p = getProgress();
+  var info = p[k] || { status: "", fav: false };
+
+  document.getElementById("fcword").textContent = w.word;
+  document.getElementById("fcmeaning").textContent = "";
+  document.getElementById("fcfav").classList.toggle("active", !!info.fav);
+  document.getElementById("fchint").style.display = "block";
+  fcFlipped = false;
+}
+
+function fcFlip() {
+  if (fcWords.length === 0 || fcFlipped) return;
+  fcFlipped = true;
+  var w = fcWords[fci];
+  document.getElementById("fcmeaning").textContent = w.meaning;
+  document.getElementById("fchint").style.display = "none";
+  speak(w.word);
+}
+
+function toggleFcFav(e) {
+  if (e) e.stopPropagation();
+  if (fcWords.length === 0) return;
+  var w = fcWords[fci];
+  var k = w.word + "|" + w.meaning;
+  toggleFav(k);
+  var p = getProgress();
+  var info = p[k] || { status: "", fav: false };
+  document.getElementById("fcfav").classList.toggle("active", !!info.fav);
+}
+
+function fcPrev() { if (fcWords.length === 0) return; fci = (fci - 1 + fcWords.length) % fcWords.length; showFC(); }
+function fcNext() { if (fcWords.length === 0) return; fci = (fci + 1) % fcWords.length; showFC(); }
+
+(function(){
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+})();
+
+var qWords = [];
+var qi = 0;
+var qScore = 0;
+var qLocked = false;
+
+function initQuiz() {
+  document.getElementById("quizGameArea").style.display = "block";
+  document.getElementById("quizResultArea").style.display = "none";
+  var pool = rawWords.slice();
+  pool.sort(function(){ return 0.5 - Math.random(); });
+  qWords = pool.slice(0, 10);
+  qi = 0;
+  qScore = 0;
+  showQuiz();
+}
+
+function showQuiz() {
+  qLocked = false;
+  if(qi >= 10 || qi >= qWords.length) {
+    showQuizResult();
+    return;
+  }
+  document.getElementById("qprogress").textContent = (qi + 1) + " / 10";
+  var cor = qWords[qi];
+  document.getElementById("qword").textContent = cor.word;
+
+  var opts = [cor];
+  var pool = rawWords.slice();
+  pool.sort(function(){ return 0.5 - Math.random(); });
+  for(var i=0; i<pool.length; i++) {
+    if(opts.length >= 4) break;
+    if(pool[i].meaning !== cor.meaning && opts.indexOf(pool[i]) === -1) {
+      opts.push(pool[i]);
+    }
+  }
+  opts.sort(function(){ return 0.5 - Math.random(); });
+
+  var oArea = document.getElementById("qoptions");
+  oArea.innerHTML = "";
+  opts.forEach(function(o) {
+    var btn = document.createElement("button");
+    btn.className = "q-opt";
+    btn.textContent = o.meaning;
+    if(o.meaning === cor.meaning) {
+      btn.setAttribute("data-cor", "1");
+    }
+    btn.onclick = function() { qAns(this); };
+    oArea.appendChild(btn);
+  });
+}
+
+function qAns(btn) {
+  if(qLocked) return;
+  qLocked = true;
+  var isCor = btn.getAttribute("data-cor") === "1";
+  if(isCor) {
+    btn.classList.add("correct");
+    qScore++;
+    speak(qWords[qi].word);
+  } else {
+    btn.classList.add("wrong");
+    var opts = document.getElementById("qoptions").children;
+    for(var i=0; i<opts.length; i++) {
+      if(opts[i].getAttribute("data-cor") === "1") {
+        opts[i].classList.add("correct");
+      }
+    }
+  }
+  setTimeout(function(){
+    qi++;
+    showQuiz();
+  }, 1000);
+}
+
+function showQuizResult() {
+  document.getElementById("quizGameArea").style.display = "none";
+  document.getElementById("quizResultArea").style.display = "block";
+  var pct = Math.round((qScore / 10) * 100);
+  document.getElementById("qscore").textContent = qScore + " / 10";
+  document.getElementById("qpct").textContent = pct + "%";
+  var emo = "💪";
+  if(pct === 100) emo = "🏆";
+  else if(pct >= 80) emo = "🎉";
+  else if(pct >= 60) emo = "👍";
+  document.getElementById("qemoji").textContent = emo;
+}
+
+var tWords = [];
+var ti = 0;
+var tScore = 0;
+var tWrong = [];
+var tCorrectList = [];
+var tName = "";
+
+function isSim(input, correct) {
+  var norm = function(s) {
+    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+  };
+  var a = norm(input), c = norm(correct);
+  if (a === c) return true;
+  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+  return false;
+}
+
+function renderSetup() {
+  document.getElementById("tSetupArea").style.display = "flex";
+  document.getElementById("tPlayArea").style.display = "none";
+  document.getElementById("tResultArea").style.display = "none";
+
+  var html = '';
+  html += '<div class="form-group">';
+  html += '  <label>이름 입력</label>';
+  html += '  <input type="text" class="form-input" id="tnameInput" placeholder="이름을 입력하세요" value="' + esc(tName) + '">';
+  html += '</div>';
+  html += '<div class="form-group">';
+  html += '  <label>범위 선택</label>';
+  html += '  <div class="range-bar" id="testrbar"></div>';
+  html += '</div>';
+  html += '<button class="btn-block" onclick="startTest()">테스트 시작 ▶</button>';
+
+  document.getElementById("tSetupArea").innerHTML = html;
+  renderRangeBar("testrbar", tri, "setTR");
+}
+
+function setTR(i) { tri = i; renderRangeBar("testrbar", tri, "setTR"); }
+
+function startTest() {
+  var nm = document.getElementById("tnameInput").value.trim();
+  if(!nm) { alert("이름을 입력해주세요."); return; }
+  tName = nm;
+
+  var r = ranges[tri];
+  var pool = rawWords.slice(r.s, r.e);
+  pool.sort(function(){ return 0.5 - Math.random(); });
+
+  var maxQ = Math.min(50, pool.length);
+  tWords = pool.slice(0, maxQ);
+
+  ti = 0;
+  tScore = 0;
+  tWrong = [];
+  tCorrectList = [];
+
+  document.getElementById("tSetupArea").style.display = "none";
+  document.getElementById("tPlayArea").style.display = "block";
+  showTest();
+}
+
+function showTest() {
+  if(ti >= tWords.length) {
+    showTestResult();
+    return;
+  }
+  document.getElementById("tcount").textContent = "현재문제: " + (ti + 1) + " / " + tWords.length;
+  document.getElementById("tokcnt").textContent = "✅ 맞춤수: " + tScore;
+  var pct = Math.round((ti / tWords.length) * 100);
+  document.getElementById("tpbar").style.width = pct + "%";
+
+  var w = tWords[ti];
+  document.getElementById("tword").textContent = w.word;
+  var inp = document.getElementById("tinput");
+  inp.value = "";
+  inp.focus();
+  speak(w.word);
+}
+
+function nextTest() {
+  var inp = document.getElementById("tinput").value.trim();
+  var w = tWords[ti];
+  if(isSim(inp, w.meaning)) {
+    tScore++;
+    tCorrectList.push(w.word);
+  } else {
+    tWrong.push({ word: w.word, inp: inp ? inp : "(빈칸)", cor: w.meaning });
+  }
+  ti++;
+  showTest();
+}
+
+function showTestResult() {
+  document.getElementById("tPlayArea").style.display = "none";
+  document.getElementById("tResultArea").style.display = "block";
+
+  var pct = Math.round((tScore / tWords.length) * 100);
+  document.getElementById("tscore").textContent = tScore + " / " + tWords.length;
+  document.getElementById("tpct").textContent = pct + "%";
+
+  var emo = "💪";
+  if(pct === 100) emo = "🏆";
+  else if(pct >= 80) emo = "🎉";
+  else if(pct >= 60) emo = "👍";
+  document.getElementById("temoji").textContent = emo;
+
+  var wBox = document.getElementById("twrongbox");
+  var wItems = document.getElementById("twrongitems");
+  if(tWrong.length > 0) {
+    wBox.style.display = "block";
+    var html = "";
+    tWrong.forEach(function(item) {
+      html += '<div class="wrong-item"><b>' + esc(item.word) + '</b><br>입력: <span style="color:var(--danger);">' + esc(item.inp) + '</span> / 정답: <span style="color:var(--success);">' + esc(item.cor) + '</span></div>';
+    });
+    wItems.innerHTML = html;
+  } else {
+    wBox.style.display = "none";
+  }
+}
+
+function copyTestResult() {
+  var d = new Date();
+  var dateStr = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+  var pct = Math.round((tScore / tWords.length) * 100);
+
+  var txt = "[씨유에탑 씨유에탑 수능기본1800-2] 테스트 결과\n";
+  txt += "날짜: " + dateStr + "\n";
+  txt += "이름: " + tName + "\n";
+  txt += "점수: " + tScore + "/" + tWords.length + " (" + pct + "점)\n";
+  txt += "─────────────────\n";
+  txt += "❌ 틀린 단어 (" + tWrong.length + "개)\n";
+  tWrong.forEach(function(item) {
+    txt += "  " + item.word + " → 입력:" + item.inp + " / 정답:" + item.cor + "\n";
+  });
+  txt += "─────────────────\n";
+  txt += "✅ 맞은 단어: " + tCorrectList.join(", ");
+
+  var ta = document.createElement("textarea");
+  ta.value = txt;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  alert("테스트 결과가 복사되었습니다. 카톡창에 붙여넣기 하세요!");
+}
+
+window.onload = function() {
+  document.getElementById("fccard").onclick = function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  };
+  switchTab("list");
+};
+</script>
+</body>
+</html>
