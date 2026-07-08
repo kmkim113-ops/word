@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>씨유에탑 ✦ 영어단어장</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warn: #F59E0B;
+      --gray: #6B7280;
+      --border: #E5E7EB;
+      --bg: #F9FAFB;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f0f2f5;
+      color: #1f2937;
+      display: flex;
+      justify-content: center;
+    }
+    .en { font-family: 'Nunito', sans-serif; }
+    #app {
+      width: 100%;
+      max-width: 420px;
+      min-height: 100vh;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .header {
+      background: #ffffff;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .header-brand {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: var(--gray);
+    }
+    .nav-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      background: none;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      text-align: center;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      font-weight: 700;
+      border-bottom-color: var(--primary);
+    }
+    .tab-content {
+      flex: 1;
+      padding: 16px;
+      background: var(--bg);
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .range-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .range-bar::-webkit-scrollbar { display: none; }
+    .range-btn {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 12px;
+      color: var(--gray);
+      cursor: pointer;
+    }
+    .range-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .search-box {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .filter-btn {
+      flex: 1;
+      padding: 8px 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      font-size: 12px;
+      color: var(--gray);
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+    .word-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .word-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .word-card.known {
+      opacity: 0.35;
+    }
+    .chk-btn {
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: 4px;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      color: transparent;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chk-btn.active {
+      background: var(--success);
+      border-color: var(--success);
+      color: #ffffff;
+    }
+    .word-info {
+      flex: 1;
+    }
+    .w-eng {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 2px;
+    }
+    .w-kor {
+      font-size: 14px;
+      color: var(--gray);
+    }
+    .ibtn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--gray);
+    }
+    .ibtn.fav-active {
+      color: var(--warn);
+    }
+    .fc-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      cursor: pointer;
+    }
+    .fc-fav-pos {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+    }
+    .fc-text-eng {
+      font-size: 26px;
+      font-weight: 700;
+      color: #111827;
+      text-align: center;
+      word-break: break-word;
+    }
+    .fc-text-kor {
+      font-size: 18px;
+      color: var(--gray);
+      margin-top: 12px;
+      text-align: center;
+      word-break: break-word;
+    }
+    .fc-nav {
+      display: flex;
+      gap: 8px;
+    }
+    .fc-nav-btn {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .fc-nav-btn.sec {
+      background: var(--gray);
+    }
+    .quiz-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .quiz-q {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .quiz-opt {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      font-size: 15px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .quiz-opt.correct {
+      background: var(--success) !important;
+      color: #ffffff;
+      border-color: var(--success);
+    }
+    .quiz-opt.wrong {
+      background: var(--danger) !important;
+      color: #ffffff;
+      border-color: var(--danger);
+    }
+    .setup-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+    .btn-block {
+      width: 100%;
+      padding: 14px 0;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .p-bar-container {
+      width: 100%;
+      background: var(--border);
+      height: 6px;
+      border-radius: 3px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .p-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+    }
+    .test-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 16px;
+    }
+    .test-q-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .test-word {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .result-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .res-emoji { font-size: 48px; margin-bottom: 10px; }
+    .res-score { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .res-pct { font-size: 16px; color: var(--gray); margin-bottom: 20px; }
+    .wrong-list {
+      text-align: left;
+      margin-top: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+    .wrong-title { font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 8px; }
+    .wrong-item { font-size: 13px; margin-bottom: 6px; line-height: 1.4; }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub" id="header-meta">자이5회, 2025. 9월 · 총 0단어</div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tb-list" onclick="switchTab('list')">단어목록</button>
+    <button class="tab-btn" id="tb-flash" onclick="switchTab('flash')">플래시카드</button>
+    <button class="tab-btn" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</button>
+    <button class="tab-btn" id="tb-test" onclick="switchTab('test')">📝 테스트</button>
+  </div>
+
+  <!-- 탭 1: 단어목록 -->
+  <div class="tab-content active" id="tab-list">
+    <div class="range-bar" id="lrbar"></div>
+    <input type="text" class="search-box" id="lsearch" placeholder="영어 또는 한글 뜻 검색" oninput="renderList()">
+    <div class="filter-bar">
+      <button class="filter-btn active" id="lf-all" onclick="setLFilter('all')">전체</button>
+      <button class="filter-btn" id="lf-not" onclick="setLFilter('not')">모름</button>
+      <button class="filter-btn" id="lf-fav" onclick="setLFilter('fav')">⭐즐겨찾기</button>
+    </div>
+    <div class="word-list" id="list-container"></div>
+  </div>
+
+  <!-- 탭 2: 플래시카드 -->
+  <div class="tab-content" id="tab-flash">
+    <div class="range-bar" id="fcrbar"></div>
+    <div class="fc-container" id="fccard">
+      <button class="ibtn fc-fav-pos" id="fcfav" onclick="toggleFcFav(event)">★</button>
+      <div class="fc-text-eng en" id="fcword">-</div>
+      <div class="fc-text-kor" id="fcmean" style="display:none;">-</div>
+    </div>
+    <div class="fc-nav">
+      <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+      <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+      <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+    </div>
+  </div>
+
+  <!-- 탭 3: 퀴즈모드 -->
+  <div class="tab-content" id="tab-quiz">
+    <div id="quiz-body"></div>
+  </div>
+
+  <!-- 탭 4: 테스트 -->
+  <div class="tab-content" id="tab-test">
+    <div id="test-body"></div>
+  </div>
+</div>
+
+<script>
+  var seriesName = "자이5회, 2025. 9월";
+  var storeKey = "cutop_jai5_2025_9m";
+  
+  var rawWords = [
+    { word: "announcement", meaning: "공고, 발표" },
+    { word: "inform", meaning: "알리다" },
+    { word: "undergo", meaning: "겪다, 받다" },
+    { word: "inconvenience", meaning: "불편" },
+    { word: "cafeteria", meaning: "구내식당" },
+    { word: "recently", meaning: "최근에" },
+    { word: "protein", meaning: "단백질" },
+    { word: "overconsume", meaning: "과다 섭취하다" },
+    { word: "lately", meaning: "최근에" },
+    { word: "harmful", meaning: "해로운" },
+    { word: "cut down on", meaning: "~을 줄이다" },
+    { word: "frustrating", meaning: "좌절감을 주는, 불만스러운" },
+    { word: "comfortable", meaning: "편안한" },
+    { word: "be likely to", meaning: "~할 가능성이 있다" },
+    { word: "contribute to", meaning: "~에 기여하다" },
+    { word: "subscribe", meaning: "구독하다" },
+    { word: "leaf-shaped", meaning: "나뭇잎 모양의" },
+    { word: "talented", meaning: "재능 있는" },
+    { word: "flowerpot", meaning: "화분" },
+    { word: "eye-catching", meaning: "눈길을 끄는" },
+    { word: "neat", meaning: "깔끔한" },
+    { word: "definitely", meaning: "절대적으로, 분명히" },
+    { word: "exhibit", meaning: "전시하다" },
+    { word: "transportation", meaning: "교통 수단" },
+    { word: "arrange for", meaning: "~을 준비하다" },
+    { word: "text", meaning: "문자를 보내다" },
+    { word: "book", meaning: "예약하다" },
+    { word: "admission", meaning: "입장, 입학" },
+    { word: "confirmation", meaning: "확인" },
+    { word: "beforehand", meaning: "사전에" },
+    { word: "handout", meaning: "유인물" },
+    { word: "look for", meaning: "~을 찾다" },
+    { word: "regular", meaning: "정기적인" },
+    { word: "handy", meaning: "유용한, 편리한" },
+    { word: "particular", meaning: "특정한" },
+    { word: "fellow", meaning: "동료, 녀석" },
+    { word: "have ~ in mind", meaning: "~을 염두에 두다" },
+    { word: "cover", meaning: "다루다, 덮다" },
+    { word: "biotechnology", meaning: "생명공학" },
+    { word: "health care", meaning: "의료 서비스" },
+    { word: "lecture", meaning: "강의" },
+    { word: "subject", meaning: "주제" },
+    { word: "volunteer", meaning: "자원봉사하다" },
+    { word: "nursing home", meaning: "양로원" },
+    { word: "go wild", meaning: "열광하다" },
+    { word: "celebration", meaning: "축하" },
+    { word: "historic", meaning: "역사적인" },
+    { word: "announcement", meaning: "공고, 발표" },
+    { word: "crowded", meaning: "붐비는" },
+    { word: "admission fee", meaning: "입장료" },
+    { word: "ban", meaning: "금지하다" },
+    { word: "dangerous", meaning: "위험한" },
+    { word: "general", meaning: "일반적인" },
+    { word: "guideline", meaning: "지침" },
+    { word: "last", meaning: "지속되다" },
+    { word: "duty", meaning: "임무" },
+    { word: "involve", meaning: "포함하다, 수반하다" },
+    { word: "detail", meaning: "세부 사항" },
+    { word: "perform", meaning: "수행하다" },
+    { word: "evaluate", meaning: "평가하다" },
+    { word: "employ", meaning: "이용하다, 고용하다" },
+    { word: "electronic", meaning: "전자의" },
+    { word: "replacement", meaning: "대체품" },
+    { word: "promising", meaning: "유망한" },
+    { word: "material", meaning: "재료, 물질" },
+    { word: "old-fashioned", meaning: "구식의" },
+    { word: "go well with", meaning: "~와 잘 어울리다" },
+    { word: "fingerprint", meaning: "지문" },
+    { word: "recognition", meaning: "인식" },
+    { word: "feature", meaning: "특징, 특징으로 하다" },
+    { word: "appointment", meaning: "약속" },
+    { word: "chat", meaning: "채팅하다" },
+    { word: "give ~ a ride", meaning: "~를 태워주다" },
+    { word: "grocery list", meaning: "식료품 쇼핑 목록" },
+    { word: "record", meaning: "기록하다" },
+    { word: "refrigerator", meaning: "냉장고" },
+    { word: "beginner", meaning: "초보자" },
+    { word: "register for", meaning: "~에 등록하다" },
+    { word: "weekday", meaning: "평일" },
+    { word: "feel down", meaning: "마음이 울적하다" },
+    { word: "horribly", meaning: "끔찍하게" },
+    { word: "competition", meaning: "경쟁" },
+    { word: "mess up", meaning: "망치다" },
+    { word: "boost", meaning: "북돋우다" },
+    { word: "confidence", meaning: "자신감" },
+    { word: "endorphin", meaning: "엔도르핀" },
+    { word: "give ~ a try", meaning: "~을 시도해보다" },
+    { word: "enhance", meaning: "향상시키다" },
+    { word: "give birth to", meaning: "~을 낳다" },
+    { word: "adopt", meaning: "입양하다" },
+    { word: "raise", meaning: "키우다" },
+    { word: "currently", meaning: "현재" },
+    { word: "co-worker", meaning: "직장 동료" },
+    { word: "characteristic", meaning: "특성" },
+    { word: "reach", meaning: "도달하다" },
+    { word: "flexible", meaning: "유연한" },
+    { word: "backbone", meaning: "척추" },
+    { word: "joint", meaning: "관절" },
+    { word: "extreme", meaning: "극단적인" },
+    { word: "extension", meaning: "신장" },
+    { word: "stretch", meaning: "스트레칭하다" },
+    { word: "push off", meaning: "밀어내다" },
+    { word: "breastbone", meaning: "복장뼈" },
+    { word: "attach", meaning: "부착하다" },
+    { word: "slippery", meaning: "미끄러운" },
+    { word: "coat", meaning: "코팅" },
+    { word: "resistance", meaning: "저항" },
+    { word: "twist", meaning: "비틀다" },
+    { word: "boost", meaning: "높이다" },
+    { word: "speedster", meaning: "속도를 내는 것" },
+    { word: "loyalty", meaning: "충성심" },
+    { word: "thrilled", meaning: "아주 신이 난" },
+    { word: "exclusive", meaning: "독점적인" },
+    { word: "reservation", meaning: "예약" },
+    { word: "depart", meaning: "출발하다" },
+    { word: "specialty", meaning: "특산물" },
+    { word: "onboard", meaning: "선상의" },
+    { word: "advantage", meaning: "이점" },
+    { word: "aboard", meaning: "탑승한" },
+    { word: "unforgettable", meaning: "잊을 수 없는" },
+    { word: "journey", meaning: "여정" },
+    { word: "chaotic", meaning: "혼란스러운" },
+    { word: "intense", meaning: "강렬한" },
+    { word: "security", meaning: "보안" },
+    { word: "glance", meaning: "힐끗 봄" },
+    { word: "boarding gate", meaning: "탑승구" },
+    { word: "announcement", meaning: "공고, 발표" },
+    { word: "unexpected", meaning: "예기치 못한" },
+    { word: "browse", meaning: "둘러보고" },
+    { word: "joyful", meaning: "기쁜" },
+    { word: "indifferent", meaning: "무관심한" },
+    { word: "satisfied", meaning: "만족스러운" },
+    { word: "essential", meaning: "필수적인" },
+    { word: "progress", meaning: "진보" },
+    { word: "foundation", meaning: "토대" },
+    { word: "reliable", meaning: "신뢰할 수 있는" },
+    { word: "accurate", meaning: "정확한" },
+    { word: "accumulation", meaning: "축적" },
+    { word: "unregulated", meaning: "규제되지 않은" },
+    { word: "unknowingly", meaning: "모르는 사이에" },
+    { word: "participate in", meaning: "~에 참여하다" },
+    { word: "circulate", meaning: "유포되다" },
+    { word: "violence", meaning: "폭력" },
+    { word: "take on", meaning: "(성질 등을) 띠다, 떠맡다" },
+    { word: "enhancement", meaning: "향상" },
+    { word: "safeguard", meaning: "보호하다" },
+    { word: "informed", meaning: "정보에 근거한" },
+    { word: "rational", meaning: "합리적인" },
+    { word: "anthropologist", meaning: "인류학자" },
+    { word: "go about", meaning: "행하다" },
+    { word: "insist", meaning: "주장하다" },
+    { word: "significant", meaning: "중요한" },
+    { word: "ethnographer", meaning: "민족지학자" },
+    { word: "remote", meaning: "외딴" },
+    { word: "in question", meaning: "논의 중인" },
+    { word: "seek out", meaning: "찾아내다" },
+    { word: "colonial", meaning: "식민지의" },
+    { word: "missionary", meaning: "선교사" },
+    { word: "accommodation", meaning: "숙박 시설" },
+    { word: "venture into", meaning: "과감히 ~에 들어가다" },
+    { word: "primarily", meaning: "주로" },
+    { word: "conduct", meaning: "수행하다" },
+    { word: "collaborative", meaning: "협력적인" },
+    { word: "struggle to", meaning: "~하려고 애쓰다" },
+    { word: "examine", meaning: "조사하다" },
+    { word: "be capable of", meaning: "~할 능력이 있다" },
+    { word: "suppose", meaning: "가정하다" },
+    { word: "conceive", meaning: "상상하다, 품다" },
+    { word: "wicked", meaning: "사악한" },
+    { word: "agency", meaning: "행동력" },
+    { word: "moral", meaning: "도덕적인" },
+    { word: "cultivate", meaning: "함양하다" },
+    { word: "desirable", meaning: "바람직한" },
+    { word: "discourage", meaning: "막다" },
+    { word: "harmful", meaning: "해로운" },
+    { word: "predisposition", meaning: "성향" },
+    { word: "cooperate", meaning: "협력하다" },
+    { word: "phenomena", meaning: "현상들" },
+    { word: "ordinary", meaning: "평범한" },
+    { word: "succession", meaning: "연속" },
+    { word: "frightened", meaning: "겁먹은" },
+    { word: "accustomed", meaning: "익숙한" },
+    { word: "physicist", meaning: "물리학자" },
+    { word: "account for", meaning: "설명하다" },
+    { word: "notice", meaning: "알아차리다" },
+    { word: "singular", meaning: "특이한" },
+    { word: "widespread", meaning: "광범위한" },
+    { word: "mythical", meaning: "신화적인" },
+    { word: "influence", meaning: "영향" },
+    { word: "perception", meaning: "인식" },
+    { word: "pose", meaning: "제기하다, 포즈를 취하다" },
+    { word: "open-office", meaning: "개방형 사무실" },
+    { word: "currency", meaning: "통화" },
+    { word: "rigid", meaning: "엄격한" },
+    { word: "convention", meaning: "관습" },
+    { word: "crucial", meaning: "중대한" },
+    { word: "take-away", meaning: "핵심 요점" },
+    { word: "progress", meaning: "진보" },
+    { word: "contemporary", meaning: "현대의" },
+    { word: "partition", meaning: "칸막이" },
+    { word: "cubicle", meaning: "큐비클(개인 칸막이 사무실)" },
+    { word: "alike", meaning: "마찬가지로" },
+    { word: "cost-efficient", meaning: "비용 효율적인" },
+    { word: "incorporate", meaning: "포함하다" },
+    { word: "retro", meaning: "복고풍의" },
+    { word: "respondent", meaning: "응답자" },
+    { word: "familiar with", meaning: "~에 익숙한" },
+    { word: "concept", meaning: "개념" },
+    { word: "respectively", meaning: "각각" },
+    { word: "decade", meaning: "10년" },
+    { word: "found", meaning: "설립하다" },
+    { word: "exhibition", meaning: "전시회" },
+    { word: "basis", meaning: "기반" },
+    { word: "capture", meaning: "포착하다" },
+    { word: "previously", meaning: "이전에" },
+    { word: "establish", meaning: "확립하다" },
+    { word: "fit", meaning: "적합하다" },
+    { word: "annual", meaning: "연례의" },
+    { word: "prospective student", meaning: "장래의 학생" },
+    { word: "admission", meaning: "입학, 입장" },
+    { word: "registration", meaning: "등록" },
+    { word: "showcase", meaning: "전시하다" },
+    { word: "capture", meaning: "포착하다" },
+    { word: "renewable", meaning: "재생 가능한" },
+    { word: "submission", meaning: "제출" },
+    { word: "submit", meaning: "제출하다" },
+    { word: "selection committee", meaning: "선정 위원회" },
+    { word: "industrial", meaning: "산업의" },
+    { word: "employ", meaning: "이용하다, 고용하다" },
+    { word: "agriculture", meaning: "농업" },
+    { word: "coincide with", meaning: "~와 일치하다" },
+    { word: "evenly", meaning: "균등하게" },
+    { word: "distribute", meaning: "분배하다" },
+    { word: "enterprising", meaning: "진취적인" },
+    { word: "humble", meaning: "초라한" },
+    { word: "slum", meaning: "빈민가" },
+    { word: "wage", meaning: "임금" },
+    { word: "manufacturing", meaning: "제조업" },
+    { word: "inspire", meaning: "영감을 주다" },
+    { word: "rational", meaning: "합리적인" },
+    { word: "sound", meaning: "건전한" },
+    { word: "reflexive", meaning: "반사적인" },
+    { word: "conserve", meaning: "보존하다" },
+    { word: "subjective", meaning: "주관적인" },
+    { word: "impression", meaning: "인상" },
+    { word: "snap", meaning: "즉각적인" },
+    { word: "bias", meaning: "편향" },
+    { word: "inhibit", meaning: "억제하다" },
+    { word: "override", meaning: "압도하다" },
+    { word: "reflective", meaning: "성찰적인" },
+    { word: "deliberative", meaning: "심의적인" },
+    { word: "interfere with", meaning: "~을 방해하다" },
+    { word: "accurate", meaning: "정확한" },
+    { word: "subject to", meaning: "~의 영향을 받기 쉬운" },
+    { word: "consensus", meaning: "합의" },
+    { word: "sensory", meaning: "감각의" },
+    { word: "overload", meaning: "과부하" },
+    { word: "disorient", meaning: "혼란스럽게 하다" },
+    { word: "send ~ into a holding pattern", meaning: "~를 유예 상태에 빠뜨리다" },
+    { word: "hypothesis", meaning: "가설" },
+    { word: "escape", meaning: "탈출하다" },
+    { word: "perceive", meaning: "인식하다" },
+    { word: "diffuse", meaning: "확산하다" },
+    { word: "halo", meaning: "후광" },
+    { word: "portal", meaning: "관문" },
+    { word: "reference point", meaning: "기준점" },
+    { word: "porch", meaning: "현관" },
+    { word: "trap", meaning: "함정" },
+    { word: "target", meaning: "목표" },
+    { word: "reject", meaning: "거부하다" },
+    { word: "investment", meaning: "투자" },
+    { word: "equipment", meaning: "장비" },
+    { word: "personnel", meaning: "인력" },
+    { word: "return", meaning: "수익" },
+    { word: "guarantee", meaning: "보장하다" },
+    { word: "appropriate", meaning: "적절한" },
+    { word: "majority", meaning: "대다수" },
+    { word: "ownership", meaning: "소유권" },
+    { word: "organisation", meaning: "조직" },
+    { word: "modernisation", meaning: "현대화" },
+    { word: "infrastructure", meaning: "기반 시설" },
+    { word: "profitability", meaning: "수익성" },
+    { word: "installation", meaning: "설치" },
+    { word: "continent", meaning: "대륙" },
+    { word: "oriented to", meaning: "~을 지향하는" },
+    { word: "in line with", meaning: "~와 부합하여" },
+    { word: "current", meaning: "현재의" },
+    { word: "advanced", meaning: "진보한" },
+    { word: "crucial", meaning: "중대한" },
+    { word: "optional", meaning: "선택적인" },
+    { word: "extent", meaning: "정도" },
+    { word: "pedestrian", meaning: "보행자" },
+    { word: "indication", meaning: "표시" },
+    { word: "insufficient", meaning: "불충분한" },
+    { word: "transit", meaning: "대중교통" },
+    { word: "function", meaning: "기능하다" },
+    { word: "conversely", meaning: "반대로" },
+    { word: "conspicuous", meaning: "눈에 띄는" },
+    { word: "inviting", meaning: "매력적인" },
+    { word: "temptation", meaning: "유혹" },
+    { word: "quarter", meaning: "구역" },
+    { word: "complex", meaning: "복합 단지" },
+    { word: "occupy", meaning: "차지하다" },
+    { word: "public transportation", meaning: "대중교통" },
+    { word: "administrative", meaning: "행정의" },
+    { word: "concentrate", meaning: "집중시키다" },
+    { word: "extend", meaning: "확장하다" },
+    { word: "companionship", meaning: "동료애" },
+    { word: "involvement", meaning: "참여" },
+    { word: "self-development", meaning: "자기계발" },
+    { word: "self-sufficiency", meaning: "자급자족" },
+    { word: "passionately", meaning: "열정적으로" },
+    { word: "yearn", meaning: "갈망하다" },
+    { word: "uncertainty", meaning: "불확실성" },
+    { word: "document", meaning: "기록하다" },
+    { word: "extraordinary", meaning: "비범한" },
+    { word: "clarity", meaning: "명확성" },
+    { word: "attachment", meaning: "애착" },
+    { word: "existence", meaning: "존재" },
+    { word: "relative", meaning: "상대적인" },
+    { word: "collective", meaning: "집단적인" },
+    { word: "entirely", meaning: "전적으로" },
+    { word: "rubric", meaning: "규정" },
+    { word: "sympathy", meaning: "동정심" },
+    { word: "philosophical", meaning: "철학적인" },
+    { word: "self-reliant", meaning: "자립적인" },
+    { word: "wholeheartedly", meaning: "진심으로" },
+    { word: "stock", meaning: "비축물" },
+    { word: "specific", meaning: "특정한" },
+    { word: "collection", meaning: "소장품" },
+    { word: "devote", meaning: "바치다" },
+    { word: "full-time", meaning: "전임의" },
+    { word: "inevitably", meaning: "필연적으로" },
+    { word: "as a matter of course", meaning: "당연한 일로" },
+    { word: "enquire", meaning: "문의하다" },
+    { word: "availability", meaning: "이용 가능성" },
+    { word: "crucially", meaning: "결정적으로" },
+    { word: "routinely", meaning: "일상적으로" },
+    { word: "occasionally", meaning: "가끔" },
+    { word: "purchase", meaning: "구매하다" },
+    { word: "circulate", meaning: "유통되다" },
+    { word: "multiply", meaning: "증식하다" },
+    { word: "expand", meaning: "확장하다" },
+    { word: "accumulate", meaning: "축적하다" },
+    { word: "adjustment", meaning: "조정" },
+    { word: "unit", meaning: "단위" },
+    { word: "strength", meaning: "힘" },
+    { word: "slightly", meaning: "약간" },
+    { word: "compatible", meaning: "호환되는" },
+    { word: "accommodate", meaning: "수용하다" },
+    { word: "store", meaning: "저장하다" },
+    { word: "separately", meaning: "따로" },
+    { word: "organize", meaning: "정리하다" },
+    { word: "modify", meaning: "수정하다" },
+    { word: "material", meaning: "재료, 물질" },
+    { word: "obtain", meaning: "얻다" },
+    { word: "pre-emptive", meaning: "선제적인" },
+    { word: "evolve", meaning: "진화하다" },
+    { word: "maintain", meaning: "유지하다" },
+    { word: "survival", meaning: "생존" },
+    { word: "regain", meaning: "되찾다" },
+    { word: "damage", meaning: "손상" },
+    { word: "heal", meaning: "치유하다" },
+    { word: "wound", meaning: "상처" },
+    { word: "complex", meaning: "복잡한" },
+    { word: "immune system", meaning: "면역계" },
+    { word: "ward off", meaning: "~을 물리치다" },
+    { word: "infection", meaning: "감염" },
+    { word: "anticipate", meaning: "예상하다" },
+    { word: "endlessly", meaning: "끝없이" },
+    { word: "chase", meaning: "추격하다" },
+    { word: "conception", meaning: "개념" },
+    { word: "fundamental", meaning: "근본적인" },
+    { word: "discriminate", meaning: "식별하다" },
+    { word: "scatter", meaning: "흩뿌리다" },
+    { word: "pile", meaning: "더미" },
+    { word: "stimulation", meaning: "자극" },
+    { word: "originate from", meaning: "~에서 유래하다" },
+    { word: "machinery", meaning: "기계" },
+    { word: "equip ~ with …", meaning: "~에 ...를 갖추어 주다" },
+    { word: "artificial", meaning: "인공적인" },
+    { word: "detect", meaning: "감지하다" },
+    { word: "enable", meaning: "가능하게 하다" },
+    { word: "self-centered", meaning: "자기중심적인" },
+    { word: "external", meaning: "외부의" },
+    { word: "scale", meaning: "규모" },
+    { word: "accuracy", meaning: "정확성" },
+    { word: "precision", meaning: "정밀성" },
+    { word: "unprecedented", meaning: "전례 없는" },
+    { word: "unpredictable", meaning: "예측 불가능한" },
+    { word: "intervene", meaning: "개입하다" },
+    { word: "define", meaning: "정의하다" },
+    { word: "implement", meaning: "이행하다" },
+    { word: "confidence", meaning: "신뢰" },
+    { word: "inherently", meaning: "본질적으로" },
+    { word: "appropriate", meaning: "적절한" },
+    { word: "spatial", meaning: "공간적인" },
+    { word: "temporal", meaning: "시간적인" },
+    { word: "localized", meaning: "국지적인" },
+    { word: "climatic change", meaning: "기후 변화" },
+    { word: "efficacy", meaning: "효능" },
+    { word: "counter", meaning: "대응하다" },
+    { word: "adverse", meaning: "부정적인" },
+    { word: "comparable", meaning: "비교할 만한" },
+    { word: "surround", meaning: "둘러싸다" },
+    { word: "magnitude", meaning: "규모" },
+    { word: "species", meaning: "종" },
+    { word: "distinction", meaning: "구별" },
+    { word: "principle", meaning: "원리" },
+    { word: "restricted", meaning: "제한된" },
+    { word: "introduce", meaning: "도입하다" },
+    { word: "combine", meaning: "결합하다" },
+    { word: "unlimited", meaning: "무제한의" },
+    { word: "literally", meaning: "말 그대로" },
+    { word: "infinitely", meaning: "무한히" },
+    { word: "superior", meaning: "우수한" },
+    { word: "utilize", meaning: "활용하다" },
+    { word: "represent", meaning: "나타내다" },
+    { word: "symbolize", meaning: "상징하다" },
+    { word: "distort", meaning: "왜곡하다" },
+    { word: "finite", meaning: "유한한" },
+    { word: "novel", meaning: "참신한" },
+    { word: "considerably", meaning: "상당히" },
+    { word: "rearrangement", meaning: "재배열" },
+    { word: "rhyme", meaning: "운율" },
+    { word: "poetic", meaning: "시적인" },
+    { word: "compression", meaning: "압축" },
+    { word: "category", meaning: "범주" },
+    { word: "altogether", meaning: "완전히" },
+    { word: "deaf", meaning: "청각 장애가 있는" },
+    { word: "achievement", meaning: "성취" },
+    { word: "artfully", meaning: "교묘하게" },
+    { word: "manipulate", meaning: "조작하다" },
+    { word: "seashore", meaning: "해안" },
+    { word: "be accustomed to", meaning: "~에 익숙하다" },
+    { word: "eardrum", meaning: "고막" },
+    { word: "depart", meaning: "떠나다" },
+    { word: "refresh", meaning: "생기를 되찾게 하다" },
+    { word: "inspiration", meaning: "영감" },
+    { word: "cite", meaning: "인용하다" },
+    { word: "thrilled", meaning: "아주 신이 난" },
+    { word: "notification", meaning: "알림" },
+    { word: "second-hand", meaning: "중고의" },
+    { word: "market rate", meaning: "시세" },
+    { word: "stick out of", meaning: "~에서 빠져나오다" },
+    { word: "identify", meaning: "확인하다" },
+    { word: "glossy", meaning: "윤이 나는" },
+    { word: "immediately", meaning: "즉시" },
+    { word: "type", meaning: "타이핑하다" },
+    { word: "in excitement", meaning: "흥분하여" },
+    { word: "exclaim", meaning: "외치다" },
+    { word: "condition", meaning: "상태" },
+    { word: "in good shape", meaning: "상태가 좋은" },
+    { word: "expert", meaning: "전문가" }
+  ];
+
+  var progressData = {};
+  var lri = 0, fri = 0, tri = 0;
+  var currentLFilter = "all";
+  
+  var fcWords = [];
+  var fcIndex = 0;
+  var fcFlipped = false;
+  var fcTX = 0;
+
+  var quizPool = [];
+  var quizIndex = 0;
+  var qLocked = false;
+  var quizScore = 0;
+
+  var testWords = [];
+  var testIndex = 0;
+  var testScore = 0;
+  var testWrongList = [];
+  var testCorrectList = [];
+  var testerName = "";
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function speak(t) {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(t);
+    u.lang = "en-US";
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  }
+
+  function speakFc() {
+    speak(document.getElementById("fcword").textContent);
+  }
+
+  function isSim(input, correct) {
+    var norm = function(s) {
+      return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+    };
+    var a = norm(input), c = norm(correct);
+    if (a === c) return true;
+    if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+    var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+    if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+    return false;
+  }
+
+  function loadProg() {
+    var d = localStorage.getItem(storeKey);
+    if (d) {
+      try { progressData = JSON.parse(d); } catch(e) { progressData = {}; }
+    } else {
+      progressData = {};
+    }
+  }
+
+  function saveProg() {
+    localStorage.setItem(storeKey, JSON.stringify(progressData));
+  }
+
+  function getProg(w) {
+    var k = w.word + "|" + w.meaning;
+    return progressData[k] || { status: "", fav: false };
+  }
+
+  function setProg(w, field, val) {
+    var k = w.word + "|" + w.meaning;
+    if (!progressData[k]) progressData[k] = { status: "", fav: false };
+    progressData[k][field] = val;
+    saveProg();
+  }
+
+  function buildRanges(ws) {
+    var r = [{ label: "전체", s: 0, e: ws.length }];
+    for (var i = 0; i < ws.length; i += 50) {
+      r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+    }
+    return r;
+  }
+  var ranges = buildRanges(rawWords);
+
+  function switchTab(t) {
+    ["list","flash","quiz","test"].forEach(function(n) {
+      document.getElementById("tb-"+n).classList.toggle("active", n===t);
+      document.getElementById("tab-"+n).classList.toggle("active", n===t);
+    });
+    if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+    if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+    if (t==="quiz")  { initQuiz(); }
+    if (t==="test")  { renderSetup(); }
+  }
+
+  function renderRangeBar(id, idx, funcName) {
+    var h = "";
+    ranges.forEach(function(r, i) {
+      var cls = (i === idx) ? "range-btn active" : "range-btn";
+      h += '<button class="' + cls + '" onclick="' + funcName + '(' + i + ')">' + r.label + '</button>';
+    });
+    document.getElementById(id).innerHTML = h;
+  }
+
+  function setLR(i) { lri = i; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  function setFR(i) { fri = i; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+
+  function setLFilter(f) {
+    currentLFilter = f;
+    ["all","not","fav"].forEach(function(n) {
+      document.getElementById("lf-"+n).classList.toggle("active", n===f);
+    });
+    renderList();
+  }
+
+  function toggleKnown(i) {
+    var w = rawWords[i];
+    var p = getProg(w);
+    var nv = (p.status === "known") ? "" : "known";
+    setProg(w, "status", nv);
+    renderList();
+  }
+
+  function toggleListFav(i) {
+    var w = rawWords[i];
+    var p = getProg(w);
+    setProg(w, "fav", !p.fav);
+    renderList();
+  }
+
+  function renderList() {
+    var r = ranges[lri];
+    var q = document.getElementById("lsearch").value.toLowerCase().trim();
+    var h = "";
+    
+    for (var i = r.s; i < r.e; i++) {
+      var w = rawWords[i];
+      var p = getProg(w);
+      
+      if (currentLFilter === "not" && p.status === "known") continue;
+      if (currentLFilter === "fav" && !p.fav) continue;
+      
+      if (q) {
+        if (w.word.toLowerCase().indexOf(q) === -1 && w.meaning.toLowerCase().indexOf(q) === -1) continue;
+      }
+      
+      var cardCls = (p.status === "known") ? "word-card known" : "word-card";
+      var chkCls = (p.status === "known") ? "chk-btn active" : "chk-btn";
+      var favCls = p.fav ? "ibtn fav-active" : "ibtn";
+      
+      h += '<div class="' + cardCls + '">';
+      h += '  <button class="' + chkCls + '" onclick="toggleKnown(' + i + ')">✔</button>';
+      h += '  <div class="word-info">';
+      h += '    <div class="w-eng en">' + esc(w.word) + '</div>';
+      h += '    <div class="w-kor">' + esc(w.meaning) + '</div>';
+      h += '  </div>';
+      h += '  <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+      h += '  <button class="' + favCls + '" onclick="toggleListFav(' + i + ')">★</button>';
+      h += '</div>';
+    }
+    document.getElementById("list-container").innerHTML = h;
+  }
+
+  function initFC() {
+    var r = ranges[fri];
+    fcWords = rawWords.slice(r.s, r.e);
+    fcIndex = 0;
+    fcFlipped = false;
+    showFC();
+  }
+
+  function showFC() {
+    if (fcWords.length === 0) {
+      document.getElementById("fcword").textContent = "단어가 없습니다.";
+      document.getElementById("fcmean").style.display = "none";
+      document.getElementById("fcfav").style.color = "var(--gray)";
+      return;
+    }
+    var w = fcWords[fcIndex];
+    var p = getProg(w);
+    document.getElementById("fcword").textContent = w.word;
+    document.getElementById("fcmean").textContent = w.meaning;
+    document.getElementById("fcmean").style.display = fcFlipped ? "block" : "none";
+    document.getElementById("fcfav").className = p.fav ? "ibtn fc-fav-pos fav-active" : "ibtn fc-fav-pos";
+  }
+
+  function fcFlip() {
+    if (fcWords.length === 0 || fcFlipped) return;
+    fcFlipped = true;
+    document.getElementById("fcmean").style.display = "block";
+    speakFc();
+  }
+
+  function fcPrev() {
+    if (fcWords.length === 0) return;
+    fcIndex = (fcIndex - 1 + fcWords.length) % fcWords.length;
+    fcFlipped = false;
+    showFC();
+  }
+
+  function fcNext() {
+    if (fcWords.length === 0) return;
+    fcIndex = (fcIndex + 1) % fcWords.length;
+    fcFlipped = false;
+    showFC();
+  }
+
+  function toggleFcFav(e) {
+    e.stopPropagation();
+    if (fcWords.length === 0) return;
+    var w = fcWords[fcIndex];
+    var p = getProg(w);
+    setProg(w, "fav", !p.fav);
+    showFC();
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function initQuiz() {
+    if (rawWords.length < 4) {
+      document.getElementById("quiz-body").innerHTML = "퀴즈를 진행하려면 최소 4개의 단어가 필요합니다.";
+      return;
+    }
+    var shuffled = shuffle(rawWords);
+    quizPool = shuffled.slice(0, Math.min(10, shuffled.length));
+    quizIndex = 0;
+    quizScore = 0;
+    qLocked = false;
+    showQuiz();
+  }
+
+  function showQuiz() {
+    if (quizIndex >= quizPool.length) {
+      showQuizResult();
+      return;
+    }
+    qLocked = false;
+    var cur = quizPool[quizIndex];
+    
+    var opts = [cur.meaning];
+    var pool = rawWords.filter(function(x) { return x.meaning !== cur.meaning; });
+    var shufPool = shuffle(pool);
+    for (var i = 0; i < 3; i++) {
+      if (shufPool[i]) opts.push(shufPool[i].meaning);
+    }
+    opts = shuffle(opts);
+
+    var h = '';
+    h += '<div class="quiz-box">';
+    h += '  <div class="quiz-q en">' + esc(cur.word) + '</div>';
+    h += '  <div class="quiz-options">';
+    opts.forEach(function(o) {
+      var isCor = (o === cur.meaning) ? "1" : "0";
+      h += '    <button class="quiz-opt" data-cor="' + isCor + '" onclick="qAns(this)">' + esc(o) + '</button>';
+    });
+    h += '  </div>';
+    h += '</div>';
+    document.getElementById("quiz-body").innerHTML = h;
+  }
+
+  function qAns(btn) {
+    if (qLocked) return;
+    qLocked = true;
+    var isCor = btn.getAttribute("data-cor") === "1";
+    var cur = quizPool[quizIndex];
+    
+    if (isCor) {
+      btn.classList.add("correct");
+      quizScore++;
+      speak(cur.word);
+    } else {
+      btn.classList.add("wrong");
+      var opts = document.querySelectorAll(".quiz-opt");
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].getAttribute("data-cor") === "1") {
+          opts[i].classList.add("correct");
+        }
+      }
+    }
+    setTimeout(function() {
+      quizIndex++;
+      showQuiz();
+    }, 1000);
+  }
+
+  function showQuizResult() {
+    var pct = Math.round((quizScore / quizPool.length) * 100);
+    var emo = "💪";
+    if (pct === 100) emo = "🏆";
+    else if (pct >= 80) emo = "🎉";
+    else if (pct >= 60) emo = "👍";
+
+    var h = '';
+    h += '<div class="result-box">';
+    h += '  <div class="res-emoji">' + emo + '</div>';
+    h += '  <div class="res-score">' + quizScore + ' / ' + quizPool.length + '</div>';
+    h += '  <div class="res-pct">' + pct + '점</div>';
+    h += '  <button class="btn-block" onclick="initQuiz()">↩ 다시 풀기</button>';
+    h += '</div>';
+    document.getElementById("quiz-body").innerHTML = h;
+  }
+
+  function renderSetup() {
+    var h = '';
+    h += '<div class="setup-box">';
+    h += '  <div class="form-group">';
+    h += '    <label class="form-label">이름 입력</label>';
+    h += '    <input type="text" class="form-input" id="tname" placeholder="이름을 입력하세요" value="' + esc(testerName) + '">';
+    h += '  </div>';
+    h += '  <div class="form-group">';
+    h += '    <label class="form-label">테스트 범위 선택</label>';
+    h += '    <div class="range-bar" id="trbar"></div>';
+    h += '  </div>';
+    h += '  <button class="btn-block" onclick="startTest()">테스트 시작 ▶</button>';
+    h += '</div>';
+    document.getElementById("test-body").innerHTML = h;
+    renderRangeBar("trbar", tri, "setTR");
+  }
+
+  function setTR(i) { tri = i; renderRangeBar("trbar", tri, "setTR"); }
+
+  function startTest() {
+    var nm = document.getElementById("tname").value.trim();
+    if (!nm) { alert("이름을 입력해주세요."); return; }
+    testerName = nm;
+
+    var r = ranges[tri];
+    var subPool = rawWords.slice(r.s, r.e);
+    if (subPool.length === 0) { alert("선택된 범위에 단어가 없습니다."); return; }
+
+    testWords = shuffle(subPool).slice(0, Math.min(50, subPool.length));
+    testIndex = 0;
+    testScore = 0;
+    testWrongList = [];
+    testCorrectList = [];
+
+    showTestQuestion();
+  }
+
+  function showTestQuestion() {
+    if (testIndex >= testWords.length) {
+      showTestResult();
+      return;
+    }
+    var cur = testWords[testIndex];
+    var pct = (testIndex / testWords.length) * 100;
+
+    var h = '';
+    h += '<div class="p-bar-container"><div class="p-bar-fill" style="width:' + pct + '%;"></div></div>';
+    h += '<div class="test-stat">';
+    h += '  <div>문항: ' + (testIndex + 1) + ' / ' + testWords.length + '</div>';
+    h += '  <div>✅ 맞춤수: ' + testScore + '</div>';
+    h += '</div>';
+    h += '<div class="test-q-box">';
+    h += '  <div class="test-word en">' + esc(cur.word) + '</div>';
+    h += '  <input type="text" class="form-input" id="tans" autocomplete="off" placeholder="뜻을 입력하고 Enter" onkeydown="handleTestKey(event)">';
+    h += '</div>';
+    h += '<button class="btn-block" onclick="submitTestAns()">다음 문제</button>';
+
+    document.getElementById("test-body").innerHTML = h;
+    document.getElementById("tans").focus();
+    speak(cur.word);
+  }
+
+  function handleTestKey(e) {
+    if (e.keyCode === 13) {
+      submitTestAns();
+    }
+  }
+
+  function submitTestAns() {
+    var ansInput = document.getElementById("tans").value.trim();
+    var cur = testWords[testIndex];
+    var correct = isSim(ansInput, cur.meaning);
+
+    if (correct) {
+      testScore++;
+      testCorrectList.push(cur.word);
+    } else {
+      testWrongList.push({ word: cur.word, input: ansInput || "(미입력)", correct: cur.meaning });
+    }
+
+    testIndex++;
+    showTestQuestion();
+  }
+
+  function showTestResult() {
+    var pct = Math.round((testScore / testWords.length) * 100);
+    var emo = "💪";
+    if (pct === 100) emo = "🏆";
+    else if (pct >= 80) emo = "🎉";
+    else if (pct >= 60) emo = "👍";
+
+    var h = '';
+    h += '<div class="result-box">';
+    h += '  <div class="res-emoji">' + emo + '</div>';
+    h += '  <div class="res-score">' + testScore + ' / ' + testWords.length + '</div>';
+    h += '  <div class="res-pct">' + pct + '점</div>';
+    h += '  <button class="btn-block" style="background:#25D366; margin-bottom:8px;" onclick="copyResult()">📋 카톡으로 결과 복사</button>';
+    h += '  <button class="btn-block" dashed style="background:var(--gray);" onclick="renderSetup()">↩ 다시 테스트</button>';
+
+    if (testWrongList.length > 0) {
+      h += '  <div class="wrong-list">';
+      h += '    <div class="wrong-title">❌ 틀린 단어 (' + testWrongList.length + '개)</div>';
+      testWrongList.forEach(function(item) {
+        h += '    <div class="wrong-item"><b>' + esc(item.word) + '</b><br>입력: <span style="color:var(--danger);">' + esc(item.input) + '</span> / 정답: <span style="color:var(--success);">' + esc(item.correct) + '</span></div>';
+      });
+      h += '  </div>';
+    }
+    h += '</div>';
+
+    document.getElementById("test-body").innerHTML = h;
+  }
+
+  function copyResult() {
+    var pct = Math.round((testScore / testWords.length) * 100);
+    var d = new Date();
+    var dateStr = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+
+    var t = "";
+    t += "[씨유에탑 " + seriesName + "] 테스트 결과\n";
+    t += "날짜: " + dateStr + "\n";
+    t += "이름: " + testerName + "\n";
+    t += "점수: " + testScore + "/" + testWords.length + " (" + pct + "점)\n";
+    t += "─────────────────\n";
+    t += "❌ 틀린 단어 (" + testWrongList.length + "개)\n";
+    testWrongList.forEach(function(item) {
+      t += "  " + item.word + " → 입력:" + item.input + " / 정답:" + item.correct + "\n";
+    });
+    t += "─────────────────\n";
+    t += "✅ 맞은 단어: " + testCorrectList.join(", ");
+
+    var ta = document.createElement("textarea");
+    ta.value = t;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    alert("결과가 클립보드에 복사되었습니다. 카톡 창에 붙여넣기 하세요!");
+  }
+
+  (function(){
+    var card = document.getElementById("fccard");
+    card.addEventListener("click", function(e) {
+      if (e.target.id === "fcfav") return;
+      fcFlip();
+    });
+    card.addEventListener("touchstart", function(e) {
+      fcTX = e.touches[0].clientX;
+    }, {passive:true});
+    card.addEventListener("touchend", function(e) {
+      var dx = e.changedTouches[0].clientX - fcTX;
+      if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+    }, {passive:true});
+  })();
+
+  document.getElementById("header-meta").textContent = seriesName + " · 총 " + rawWords.length + "단어";
+  loadProg();
+  switchTab("list");
+</script>
+
+</body>
+</html>
