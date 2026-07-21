@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>씨유에탑 ✦ 영어단어장</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warn: #F59E0B;
+      --gray: #6B7280;
+      --border: #E5E7EB;
+      --bg: #F9FAFB;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f0f2f5;
+      color: #1F2937;
+      display: flex;
+      justify-content: center;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .header {
+      padding: 16px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .header-brand {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: var(--gray);
+    }
+    .nav-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 700;
+    }
+    .content-area {
+      flex: 1;
+      padding: 16px;
+      background: var(--bg);
+      padding-bottom: 40px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    
+    .range-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .range-bar::-webkit-scrollbar { display: none; }
+    .rbtn {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    .rbtn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .search-box {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .fbtn {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--gray);
+      text-align: center;
+    }
+    .fbtn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .word-list { display: flex; flex-direction: column; gap: 8px; }
+    .word-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .word-card.known { opacity: 0.35; }
+    .w-chk {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #ffffff;
+    }
+    .w-chk.checked {
+      background: var(--success);
+      border-color: var(--success);
+    }
+    .w-chk.checked::after { content: "✓"; }
+    .w-info { flex: 1; }
+    .w-eng { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 2px; }
+    .w-kor { font-size: 14px; color: #4B5563; }
+    .ibtn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--gray);
+    }
+    .ibtn.fav.active { color: var(--warn); }
+    
+    .fc-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .fc-card {
+      width: 100%;
+      height: 220px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      padding: 20px;
+      text-align: center;
+    }
+    .fc-fav-pos { position: absolute; top: 12px; right: 12px; }
+    .fc-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .fc-eng { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 26px; color: var(--primary); }
+    .fc-kor { font-size: 18px; color: #374151; font-weight: 500; }
+    .fc-hint { font-size: 12px; color: var(--gray); margin-top: 8px; }
+    .fc-nav { display: flex; width: 100%; gap: 10px; margin-top: 20px; }
+    .fc-nav-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .fc-nav-btn.sec { background: var(--gray); }
+    
+    .panel-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .form-group { text-align: left; margin-bottom: 16px; }
+    .form-label { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+    }
+    .stat-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--gray); margin-bottom: 10px; }
+    .p-bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+    .p-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
+    .q-word { font-family: 'Nunito', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 24px; color: #111827; }
+    .q-options { display: flex; flex-direction: column; gap: 10px; }
+    .q-opt {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: 8px;
+      font-size: 15px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .q-opt.correct { background: var(--success) !important; color: #ffffff; border-color: var(--success); }
+    .q-opt.wrong { background: var(--danger) !important; color: #ffffff; border-color: var(--danger); }
+    
+    .res-emoji { font-size: 48px; margin-bottom: 10px; }
+    .res-score { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .res-pct { font-size: 14px; color: var(--gray); margin-bottom: 20px; }
+    .wrong-list { text-align: left; margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; max-height: 240px; overflow-y: auto; }
+    .wrong-title { font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 10px; }
+    .wrong-item { font-size: 13px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+    .wrong-eng { font-family: 'Nunito', sans-serif; font-weight: 700; color: #111827; }
+    .test-input-box {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">고3 자이 15회 어휘 · 총 401단어</div>
+  </div>
+  
+  <div class="nav-tabs">
+    <div class="nav-tab active" id="tb-list" onclick="switchTab('list')">단어목록</div>
+    <div class="nav-tab" id="tb-flash" onclick="switchTab('flash')">플래시카드</div>
+    <div class="nav-tab" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</div>
+    <div class="nav-tab" id="tb-test" onclick="switchTab('test')">📝 테스트</div>
+  </div>
+  
+  <div class="content-area">
+    <div class="tab-panel active" id="tab-list">
+      <div class="range-bar" id="lrbar"></div>
+      <input type="text" class="search-box" id="lsearch" placeholder="영어 또는 한글 뜻 검색..." oninput="renderList()">
+      <div class="filter-bar">
+        <div class="fbtn active" id="lf-all" onclick="setLFilter('all')">전체</div>
+        <div class="fbtn" id="lf-not" onclick="setLFilter('not')">모름</div>
+        <div class="fbtn" id="lf-fav" onclick="setLFilter('fav')">⭐즐겨찾기</div>
+      </div>
+      <div class="word-list" id="wlist-box"></div>
+    </div>
+    
+    <div class="tab-panel" id="tab-flash">
+      <div class="range-bar" id="fcrbar"></div>
+      <div class="fc-container">
+        <div class="fc-card" id="fccard">
+          <div class="fc-fav-pos">
+            <button class="ibtn fav" id="fcfav">★</button>
+          </div>
+          <div class="fc-content">
+            <div class="fc-eng" id="fcword">-</div>
+            <div class="fc-kor" id="fcmean" style="display:none;">-</div>
+            <div class="fc-hint" id="fchint">탭하여 뜻 보기</div>
+          </div>
+        </div>
+        <div class="fc-nav">
+          <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+          <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+          <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-panel" id="tab-quiz">
+      <div id="q-play" class="panel-box" style="display:none;">
+        <div class="stat-row">
+          <div id="q-cnt">문제: 1 / 10</div>
+          <div id="q-score">맞춤: 0</div>
+        </div>
+        <div class="p-bar-bg"><div class="p-bar-fill" id="q-pbar"></div></div>
+        <div class="q-word" id="q-wtext">-</div>
+        <div class="q-options" id="q-opts"></div>
+      </div>
+      <div id="q-res" class="panel-box" style="display:none;"></div>
+    </div>
+    
+    <div class="tab-panel" id="tab-test">
+      <div id="t-setup" class="panel-box" style="display:none;"></div>
+      <div id="t-play" class="panel-box" style="display:none;">
+        <div class="stat-row">
+          <div id="t-cnt">현재문제: 1/50</div>
+          <div id="t-score">✅ 맞춤수: 0</div>
+        </div>
+        <div class="p-bar-bg"><div class="p-bar-fill" id="t-pbar"></div></div>
+        <div class="q-word" id="t-wtext">-</div>
+        <input type="text" class="test-input-box" id="t-input" autocomplete="off" placeholder="한글 뜻을 입력하세요">
+        <button class="btn-main" onclick="submitTest()">입력 (Enter)</button>
+      </div>
+      <div id="t-res" class="panel-box" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var rawWords = [
+  { word: "flat", meaning: "평평한, 바람이 빠진" },
+  { word: "flatter", meaning: "아첨하다" },
+  { word: "flavor", meaning: "풍미, 맛" },
+  { word: "flaw", meaning: "결함" },
+  { word: "flawless", meaning: "결점이 없는" },
+  { word: "flee", meaning: "달아나다" },
+  { word: "fleet", meaning: "함대" },
+  { word: "flesh", meaning: "살, 고기" },
+  { word: "flexibility", meaning: "유연성" },
+  { word: "flexible", meaning: "유연한" },
+  { word: "flicker", meaning: "깜박거리다" },
+  { word: "flight", meaning: "비행, 항공편" },
+  { word: "flinch", meaning: "움찔하다" },
+  { word: "fling", meaning: "내던지다" },
+  { word: "flip", meaning: "뒤집다" },
+  { word: "flirt", meaning: "추파를 던지다" },
+  { word: "flit", meaning: "날아다니다" },
+  { word: "float", meaning: "떠다니다" },
+  { word: "flock", meaning: "떼, 무리; 모이다" },
+  { word: "flog", meaning: "태질하다" },
+  { word: "flood", meaning: "홍수; 범람하다" },
+  { word: "floor", meaning: "바닥, 층" },
+  { word: "flop", meaning: "털썩 주저앉다, 실패작" },
+  { word: "flora", meaning: "식물군" },
+  { word: "floral", meaning: "꽃의" },
+  { word: "flour", meaning: "밀가루" },
+  { word: "flourish", meaning: "번창하다" },
+  { word: "flout", meaning: "어기다, 무시하다" },
+  { word: "flow", meaning: "흐름; 흐르다" },
+  { word: "flower", meaning: "꽃" },
+  { word: "fluctuate", meaning: "변동하다" },
+  { word: "fluctuation", meaning: "변동" },
+  { word: "fluency", meaning: "유창함" },
+  { word: "fluent", meaning: "유창한" },
+  { word: "fluid", meaning: "유체, 액체; 부드러운" },
+  { word: "fluke", meaning: "요행" },
+  { word: "flunk", meaning: "낙제하다" },
+  { word: "flush", meaning: "붉어지다, 물을 내리다" },
+  { word: "fluster", meaning: "허둥지둥하게 만들다" },
+  { word: "flutter", meaning: "파닥거리다" },
+  { word: "flux", meaning: "유동, 끊임없는 변화" },
+  { word: "fly", meaning: "날다, 파리" },
+  { word: "foam", meaning: "거품" },
+  { word: "focus", meaning: "초점; 집중하다" },
+  { word: "fodder", meaning: "사료" },
+  { word: "foe", meaning: "원수, 적" },
+  { word: "fog", meaning: "안개" },
+  { word: "foggy", meaning: "안개가 낀" },
+  { word: "foil", meaning: "좌절시키다, 포일" },
+  { word: "foist", meaning: "억지로 떠맡기다" },
+  { word: "fold", meaning: "접다" },
+  { word: "folder", meaning: "폴더" },
+  { word: "foliage", meaning: "나뭇잎" },
+  { word: "folk", meaning: "사람들, 민속의" },
+  { word: "folklore", meaning: "민속" },
+  { word: "follow", meaning: "따르다" },
+  { word: "follower", meaning: "추종자" },
+  { word: "following", meaning: "다음의" },
+  { word: "folly", meaning: "판단력 부족, 어리석음" },
+  { word: "foment", meaning: "조장하다" },
+  { word: "fond", meaning: "애정을 느끼는" },
+  { word: "fondle", meaning: "어루만지다" },
+  { word: "fondness", meaning: "도착, 애호" },
+  { word: "food", meaning: "음식" },
+  { word: "fool", meaning: "바보; 속이다" },
+  { word: "foolish", meaning: "어리석은" },
+  { word: "foot", meaning: "발" },
+  { word: "footage", meaning: "장면, 화면" },
+  { word: "footing", meaning: "발판, 기반" },
+  { word: "footprint", meaning: "발자국" },
+  { word: "footstep", meaning: "발자국 소리" },
+  { word: "forage", meaning: "먹이를 찾아다니다" },
+  { word: "foray", meaning: "습격" },
+  { word: "forbear", meaning: "참다" },
+  { word: "forbearance", meaning: "인내" },
+  { word: "forbid", meaning: "금지하다" },
+  { word: "forbidden", meaning: "금지된" },
+  { word: "forbidding", meaning: "험악한" },
+  { word: "force", meaning: "힘, 힘입다; 강요하다" },
+  { word: "forceful", meaning: "강력한" },
+  { word: "forcible", meaning: "강제적인" },
+  { word: "foreboding", meaning: "예감" },
+  { word: "forecast", meaning: "예보; 예측하다" },
+  { word: "forefather", meaning: "선조" },
+  { word: "forefront", meaning: "최전선" },
+  { word: "foregoing", meaning: "앞서 말한" },
+  { word: "foreign", meaning: "외국의" },
+  { word: "foreigner", meaning: "외국인" },
+  { word: "foreknowledge", meaning: "예지" },
+  { word: "foremost", meaning: "가장 중요한" },
+  { word: "forerunner", meaning: "선구자" },
+  { word: "foresee", meaning: "예견하다" },
+  { word: "foreseeable", meaning: "예견할 수 있는" },
+  { word: "foreshadow", meaning: "전조가 되다" },
+  { word: "foresight", meaning: "선견지명" },
+  { word: "forest", meaning: "숲" },
+  { word: "forestall", meaning: "미연에 방지하다" },
+  { word: "forestry", meaning: "임업" },
+  { word: "foretell", meaning: "예언하다" },
+  { word: "forethought", meaning: "사전의 신중함" },
+  { word: "forever", meaning: "영원히" },
+  { word: "forewarn", meaning: "경고하다" },
+  { word: "forfeit", meaning: "몰수당하다" },
+  { word: "forge", meaning: "구축하다, 위조하다" },
+  { word: "forgery", meaning: "위조죄, 위조품" },
+  { word: "forget", meaning: "잊다" },
+  { word: "forgetful", meaning: "잘 잊어버리는" },
+  { word: "forgive", meaning: "용서하다" },
+  { word: "forgiveness", meaning: "용서" },
+  { word: "forgo", meaning: "포기하다" },
+  { word: "fork", meaning: "포크, 갈림길" },
+  { word: "forlorn", meaning: "쓸쓸한" },
+  { word: "form", meaning: "형태, 종류; 형성하다" },
+  { word: "formal", meaning: "공식적인" },
+  { word: "formality", meaning: "형식적인 절차" },
+  { word: "format", meaning: "포맷, 구성 방식" },
+  { word: "formation", meaning: "형성, 구성" },
+  { word: "formative", meaning: "형성기에 지대한 영향을 미치는" },
+  { word: "former", meaning: "과거의, 전자" },
+  { word: "formerly", meaning: "이전에" },
+  { word: "formidable", meaning: "어마어마한" },
+  { word: "formula", meaning: "공식" },
+  { word: "formulate", meaning: "만들어 내다" },
+  { word: "formulation", meaning: "공식화" },
+  { word: "forsake", meaning: "저버리다" },
+  { word: "forte", meaning: "강점" },
+  { word: "forth", meaning: "앞으로" },
+  { word: "forthcoming", meaning: "다가오는" },
+  { word: "forthright", meaning: "솔직한" },
+  { word: "fortify", meaning: "요새화하다, 강화하다" },
+  { word: "fortitude", meaning: "불굴의 용기" },
+  { word: "fortress", meaning: "요새" },
+  { word: "fortuitous", meaning: "우연한" },
+  { word: "fortunate", meaning: "운이 좋은" },
+  { word: "fortune", meaning: "운, 재산" },
+  { word: "forum", meaning: "포럼, 토론회" },
+  { word: "forward", meaning: "앞으로; 전송하다" },
+  { word: "fossil", meaning: "화석" },
+  { word: "fossilize", meaning: "화석화하다" },
+  { word: "foster", meaning: "조성하다, 발전시키다" },
+  { word: "foul", meaning: "더러운, 파울" },
+  { word: "found", meaning: "설립하다" },
+  { word: "foundation", meaning: "토대, 재단, 설립" },
+  { word: "founder", meaning: "창립자, 침몰하다" },
+  { word: "fountain", meaning: "분수" },
+  { word: "fraction", meaning: "부분, 분수" },
+  { word: "fracture", meaning: "골절; 골절되다" },
+  { word: "fragile", meaning: "부서지기 쉬운" },
+  { word: "fragility", meaning: "취약함" },
+  { word: "fragment", meaning: "조각" },
+  { word: "fragmentary", meaning: "단편적인" },
+  { word: "fragmentation", meaning: "단편화" },
+  { word: "fragrance", meaning: "향기" },
+  { word: "fragrant", meaning: "향기로운" },
+  { word: "frail", meaning: "노쇠한" },
+  { word: "frailty", meaning: "노쇠함" },
+  { word: "frame", meaning: "틀, 뼈대; 틀을 짜다" },
+  { word: "framework", meaning: "뼈대, 체제" },
+  { word: "franchise", meaning: "프랜차이즈, 선거권" },
+  { word: "frank", meaning: "솔직한" },
+  { word: "frantic", meaning: "정신없이 서두르는" },
+  { word: "fraternal", meaning: "형제의" },
+  { word: "fraternity", meaning: "협회, 남학생 사교클럽" },
+  { word: "fraud", meaning: "사기" },
+  { word: "fraudulent", meaning: "사기 치는" },
+  { word: "fraught", meaning: "투성이의, 걱정스러운" },
+  { word: "fray", meaning: "닳다" },
+  { word: "freak", meaning: "괴짜" },
+  { word: "free", meaning: "자유로운, 무료의; 자유롭게 하다" },
+  { word: "freedom", meaning: "자유" },
+  { word: "freeze", meaning: "얼다, 동결하다" },
+  { word: "freezer", meaning: "냉동고" },
+  { word: "freight", meaning: "화물" },
+  { word: "frenetic", meaning: "열광적인" },
+  { word: "frenzy", meaning: "광분" },
+  { word: "frequency", meaning: "빈도, 주파수" },
+  { word: "frequent", meaning: "잦은; 자주 방문하다" },
+  { word: "frequently", meaning: "자주" },
+  { word: "fresco", meaning: "프레스코화" },
+  { word: "fresh", meaning: "신선한" },
+  { word: "freshman", meaning: "신입생" },
+  { word: "fret", meaning: "조바심치다" },
+  { word: "friction", meaning: "마찰" },
+  { word: "friend", meaning: "친구" },
+  { word: "friendly", meaning: "친절한" },
+  { word: "friendship", meaning: "우정" },
+  { word: "frigate", meaning: "호위함" },
+  { word: "fright", meaning: "놀람, 공포" },
+  { word: "frighten", meaning: "겁나게 하다" },
+  { word: "frightened", meaning: "겁먹은" },
+  { word: "frightening", meaning: "겁나는" },
+  { word: "frightful", meaning: "끔찍한" },
+  { word: "frigid", meaning: "몹시 추운" },
+  { word: "fringe", meaning: "주변부, 비주류" },
+  { word: "frisk", meaning: "몸수색을 하다" },
+  { word: "fritter", meaning: "낭비하다" },
+  { word: "frivolous", meaning: "경솔한" },
+  { word: "fro", meaning: "뒤로" },
+  { word: "frock", meaning: "드레스" },
+  { word: "frog", meaning: "개구리" },
+  { word: "frontier", meaning: "국경, 개척지" },
+  { word: "frost", meaning: "서리" },
+  { word: "frosty", meaning: "서리가 내리는" },
+  { word: "froth", meaning: "거품" },
+  { word: "frown", meaning: "눈살을 찌푸리다" },
+  { word: "frugal", meaning: "절약하는" },
+  { word: "frugality", meaning: "절약" },
+  { word: "fruit", meaning: "과일, 결실" },
+  { word: "fruitful", meaning: "생산적인" },
+  { word: "fruition", meaning: "결실" },
+  { word: "fruitless", meaning: "성과 없는" },
+  { word: "frustrate", meaning: "좌절시키다" },
+  { word: "frustrated", meaning: "좌절감을 느끼는" },
+  { word: "frustrating", meaning: "좌절감을 주는" },
+  { word: "frustration", meaning: "좌절" },
+  { word: "fry", meaning: "튀기다" },
+  { word: "fuel", meaning: "연료; 연료를 공급하다" },
+  { word: "fugitive", meaning: "도망자" },
+  { word: "fulfill", meaning: "성취하다, 이행하다" },
+  { word: "fulfillment", meaning: "성취, 이행" },
+  { word: "full", meaning: "가득 찬" },
+  { word: "fully", meaning: "완전히" },
+  { word: "fumble", meaning: "더듬거리다" },
+  { word: "fume", meaning: "연기; 씩씩대다" },
+  { word: "fumigate", meaning: "훈증 소독하다" },
+  { word: "fun", meaning: "재미" },
+  { word: "function", meaning: "기능; 기능하다" },
+  { word: "functional", meaning: "기능적인" },
+  { word: "functionality", meaning: "기능성" },
+  { word: "fund", meaning: "자금; 자금을 대다" },
+  { word: "fundamental", meaning: "근본적인" },
+  { word: "fundamentally", meaning: "근본적으로" },
+  { word: "funding", meaning: "재정 지원, 자금 제공" },
+  { word: "fundraise", meaning: "모금하다" },
+  { word: "fundraiser", meaning: "모금 행사, 모금가" },
+  { word: "fundraising", meaning: "모금 활동" },
+  { word: "funeral", meaning: "장례식" },
+  { word: "fungus", meaning: "균류, 곰팡이" },
+  { word: "funnel", meaning: "깔대기" },
+  { word: "funny", meaning: "웃기는" },
+  { word: "fur", meaning: "모피" },
+  { word: "furious", meaning: "몹시 화가 난" },
+  { word: "furnace", meaning: "용광로" },
+  { word: "furnish", meaning: "비치하다, 제공하다" },
+  { word: "furniture", meaning: "가구" },
+  { word: "furrow", meaning: "고랑, 주름" },
+  { word: "further", meaning: "발전시키다, 더 이상의" },
+  { word: "furthermore", meaning: "뿐만 아니라, 더욱이" },
+  { word: "furtive", meaning: "은밀한" },
+  { word: "fury", meaning: "분노" },
+  { word: "fuse", meaning: "융합하다, 퓨즈" },
+  { word: "fusion", meaning: "융합" },
+  { word: "fuss", meaning: "호들갑" },
+  { word: "fussy", meaning: "까다로운" },
+  { word: "futile", meaning: "헛된" },
+  { word: "futility", meaning: "무용성" },
+  { word: "future", meaning: "미래" },
+  { word: "gab", meaning: "수다를 떨다" },
+  { word: "gadget", meaning: "도구, 장치" },
+  { word: "gaff", meaning: "외동나무 낚시 바늘" },
+  { word: "gag", meaning: "재갈을 물리다, 개그" },
+  { word: "gaiety", meaning: "유쾌함" },
+  { word: "gain", meaning: "얻다, 이익" },
+  { word: "gainful", meaning: "수익이 되는" },
+  { word: "gait", meaning: "걸음걸이" },
+  { word: "gala", meaning: "축제" },
+  { word: "galaxy", meaning: "은하, 은하수" },
+  { word: "gale", meaning: "강풍" },
+  { word: "gall", meaning: "뻔뻔스러움" },
+  { word: "gallant", meaning: "용감한" },
+  { word: "gallantry", meaning: "용맹" },
+  { word: "gallery", meaning: "미술관, 화랑" },
+  { word: "galley", meaning: "조리실" },
+  { word: "gallop", meaning: "질주하다" },
+  { word: "gallows", meaning: "교수대" },
+  { word: "galvanize", meaning: "자극하여 ~하게 하다" },
+  { word: "gamble", meaning: "도박하다" },
+  { word: "gambol", meaning: "뛰어다니다" },
+  { word: "game", meaning: "게임, 사냥감" },
+  { word: "gamut", meaning: "전 범위" },
+  { word: "gang", meaning: "패거리, 갱단" },
+  { word: "gaol", meaning: "교도소" },
+  { word: "gap", meaning: "틈, 격차" },
+  { word: "gape", meaning: "입을 벌리고 바라보다" },
+  { word: "garage", meaning: "차고, 정비소" },
+  { word: "garb", meaning: "의복" },
+  { word: "garbage", meaning: "쓰레기" },
+  { word: "garble", meaning: "왜곡하다" },
+  { word: "garden", meaning: "정원" },
+  { word: "gardener", meaning: "정원사" },
+  { word: "gargantuan", meaning: "엄청난" },
+  { word: "gargle", meaning: "가글하다" },
+  { word: "garish", meaning: "야한" },
+  { word: "garland", meaning: "화환" },
+  { word: "garlic", meaning: "마늘" },
+  { word: "garment", meaning: "의류" },
+  { word: "garner", meaning: "모으다" },
+  { word: "garnish", meaning: "고명을 얹다, 장식하다" },
+  { word: "garrison", meaning: "주둔군" },
+  { word: "garrulous", meaning: "수다스러운" },
+  { word: "garter", meaning: "스타킹 고정 밴드" },
+  { word: "gas", meaning: "가스, 기체" },
+  { word: "gash", meaning: "깊은 상처" },
+  { word: "gasoline", meaning: "휘발유" },
+  { word: "gasp", meaning: "숨이 턱 막히다" },
+  { word: "gastric", meaning: "위의" },
+  { word: "gastronomy", meaning: "미식" },
+  { word: "gate", meaning: "문" },
+  { word: "gateway", meaning: "관문" },
+  { word: "gather", meaning: "모으다, 모이다" },
+  { word: "gathering", meaning: "모임" },
+  { word: "gauche", meaning: "서투른" },
+  { word: "gaudy", meaning: "야한" },
+  { word: "gauge", meaning: "측정기; 측정하다" },
+  { word: "gaunt", meaning: "수척한" },
+  { word: "gauze", meaning: "거즈" },
+  { word: "gavel", meaning: "의사봉" },
+  { word: "gawk", meaning: "멍하니 바라보다" },
+  { word: "gay", meaning: "동성애자의, 즐거운" },
+  { word: "gaze", meaning: "응시하다" },
+  { word: "gazette", meaning: "관보, 신문" },
+  { word: "gear", meaning: "장비, 기어; 맞추다" },
+  { word: "gel", meaning: "겔, 젤" },
+  { word: "gelatin", meaning: "젤라틴" },
+  { word: "geld", meaning: "거세하다" },
+  { word: "gem", meaning: "보석" },
+  { word: "gender", meaning: "성, 성별" },
+  { word: "gene", meaning: "유전자" },
+  { word: "genealogy", meaning: "계보, 족보" },
+  { word: "general", meaning: "일반적인, 장군" },
+  { word: "generality", meaning: "일반성" },
+  { word: "generalize", meaning: "일반화하다" },
+  { word: "generally", meaning: "일반적으로" },
+  { word: "generate", meaning: "생성하다" },
+  { word: "generation", meaning: "세대, 생성" },
+  { word: "generative", meaning: "생성적인" },
+  { word: "generator", meaning: "발전기" },
+  { word: "generic", meaning: "포괄적인, 브랜드가 없는" },
+  { word: "generosity", meaning: "너그러움" },
+  { word: "generous", meaning: "관대한" },
+  { word: "genesis", meaning: "기원, 발생" },
+  { word: "genetic", meaning: "유전적인" },
+  { word: "genetics", meaning: "유전학" },
+  { word: "genial", meaning: "상냥한" },
+  { word: "genie", meaning: "지니(요정)" },
+  { word: "genius", meaning: "천재, 천재성" },
+  { word: "genocide", meaning: "대량 학살" },
+  { word: "genre", meaning: "장르" },
+  { word: "genteel", meaning: "우아한" },
+  { word: "gentle", meaning: "온화한" },
+  { word: "gentleman", meaning: "신사" },
+  { word: "gentry", meaning: "상류층" },
+  { word: "genuine", meaning: "진짜의" },
+  { word: "genuinely", meaning: "진심으로" },
+  { word: "genus", meaning: "속" },
+  { word: "geo", meaning: "지구의" },
+  { word: "geochemistry", meaning: "지구화학" },
+  { word: "geography", meaning: "지리, 지리학" },
+  { word: "geological", meaning: "지질학적인" },
+  { word: "geologist", meaning: "지질학자" },
+  { word: "geology", meaning: "지질학" },
+  { word: "geometric", meaning: "기하학적인" },
+  { word: "geometry", meaning: "기하학" },
+  { word: "geopolitics", meaning: "지정학" },
+  { word: "germ", meaning: "세균" },
+  { word: "germane", meaning: "밀접한 관련이 있는" },
+  { word: "germicide", meaning: "살균제" },
+  { word: "germinate", meaning: "발아하다" },
+  { word: "gerontology", meaning: "노년학" },
+  { word: "gestate", meaning: "잉태하다" },
+  { word: "gestation", meaning: "임신 기간" },
+  { word: "gesticulate", meaning: "몸짓으로 가리키다" }
+];
+
+var sSlug = "go3_jai_15";
+var sKey = "cutop_" + sSlug;
+
+function getStore() {
+  var d = localStorage.getItem(sKey);
+  return d ? JSON.parse(d) : {};
+}
+function saveStore(s) {
+  localStorage.setItem(sKey, JSON.stringify(s));
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+var ranges = buildRanges(rawWords);
+
+var lri = 0, fri = 0;
+var lf = "all";
+
+function renderRangeBar(id, cur, fnStr) {
+  var html = "";
+  ranges.forEach(function(r, idx) {
+    var cls = idx === cur ? "rbtn active" : "rbtn";
+    html += '<button class="' + cls + '" onclick="' + fnStr + '(' + idx + ')">' + r.label + '</button>';
+  });
+  document.getElementById(id).innerHTML = html;
+}
+
+function setLR(i) { lri = i; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setFR(i) { fri = i; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+function setLFilter(v) {
+  lf = v;
+  ["all","not","fav"].forEach(function(n) {
+    document.getElementById("lf-"+n).classList.toggle("active", n===v);
+  });
+  renderList();
+}
+
+function renderList() {
+  var store = getStore();
+  var box = document.getElementById("wlist-box");
+  var r = ranges[lri];
+  var query = document.getElementById("lsearch").value.toLowerCase().trim();
+  
+  var html = "";
+  for (var i = r.s; i < r.e; i++) {
+    var w = rawWords[i];
+    var k = w.word + "|" + w.meaning;
+    var s = store[k] || { status: "", fav: false };
+    
+    var isK = s.status === "known";
+    var isF = !!s.fav;
+    
+    if (lf === "not" && isK) continue;
+    if (lf === "fav" && !isF) continue;
+    
+    if (query) {
+      if (w.word.toLowerCase().indexOf(query) === -1 && w.meaning.toLowerCase().indexOf(query) === -1) {
+        continue;
+      }
+    }
+    
+    var cCard = isK ? "word-card known" : "word-card";
+    var cChk = isK ? "w-chk checked" : "w-chk";
+    var cFav = isF ? "ibtn fav active" : "ibtn fav";
+    
+    html += '<div class="' + cCard + '" id="wc-' + i + '">';
+    html += '  <div class="' + cChk + '" onclick="toggleKnown(' + i + ')"></div>';
+    html += '  <div class="w-info">';
+    html += '    <div class="w-eng">' + esc(w.word) + '</div>';
+    html += '    <div class="w-kor">' + esc(w.meaning) + '</div>';
+    html += '  </div>';
+    html += '  <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '  <button class="' + cFav + '" onclick="toggleFav(' + i + ', \'list\')">★</button>';
+    html += '</div>';
+  }
+  box.innerHTML = html;
+}
+
+function toggleKnown(i) {
+  var w = rawWords[i];
+  var k = w.word + "|" + w.meaning;
+  var store = getStore();
+  if (!store[k]) store[k] = { status: "", fav: false };
+  store[k].status = (store[k].status === "known") ? "" : "known";
+  saveStore(store);
+  renderList();
+}
+
+function toggleFav(i, src) {
+  var w = rawWords[i];
+  var k = w.word + "|" + w.meaning;
+  var store = getStore();
+  if (!store[k]) store[k] = { status: "", fav: false };
+  store[k].fav = !store[k].fav;
+  saveStore(store);
+  if (src === 'list') renderList();
+  if (src === 'fc') updateFC();
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+function speakFc() {
+  speak(document.getElementById("fcword").textContent);
+}
+
+var fcList = [];
+var fci = 0;
+var fcFlipped = false;
+var fcTX = 0;
+
+function initFC() {
+  var r = ranges[fri];
+  fcList = [];
+  for (var i = r.s; i < r.e; i++) {
+    fcList.push({ idx: i, word: rawWords[i] });
+  }
+  fci = 0;
+  updateFC();
+}
+
+function updateFC() {
+  if (fcList.length === 0) {
+    document.getElementById("fcword").textContent = "단어 없음";
+    document.getElementById("fcmean").style.display = "none";
+    document.getElementById("fchint").style.display = "none";
+    return;
+  }
+  var cur = fcList[fci];
+  var store = getStore();
+  var k = cur.word.word + "|" + cur.word.meaning;
+  var isF = !!(store[k] && store[k].fav);
+  
+  document.getElementById("fcword").textContent = cur.word.word;
+  document.getElementById("fcmean").textContent = cur.word.meaning;
+  
+  var favBtn = document.getElementById("fcfav");
+  favBtn.className = isF ? "ibtn fav active" : "ibtn fav";
+  favBtn.onclick = function() { toggleFav(cur.idx, 'fc'); };
+  
+  fcFlipped = false;
+  document.getElementById("fcmean").style.display = "none";
+  document.getElementById("fchint").style.display = "block";
+}
+
+function fcFlip() {
+  if (fcList.length === 0 || fcFlipped) return;
+  fcFlipped = true;
+  document.getElementById("fcmean").style.display = "block";
+  document.getElementById("fchint").style.display = "none";
+  speakFc();
+}
+
+function fcNext() { if (fcList.length === 0) return; fci = (fci + 1) % fcList.length; updateFC(); }
+function fcPrev() { if (fcList.length === 0) return; fci = (fci - 1 + fcList.length) % fcList.length; updateFC(); }
+
+var qList = [];
+var qCur = 0;
+var qScore = 0;
+var qLocked = false;
+
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+function initQuiz() {
+  document.getElementById("q-res").style.display = "none";
+  document.getElementById("q-play").style.display = "block";
+  
+  var pool = shuffle(rawWords.slice());
+  var limit = Math.min(10, pool.length);
+  qList = pool.slice(0, limit);
+  qCur = 0;
+  qScore = 0;
+  showQuiz();
+}
+
+function showQuiz() {
+  qLocked = false;
+  var total = qList.length;
+  document.getElementById("q-cnt").textContent = "문제: " + (qCur + 1) + " / " + total;
+  document.getElementById("q-score").textContent = "맞춤: " + qScore;
+  document.getElementById("q-pbar").style.width = ((qCur / total) * 100) + "%";
+  
+  var curW = qList[qCur];
+  document.getElementById("q-wtext").textContent = curW.word;
+  
+  var corrects = [curW.meaning];
+  var wrongs = [];
+  rawWords.forEach(function(w) {
+    if (w.meaning !== curW.meaning && wrongs.indexOf(w.meaning) === -1) {
+      wrongs.push(w.meaning);
+    }
+  });
+  shuffle(wrongs);
+  var opts = [curW.meaning];
+  for (var i = 0; i < Math.min(3, wrongs.length); i++) {
+    opts.push(wrongs[i]);
+  }
+  shuffle(opts);
+  
+  var html = "";
+  opts.forEach(function(o) {
+    var isCor = (o === curW.meaning) ? "1" : "0";
+    html += '<button class="q-opt" data-cor="' + isCor + '" onclick="qAns(this)">' + esc(o) + '</button>';
+  });
+  document.getElementById("q-opts").innerHTML = html;
+}
+
+function qAns(btn) {
+  if (qLocked) return;
+  qLocked = true;
+  var isCor = btn.dataset.cor === "1";
+  if (isCor) {
+    btn.classList.add("correct");
+    qScore++;
+    speak(qList[qCur].word);
+  } else {
+    btn.classList.add("wrong");
+    var btns = document.querySelectorAll("#q-opts .q-opt");
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].dataset.cor === "1") {
+        btns[i].classList.add("correct");
+        break;
+      }
+    }
+  }
+  setTimeout(function() {
+    qCur++;
+    if (qCur < qList.length) {
+      showQuiz();
+    } else {
+      finishQuiz();
+    }
+  }, 1000);
+}
+
+function finishQuiz() {
+  document.getElementById("q-play").style.display = "none";
+  var resBox = document.getElementById("q-res");
+  resBox.style.display = "block";
+  
+  var total = qList.length;
+  var pct = Math.round((qScore / total) * 100);
+  var emo = "💪";
+  if (pct === 100) emo = "🏆";
+  else if (pct >= 80) emo = "🎉";
+  else if (pct >= 60) emo = "👍";
+  
+  var html = "";
+  html += '<div class="res-emoji">' + emo + '</div>';
+  html += '<div class="res-score">' + qScore + ' / ' + total + '</div>';
+  html += '<div class="res-pct">' + pct + '점</div>';
+  html += '<button class="btn-main" onclick="initQuiz()">↩ 다시 풀기</button>';
+  resBox.innerHTML = html;
+}
+
+var tRangeI = 0;
+var tList = [];
+var tCur = 0;
+var tScore = 0;
+var tWrongs = [];
+var tRights = [];
+
+function isSim(input, correct) {
+  var norm = function(s) {
+    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+  };
+  var a = norm(input), c = norm(correct);
+  if (a === c) return true;
+  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+  return false;
+}
+
+function renderSetup() {
+  document.getElementById("t-play").style.display = "none";
+  document.getElementById("t-res").style.display = "none";
+  var box = document.getElementById("t-setup");
+  box.style.display = "block";
+  
+  var html = "";
+  html += '<div class="form-group">';
+  html += '  <label class="form-label">이름 입력</label>';
+  html += '  <input type="text" class="form-input" id="t-name" placeholder="이름을 입력하세요">';
+  html += '</div>';
+  html += '<div class="form-group">';
+  html += '  <label class="form-label">범위 선택</label>';
+  html += '  <div class="range-bar" id="trbar"></div>';
+  html += '</div>';
+  html += '<button class="btn-main" onclick="startTest()">테스트 시작 ▶</button>';
+  box.innerHTML = html;
+  
+  renderRangeBar("trbar", tRangeI, "setTRange");
+}
+
+function setTRange(i) { tRangeI = i; renderRangeBar("trbar", tRangeI, "setTRange"); }
+
+function startTest() {
+  var name = document.getElementById("t-name").value.trim();
+  if (!name) { alert("이름을 입력해주세요."); return; }
+  
+  var r = ranges[tRangeI];
+  var pool = [];
+  for (var i = r.s; i < r.e; i++) { pool.push(rawWords[i]); }
+  shuffle(pool);
+  
+  tList = pool.slice(0, Math.min(50, pool.length));
+  tCur = 0;
+  tScore = 0;
+  tWrongs = [];
+  tRights = [];
+  
+  document.getElementById("t-setup").style.display = "none";
+  document.getElementById("t-play").style.display = "block";
+  
+  showTestItem();
+}
+
+function showTestItem() {
+  var total = tList.length;
+  document.getElementById("t-cnt").textContent = "현재문제: " + (tCur + 1) + " / " + total;
+  document.getElementById("t-score").textContent = "✅ 맞춤수: " + tScore;
+  document.getElementById("t-pbar").style.width = ((tCur / total) * 100) + "%";
+  
+  var curW = tList[tCur];
+  document.getElementById("t-wtext").textContent = curW.word;
+  
+  var inp = document.getElementById("t-input");
+  inp.value = "";
+  inp.focus();
+  
+  speak(curW.word);
+}
+
+function submitTest() {
+  var inp = document.getElementById("t-input");
+  var val = inp.value.trim();
+  var curW = tList[tCur];
+  
+  var isCor = isSim(val, curW.meaning);
+  if (isCor) {
+    tScore++;
+    tRights.push(curW.word);
+  } else {
+    tWrongs.push({ word: curW.word, input: val ? val : "(공백)", correct: curW.meaning });
+  }
+  
+  tCur++;
+  if (tCur < tList.length) {
+    showTestItem();
+  } else {
+    finishTest();
+  }
+}
+
+function finishTest() {
+  document.getElementById("t-play").style.display = "none";
+  var resBox = document.getElementById("t-res");
+  resBox.style.display = "block";
+  
+  var total = tList.length;
+  var pct = Math.round((tScore / total) * 100);
+  var emo = "💪";
+  if (pct === 100) emo = "🏆";
+  else if (pct >= 80) emo = "🎉";
+  else if (pct >= 60) emo = "👍";
+  
+  var name = document.getElementById("t-name").value.trim();
+  
+  var html = "";
+  html += '<div class="res-emoji">' + emo + '</div>';
+  html += '<div class="res-score">' + tScore + " / " + total + '</div>';
+  html += '<div class="res-pct">' + pct + '점</div>';
+  
+  html += '<button class="btn-main" style="background:#25D366; margin-bottom:8px;" onclick="copyKakao()">📋 카톡으로 결과 복사</button>';
+  html += '<button class="btn-main" style="background:var(--gray);" onclick="renderSetup()">↩ 다시 테스트</button>';
+  
+  if (tWrongs.length > 0) {
+    html += '<div class="wrong-list">';
+    html += '  <div class="wrong-title">❌ 틀린 단어 (' + tWrongs.length + '개)</div>';
+    tWrongs.forEach(function(item) {
+      html += '  <div class="wrong-item">';
+      html += '    <span class="wrong-eng">' + esc(item.word) + '</span> → ';
+      html += '    <span style="color:var(--danger);">' + esc(item.input) + '</span> / ';
+      html += '    <span style="color:var(--success);">' + esc(item.correct) + '</span>';
+      html += '  </div>';
+    });
+    html += '</div>';
+  }
+  
+  resBox.innerHTML = html;
+}
+
+function copyKakao() {
+  var name = document.getElementById("t-name").value.trim();
+  var total = tList.length;
+  var pct = Math.round((tScore / total) * 100);
+  
+  var d = new Date();
+  var dateStr = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+  
+  var txt = "[씨유에탑 고3 자이 15회 어휘] 테스트 결과\n";
+  txt += "날짜: " + dateStr + "\n";
+  txt += "이름: " + name + "\n";
+  txt += "점수: " + tScore + "/" + total + " (" + pct + "점)\n";
+  txt += "─────────────────\n";
+  txt += "❌ 틀린 단어 (" + tWrongs.length + "개)\n";
+  tWrongs.forEach(function(item) {
+    txt += "  " + item.word + " → 입력:" + item.input + " / 정답:" + item.correct + "\n";
+  });
+  txt += "─────────────────\n";
+  txt += "✅ 맞은 단어: " + tRights.join(", ");
+  
+  var ta = document.createElement("textarea");
+  ta.value = txt;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  alert("결과가 복사되었습니다. 카톡 창에 붙여넣기 하세요.");
+}
+
+function switchTab(t) {
+  ["list","flash","quiz","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="quiz")  { initQuiz(); }
+  if (t==="test")  { renderSetup(); }
+}
+
+(function(){
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+  
+  document.getElementById("t-input").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") { submitTest(); }
+  });
+  
+  renderRangeBar("lrbar", lri, "setLR");
+  renderList();
+})();
+</script>
+
+</body>
+</html>
