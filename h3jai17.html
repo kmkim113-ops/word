@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>씨유에탑 ✦ 영어단어장</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warn: #F59E0B;
+      --gray: #6B7280;
+      --border: #E5E7EB;
+      --bg: #F9FAFB;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f0f2f5;
+      color: #1F2937;
+      display: flex;
+      justify-content: center;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .header {
+      padding: 16px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .header-brand {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: var(--gray);
+    }
+    .nav-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 700;
+    }
+    .content-area {
+      flex: 1;
+      padding: 16px;
+      background: var(--bg);
+      padding-bottom: 40px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    
+    .range-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .range-bar::-webkit-scrollbar { display: none; }
+    .rbtn {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    .rbtn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .search-box {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .fbtn {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--gray);
+      text-align: center;
+    }
+    .fbtn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .word-list { display: flex; flex-direction: column; gap: 8px; }
+    .word-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .word-card.known { opacity: 0.35; }
+    .w-chk {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #ffffff;
+    }
+    .w-chk.checked {
+      background: var(--success);
+      border-color: var(--success);
+    }
+    .w-chk.checked::after { content: "✓"; }
+    .w-info { flex: 1; }
+    .w-eng { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 2px; }
+    .w-kor { font-size: 14px; color: #4B5563; }
+    .ibtn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--gray);
+    }
+    .ibtn.fav.active { color: var(--warn); }
+    
+    .fc-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .fc-card {
+      width: 100%;
+      height: 220px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      padding: 20px;
+      text-align: center;
+    }
+    .fc-fav-pos { position: absolute; top: 12px; right: 12px; }
+    .fc-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .fc-eng { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 26px; color: var(--primary); }
+    .fc-kor { font-size: 18px; color: #374151; font-weight: 500; }
+    .fc-hint { font-size: 12px; color: var(--gray); margin-top: 8px; }
+    .fc-nav { display: flex; width: 100%; gap: 10px; margin-top: 20px; }
+    .fc-nav-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .fc-nav-btn.sec { background: var(--gray); }
+    
+    .panel-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .form-group { text-align: left; margin-bottom: 16px; }
+    .form-label { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+    }
+    .stat-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--gray); margin-bottom: 10px; }
+    .p-bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+    .p-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
+    .q-word { font-family: 'Nunito', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 24px; color: #111827; }
+    .q-options { display: flex; flex-direction: column; gap: 10px; }
+    .q-opt {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: 8px;
+      font-size: 15px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .q-opt.correct { background: var(--success) !important; color: #ffffff; border-color: var(--success); }
+    .q-opt.wrong { background: var(--danger) !important; color: #ffffff; border-color: var(--danger); }
+    
+    .res-emoji { font-size: 48px; margin-bottom: 10px; }
+    .res-score { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .res-pct { font-size: 14px; color: var(--gray); margin-bottom: 20px; }
+    .wrong-list { text-align: left; margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; max-height: 240px; overflow-y: auto; }
+    .wrong-title { font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 10px; }
+    .wrong-item { font-size: 13px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+    .wrong-eng { font-family: 'Nunito', sans-serif; font-weight: 700; color: #111827; }
+    .test-input-box {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">고3 자이 17회 어휘 · 총 469단어</div>
+  </div>
+  
+  <div class="nav-tabs">
+    <div class="nav-tab active" id="tb-list" onclick="switchTab('list')">단어목록</div>
+    <div class="nav-tab" id="tb-flash" onclick="switchTab('flash')">플래시카드</div>
+    <div class="nav-tab" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</div>
+    <div class="nav-tab" id="tb-test" onclick="switchTab('test')">📝 테스트</div>
+  </div>
+  
+  <div class="content-area">
+    <div class="tab-panel active" id="tab-list">
+      <div class="range-bar" id="lrbar"></div>
+      <input type="text" class="search-box" id="lsearch" placeholder="영어 또는 한글 뜻 검색..." oninput="renderList()">
+      <div class="filter-bar">
+        <div class="fbtn active" id="lf-all" onclick="setLFilter('all')">전체</div>
+        <div class="fbtn" id="lf-not" onclick="setLFilter('not')">모름</div>
+        <div class="fbtn" id="lf-fav" onclick="setLFilter('fav')">⭐즐겨찾기</div>
+      </div>
+      <div class="word-list" id="wlist-box"></div>
+    </div>
+    
+    <div class="tab-panel" id="tab-flash">
+      <div class="range-bar" id="fcrbar"></div>
+      <div class="fc-container">
+        <div class="fc-card" id="fccard">
+          <div class="fc-fav-pos">
+            <button class="ibtn fav" id="fcfav">★</button>
+          </div>
+          <div class="fc-content">
+            <div class="fc-eng" id="fcword">-</div>
+            <div class="fc-kor" id="fcmean" style="display:none;">-</div>
+            <div class="fc-hint" id="fchint">탭하여 뜻 보기</div>
+          </div>
+        </div>
+        <div class="fc-nav">
+          <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+          <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+          <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-panel" id="tab-quiz">
+      <div id="q-play" class="panel-box" style="display:none;">
+        <div class="stat-row">
+          <div id="q-cnt">문제: 1 / 10</div>
+          <div id="q-score">맞춤: 0</div>
+        </div>
+        <div class="p-bar-bg"><div class="p-bar-fill" id="q-pbar"></div></div>
+        <div class="q-word" id="q-wtext">-</div>
+        <div class="q-options" id="q-opts"></div>
+      </div>
+      <div id="q-res" class="panel-box" style="display:none;"></div>
+    </div>
+    
+    <div class="tab-panel" id="tab-test">
+      <div id="t-setup" class="panel-box" style="display:none;"></div>
+      <div id="t-play" class="panel-box" style="display:none;">
+        <div class="stat-row">
+          <div id="t-cnt">현재문제: 1/50</div>
+          <div id="t-score">✅ 맞춤수: 0</div>
+        </div>
+        <div class="p-bar-bg"><div class="p-bar-fill" id="t-pbar"></div></div>
+        <div class="q-word" id="t-wtext">-</div>
+        <input type="text" class="test-input-box" id="t-input" autocomplete="off" placeholder="한글 뜻을 입력하세요">
+        <button class="btn-main" onclick="submitTest()">입력 (Enter)</button>
+      </div>
+      <div id="t-res" class="panel-box" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var rawWords = [
+  { word: "hairline", meaning: "머리선, 아주 가는 선" },
+  { word: "hairy", meaning: "털이 많은" },
+  { word: "halcyon", meaning: "평온한" },
+  { word: "hale", meaning: "건강한" },
+  { word: "half", meaning: "반, 절반" },
+  { word: "halfway", meaning: "중간에" },
+  { word: "hallmark", meaning: "특징" },
+  { word: "hallow", meaning: "신성하게 하다" },
+  { word: "hallucination", meaning: "환각" },
+  { word: "halo", meaning: "후광" },
+  { word: "halt", meaning: "멈춤; 멈추다" },
+  { word: "hamper", meaning: "방해하다" },
+  { word: "hand", meaning: "손; 건네주다" },
+  { word: "handbook", meaning: "안내서" },
+  { word: "handicap", meaning: "장애" },
+  { word: "handicraft", meaning: "수공예품" },
+  { word: "handily", meaning: "편리하게" },
+  { word: "handiwork", meaning: "일, 작품" },
+  { word: "handle", meaning: "다루다, 손잡이" },
+  { word: "handling", meaning: "취급" },
+  { word: "handsome", meaning: "잘생긴, 상당한" },
+  { word: "handwriting", meaning: "글씨체" },
+  { word: "handy", meaning: "유용한" },
+  { word: "hang", meaning: "걸다" },
+  { word: "hanger", meaning: "옷걸이" },
+  { word: "hangover", meaning: "숙취" },
+  { word: "hanker", meaning: "갈망하다" },
+  { word: "hapless", meaning: "불행한" },
+  { word: "haphazard", meaning: "무계획적인" },
+  { word: "hapless", meaning: "불운한" },
+  { word: "happen", meaning: "일어나다, 발생하다" },
+  { word: "happening", meaning: "일, 사건" },
+  { word: "happiness", meaning: "행복" },
+  { word: "happy", meaning: "행복한" },
+  { word: "harangue", meaning: "장광설을 늘어놓다" },
+  { word: "harass", meaning: "괴롭히다" },
+  { word: "harassment", meaning: "괴롭힘" },
+  { word: "harbinger", meaning: "전조" },
+  { word: "harbor", meaning: "항구; 품다" },
+  { word: "hard", meaning: "단단한, 어려운" },
+  { word: "harden", meaning: "굳어지다" },
+  { word: "hardly", meaning: "거의 ~않다" },
+  { word: "hardship", meaning: "고난, 역경" },
+  { word: "hardware", meaning: "하드웨어" },
+  { word: "hardy", meaning: "강인한" },
+  { word: "hare", meaning: "산토끼" },
+  { word: "harm", meaning: "해, 손해; 해치다" },
+  { word: "harmful", meaning: "해로운" },
+  { word: "harmless", meaning: "무해한" },
+  { word: "harmonic", meaning: "화성의, 조화로운" },
+  { word: "harmonious", meaning: "조화로운" },
+  { word: "harmonize", meaning: "조화를 이루다" },
+  { word: "harmony", meaning: "조화, 화성" },
+  { word: "harness", meaning: "마구; 마구를 채우다, 이용하다" },
+  { word: "harp", meaning: "하프; 되풀이하여 말하다" },
+  { word: "harrow", meaning: "써레; 괴롭히다" },
+  { word: "harsh", meaning: "가혹한, 거친" },
+  { word: "harshness", meaning: "가혹함" },
+  { word: "harvest", meaning: "수확; 수확하다" },
+  { word: "haste", meaning: "서두름" },
+  { word: "hasten", meaning: "서두르다" },
+  { word: "hasty", meaning: "급한" },
+  { word: "hat", meaning: "모자" },
+  { word: "hatch", meaning: "부화하다" },
+  { word: "hate", meaning: "미워하다" },
+  { word: "hateful", meaning: "증오에 찬" },
+  { word: "hatred", meaning: "증오" },
+  { word: "haughty", meaning: "거만한" },
+  { word: "haul", meaning: "끌어당기다" },
+  { word: "haunt", meaning: "뇌리에 떠오르다, 자주 들르다" },
+  { word: "have", meaning: "가지다" },
+  { word: "haven", meaning: "안식처" },
+  { word: "havoc", meaning: "대파괴" },
+  { word: "hawk", meaning: "매" },
+  { word: "hay", meaning: "건초" },
+  { word: "hazard", meaning: "위험" },
+  { word: "hazardous", meaning: "위험한" },
+  { word: "haze", meaning: "실안개, 흐릿함" },
+  { word: "hazel", meaning: "개어금나무" },
+  { word: "hazy", meaning: "흐릿한" },
+  { word: "head", meaning: "머리, 책임자; 향하다" },
+  { word: "headache", meaning: "두통" },
+  { word: "heading", meaning: "제목" },
+  { word: "headline", meaning: "표제" },
+  { word: "headlong", meaning: "거꾸로, 무모하게" },
+  { word: "headquarters", meaning: "본부" },
+  { word: "headstrong", meaning: "고집센" },
+  { word: "headway", meaning: "전진" },
+  { word: "heal", meaning: "치유되다" },
+  { word: "healing", meaning: "치유" },
+  { word: "health", meaning: "건강" },
+  { word: "healthy", meaning: "건강한" },
+  { word: "heap", meaning: "더미; 쌓다" },
+  { word: "hear", meaning: "듣다" },
+  { word: "hearing", meaning: "청각, 청문회" },
+  { word: "hearken", meaning: "귀를 기울이다" },
+  { word: "hearsay", meaning: "소문, 풍문" },
+  { word: "heart", meaning: "심장, 마음, 핵심" },
+  { word: "hearty", meaning: "진심 어린, 풍성한" },
+  { word: "heat", meaning: "열; 데우다" },
+  { word: "heater", meaning: "난방기" },
+  { word: "heath", meaning: "황야" },
+  { word: "heathen", meaning: "비기독교인" },
+  { word: "heave", meaning: "들어 올리다" },
+  { word: "heaven", meaning: "하늘, 천국" },
+  { word: "heavenly", meaning: "천국의" },
+  { word: "heavy", meaning: "무거운" },
+  { word: "heckle", meaning: "야유하다" },
+  { word: "hectic", meaning: "정신없이 바쁜" },
+  { word: "hedge", meaning: "울타리, 얼버무리다" },
+  { word: "heed", meaning: "주의를 기울이다" },
+  { word: "heedless", meaning: "부주의한" },
+  { word: "heel", meaning: "뒤꿈치" },
+  { word: "heft", meaning: "무게; 들어올리다" },
+  { word: "hefty", meaning: "장대한, 두둑한" },
+  { word: "hegemony", meaning: "패권" },
+  { word: "heifer", meaning: "암송아지" },
+  { word: "height", meaning: "높이, 정점" },
+  { word: "heighten", meaning: "고조시키다" },
+  { word: "heinous", meaning: "극악무도한" },
+  { word: "heir", meaning: "상속인" },
+  { word: "heiress", meaning: "여자 상속인" },
+  { word: "heirloom", meaning: "가보" },
+  { word: "helicopter", meaning: "헬리콥터" },
+  { word: "helium", meaning: "헬륨" },
+  { word: "helix", meaning: "나선형" },
+  { word: "hell", meaning: "지옥" },
+  { word: "helm", meaning: "키, 지배적 지위" },
+  { word: "helmet", meaning: "헬멧" },
+  { word: "help", meaning: "돕다; 도움" },
+  { word: "helpful", meaning: "도움이 되는" },
+  { word: "helpless", meaning: "무력한" },
+  { word: "helplessness", meaning: "무력함" },
+  { word: "hem", meaning: "단; 단을 접어 꿰매다" },
+  { word: "hemisphere", meaning: "반구" },
+  { word: "hemorrhage", meaning: "출혈" },
+  { word: "hemp", meaning: "대마" },
+  { word: "hen", meaning: "암탉" },
+  { word: "hence", meaning: "따라서, 그러므로" },
+  { word: "henceforth", meaning: "이제부터는" },
+  { word: "herald", meaning: "예고하다; 전령" },
+  { word: "herb", meaning: "허브, 풀" },
+  { word: "herbage", meaning: "목초" },
+  { word: "herbal", meaning: "풀의, 허브의" },
+  { word: "herbivore", meaning: "초식동물" },
+  { word: "herd", meaning: "떼, 무리; 이동시키다" },
+  { word: "herdsman", meaning: "목부" },
+  { word: "here", meaning: "여기" },
+  { word: "hereafter", meaning: "이후로" },
+  { word: "hereby", meaning: "이에 의하여" },
+  { word: "hereditary", meaning: "유전적인, 세습되는" },
+  { word: "heredity", meaning: "유전" },
+  { word: "heresy", meaning: "이단" },
+  { word: "heretic", meaning: "이단자" },
+  { word: "heritage", meaning: "유산" },
+  { word: "hermetically", meaning: "밀봉하여" },
+  { word: "hermit", meaning: "은둔자" },
+  { word: "hero", meaning: "영웅" },
+  { word: "heroic", meaning: "영웅적인" },
+  { word: "heroine", meaning: "여장부, 여주인공" },
+  { word: "heroism", meaning: "영웅적 행위" },
+  { word: "heron", meaning: "왜가리" },
+  { word: "hesitancy", meaning: "망설임" },
+  { word: "hesitant", meaning: "망설이는" },
+  { word: "hesitate", meaning: "망설이다" },
+  { word: "hesituation", meaning: "망설임" },
+  { word: "heterogeneous", meaning: "이질적인" },
+  { word: "hew", meaning: "자르다" },
+  { word: "hexagon", meaning: "육각형" },
+  { word: "heyday", meaning: "전성기" },
+  { word: "hiatus", meaning: "중단, 틈" },
+  { word: "hibernate", meaning: "동면하다" },
+  { word: "hibernation", meaning: "동면" },
+  { word: "hiccup", meaning: "딸딸이; 딸딸이를 하다" },
+  { word: "hide", meaning: "숨기다, 숨다, 가죽" },
+  { word: "hideous", meaning: "흉측한" },
+  { word: "hiding", meaning: "은닉" },
+  { word: "hierarchy", meaning: "계급제, 하이어라키" },
+  { word: "hieroglyph", meaning: "상형문자" },
+  { word: "high", meaning: "높은" },
+  { word: "highland", meaning: "고원" },
+  { word: "highlight", meaning: "강조하다; 핵심" },
+  { word: "highly", meaning: "대단히, 높이" },
+  { word: "highway", meaning: "고속도로" },
+  { word: "hijack", meaning: "납치하다" },
+  { word: "hike", meaning: "하이킹; 도보 여행하다, 인상하다" },
+  { word: "hilarious", meaning: "아주 유쾌한" },
+  { word: "hilarity", meaning: "유쾌함" },
+  { word: "hill", meaning: "언덕" },
+  { word: "hilly", meaning: "언덕이 많은" },
+  { word: "hilt", meaning: "자루" },
+  { word: "hind", meaning: "뒤의" },
+  { word: "hinder", meaning: "방해하다" },
+  { word: "hindrance", meaning: "방해" },
+  { word: "hindsight", meaning: "뒤늦은 깨달음" },
+  { word: "hinge", meaning: "경첩; 경첩을 달다, 좌우되다" },
+  { word: "hint", meaning: "힌트, 암시; 암시하다" },
+  { word: "hinterland", meaning: "배후지" },
+  { word: "hip", meaning: "엉덩이" },
+  { word: "hire", meaning: "고용하다" },
+  { word: "hirsute", meaning: "털이 많은" },
+  { word: "hiss", meaning: "쉬익 하는 소리를 내다" },
+  { word: "historian", meaning: "역사학자" },
+  { word: "historic", meaning: "역사적인" },
+  { word: "historical", meaning: "역사의" },
+  { word: "history", meaning: "역사" },
+  { word: "histrionic", meaning: "연극 같은, 과장된" },
+  { word: "hit", meaning: "치다, 때리다" },
+  { word: "hitch", meaning: "얻어타다, 걸다, 문제" },
+  { word: "hitherto", meaning: "지금까지" },
+  { word: "hive", meaning: "벌집" },
+  { word: "hoard", meaning: "비축하다; 비축물" },
+  { word: "hoarfrost", meaning: "백서리" },
+  { word: "hoarse", meaning: "쉰 목소리의" },
+  { word: "hoary", meaning: "하얗게 센" },
+  { word: "hoax", meaning: "짓궂은 속임수" },
+  { word: "hobble", meaning: "절뚝거리다" },
+  { word: "hobby", meaning: "취미" },
+  { word: "hoe", meaning: "괭이; 괭이질을 하다" },
+  { word: "hog", meaning: "돼지" },
+  { word: "hoist", meaning: "들어 올리다" },
+  { word: "hold", meaning: "잡다, 유지하다, 개최하다" },
+  { word: "holder", meaning: "소지자, 받침대" },
+  { word: "holding", meaning: "보유" },
+  { word: "hole", meaning: "구멍" },
+  { word: "holiday", meaning: "휴일" },
+  { word: "holiness", meaning: "신성함" },
+  { word: "hollow", meaning: "속이 빈" },
+  { word: "holocaust", meaning: "대참사, 홀로코스트" },
+  { word: "holy", meaning: "신성한" },
+  { word: "homage", meaning: "경의" },
+  { word: "home", meaning: "집, 고향" },
+  { word: "homeland", meaning: "고국" },
+  { word: "homely", meaning: "매력 없는, 아늑한" },
+  { word: "homesick", meaning: "향수병에 걸린" },
+  { word: "homesickness", meaning: "향수병" },
+  { word: "homestead", meaning: "정착지" },
+  { word: "homeward", meaning: "집으로 향하는" },
+  { word: "homework", meaning: "숙제" },
+  { word: "homicide", meaning: "살인" },
+  { word: "homogeneity", meaning: "동질성" },
+  { word: "homogeneous", meaning: "동질적인" },
+  { word: "homogenize", meaning: "균질화하다" },
+  { word: "homologous", meaning: "상동의" },
+  { word: "homonym", meaning: "동음이의어" },
+  { word: "hone", meaning: "갈다" },
+  { word: "honest", meaning: "정직한" },
+  { word: "honesty", meaning: "정직" },
+  { word: "honey", meaning: "꿀" },
+  { word: "honeycomb", meaning: "벌집 모양" },
+  { word: "honeymoon", meaning: "신혼여행" },
+  { word: "honor", meaning: "명예; 예우하다" },
+  { word: "honorable", meaning: "명예로운" },
+  { word: "honorary", meaning: "명예직의" },
+  { word: "hood", meaning: "후드, 덮개" },
+  { word: "hoof", meaning: "발굽" },
+  { word: "hook", meaning: "갈고리; 걸다" },
+  { word: "hoop", meaning: "고리" },
+  { word: "hoot", meaning: "엉엉 울다, 야유하다" },
+  { word: "hop", meaning: "깡충 뛰다" },
+  { word: "hope", meaning: "희망; 바라다" },
+  { word: "hopeful", meaning: "희망에 찬" },
+  { word: "hopeless", meaning: "절망적인" },
+  { word: "hopelessness", meaning: "절망" },
+  { word: "horde", meaning: "무리" },
+  { word: "horizon", meaning: "지평선, 수평선" },
+  { word: "horizontal", meaning: "수평의" },
+  { word: "hormone", meaning: "호르몬" },
+  { word: "horn", meaning: "뿔, 경적" },
+  { word: "horoscope", meaning: "별자리 운세" },
+  { word: "horrendous", meaning: "참혹한" },
+  { word: "horrible", meaning: "끔찍한" },
+  { word: "horrid", meaning: "지독한" },
+  { word: "horrify", meaning: "소름끼치게 하다" },
+  { word: "horror", meaning: "공포" },
+  { word: "horse", meaning: "말" },
+  { word: "horseback", meaning: "말의 등" },
+  { word: "horsepower", meaning: "마력" },
+  { word: "horticulture", meaning: "원예학" },
+  { word: "hose", meaning: "호스" },
+  { word: "hospitable", meaning: "환대하는" },
+  { word: "hospital", meaning: "병원" },
+  { word: "hospitality", meaning: "환대" },
+  { word: "hospitalize", meaning: "입원시키다" },
+  { word: "host", meaning: "주인, 주최자; 주최하다" },
+  { word: "hostage", meaning: "인질" },
+  { word: "hostel", meaning: "호스텔" },
+  { word: "hostess", meaning: "여주인" },
+  { word: "hostile", meaning: "적대적인" },
+  { word: "hostility", meaning: "적대감" },
+  { word: "hot", meaning: "더운, 매운" },
+  { word: "hotel", meaning: "호텔" },
+  { word: "hound", meaning: "사냥개; 따라다니며 괴롭히다" },
+  { word: "hour", meaning: "시간" },
+  { word: "house", meaning: "집; 수용하다" },
+  { word: "household", meaning: "가정" },
+  { word: "housekeeper", meaning: "가정부" },
+  { word: "housewife", meaning: "주부" },
+  { word: "housework", meaning: "집안일" },
+  { word: "housing", meaning: "주택" },
+  { word: "hovel", meaning: "오두막" },
+  { word: "hover", meaning: "맴돌다" },
+  { word: "how", meaning: "어떻게" },
+  { word: "however", meaning: "그러나, 아무리 ~해도" },
+  { word: "howl", meaning: "울부짖다" },
+  { word: "hub", meaning: "중심지, 허브" },
+  { word: "hubbub", meaning: "왁자지껄한 소동" },
+  { word: "huddle", meaning: "옹기종기 모이다" },
+  { word: "hue", meaning: "빛깔" },
+  { word: "huff", meaning: "씩씩거리다" },
+  { word: "hug", meaning: "포옹; 껴안다" },
+  { word: "huge", meaning: "거대한" },
+  { word: "hulk", meaning: "폐선, 거구" },
+  { word: "hull", meaning: "선체, 껍질" },
+  { word: "hum", meaning: "웅웅거리다, 콧노래를 부르다" },
+  { word: "human", meaning: "인간의; 인간" },
+  { word: "humane", meaning: "인도적인" },
+  { word: "humanism", meaning: "휴머니즘" },
+  { word: "humanitarian", meaning: "인도주의적인" },
+  { word: "humanity", meaning: "인류, 인간성" },
+  { word: "humble", meaning: "겸손한, 초라한" },
+  { word: "humbug", meaning: "사기, 협잡" },
+  { word: "humdrum", meaning: "단조로운" },
+  { word: "humid", meaning: "습한" },
+  { word: "humidity", meaning: "습도" },
+  { word: "humiliate", meaning: "굴욕감을 주다" },
+  { word: "humiliation", meaning: "굴욕" },
+  { word: "humility", meaning: "겸손" },
+  { word: "hummingbird", meaning: "벌새" },
+  { word: "humor", meaning: "유머" },
+  { word: "humorous", meaning: "유머러스한" },
+  { word: "hump", meaning: "혹" },
+  { word: "hunch", meaning: "예감" },
+  { word: "hundred", meaning: "백" },
+  { word: "hunger", meaning: "배고픔, 갈망" },
+  { word: "hungry", meaning: "배고픈" },
+  { word: "hunt", meaning: "사냥하다" },
+  { word: "hunter", meaning: "사냥꾼" },
+  { word: "hurdle", meaning: "장애물" },
+  { word: "hurl", meaning: "던지다" },
+  { word: "hurricane", meaning: "태풍, 허리케인" },
+  { word: "hurried", meaning: "서두른" },
+  { word: "hurry", meaning: "서두르다" },
+  { word: "hurt", meaning: "다치게 하다; 상처" },
+  { word: "hurtful", meaning: "마음을 상하게 하는" },
+  { word: "husband", meaning: "남편" },
+  { word: "husbandry", meaning: "농업" },
+  { word: "hush", meaning: "침묵; 조용히 시키다" },
+  { word: "husk", meaning: "겉껍질" },
+  { word: "husky", meaning: "쉰 목소리의, 건장한" },
+  { word: "hustle", meaning: "서두르다, 밀치다" },
+  { word: "hut", meaning: "오두막" },
+  { word: "hybrid", meaning: "잡종, 하이브리드" },
+  { word: "hydrant", meaning: "소화전" },
+  { word: "hydraulic", meaning: "유압의" },
+  { word: "hydrocarbon", meaning: "탄화수소" },
+  { word: "hydrogen", meaning: "수소" },
+  { word: "hydrophobia", meaning: "공수병" },
+  { word: "hygiene", meaning: "위생" },
+  { word: "hygrometer", meaning: "습도계" },
+  { word: "hymn", meaning: "찬송가" },
+  { word: "hype", meaning: "과장 광고" },
+  { word: "hyperbole", meaning: "과장법" },
+  { word: "hypercritical", meaning: "혹평하는" },
+  { word: "hyphen", meaning: "하이픈" },
+  { word: "hypnosis", meaning: "최면" },
+  { word: "hypnotic", meaning: "최면을 거는" },
+  { word: "hypnotize", meaning: "최면을 걸다" },
+  { word: "hypocrisy", meaning: "위선" },
+  { word: "hypocrite", meaning: "위선자" },
+  { word: "hypocritical", meaning: "위선적인" },
+  { word: "hypodermic", meaning: "피하의" },
+  { word: "hypotenuse", meaning: "빗변" },
+  { word: "hypothesis", meaning: "가설" },
+  { word: "hypothetic", meaning: "가설의" },
+  { word: "hysteria", meaning: "히스테리" },
+  { word: "hysterical", meaning: "히스테리 상태의" },
+  { word: "ice", meaning: "얼음" },
+  { word: "iceberg", meaning: "빙산" },
+  { word: "icicle", meaning: "고드름" },
+  { word: "icing", meaning: "아이싱, 당의" },
+  { word: "icon", meaning: "아이콘" },
+  { word: "iconoclast", meaning: "우상 파괴주의자" },
+  { word: "icy", meaning: "얼음같이 차가운" },
+  { word: "idea", meaning: "아이디어, 생각" },
+  { word: "ideal", meaning: "이상적인; 이상" },
+  { word: "idealism", meaning: "이상주의" },
+  { word: "idealist", meaning: "이상주의자" },
+  { word: "idealize", meaning: "이상화하다" },
+  { word: "identical", meaning: "동일한" },
+  { word: "identifiable", meaning: "알아볼 수 있는" },
+  { word: "identification", meaning: "신원 확인" },
+  { word: "identify", meaning: "확인하다, 식별하다" },
+  { word: "identity", meaning: "정체성, 신원" },
+  { word: "ideology", meaning: "이데올로기" },
+  { word: "idiom", meaning: "관용구" },
+  { word: "idiomatic", meaning: "관용적인" },
+  { word: "idiosyncrasy", meaning: "특이성" },
+  { word: "idiot", meaning: "바보" },
+  { word: "idiotic", meaning: "바보 같은" },
+  { word: "idle", meaning: "게으른, 가동되지 않는" },
+  { word: "idleness", meaning: "나태" },
+  { word: "idol", meaning: "우상" },
+  { word: "idolatry", meaning: "우상 숭배" },
+  { word: "idolize", meaning: "우상화하다" },
+  { word: "idyllic", meaning: "목가적인" },
+  { word: "if", meaning: "만약 ~라면" },
+  { word: "ignite", meaning: "불을 붙이다" },
+  { word: "ignition", meaning: "점화" },
+  { word: "ignoble", meaning: "비열한" },
+  { word: "ignominious", meaning: "수치스러운" },
+  { word: "ignominy", meaning: "불명예" },
+  { word: "ignorance", meaning: "무지" },
+  { word: "ignorant", meaning: "무지한" },
+  { word: "ignore", meaning: "무시하다" },
+  { word: "ill", meaning: "아픈, 나쁜" },
+  { word: "illegal", meaning: "불법의" },
+  { word: "illegality", meaning: "불법" },
+  { word: "illegible", meaning: "판독 불가능한" },
+  { word: "illegitimate", meaning: "사생아의, 불법의" },
+  { word: "illicit", meaning: "불법적인" },
+  { word: "illiterate", meaning: "문맹의" },
+  { word: "illness", meaning: "병, 질환" },
+  { word: "illogical", meaning: "비논리적인" },
+  { word: "illuminate", meaning: "밝히다, 계몽하다" },
+  { word: "illumination", meaning: "조명" },
+  { word: "illusion", meaning: "환상" },
+  { word: "illusive", meaning: "착각을 일으키는" },
+  { word: "illusory", meaning: "환상에 불과한" },
+  { word: "illustrate", meaning: "설명하다, 삽화를 넣다" },
+  { word: "illustration", meaning: "삽화, 예시" },
+  { word: "illustrative", meaning: "설명하는" },
+  { word: "illustrator", meaning: "삽화가" },
+  { word: "illustrious", meaning: "저명한" },
+  { word: "image", meaning: "이미지, 상" },
+  { word: "imagery", meaning: "형상화, 비유적 묘사" },
+  { word: "imaginable", meaning: "상상할 수 있는" },
+  { word: "imaginary", meaning: "가상의, 상상 속의" },
+  { word: "imagination", meaning: "상상력" },
+  { word: "imaginative", meaning: "상상력이 풍부한" },
+  { word: "imagine", meaning: "상상하다" },
+  { word: "imbecile", meaning: "바보" },
+  { word: "imbibe", meaning: "마시다, 흡수하다" },
+  { word: "imbue", meaning: "불어넣다" },
+  { word: "imitate", meaning: "모방하다" },
+  { word: "imitation", meaning: "모방, 모조품" },
+  { word: "imitative", meaning: "모방적인" },
+  { word: "imitator", meaning: "모방자" },
+  { word: "immaculate", meaning: "티없이 깨끗한" },
+  { word: "immanent", meaning: "내재하는" },
+  { word: "immaterial", meaning: "무형의, 중요하지 않은" },
+  { word: "immature", meaning: "미숙한" },
+  { word: "immaturity", meaning: "미숙" },
+  { word: "immeasurable", meaning: "헤아릴 수 없는" },
+  { word: "immediate", meaning: "즉각적인" },
+  { word: "immediately", meaning: "즉시" },
+  { word: "immemorial", meaning: "태고의" },
+  { word: "immense", meaning: "엄청난, 거대한" },
+  { word: "immensity", meaning: "엄청남" },
+  { word: "immerse", meaning: "담그다, 몰두시키다" },
+  { word: "immersion", meaning: "몰두, 잠김" },
+  { word: "immigrant", meaning: "이민자" },
+  { word: "immigrate", meaning: "이주해 오다" },
+  { word: "immigration", meaning: "이민, 이주" },
+  { word: "imminent", meaning: "임박한" },
+  { word: "immobile", meaning: "움직이지 않는" },
+  { word: "immobility", meaning: "부동성" },
+  { word: "immobilize", meaning: "움직이지 못하게 하다" },
+  { word: "immoderate", meaning: "과도한" },
+  { word: "immodest", meaning: "자만하는, 음란한" },
+  { word: "immolate", meaning: "제물로 바치다" },
+  { word: "immoral", meaning: "부도덕한" },
+  { word: "immorality", meaning: "부도덕" },
+  { word: "immortal", meaning: "불멸의" },
+  { word: "immortality", meaning: "불멸" },
+  { word: "immortalize", meaning: "불멸하게 하다" },
+  { word: "immovable", meaning: "움직일 수 없는" },
+  { word: "immune", meaning: "면역성이 있는, 면제되는" },
+  { word: "immunity", meaning: "면역력, 면제" },
+  { word: "immunize", meaning: "면역력을 주다" },
+  { word: "immunology", meaning: "면역학" },
+  { word: "immure", meaning: "감금하다" },
+  { word: "immutable", meaning: "불변의" },
+  { word: "imp", meaning: "작은 악마" },
+  { word: "impact", meaning: "영향, 충격; 영향을 주다" },
+  { word: "impair", meaning: "손상시키다" },
+  { word: "impairment", meaning: "손상, 장애" },
+  { word: "impale", meaning: "찌르다" },
+  { word: "impalpable", meaning: "만질 수 없는, 느낄 수 없는" },
+  { word: "impanel", meaning: "배심원 명부에 올리다" },
+  { word: "impart", meaning: "전하다, 부여하다" },
+  { word: "impartial", meaning: "공정한" },
+  { word: "impartiality", meaning: "공정성" },
+  { word: "impassable", meaning: "통행 불가능한" },
+  { word: "impasse", meaning: "교착 상태" },
+  { word: "impassioned", meaning: "열정적인" },
+  { word: "impassive", meaning: "무표정한, 아무런 감정이 없는" },
+  { word: "impatience", meaning: "조급함" },
+  { word: "impatient", meaning: "조급한" },
+  { word: "impeach", meaning: "탄핵하다" },
+  { word: "impeachment", meaning: "탄핵" },
+  { word: "impeccable", meaning: "결함 없는" },
+  { word: "impecunious", meaning: "무일푼의" },
+  { word: "impede", meaning: "방해하다" },
+  { word: "impediment", meaning: "방해물, 신체적 장애" },
+  { word: "impel", meaning: "해야만 하게 하다" },
+  { word: "impend", meaning: "임박하다" },
+  { word: "impending", meaning: "임박한" },
+  { word: "impenetrable", meaning: "관통할 수 없는, 불가해한" },
+  { word: "impenitent", meaning: "뉘우치지 않는" },
+  { word: "imperative", meaning: "필수적인; 명령" },
+  { word: "imperceptible", meaning: "감지할 수 없는" },
+  { word: "imperfect", meaning: "불완전한" },
+  { word: "imperfection", meaning: "결함" },
+  { word: "imperial", meaning: "제국의" },
+  { word: "imperialism", meaning: "제국주의" },
+  { word: "imperil", meaning: "위태롭게 하다" },
+  { word: "imperious", meaning: "오만한" },
+  { word: "imperishable", meaning: "불멸의" },
+  { word: "impermeable", meaning: "불침투성의" },
+  { word: "impersonal", meaning: "비인간적인, 객관적인" },
+  { word: "impersonate", meaning: "가장하다" },
+  { word: "impertinent", meaning: "무례한" },
+  { word: "imperturbable", meaning: "차분한" },
+  { word: "impervious", meaning: "영향받지 않는, 통과시키지 않는" },
+  { word: "impetuous", meaning: "충동적인" },
+  { word: "impetus", meaning: "추진력, 자극" },
+  { word: "impiety", meaning: "불경" },
+  { word: "impinge", meaning: "영향을 주다, 침해하다" },
+  { word: "impious", meaning: "불경한" },
+  { word: "implacable", meaning: "달랠 수 없는" },
+  { word: "implant", meaning: "심다; 심는 물질" },
+  { word: "implausible", meaning: "믿기 어려운" },
+  { word: "implement", meaning: "시행하다; 도구" },
+  { word: "implementation", meaning: "이행, 시행" },
+  { word: "implicate", meaning: "연루시키다" },
+  { word: "implication", meaning: "함축, 영향" },
+  { word: "implicit", meaning: "암묵적인" },
+  { word: "implore", meaning: "애원하다" },
+  { word: "imply", meaning: "암시하다, 내포하다" },
+  { word: "impolite", meaning: "무례한" },
+  { word: "impolitic", meaning: "현명치 못한" },
+  { word: "import", meaning: "수입하다; 수입" },
+  { word: "importance", meaning: "중요성" },
+  { word: "important", meaning: "중요한" },
+  { word: "importunate", meaning: "성가시게 조르는" },
+  { word: "importune", meaning: "성가시게 졸라대다" },
+  { word: "impose", meaning: "부과하다, 강요하다" },
+  { word: "imposing", meaning: "인상적인" },
+  { word: "imposition", meaning: "부과, 부담" },
+  { word: "impossible", meaning: "불가능한" },
+  { word: "impossibility", meaning: "불가능" },
+  { word: "impostor", meaning: "사기꾼" },
+  { word: "imposture", meaning: "사기" },
+  { word: "impotence", meaning: "무력함" },
+  { word: "impotent", meaning: "무력한" },
+  { word: "impound", meaning: "압수하다" },
+  { word: "impoverish", meaning: "빈곤하게 만들다" },
+  { word: "impracticable", meaning: "실행 불가능한" },
+  { word: "impractical", meaning: "비현실적인" },
+  { word: "imprecation", meaning: "저주" },
+  { word: "impregnable", meaning: "난공불락의" },
+  { word: "impregnate", meaning: "스며들게 하다" },
+  { word: "impresario", meaning: "기획자" },
+  { word: "impress", meaning: "인상을 주다" },
+  { word: "impression", meaning: "인상" },
+  { word: "impressionable", meaning: "영향을 받기 쉬운" },
+  { word: "impressive", meaning: "인상적인" },
+  { word: "imprimatur", meaning: "허가" },
+  { word: "imprint", meaning: "각인시키다; 자국" },
+  { word: "imprison", meaning: "투옥하다" },
+  { word: "imprisonment", meaning: "투옥" },
+  { word: "improbable", meaning: "사실 같지 않은" },
+  { word: "improbability", meaning: "있을 법하지 않음" },
+  { word: "impromptu", meaning: "즉흥적인" },
+  { word: "improper", meaning: "부적절한" },
+  { word: "impropriety", meaning: "부적절한 행동" },
+  { word: "improve", meaning: "개선하다" },
+  { word: "improvement", meaning: "개선" },
+  { word: "improvident", meaning: "선견지명 없는, 낭비하는" },
+  { word: "improvise", meaning: "즉흥적으로 하다" },
+  { word: "improvisation", meaning: "즉흥 연주" },
+  { word: "imprudent", meaning: "현명하지 못한" },
+  { word: "impudence", meaning: "뻔뻔스러움" },
+  { word: "impudent", meaning: "뻔뻔스러운" },
+  { word: "impugn", meaning: "의문을 제기하다" },
+  { word: "impunity", meaning: "처벌을 받지 않음" },
+  { word: "impure", meaning: "불순한" },
+  { word: "impurity", meaning: "불순물" },
+  { word: "imputation", meaning: "비난" },
+  { word: "impute", meaning: "~의 탓으로 돌리다" }
+];
+
+var sSlug = "go3_jai_17";
+var sKey = "cutop_" + sSlug;
+
+function getStore() {
+  var d = localStorage.getItem(sKey);
+  return d ? JSON.parse(d) : {};
+}
+function saveStore(s) {
+  localStorage.setItem(sKey, JSON.stringify(s));
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+var ranges = buildRanges(rawWords);
+
+var lri = 0, fri = 0;
+var lf = "all";
+
+function renderRangeBar(id, cur, fnStr) {
+  var html = "";
+  ranges.forEach(function(r, idx) {
+    var cls = idx === cur ? "rbtn active" : "rbtn";
+    html += '<button class="' + cls + '" onclick="' + fnStr + '(' + idx + ')">' + r.label + '</button>';
+  });
+  document.getElementById(id).innerHTML = html;
+}
+
+function setLR(i) { lri = i; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setFR(i) { fri = i; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+function setLFilter(v) {
+  lf = v;
+  ["all","not","fav"].forEach(function(n) {
+    document.getElementById("lf-"+n).classList.toggle("active", n===v);
+  });
+  renderList();
+}
+
+function renderList() {
+  var store = getStore();
+  var box = document.getElementById("wlist-box");
+  var r = ranges[lri];
+  var query = document.getElementById("lsearch").value.toLowerCase().trim();
+  
+  var html = "";
+  for (var i = r.s; i < r.e; i++) {
+    var w = rawWords[i];
+    var k = w.word + "|" + w.meaning;
+    var s = store[k] || { status: "", fav: false };
+    
+    var isK = s.status === "known";
+    var isF = !!s.fav;
+    
+    if (lf === "not" && isK) continue;
+    if (lf === "fav" && !isF) continue;
+    
+    if (query) {
+      if (w.word.toLowerCase().indexOf(query) === -1 && w.meaning.toLowerCase().indexOf(query) === -1) {
+        continue;
+      }
+    }
+    
+    var cCard = isK ? "word-card known" : "word-card";
+    var cChk = isK ? "w-chk checked" : "w-chk";
+    var cFav = isF ? "ibtn fav active" : "ibtn fav";
+    
+    html += '<div class="' + cCard + '" id="wc-' + i + '">';
+    html += '  <div class="' + cChk + '" onclick="toggleKnown(' + i + ')"></div>';
+    html += '  <div class="w-info">';
+    html += '    <div class="w-eng">' + esc(w.word) + '</div>';
+    html += '    <div class="w-kor">' + esc(w.meaning) + '</div>';
+    html += '  </div>';
+    html += '  <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '  <button class="' + cFav + '" onclick="toggleFav(' + i + ', \'list\')">★</button>';
+    html += '</div>';
+  }
+  box.innerHTML = html;
+}
+
+function toggleKnown(i) {
+  var w = rawWords[i];
+  var k = w.word + "|" + w.meaning;
+  var store = getStore();
+  if (!store[k]) store[k] = { status: "", fav: false };
+  store[k].status = (store[k].status === "known") ? "" : "known";
+  saveStore(store);
+  renderList();
+}
+
+function toggleFav(i, src) {
+  var w = rawWords[i];
+  var k = w.word + "|" + w.meaning;
+  var store = getStore();
+  if (!store[k]) store[k] = { status: "", fav: false };
+  store[k].fav = !store[k].fav;
+  saveStore(store);
+  if (src === 'list') renderList();
+  if (src === 'fc') updateFC();
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+function speakFc() {
+  speak(document.getElementById("fcword").textContent);
+}
+
+var fcList = [];
+var fci = 0;
+var fcFlipped = false;
+var fcTX = 0;
+
+function initFC() {
+  var r = ranges[fri];
+  fcList = [];
+  for (var i = r.s; i < r.e; i++) {
+    fcList.push({ idx: i, word: rawWords[i] });
+  }
+  fci = 0;
+  updateFC();
+}
+
+function updateFC() {
+  if (fcList.length === 0) {
+    document.getElementById("fcword").textContent = "단어 없음";
+    document.getElementById("fcmean").style.display = "none";
+    document.getElementById("fchint").style.display = "none";
+    return;
+  }
+  var cur = fcList[fci];
+  var store = getStore();
+  var k = cur.word.word + "|" + cur.word.meaning;
+  var isF = !!(store[k] && store[k].fav);
+  
+  document.getElementById("fcword").textContent = cur.word.word;
+  document.getElementById("fcmean").textContent = cur.word.meaning;
+  
+  var favBtn = document.getElementById("fcfav");
+  favBtn.className = isF ? "ibtn fav active" : "ibtn fav";
+  favBtn.onclick = function() { toggleFav(cur.idx, 'fc'); };
+  
+  fcFlipped = false;
+  document.getElementById("fcmean").style.display = "none";
+  document.getElementById("fchint").style.display = "block";
+}
+
+function fcFlip() {
+  if (fcList.length === 0 || fcFlipped) return;
+  fcFlipped = true;
+  document.getElementById("fcmean").style.display = "block";
+  document.getElementById("fchint").style.display = "none";
+  speakFc();
+}
+
+function fcNext() { if (fcList.length === 0) return; fci = (fci + 1) % fcList.length; updateFC(); }
+function fcPrev() { if (fcList.length === 0) return; fci = (fci - 1 + fcList.length) % fcList.length; updateFC(); }
+
+var qList = [];
+var qCur = 0;
+var qScore = 0;
+var qLocked = false;
+
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+function initQuiz() {
+  document.getElementById("q-res").style.display = "none";
+  document.getElementById("q-play").style.display = "block";
+  
+  var pool = shuffle(rawWords.slice());
+  var limit = Math.min(10, pool.length);
+  qList = pool.slice(0, limit);
+  qCur = 0;
+  qScore = 0;
+  showQuiz();
+}
+
+function showQuiz() {
+  qLocked = false;
+  var total = qList.length;
+  document.getElementById("q-cnt").textContent = "문제: " + (qCur + 1) + " / " + total;
+  document.getElementById("q-score").textContent = "맞춤: " + qScore;
+  document.getElementById("q-pbar").style.width = ((qCur / total) * 100) + "%";
+  
+  var curW = qList[qCur];
+  document.getElementById("q-wtext").textContent = curW.word;
+  
+  var corrects = [curW.meaning];
+  var wrongs = [];
+  rawWords.forEach(function(w) {
+    if (w.meaning !== curW.meaning && wrongs.indexOf(w.meaning) === -1) {
+      wrongs.push(w.meaning);
+    }
+  });
+  shuffle(wrongs);
+  var opts = [curW.meaning];
+  for (var i = 0; i < Math.min(3, wrongs.length); i++) {
+    opts.push(wrongs[i]);
+  }
+  shuffle(opts);
+  
+  var html = "";
+  opts.forEach(function(o) {
+    var isCor = (o === curW.meaning) ? "1" : "0";
+    html += '<button class="q-opt" data-cor="' + isCor + '" onclick="qAns(this)">' + esc(o) + '</button>';
+  });
+  document.getElementById("q-opts").innerHTML = html;
+}
+
+function qAns(btn) {
+  if (qLocked) return;
+  qLocked = true;
+  var isCor = btn.dataset.cor === "1";
+  if (isCor) {
+    btn.classList.add("correct");
+    qScore++;
+    speak(qList[qCur].word);
+  } else {
+    btn.classList.add("wrong");
+    var btns = document.querySelectorAll("#q-opts .q-opt");
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].dataset.cor === "1") {
+        btns[i].classList.add("correct");
+        break;
+      }
+    }
+  }
+  setTimeout(function() {
+    qCur++;
+    if (qCur < qList.length) {
+      showQuiz();
+    } else {
+      finishQuiz();
+    }
+  }, 1000);
+}
+
+function finishQuiz() {
+  document.getElementById("q-play").style.display = "none";
+  var resBox = document.getElementById("q-res");
+  resBox.style.display = "block";
+  
+  var total = qList.length;
+  var pct = Math.round((qScore / total) * 100);
+  var emo = "💪";
+  if (pct === 100) emo = "🏆";
+  else if (pct >= 80) emo = "🎉";
+  else if (pct >= 60) emo = "👍";
+  
+  var html = "";
+  html += '<div class="res-emoji">' + emo + '</div>';
+  html += '<div class="res-score">' + qScore + ' / ' + total + '</div>';
+  html += '<div class="res-pct">' + pct + '점</div>';
+  html += '<button class="btn-main" onclick="initQuiz()">↩ 다시 풀기</button>';
+  resBox.innerHTML = html;
+}
+
+var tRangeI = 0;
+var tList = [];
+var tCur = 0;
+var tScore = 0;
+var tWrongs = [];
+var tRights = [];
+
+function isSim(input, correct) {
+  var norm = function(s) {
+    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+  };
+  var a = norm(input), c = norm(correct);
+  if (a === c) return true;
+  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+  return false;
+}
+
+function renderSetup() {
+  document.getElementById("t-play").style.display = "none";
+  document.getElementById("t-res").style.display = "none";
+  var box = document.getElementById("t-setup");
+  box.style.display = "block";
+  
+  var html = "";
+  html += '<div class="form-group">';
+  html += '  <label class="form-label">이름 입력</label>';
+  html += '  <input type="text" class="form-input" id="t-name" placeholder="이름을 입력하세요">';
+  html += '</div>';
+  html += '<div class="form-group">';
+  html += '  <label class="form-label">범위 선택</label>';
+  html += '  <div class="range-bar" id="trbar"></div>';
+  html += '</div>';
+  html += '<button class="btn-main" onclick="startTest()">테스트 시작 ▶</button>';
+  box.innerHTML = html;
+  
+  renderRangeBar("trbar", tRangeI, "setTRange");
+}
+
+function setTRange(i) { tRangeI = i; renderRangeBar("trbar", tRangeI, "setTRange"); }
+
+function startTest() {
+  var name = document.getElementById("t-name").value.trim();
+  if (!name) { alert("이름을 입력해주세요."); return; }
+  
+  var r = ranges[tRangeI];
+  var pool = [];
+  for (var i = r.s; i < r.e; i++) { pool.push(rawWords[i]); }
+  shuffle(pool);
+  
+  tList = pool.slice(0, Math.min(50, pool.length));
+  tCur = 0;
+  tScore = 0;
+  tWrongs = [];
+  tRights = [];
+  
+  document.getElementById("t-setup").style.display = "none";
+  document.getElementById("t-play").style.display = "block";
+  
+  showTestItem();
+}
+
+function showTestItem() {
+  var total = tList.length;
+  document.getElementById("t-cnt").textContent = "현재문제: " + (tCur + 1) + " / " + total;
+  document.getElementById("t-score").textContent = "✅ 맞춤수: " + tScore;
+  document.getElementById("t-pbar").style.width = ((tCur / total) * 100) + "%";
+  
+  var curW = tList[tCur];
+  document.getElementById("t-wtext").textContent = curW.word;
+  
+  var inp = document.getElementById("t-input");
+  inp.value = "";
+  inp.focus();
+  
+  speak(curW.word);
+}
+
+function submitTest() {
+  var inp = document.getElementById("t-input");
+  var val = inp.value.trim();
+  var curW = tList[tCur];
+  
+  var isCor = isSim(val, curW.meaning);
+  if (isCor) {
+    tScore++;
+    tRights.push(curW.word);
+  } else {
+    tWrongs.push({ word: curW.word, input: val ? val : "(공백)", correct: curW.meaning });
+  }
+  
+  tCur++;
+  if (tCur < tList.length) {
+    showTestItem();
+  } else {
+    finishTest();
+  }
+}
+
+function finishTest() {
+  document.getElementById("t-play").style.display = "none";
+  var resBox = document.getElementById("t-res");
+  resBox.style.display = "block";
+  
+  var total = tList.length;
+  var pct = Math.round((tScore / total) * 100);
+  var emo = "💪";
+  if (pct === 100) emo = "🏆";
+  else if (pct >= 80) emo = "🎉";
+  else if (pct >= 60) emo = "👍";
+  
+  var name = document.getElementById("t-name").value.trim();
+  
+  var html = "";
+  html += '<div class="res-emoji">' + emo + '</div>';
+  html += '<div class="res-score">' + tScore + " / " + total + '</div>';
+  html += '<div class="res-pct">' + pct + '점</div>';
+  
+  html += '<button class="btn-main" style="background:#25D366; margin-bottom:8px;" onclick="copyKakao()">📋 카톡으로 결과 복사</button>';
+  html += '<button class="btn-main" style="background:var(--gray);" onclick="renderSetup()">↩ 다시 테스트</button>';
+  
+  if (tWrongs.length > 0) {
+    html += '<div class="wrong-list">';
+    html += '  <div class="wrong-title">❌ 틀린 단어 (' + tWrongs.length + '개)</div>';
+    tWrongs.forEach(function(item) {
+      html += '  <div class="wrong-item">';
+      html += '    <span class="wrong-eng">' + esc(item.word) + '</span> → ';
+      html += '    <span style="color:var(--danger);">' + esc(item.input) + '</span> / ';
+      html += '    <span style="color:var(--success);">' + esc(item.correct) + '</span>';
+      html += '  </div>';
+    });
+    html += '</div>';
+  }
+  
+  resBox.innerHTML = html;
+}
+
+function copyKakao() {
+  var name = document.getElementById("t-name").value.trim();
+  var total = tList.length;
+  var pct = Math.round((tScore / total) * 100);
+  
+  var d = new Date();
+  var dateStr = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+  
+  var txt = "[씨유에탑 고3 자이 17회 어휘] 테스트 결과\n";
+  txt += "날짜: " + dateStr + "\n";
+  txt += "이름: " + name + "\n";
+  txt += "점수: " + tScore + "/" + total + " (" + pct + "점)\n";
+  txt += "─────────────────\n";
+  txt += "❌ 틀린 단어 (" + tWrongs.length + '개)\n';
+  tWrongs.forEach(function(item) {
+    txt += "  " + item.word + " → 입력:" + item.input + " / 정답:" + item.correct + "\n";
+  });
+  txt += "─────────────────\n";
+  txt += "✅ 맞은 단어: " + tRights.join(", ");
+  
+  var ta = document.createElement("textarea");
+  ta.value = txt;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  alert("결과가 복사되었습니다. 카톡 창에 붙여넣기 하세요.");
+}
+
+function switchTab(t) {
+  ["list","flash","quiz","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="quiz")  { initQuiz(); }
+  if (t==="test")  { renderSetup(); }
+}
+
+(function(){
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+  
+  document.getElementById("t-input").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") { submitTest(); }
+  });
+  
+  renderRangeBar("lrbar", lri, "setLR");
+  renderList();
+})();
+</script>
+
+</body>
+</html>
