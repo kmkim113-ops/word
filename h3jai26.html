@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>씨유에탑 ✦ 영어단어장</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warn: #F59E0B;
+      --gray: #6B7280;
+      --border: #E5E7EB;
+      --bg: #F9FAFB;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: var(--bg);
+      color: #111827;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .en {
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      padding: 16px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .header-brand {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    /* Navigation */
+    .nav-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 4px;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Content Area */
+    .tab-content {
+      display: none;
+      padding: 16px;
+      flex: 1;
+    }
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Range Bar */
+    .range-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .range-bar::-webkit-scrollbar {
+      display: none;
+    }
+    .r-btn {
+      padding: 6px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    .r-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Controls */
+    .search-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .f-btn {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--gray);
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .f-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Word Cards */
+    .word-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .word-card {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      transition: opacity 0.2s;
+    }
+    .word-card.known {
+      opacity: 0.35;
+    }
+    .wc-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+    .chk-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+    .word-card.known .chk-btn {
+      background: var(--success);
+      border-color: var(--success);
+    }
+    .wc-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .wc-eng {
+      font-weight: 700;
+      font-size: 15px;
+      color: #111827;
+    }
+    .wc-kor {
+      font-size: 13px;
+      color: var(--gray);
+    }
+    .wc-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ibtn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    /* Flashcard */
+    .fc-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 16px;
+    }
+    .fc-card {
+      width: 100%;
+      height: 260px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .fc-fav {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .fc-word {
+      font-size: 24px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 12px;
+    }
+    .fc-meaning {
+      font-size: 16px;
+      color: var(--primary);
+      font-weight: 700;
+      min-height: 24px;
+    }
+    .fc-nav {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .fc-nav-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .fc-nav-btn.sec {
+      background: var(--gray);
+    }
+
+    /* Quiz */
+    .quiz-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .q-head {
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 700;
+    }
+    .q-word {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111827;
+      text-align: center;
+      margin: 10px 0;
+    }
+    .q-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .q-opt {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      font-size: 14px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .q-opt.correct {
+      background: #D1FAE5;
+      border-color: var(--success);
+      color: #065F46;
+      font-weight: 700;
+    }
+    .q-opt.wrong {
+      background: #FEE2E2;
+      border-color: var(--danger);
+      color: #991B1B;
+      font-weight: 700;
+    }
+
+    /* Test */
+    .test-setup {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .input-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .test-progress {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .p-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .p-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.2s;
+    }
+    .t-word {
+      font-size: 24px;
+      font-weight: 800;
+      text-align: center;
+      margin: 20px 0;
+      color: #111827;
+    }
+    .t-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 12px;
+      outline: none;
+      text-align: center;
+    }
+    .t-input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Result View */
+    .res-box {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .res-emoji {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+    .res-score {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+    .res-pct {
+      font-size: 14px;
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+    .wrong-list {
+      text-align: left;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: var(--bg);
+    }
+    .wrong-item {
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .wrong-item:last-child {
+      border-bottom: none;
+    }
+    .w-w { font-weight: 700; color: var(--danger); }
+    .w-i { color: var(--gray); text-decoration: line-through; }
+    .w-c { color: var(--success); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">고3 자이 26회 어휘 · 총 338단어</div>
+  </div>
+
+  <div class="nav-tabs">
+    <button id="tb-list" class="tab-btn active" onclick="switchTab('list')">단어목록</button>
+    <button id="tb-flash" class="tab-btn" onclick="switchTab('flash')">플래시카드</button>
+    <button id="tb-quiz" class="tab-btn" onclick="switchTab('quiz')">퀴즈모드</button>
+    <button id="tb-test" class="tab-btn" onclick="switchTab('test')">📝 테스트</button>
+  </div>
+
+  <!-- TAB 1: 단어목록 -->
+  <div id="tab-list" class="tab-content active">
+    <div id="lrbar" class="range-bar"></div>
+    <input type="text" id="lsearch" class="search-input" placeholder="검색어 입력 (영어/한글)..." oninput="renderList()">
+    <div class="filter-group">
+      <button id="lf-all" class="f-btn active" onclick="setListFilter('all')">전체</button>
+      <button id="lf-unk" class="f-btn" onclick="setListFilter('unk')">모름</button>
+      <button id="lf-fav" class="f-btn" onclick="setListFilter('fav')">⭐ 즐겨찾기</button>
+    </div>
+    <div id="wlist" class="word-list"></div>
+  </div>
+
+  <!-- TAB 2: 플래시카드 -->
+  <div id="tab-flash" class="tab-content">
+    <div id="fcrbar" class="range-bar"></div>
+    <div class="fc-container">
+      <div id="fccard" class="fc-card">
+        <button id="fcfav" class="fc-fav" onclick="toggleFcFav(event)">☆</button>
+        <div id="fcword" class="fc-word en">Word</div>
+        <div id="fcmeaning" class="fc-meaning">뜻</div>
+      </div>
+      <div class="fc-nav">
+        <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+        <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+        <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: 퀴즈모드 -->
+  <div id="tab-quiz" class="tab-content">
+    <div id="qbox"></div>
+  </div>
+
+  <!-- TAB 4: 테스트 -->
+  <div id="tab-test" class="tab-content">
+    <div id="tbox"></div>
+  </div>
+</div>
+
+<script>
+var rawWords = [
+  { word: "sprout", meaning: "싹이 트다" },
+  { word: "subtly", meaning: "미묘하게" },
+  { word: "shift", meaning: "바뀌다" },
+  { word: "perception", meaning: "인식" },
+  { word: "precursor", meaning: "선구자" },
+  { word: "metamorphose", meaning: "변하다" },
+  { word: "dimension", meaning: "차원" },
+  { word: "fluid", meaning: "유동적인" },
+  { word: "solidify", meaning: "굳어지다" },
+  { word: "sculpt", meaning: "조각하다" },
+  { word: "sculptor", meaning: "조각가" },
+  { word: "stagnant", meaning: "침체된" },
+  { word: "dynamic", meaning: "역동적인" },
+  { word: "tapestry", meaning: "태피스트리" },
+  { word: "interweave", meaning: "짜 넣다" },
+  { word: "fluidity", meaning: "유동성" },
+  { word: "impermanence", meaning: "영구적이지 않음" },
+  { word: "essence", meaning: "본질" },
+  { word: "anchor", meaning: "고정시키다" },
+  { word: "evanescent", meaning: "쉬이 사라지는" },
+  { word: "ephemeral", meaning: "수명이 짧은" },
+  { word: "fleeting", meaning: "찰나의" },
+  { word: "etched", meaning: "아로새겨진" },
+  { word: "monumental", meaning: "기념비적인" },
+  { word: "ephemerality", meaning: "단명" },
+  { word: "continual", meaning: "거듭되는" },
+  { word: "interplay", meaning: "상호작용" },
+  { word: "chisel", meaning: "끌" },
+  { word: "marble", meaning: "대리석" },
+  { word: "static", meaning: "고정된" },
+  { word: "snapshot", meaning: "스냅사진" },
+  { word: "continuum", meaning: "연속체" },
+  { word: "woven", meaning: "짜여진" },
+  { word: "thread", meaning: "실" },
+  { word: "fabric", meaning: "직물" },
+  { word: "transience", meaning: "일시적임" },
+  { word: "flux", meaning: "흐름" },
+  { word: "stream", meaning: "개울" },
+  { word: "evanescence", meaning: "소실" },
+  { word: "monument", meaning: "기념물" },
+  { word: "glimpse", meaning: "언뜻 봄" },
+  { word: "engraved", meaning: "새겨진" },
+  { word: "eternal", meaning: "영원한" },
+  { word: "impermanent", meaning: "비영구적인" },
+  { word: "fixed", meaning: "고정된" },
+  { word: "fluctuating", meaning: "변동하는" },
+  { word: "interconnectedness", meaning: "상호연관성" },
+  { word: "statue", meaning: "조각상" },
+  { word: "carve", meaning: "조각하다" },
+  { word: "unchanging", meaning: "변치 않는" },
+  { word: "instant", meaning: "순간" },
+  { word: "spectrum", meaning: "스펙트럼" },
+  { word: "intertwined", meaning: "뒤얽힌" },
+  { word: "strand", meaning: "가닥" },
+  { word: "cloth", meaning: "직물" },
+  { word: "fleetingness", meaning: "찰나임" },
+  { word: "adaptable", meaning: "적응할 수 있는" },
+  { word: "core", meaning: "핵심" },
+  { word: "river", meaning: "강" },
+  { word: "fading", meaning: "희미해지는" },
+  { word: "transitory", meaning: "일시적인" },
+  { word: "memorial", meaning: "기념물" },
+  { word: "impression", meaning: "인상" },
+  { word: "inscribed", meaning: "새겨진" },
+  { word: "mosaic", meaning: "모자이크" },
+  { word: "historic", meaning: "역사적인" },
+  { word: "perpetual", meaning: "영구적인" },
+  { word: "transient", meaning: "일시적인" },
+  { word: "stable", meaning: "안정된" },
+  { word: "ever-changing", meaning: "늘 변하는" },
+  { word: "interdependence", meaning: "상호의존성" },
+  { word: "figure", meaning: "인물상" },
+  { word: "clay", meaning: "점토" },
+  { word: "rigid", meaning: "엄격한" },
+  { word: "moment", meaning: "순간" },
+  { word: "knitted", meaning: "짜여진" },
+  { word: "yarn", meaning: "실" },
+  { word: "weave", meaning: "짜다" },
+  { word: "short-lived", meaning: "단명하는" },
+  { word: "flexible", meaning: "유연한" },
+  { word: "transformation", meaning: "변형" },
+  { word: "substance", meaning: "본질" },
+  { word: "current", meaning: "흐름" },
+  { word: "vanishing", meaning: "사라지는" },
+  { word: "momentary", meaning: "순간의" },
+  { word: "tribute", meaning: "기념물" },
+  { word: "temporary", meaning: "임시의" },
+  { word: "trace", meaning: "자취" },
+  { word: "imprinted", meaning: "새겨진" },
+  { word: "patchwork", meaning: "패치워크" },
+  { word: "enduring", meaning: "지속되는" },
+  { word: "ageless", meaning: "영원한" },
+  { word: "constant", meaning: "변함없는" },
+  { word: "shifting", meaning: "변화하는" },
+  { word: "mutuality", meaning: "상호관계" },
+  { word: "likeness", meaning: "초상" },
+  { word: "bronze", meaning: "청동" },
+  { word: "inflexible", meaning: "완고한" },
+  { word: "second", meaning: "순간" },
+  { word: "sequence", meaning: "연속" },
+  { word: "braided", meaning: "땋은" },
+  { word: "fiber", meaning: "섬유" },
+  { word: "textile", meaning: "직물" },
+  { word: "passing", meaning: "지나가버리는" },
+  { word: "malleable", meaning: "가공할 수 있는" },
+  { word: "evolution", meaning: "진화" },
+  { word: "nature", meaning: "본성" },
+  { word: "establish", meaning: "확립하다" },
+  { word: "flow", meaning: "흐름" },
+  { word: "disappearing", meaning: "사라지는" },
+  { word: "shrine", meaning: "성지" },
+  { word: "mark", meaning: "표시" },
+  { word: "stamped", meaning: "찍힌" },
+  { word: "collage", meaning: "콜라주" },
+  { word: "lasting", meaning: "지속적인" },
+  { word: "undying", meaning: "불멸의" },
+  { word: "steady", meaning: "꾸준한" },
+  { word: "varying", meaning: "변하는" },
+  { word: "reciprocity", meaning: "상호성" },
+  { word: "bust", meaning: "흉상" },
+  { word: "fashion", meaning: "만들어내다" },
+  { word: "granite", meaning: "화강암" },
+  { word: "unyielding", meaning: "단단한" },
+  { word: "flash", meaning: "순간" },
+  { word: "progression", meaning: "진행" },
+  { word: "entwined", meaning: "뒤엉킨" },
+  { word: "string", meaning: "끈" },
+  { word: "material", meaning: "재료" },
+  { word: "yielding", meaning: "유연한" },
+  { word: "development", meaning: "발전" },
+  { word: "tide", meaning: "흐름" },
+  { word: "dissolving", meaning: "사라지는" },
+  { word: "testament", meaning: "증거" },
+  { word: "sign", meaning: "징후" },
+  { word: "montage", meaning: "몽타주" },
+  { word: "abiding", meaning: "지속적인" },
+  { word: "deathless", meaning: "불사의" },
+  { word: "altering", meaning: "변하는" },
+  { word: "interaction", meaning: "상호작용" },
+  { word: "effigy", meaning: "상" },
+  { word: "cast", meaning: "주조하다" },
+  { word: "unbending", meaning: "굽히지 않는" },
+  { word: "blink", meaning: "순식간" },
+  { word: "chain", meaning: "사슬" },
+  { word: "laced", meaning: "끈으로 묶인" },
+  { word: "cord", meaning: "끈" },
+  { word: "pliant", meaning: "유연한" },
+  { word: "growth", meaning: "성장" },
+  { word: "quintessence", meaning: "진수" },
+  { word: "wave", meaning: "파도" },
+  { word: "melting", meaning: "녹는" },
+  { word: "remembrance", meaning: "기억" },
+  { word: "print", meaning: "자국" },
+  { word: "medley", meaning: "잡동사니" },
+  { word: "perennial", meaning: "영원한" },
+  { word: "immortal", meaning: "불멸의" },
+  { word: "fugitive", meaning: "일시적인" },
+  { word: "unmoving", meaning: "움직이지 않는" },
+  { word: "modifying", meaning: "수정하는" },
+  { word: "interconnection", meaning: "상호연결" },
+  { word: "image", meaning: "상" },
+  { word: "model", meaning: "모형을 만들다" },
+  { word: "plaster", meaning: "회반죽" },
+  { word: "immovable", meaning: "움직일 수 없는" },
+  { word: "wink", meaning: "순식간" },
+  { word: "series", meaning: "연속" },
+  { word: "linked", meaning: "연결된" },
+  { word: "garment", meaning: "의복" },
+  { word: "short-term", meaning: "단기의" },
+  { word: "elastic", meaning: "탄력 있는" },
+  { word: "progress", meaning: "진보" },
+  { word: "soul", meaning: "핵심" },
+  { word: "settle", meaning: "정착시키다" },
+  { word: "ripple", meaning: "잔물결" },
+  { word: "swift", meaning: "신속한" },
+  { word: "vestige", meaning: "자취" },
+  { word: "cut", meaning: "새겨진" },
+  { word: "miscellany", meaning: "여러 가지 종류의 모음" },
+  { word: "imperishable", meaning: "불멸의" },
+  { word: "everlasting", meaning: "영원한" },
+  { word: "immobile", meaning: "고정된" },
+  { word: "adjusting", meaning: "조정하는" },
+  { word: "interweaving", meaning: "엮임" },
+  { word: "icon", meaning: "우상" },
+  { word: "craft", meaning: "공들여 만들다" },
+  { word: "firm", meaning: "확고한" },
+  { word: "split second", meaning: "찰나" },
+  { word: "connected", meaning: "연결된" },
+  { word: "rope", meaning: "밧줄" },
+  { word: "woven fabric", meaning: "직물" },
+  { word: "pliable", meaning: "유연한" },
+  { word: "advance", meaning: "전진" },
+  { word: "spirit", meaning: "정신" },
+  { word: "plant", meaning: "확립하다" },
+  { word: "drifting", meaning: "표류하는" },
+  { word: "evaporating", meaning: "증발하는" },
+  { word: "marker", meaning: "기념물" },
+  { word: "fleet", meaning: "빠른" },
+  { word: "remnant", meaning: "자취" },
+  { word: "chiseled", meaning: "끌로 깎은" },
+  { word: "assortment", meaning: "모음" },
+  { word: "timeless", meaning: "영원한" },
+  { word: "stationary", meaning: "정지된" },
+  { word: "adapting", meaning: "적응하는" },
+  { word: "interlocking", meaning: "맞물림" },
+  { word: "carving", meaning: "조각품" },
+  { word: "construct", meaning: "건설하다" },
+  { word: "rock", meaning: "바위" },
+  { word: "solid", meaning: "단단한" },
+  { word: "trice", meaning: "순식간" },
+  { word: "train", meaning: "연속" },
+  { word: "joined", meaning: "결합된" },
+  { word: "twine", meaning: "노끈" },
+  { word: "supple", meaning: "유연한" },
+  { word: "maturation", meaning: "성숙" },
+  { word: "gist", meaning: "요지" },
+  { word: "embed", meaning: "박아 넣다" },
+  { word: "flowing", meaning: "흐르는" },
+  { word: "column", meaning: "기념비" },
+  { word: "rapid", meaning: "신속한" },
+  { word: "sculpted", meaning: "조각된" },
+  { word: "blend", meaning: "혼합" },
+  { word: "infinite", meaning: "무한한" },
+  { word: "steadfast", meaning: "변함없는" },
+  { word: "evolving", meaning: "진화하는" },
+  { word: "intertwining", meaning: "뒤얽힘" },
+  { word: "work of art", meaning: "예술품" },
+  { word: "create", meaning: "창조하다" },
+  { word: "ore", meaning: "광석" },
+  { word: "jiffy", meaning: "순식간" },
+  { word: "line", meaning: "줄" },
+  { word: "united", meaning: "연합된" },
+  { word: "bendable", meaning: "구부러지는" },
+  { word: "crux", meaning: "핵심" },
+  { word: "root", meaning: "뿌리를 내리다" },
+  { word: "surging", meaning: "밀려드는" },
+  { word: "fading away", meaning: "사라져가는" },
+  { word: "arch", meaning: "기념문" },
+  { word: "hasty", meaning: "빠른" },
+  { word: "shadow", meaning: "자취" },
+  { word: "molded", meaning: "본떠 만든" },
+  { word: "mixtape", meaning: "믹스" },
+  { word: "unending", meaning: "끝없는" },
+  { word: "boundless", meaning: "무한한" },
+  { word: "unwavering", meaning: "확고한" },
+  { word: "transitioning", meaning: "변이하는" },
+  { word: "interlacing", meaning: "얽힘" },
+  { word: "masterpiece", meaning: "걸작" },
+  { word: "build", meaning: "지으다" },
+  { word: "cement", meaning: "시멘트" },
+  { word: "stiff", meaning: "경직된" },
+  { word: "twinkling", meaning: "순간" },
+  { word: "succession", meaning: "연속" },
+  { word: "bound", meaning: "묶인" },
+  { word: "wire", meaning: "철사" },
+  { word: "drape", meaning: "휘장" },
+  { word: "ductile", meaning: "유연한" },
+  { word: "unfolding", meaning: "전개" },
+  { word: "pith", meaning: "핵심" },
+  { word: "lodge", meaning: "고정하다" },
+  { word: "moving", meaning: "움직이는" },
+  { word: "plaque", meaning: "기념판" },
+  { word: "brisk", meaning: "빠른" },
+  { word: "echo", meaning: "자취" },
+  { word: "potpourri", meaning: "잡동사니" },
+  { word: "never-ending", meaning: "끝없는" },
+  { word: "limitless", meaning: "무한한" },
+  { word: "resolution", meaning: "확고함" },
+  { word: "metamorphosing", meaning: "변형하는" },
+  { word: "weaving", meaning: "직조" },
+  { word: "relic", meaning: "유물" },
+  { word: "design", meaning: "디자인하다" },
+  { word: "concrete", meaning: "콘크리트" },
+  { word: "course", meaning: "연속" },
+  { word: "tied", meaning: "단단히 묶인" },
+  { word: "cable", meaning: "케이블" },
+  { word: "betterment", meaning: "향상" },
+  { word: "kernel", meaning: "핵심" },
+  { word: "ground", meaning: "근거를 두다" },
+  { word: "sweeping", meaning: "광범위한" },
+  { word: "obelisk", meaning: "기념비" },
+  { word: "nimble", meaning: "민첩한" },
+  { word: "footprint", meaning: "흔적" },
+  { word: "shaped", meaning: "형성된" },
+  { word: "jumble", meaning: "뒤범벅" },
+  { word: "ceaseless", meaning: "끊임없는" },
+  { word: "measureless", meaning: "측정할 수 없는" },
+  { word: "firmness", meaning: "견고함" },
+  { word: "reforming", meaning: "변하는" },
+  { word: "knitting", meaning: "결합" },
+  { word: "antique", meaning: "골동품" },
+  { word: "assemble", meaning: "조립하다" },
+  { word: "brick", meaning: "벽돌" },
+  { word: "run", meaning: "연속" },
+  { word: "stand on", meaning: "~에 서다" },
+  { word: "conception", meaning: "구상" },
+  { word: "evolve", meaning: "진화하다" },
+  { word: "take on", meaning: "띠다" },
+  { word: "mould", meaning: "형성하다" },
+  { word: "snapshot", meaning: "스냅사진" },
+  { word: "canvas", meaning: "화폭" },
+  { word: "permanent", meaning: "영구적인" },
+  { word: "sculpture", meaning: "조각품" },
+  { word: "change", meaning: "변화" },
+  { word: "brief", meaning: "잠시의" },
+  { word: "form", meaning: "형성하다" },
+  { word: "fast", meaning: "빠른" },
+  { word: "short", meaning: "짧은" },
+  { word: "hard", meaning: "단단한" },
+  { word: "relic", meaning: "자취" },
+  { word: "stone", meaning: "돌" },
+  { word: "in common with", meaning: "~와 공동으로" },
+  { word: "sprout", meaning: "싹이 나다" },
+  { word: "take on", meaning: "띠다, 취하다" },
+  { word: "mould", meaning: "형성하다, 틀에 넣어 만들다" },
+  { word: "sculpt", meaning: "조각하다, 형성하다" },
+  { word: "relic", meaning: "유물" },
+  { word: "tapestry", meaning: "태피스트리, 마구 섞인 것" },
+  { word: "interweave", meaning: "밀접하게 관련되다, 엮이다" },
+  { word: "impermanence", meaning: "비영구성, 무상함" },
+  { word: "flux", meaning: "끊임없는 변화" },
+  { word: "anchor", meaning: "고정시키다, 닻을 내리다" },
+  { word: "fluid", meaning: "유동체, 유체" },
+  { word: "evanescent", meaning: "덧없는, 쉬이 사라지는" },
+  { word: "ephemeral", meaning: "수명이 짧은, 단명하는" },
+  { word: "monument", meaning: "기념물, 유적" },
+  { word: "fleeting", meaning: "찰나의, 순식간의" },
+  { word: "snapshot", meaning: "스냅사진, 약식 보고" },
+  { word: "etched", meaning: "선명하게 모식된, 아로새겨진" },
+  { word: "canvas", meaning: "캔버스, 화폭" },
+  { word: "ephemerality", meaning: "단명, 일시적임" }
+];
+
+var storeKey = "cutop_고3_자이_26회_어휘";
+var lri = 0, fri = 0, tri = 0;
+var listFilter = 'all';
+var fcIndex = 0;
+var fcFlipped = false;
+var fcTX = 0;
+var qLocked = false;
+var testData = [];
+var testIdx = 0;
+var testCorrect = 0;
+var testWrongs = [];
+var testRights = [];
+var testName = "";
+
+function getStore() {
+  try {
+    var d = localStorage.getItem(storeKey);
+    return d ? JSON.parse(d) : {};
+  } catch(e) { return {}; }
+}
+
+function setStore(st) {
+  try {
+    localStorage.setItem(storeKey, JSON.stringify(st));
+  } catch(e) {}
+}
+
+function getItemState(w) {
+  var k = w.word + "|" + w.meaning;
+  var st = getStore();
+  return st[k] || { status: 'none', fav: false };
+}
+
+function updateItemState(w, key, val) {
+  var k = w.word + "|" + w.meaning;
+  var st = getStore();
+  if (!st[k]) st[k] = { status: 'none', fav: false };
+  st[k][key] = val;
+  setStore(st);
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+function speakFc() {
+  speak(document.getElementById("fcword").textContent);
+}
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+var ranges = buildRanges(rawWords);
+
+function renderRangeBar(elId, activeIdx, fnName) {
+  var el = document.getElementById(elId);
+  var html = "";
+  for (var i = 0; i < ranges.length; i++) {
+    var cls = (i === activeIdx) ? "r-btn active" : "r-btn";
+    html += '<button class="' + cls + '" onclick="' + fnName + '(' + i + ')">' + ranges[i].label + '</button>';
+  }
+  el.innerHTML = html;
+}
+
+function switchTab(t) {
+  ["list","flash","quiz","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="quiz")  { initQuiz(); }
+  if (t==="test")  { renderSetup(); }
+}
+
+/* TAB 1 */
+function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setListFilter(f) {
+  listFilter = f;
+  document.getElementById("lf-all").classList.toggle("active", f==='all');
+  document.getElementById("lf-unk").classList.toggle("active", f==='unk');
+  document.getElementById("lf-fav").classList.toggle("active", f==='fav');
+  renderList();
+}
+
+function renderList() {
+  var rng = ranges[lri];
+  var sub = rawWords.slice(rng.s, rng.e);
+  var q = document.getElementById("lsearch").value.toLowerCase().trim();
+  var container = document.getElementById("wlist");
+  var html = "";
+
+  for (var i = 0; i < sub.length; i++) {
+    var w = sub[i];
+    var state = getItemState(w);
+
+    if (q) {
+      if (w.word.toLowerCase().indexOf(q) === -1 && w.meaning.toLowerCase().indexOf(q) === -1) continue;
+    }
+    if (listFilter === 'unk' && state.status === 'known') continue;
+    if (listFilter === 'fav' && !state.fav) continue;
+
+    var isKnown = state.status === 'known';
+    var cardCls = isKnown ? "word-card known" : "word-card";
+    var chkTxt = isKnown ? "✓" : "";
+    var favTxt = state.fav ? "★" : "☆";
+
+    var globalIdx = rng.s + i;
+
+    html += '<div class="' + cardCls + '">';
+    html += '  <div class="wc-left">';
+    html += '    <button class="chk-btn" onclick="toggleKnown(' + globalIdx + ')">' + chkTxt + '</button>';
+    html += '    <div class="wc-info">';
+    html += '      <div class="wc-eng en">' + esc(w.word) + '</div>';
+    html += '      <div class="wc-kor">' + esc(w.meaning) + '</div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '  <div class="wc-actions">';
+    html += '    <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '    <button class="ibtn" onclick="toggleFav(' + globalIdx + ')">' + favTxt + '</button>';
+    html += '  </div>';
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function toggleKnown(idx) {
+  var w = rawWords[idx];
+  var st = getItemState(w);
+  updateItemState(w, "status", st.status === "known" ? "none" : "known");
+  renderList();
+}
+
+function toggleFav(idx) {
+  var w = rawWords[idx];
+  var st = getItemState(w);
+  updateItemState(w, "fav", !st.fav);
+  renderList();
+}
+
+/* TAB 2 */
+function setFR(idx) { fri = idx; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+function getFcPool() { return rawWords.slice(ranges[fri].s, ranges[fri].e); }
+
+function initFC() {
+  fcIndex = 0;
+  showFC();
+}
+
+function showFC() {
+  var pool = getFcPool();
+  if (!pool || pool.length === 0) return;
+  var w = pool[fcIndex];
+  var state = getItemState(w);
+  fcFlipped = false;
+  document.getElementById("fcword").textContent = w.word;
+  document.getElementById("fcmeaning").textContent = "";
+  document.getElementById("fcfav").textContent = state.fav ? "★" : "☆";
+}
+
+function fcFlip() {
+  var pool = getFcPool();
+  var w = pool[fcIndex];
+  if (!fcFlipped) {
+    fcFlipped = true;
+    document.getElementById("fcmeaning").textContent = w.meaning;
+    speak(w.word);
+  }
+}
+
+function fcNext() {
+  var pool = getFcPool();
+  fcIndex = (fcIndex + 1) % pool.length;
+  showFC();
+}
+
+function fcPrev() {
+  var pool = getFcPool();
+  fcIndex = (fcIndex - 1 + pool.length) % pool.length;
+  showFC();
+}
+
+function toggleFcFav(e) {
+  e.stopPropagation();
+  var pool = getFcPool();
+  var w = pool[fcIndex];
+  var state = getItemState(w);
+  updateItemState(w, "fav", !state.fav);
+  showFC();
+}
+
+/* TAB 3 */
+function initQuiz() {
+  var pool = rawWords.slice();
+  pool.sort(function() { return Math.random() - 0.5; });
+  var count = Math.min(10, pool.length);
+  var qWords = pool.slice(0, count);
+
+  var qData = [];
+  for (var i = 0; i < qWords.length; i++) {
+    var target = qWords[i];
+    var wrongPool = rawWords.filter(function(x) { return x.word !== target.word; });
+    wrongPool.sort(function() { return Math.random() - 0.5; });
+    var opts = [target.meaning, wrongPool[0].meaning, wrongPool[1].meaning, wrongPool[2].meaning];
+    opts.sort(function() { return Math.random() - 0.5; });
+    qData.push({ word: target.word, correct: target.meaning, opts: opts });
+  }
+
+  var cur = 0, score = 0;
+
+  function renderQ() {
+    qLocked = false;
+    if (cur >= qData.length) {
+      var pct = Math.round((score / qData.length) * 100);
+      var emo = "🏆";
+      if (pct < 60) emo = "💪";
+      else if (pct < 80) emo = "👍";
+      else if (pct < 100) emo = "🎉";
+
+      var h = '<div class="res-box">';
+      h += '<div class="res-emoji">' + emo + '</div>';
+      h += '<div class="res-score">' + score + ' / ' + qData.length + '</div>';
+      h += '<div class="res-pct">' + pct + '점</div>';
+      h += '<button class="btn-main" onclick="initQuiz()">↩ 다시 풀기</button>';
+      h += '</div>';
+      document.getElementById("qbox").innerHTML = h;
+      return;
+    }
+
+    var item = qData[cur];
+    var h = '<div class="quiz-card">';
+    h += '  <div class="q-head">문제 ' + (cur + 1) + ' / ' + qData.length + '</div>';
+    h += '  <div class="q-word en">' + esc(item.word) + '</div>';
+    h += '  <div class="q-options">';
+    for (var j = 0; j < item.opts.length; j++) {
+      var isCor = (item.opts[j] === item.correct) ? "1" : "0";
+      h += '    <button class="q-opt" data-cor="' + isCor + '">' + esc(item.opts[j]) + '</button>';
+    }
+    h += '  </div>';
+    h += '</div>';
+    document.getElementById("qbox").innerHTML = h;
+
+    var btns = document.getElementById("qbox").querySelectorAll(".q-opt");
+    for (var k = 0; k < btns.length; k++) {
+      btns[k].addEventListener("click", function() {
+        if (qLocked) return;
+        qLocked = true;
+        var c = this.getAttribute("data-cor");
+        if (c === "1") {
+          this.classList.add("correct");
+          score++;
+          speak(item.word);
+        } else {
+          this.classList.add("wrong");
+          for (var x = 0; x < btns.length; x++) {
+            if (btns[x].getAttribute("data-cor") === "1") btns[x].classList.add("correct");
+          }
+        }
+        setTimeout(function() {
+          cur++;
+          renderQ();
+        }, 1000);
+      });
+    }
+  }
+  renderQ();
+}
+
+/* TAB 4 */
+function isSim(input, correct) {
+  var norm = function(s) {
+    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+  };
+  var a = norm(input), c = norm(correct);
+  if (a === c) return true;
+  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+  return false;
+}
+
+function renderSetup() {
+  tri = 0;
+  var h = '<div class="test-setup">';
+  h += '  <div>';
+  h += '    <label class="input-label">이름 입력</label>';
+  h += '    <input type="text" id="tname" class="search-input" placeholder="이름을 입력하세요..." value="' + esc(testName) + '">';
+  h += '  </div>';
+  h += '  <div>';
+  h += '    <label class="input-label">범위 선택</label>';
+  h += '    <div id="trbar" class="range-bar"></div>';
+  h += '  </div>';
+  h += '  <button class="btn-main" onclick="startTest()">테스트 시작 ▶</button>';
+  h += '</div>';
+  document.getElementById("tbox").innerHTML = h;
+  renderRangeBar("trbar", tri, "setTR");
+}
+
+function setTR(idx) {
+  tri = idx;
+  renderRangeBar("trbar", tri, "setTR");
+}
+
+function startTest() {
+  var nm = document.getElementById("tname").value.trim();
+  if (!nm) {
+    alert("이름을 입력해 주세요.");
+    return;
+  }
+  testName = nm;
+
+  var pool = rawWords.slice(ranges[tri].s, ranges[tri].e);
+  pool.sort(function() { return Math.random() - 0.5; });
+  var count = Math.min(50, pool.length);
+  testData = pool.slice(0, count);
+
+  testIdx = 0;
+  testCorrect = 0;
+  testWrongs = [];
+  testRights = [];
+
+  renderTestItem();
+}
+
+function renderTestItem() {
+  if (testIdx >= testData.length) {
+    renderTestResult();
+    return;
+  }
+
+  var item = testData[testIdx];
+  var pct = Math.round((testIdx / testData.length) * 100);
+
+  var h = '<div>';
+  h += '  <div class="test-progress">';
+  h += '    <span>현재: ' + (testIdx + 1) + '/' + testData.length + '</span>';
+  h += '    <span>✅ 맞춤: ' + testCorrect + '</span>';
+  h += '  </div>';
+  h += '  <div class="p-bar-bg"><div class="p-bar-fill" style="width:' + pct + '%"></div></div>';
+  h += '  <div class="t-word en">' + esc(item.word) + '</div>';
+  h += '  <input type="text" id="tinput" class="t-input" autocomplete="off" placeholder="한글 뜻을 입력하세요">';
+  h += '  <button class="btn-main" onclick="submitTestItem()">확인 (Enter)</button>';
+  h += '</div>';
+
+  document.getElementById("tbox").innerHTML = h;
+  speak(item.word);
+
+  var inp = document.getElementById("tinput");
+  inp.focus();
+  inp.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") submitTestItem();
+  });
+}
+
+function submitTestItem() {
+  var inp = document.getElementById("tinput");
+  var val = inp.value.trim();
+  var item = testData[testIdx];
+
+  if (isSim(val, item.meaning)) {
+    testCorrect++;
+    testRights.push(item.word);
+  } else {
+    testWrongs.push({ word: item.word, input: val || "(미입력)", correct: item.meaning });
+  }
+
+  testIdx++;
+  renderTestItem();
+}
+
+function renderTestResult() {
+  var pct = Math.round((testCorrect / testData.length) * 100);
+  var emo = "🏆";
+  if (pct < 60) emo = "💪";
+  else if (pct < 80) emo = "👍";
+  else if (pct < 100) emo = "🎉";
+
+  var h = '<div class="res-box">';
+  h += '  <div class="res-emoji">' + emo + '</div>';
+  h += '  <div class="res-score">' + testCorrect + ' / ' + testData.length + '</div>';
+  h += '  <div class="res-pct">' + pct + '점</div>';
+
+  if (testWrongs.length > 0) {
+    h += '<div class="wrong-list">';
+    for (var i = 0; i < testWrongs.length; i++) {
+      var w = testWrongs[i];
+      h += '<div class="wrong-item">';
+      h += '  <span class="w-w">' + esc(w.word) + '</span> → ';
+      h += '  입력: <span class="w-i">' + esc(w.input) + '</span> / ';
+      h += '  정답: <span class="w-c">' + esc(w.correct) + '</span>';
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+
+  h += '<button class="btn-main" style="background:#25D366; margin-bottom:8px;" onclick="copyResult()">📋 카톡으로 결과 복사</button>';
+  h += '<button class="btn-main" style="background:var(--gray);" onclick="renderSetup()">↩ 다시 테스트</button>';
+  h += '</div>';
+
+  document.getElementById("tbox").innerHTML = h;
+}
+
+function copyResult() {
+  var d = new Date();
+  var dateStr = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  var pct = Math.round((testCorrect / testData.length) * 100);
+
+  var txt = "[씨유에탑 고3 자이 26회 어휘] 테스트 결과\n";
+  txt += "날짜: " + dateStr + "\n";
+  txt += "이름: " + testName + "\n";
+  txt += "점수: " + testCorrect + "/" + testData.length + " (" + pct + "점)\n";
+  txt += "─────────────────\n";
+  txt += "❌ 틀린 단어 (" + testWrongs.length + "개)\n";
+  for (var i = 0; i < testWrongs.length; i++) {
+    var w = testWrongs[i];
+    txt += "  " + w.word + " → 입력:" + w.input + " / 정답:" + w.correct + "\n";
+  }
+  txt += "─────────────────\n";
+  txt += "✅ 맞은 단어: " + testRights.join(", ");
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function() {
+      alert("결과가 클립보드에 복사되었습니다.");
+    });
+  } else {
+    var ta = document.createElement("textarea");
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    alert("결과가 클립보드에 복사되었습니다.");
+  }
+}
+
+/* Flashcard Event listeners */
+(function(){
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+})();
+
+/* Init */
+switchTab("list");
+</script>
+</body>
+</html>
