@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨유에탑 기초형식 해석하기</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; background:#EEF2F6; font-family:'Noto Sans KR', sans-serif; color:#1E2A3A; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .eyebrow { font-size:11px; letter-spacing:2px; font-weight:700; color:#94A3B8; }
+  h1 { font-size:22px; font-weight:900; margin:2px 0 0; }
+  .homebtn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#64748B; background:#fff; border:1px solid #E2E8F0; padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .homebtn:hover { border-color:#94A3B8; }
+  .card { background:#fff; border:1px solid #E2E8F0; border-radius:18px; padding:22px; }
+  .label { font-size:13px; color:#64748B; margin-bottom:6px; }
+  input[type=text] { width:100%; border:1px solid #E2E8F0; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; margin-bottom:22px; }
+  .grid5 { display:grid; grid-template-columns:1fr; gap:10px; }
+  .fmtbtn { text-align:left; border:1px solid #E2E8F0; border-radius:14px; padding:16px 18px; cursor:pointer; background:#fff; display:flex; align-items:center; justify-content:space-between; transition:.15s; }
+  .fmtbtn:hover { border-color:#94A3B8; transform:translateY(-1px); }
+  .fmtname { font-weight:900; font-size:16px; }
+  .fmtdesc { font-size:12px; color:#94A3B8; margin-top:2px; }
+  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px; }
+  .backlink { font-size:13px; color:#64748B; cursor:pointer; margin-bottom:14px; display:inline-block; }
+  .setgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .setbtn { border:1px solid #E2E8F0; border-radius:14px; padding:20px 14px; text-align:center; cursor:pointer; background:#fff; font-weight:800; }
+  .setbtn small { display:block; font-weight:500; color:#94A3B8; margin-top:4px; }
+  .setbtn:hover { border-color:#94A3B8; }
+  .progressbar { height:6px; background:#E2E8F0; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .progressbar > div { height:100%; }
+  .toprow { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .pill { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; }
+  .pillmuted { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#F1F5F9; color:#64748B; }
+  .tally { margin-left:auto; font-size:12px; color:#94A3B8; }
+  .sentence { font-size:24px; font-weight:900; line-height:1.4; margin: 16px 0 20px; }
+  textarea { width:100%; height:80px; border:1px solid #E2E8F0; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; resize:none; }
+  textarea:disabled { background:#F8FAFC; }
+  .primarybtn { width:100%; margin-top:16px; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:15px; color:#fff; cursor:pointer; }
+  .primarybtn:disabled { background:#CBD5E1 !important; cursor:not-allowed; }
+  .answerbox { border-radius:12px; padding:14px; margin:16px 0 10px; }
+  .answerbox .lbl { font-size:12px; font-weight:700; color:#94A3B8; margin-bottom:4px; }
+  .answerbox .val { font-weight:800; font-size:16px; }
+  .userbox { background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:14px; margin-bottom:10px; }
+  .hint { font-size:12px; color:#94A3B8; margin:10px 0 8px; }
+  .btnrow { display:flex; gap:10px; }
+  .btnrow button { flex:1; padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #E2E8F0; background:#fff; color:#64748B; }
+  .btnrow button.wide { color:#fff; border:none; }
+  .resultcard { text-align:center; padding:30px 22px; }
+  .resultcard .score { font-size:40px; font-weight:900; margin:8px 0 2px; }
+  .resultcard .sub { font-size:13px; color:#94A3B8; }
+  .metarow { display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-bottom:1px solid #F1F5F9; }
+  .metarow:last-child { border-bottom:none; }
+  .metarow span:first-child { color:#94A3B8; }
+  .metarow span:last-child { font-weight:700; }
+  .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+  .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #E2E8F0; background:#fff; }
+  .stack button.solid { color:#fff; border:none; }
+  .note { font-size:12px; color:#94A3B8; text-align:center; margin-top:16px; line-height:1.6; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+/* ===================== 데이터: 형식별 100문장 (en|ko|level) ===================== */
+const DATA = {
+1: [
+"She smiles.|그녀는 웃는다.|중2","He runs.|그는 달린다.|중2","I laugh.|나는 웃는다.|중2","We walk.|우리는 걷는다.|중2",
+"They jump.|그들은 점프한다.|중2","She sings.|그녀는 노래한다.|중2","He dances.|그는 춤춘다.|중2","I sleep.|나는 잔다.|중2",
+"The baby cries.|그 아기는 운다.|중2","My dog barks.|내 개는 짖는다.|중2","She looked at me.|그녀는 나를 쳐다보았다.|중2",
+"He went to school.|그는 학교에 갔다.|중2","I waited for the bus.|나는 버스를 기다렸다.|중2","We arrived at the park.|우리는 공원에 도착했다.|중2",
+"They ran to the door.|그들은 문으로 뛰어갔다.|중2","She smiled at him.|그녀는 그에게 미소지었다.|중2","He sat on the chair.|그는 의자에 앉았다.|중2",
+"I stood by the window.|나는 창가에 서 있었다.|중2","The sun rises.|태양이 뜬다.|중2","The sun sets.|태양이 진다.|중2",
+"Flowers bloom.|꽃들이 핀다.|중2","Birds fly.|새들이 난다.|중2","Water flows.|물이 흐른다.|중2","The wind blows.|바람이 분다.|중2",
+"The cat jumped onto the sofa.|그 고양이는 소파 위로 뛰어올랐다.|중2","The ball rolled into the street.|공이 길로 굴러갔다.|중2",
+"The train arrived at the station.|기차가 역에 도착했다.|중2","The rain fell all day.|비가 하루 종일 내렸다.|중2",
+"Smoke rose from the chimney.|굴뚝에서 연기가 올라왔다.|중2","The leaves fell from the tree.|나뭇잎들이 나무에서 떨어졌다.|중2",
+"My phone rang loudly.|내 전화기가 크게 울렸다.|중2","The door opened slowly.|문이 천천히 열렸다.|중2","The light went out.|불이 꺼졌다.|중2",
+"The plane landed safely.|비행기가 안전하게 착륙했다.|중2",
+"She arrived early this morning.|그녀는 오늘 아침 일찍 도착했다.|중3","He worked hard yesterday.|그는 어제 열심히 일했다.|중3",
+"They stayed at the hotel for a week.|그들은 일주일 동안 호텔에 머물렀다.|중3","I moved to Seoul last year.|나는 작년에 서울로 이사했다.|중3",
+"She waited patiently outside the room.|그녀는 방 밖에서 참을성 있게 기다렸다.|중3","He walked slowly along the beach.|그는 해변을 따라 천천히 걸었다.|중3",
+"The children played happily in the yard.|아이들은 마당에서 즐겁게 놀았다.|중3","We talked quietly in the library.|우리는 도서관에서 조용히 이야기했다.|중3",
+"She traveled across the country alone.|그녀는 혼자 그 나라를 가로질러 여행했다.|중3","He disappeared into the crowd.|그는 군중 속으로 사라졌다.|중3",
+"The team practiced every afternoon.|그 팀은 매일 오후 연습했다.|중3","My grandmother lived in that house for forty years.|내 할머니는 그 집에서 40년 동안 사셨다.|중3",
+"The company grew quickly last year.|그 회사는 작년에 빠르게 성장했다.|중3","Prices rose sharply this month.|이번 달에 물가가 급격히 올랐다.|중3",
+"The river flows through three countries.|그 강은 세 나라를 통과해 흐른다.|중3","Traffic moved slowly downtown.|시내에서 교통이 느리게 움직였다.|중3",
+"The population grew rapidly.|인구가 빠르게 증가했다.|중3","The storm passed over the island.|폭풍이 그 섬 위를 지나갔다.|중3",
+"Smoke spread through the building.|연기가 건물 전체로 퍼졌다.|중3","The temperature dropped suddenly last night.|어젯밤 기온이 갑자기 떨어졌다.|중3",
+"The economy recovered slowly after the crisis.|경제는 위기 이후 천천히 회복되었다.|중3","The old bridge collapsed during the flood.|그 오래된 다리는 홍수 동안 무너졾다.|중3",
+"The volcano erupted without warning.|그 화산은 경고 없이 폭발했다.|중3","Snow piled up on the roof.|눈이 지붕 위에 쌓였다.|중3",
+"The ship sailed toward the harbor.|그 배는 항구를 향해 항해했다.|중3","A strange sound came from the basement.|이상한 소리가 지하실에서 들려왔다.|중3",
+"The crowd gathered in front of the stadium.|군중이 경기장 앞에 모였다.|중3","Her voice trembled with fear.|그녀의 목소리는 두려움으로 떨렸다.|중3",
+"The engine stopped without warning.|엔진이 경고 없이 멈췄다.|중3","The candle burned throughout the night.|촛불이 밤새 타올랐다.|중3",
+"The signal disappeared suddenly.|신호가 갑자기 사라졌다.|중3","The crops failed due to the drought.|가뭄 때문에 작물이 흉작이었다.|중3",
+"His anger grew with every word.|그의 분노는 매 순간 커졌다.|중3",
+"The negotiations broke down after several hours.|그 협상은 몇 시간 후에 결렬되었다.|고1","Tension rose steadily between the two nations.|두 나라 사이의 긴장이 꾸준히 고조되었다.|고1",
+"The evidence pointed clearly to his innocence.|그 증거는 그의 무죄를 분명히 가리켰다.|고1","Public opinion shifted rapidly after the scandal.|여론은 그 스캔들 이후 빠르게 바뀌었다.|고1",
+"The company's stock price fluctuated wildly last week.|그 회사의 주가는 지난주 심하게 변동했다.|고1","The debate continued long into the night.|그 토론은 밤늦게까지 계속되었다.|고1",
+"His confidence grew steadily throughout the project.|그의 자신감은 프로젝트 내내 꾸준히 커졌다.|고1","The ancient civilization vanished mysteriously centuries ago.|그 고대 문명은 수 세기 전에 신비롭게 사라졌다.|고1",
+"The disease spread rapidly across the continent.|그 질병은 대륙 전역으로 빠르게 퍼졌다.|고1","The organization expanded significantly over the decade.|그 조직은 그 십 년 동안 크게 확장되었다.|고1",
+"The relationship between the two countries deteriorated quickly.|두 나라 사이의 관계는 빠르게 악화되었다.|고1","His interest in science grew over the years.|그의 과학에 대한 관심은 몇 년에 걸쳐 커졌다.|고1",
+"The situation escalated beyond all expectations.|그 상황은 모든 예상을 뛰어넘어 악화되었다.|고1","Support for the policy declined sharply this year.|그 정책에 대한 지지는 올해 급격히 감소했다.|고1",
+"The theory emerged from decades of research.|그 이론은 수십 년의 연구에서 나왔다.|고1","Trust between the partners eroded over time.|파트너들 사이의 신뢰는 시간이 지나며 약해졌다.|고1",
+"The controversy intensified after the interview aired.|그 논란은 인터뷰가 방송된 후 심해졌다.|고1","The species evolved gradually over millions of years.|그 종은 수백만 년에 걸쳐 서서히 진화했다.|고1",
+"Demand for the product surged unexpectedly.|그 제품에 대한 수요가 예상외로 급증했다.|고1","The crisis unfolded faster than experts predicted.|그 위기는 전문가들의 예상보다 빠르게 전개되었다.|고1",
+"The movement gained momentum across the country.|그 운동은 전국적으로 힘을 얻었다.|고1","Her reputation suffered after the incident.|그녀의 평판은 그 사건 이후 나빠졌다.|고1",
+"The negotiations resumed after a brief pause.|그 협상은 잠깐의 중단 후에 재개되었다.|고1","The empire declined slowly over several centuries.|그 제국은 몇 세기에 걸쳐 서서히 쇠퇴했다.|고1",
+"The scandal emerged just before the election.|그 스캔들은 선거 직전에 터졌다.|고1","Public trust weakened after the scandal.|여론의 신뢰는 그 스캔들 이후 약해졌다.|고1",
+"The technology developed faster than regulations could keep up.|그 기술은 규제가 따라잡을 수 없을 만큼 빠르게 발전했다.|고1","The gap between the rich and the poor widened.|부유층과 빈곤층 사이의 격차가 벌어졌다.|고1",
+"The movement spread quietly through social media.|그 운동은 소셜 미디어를 통해 조용히 퍼졌다.|고1","His health deteriorated rapidly in his final years.|그의 건강은 말년에 급격히 악화되었다.|고1",
+"The forest fire spread uncontrollably for days.|그 산불은 며칠 동안 걷잡을 수 없이 번졌다.|고1","International cooperation weakened after the conflict.|국제 협력은 그 갈등 이후 약해졌다.|고1",
+"The debate over the policy resurfaced years later.|그 정책에 대한 논쟁은 몇 년 후 다시 불거졌다.|고1"
+],
+2: [
+"She is a nurse.|그녀는 간호사이다.|중2","He is my brother.|그는 내 남동생이다.|중2","I am a student.|나는 학생이다.|중2","This is a book.|이것은 책이다.|중2",
+"That is my bag.|저것은 내 가방이다.|중2","It is a good idea.|그것은 좋은 생각이다.|중2","He is tired.|그는 피곤하다.|중2","She is kind.|그녀는 친절하다.|중2",
+"They are busy.|그들은 바쁘다.|중2","It is expensive.|그것은 비싸다.|중2","The weather is cold.|날씨가 춥다.|중2","My room is clean.|내 방은 깨끗하다.|중2",
+"She is smiling.|그녀는 웃고 있다.|중2","He is studying.|그는 공부하고 있다.|중2","They are waiting.|그들은 기다리고 있다.|중2","I am walking.|나는 걷고 있다.|중2",
+"She is in the classroom.|그녀는 교실에 있다.|중2","He is at home.|그는 집에 있다.|중2","They are on the bus.|그들은 버스에 있다.|중2","The book is on the desk.|그 책은 책상 위에 있다.|중2",
+"My key is in my bag.|내 열쇠는 가방 안에 있다.|중2","The store is near the station.|그 가게는 역 근처에 있다.|중2","He is a doctor.|그는 의사이다.|중2","She is my teacher.|그녀는 내 선생님이다.|중2",
+"We are friends.|우리는 친구이다.|중2","This is my house.|이것은 내 집이다.|중2","That is a good question.|저것은 좋은 질문이다.|중2","It is true.|그것은 사실이다.|중2",
+"He is happy.|그는 행복하다.|중2","She is angry.|그녀는 화가 나 있다.|중2","The movie is fun.|그 영화는 재미있다.|중2","The soup is hot.|그 수프는 뜨겁다.|중2",
+"My hands are cold.|내 손이 차갑다.|중2","The test was easy.|그 시험은 쉬웠다.|중2",
+"He was reading a book.|그는 책을 읽고 있었다.|중3","She was sleeping.|그녀는 자고 있었다.|중3","They were talking.|그들은 이야기하고 있었다.|중3",
+"I was waiting for you.|나는 너를 기다리고 있었다.|중3","We were watching TV.|우리는 TV를 보고 있었다.|중3","She was crying.|그녀는 울고 있었다.|중3",
+"This book is easy to read.|이 책은 읽기 쉽다.|중3","The movie was boring.|그 영화는 지루했다.|중3","The question is hard to answer.|그 질문은 답하기 어렵다.|중3",
+"This song is fun to sing.|이 노래는 부르기 재미있다.|중3","The plan is difficult to follow.|그 계획은 따르기 어렵다.|중3",
+"He is a man who never gives up.|그는 절대 포기하지 않는 남자이다.|중3","She is a friend who always helps me.|그녀는 항상 나를 도와주는 친구이다.|중3",
+"He is a teacher who teaches math.|그는 수학을 가르치는 선생님이다.|중3","She is a singer who writes her own songs.|그녀는 자신의 노래를 쓰는 가수이다.|중3",
+"I am a person who loves books.|나는 책을 사랑하는 사람이다.|중3","He is a boy who likes soccer.|그는 축구를 좋아하는 소년이다.|중3",
+"My uncle is a chef who cooks Italian food.|내 삼촌은 이탈리아 음식을 요리하는 요리사이다.|중3","The bag is under the chair.|그 가방은 의자 아래에 있다.|중3",
+"The cat is behind the sofa.|그 고양이는 소파 뒤에 있다.|중3","The park is between the school and the church.|그 공원은 학교와 교회 사이에 있다.|중3",
+"The restaurant is across from the bank.|그 식당은 은행 맞은편에 있다.|중3","My office is on the tenth floor.|내 사무실은 10층에 있다.|중3",
+"The festival is popular among tourists.|그 축제는 관광객들 사이에서 인기가 있다.|중3","She is proud of her son.|그녀는 아들을 자랑스러워한다.|중3",
+"He is afraid of spiders.|그는 거미를 무서워한다.|중3","I am interested in music.|나는 음악에 관심이 있다.|중3","They are worried about the exam.|그들은 시험에 대해 걱정하고 있다.|중3",
+"She is famous for her novels.|그녀는 소설로 유명하다.|중3","He is known for his kindness.|그는 친절함으로 알려져 있다.|중3",
+"It is important to sleep well.|잘 자는 것은 중요하다.|중3","It is necessary to save water.|물을 절약하는 것은 필요하다.|중3",
+"This machine is used to make bread.|이 기계는 빵을 만드는 데 사용된다.|중3",
+"It is true that he lied.|그가 거짓말을 했다는 것은 사실이다.|고1","It is clear that she is right.|그녀가 옳다는 것은 분명하다.|고1",
+"It is strange that he did not come.|그가 오지 않았다는 것은 이상하다.|고1","It is likely that prices will rise.|물가가 오를 가능성이 높다.|고1",
+"It is surprising that she passed the exam.|그녀가 시험에 합격했다는 것은 놀랍다.|고1","It is obvious that the plan failed.|그 계획이 실패했다는 것은 명백하다.|고1",
+"The fact is that he lied.|사실은 그가 거짓말을 했다는 것이다.|고1","The problem is that we have no time.|문제는 우리에게 시간이 없다는 것이다.|고1",
+"The truth is that she was right.|진실은 그녀가 옳았다는 것이다.|고1","The reason is that the price was too high.|이유는 가격이 너무 비쌌다는 것이다.|고1",
+"The point is that we must act now.|요점은 우리가 지금 행동해야 한다는 것이다.|고1","The issue is that no one takes responsibility.|문제는 아무도 책임을 지지 않는다는 것이다.|고1",
+"He is aware that the risk is high.|그는 위험이 크다는 것을 알고 있다.|고1","She is convinced that the project will succeed.|그녀는 그 프로젝트가 성공할 것이라고 확신한다.|고1",
+"They are confident that they will win.|그들은 그들이 이길 것이라고 확신한다.|고1","I am certain that he is innocent.|나는 그가 무죄라고 확신한다.|고1",
+"We are grateful that you helped us.|우리는 당신이 우리를 도와준 것에 감사한다.|고1","She is worried that she might fail.|그녀는 실패할지도 모른다고 걱정한다.|고1",
+"The theory is difficult to prove.|그 이론은 증명하기 어렵다.|고1","The rule is easy to misunderstand.|그 규칙은 오해하기 쉽다.|고1",
+"The system is designed to prevent fraud.|그 시스템은 사기를 막기 위해 설계되었다.|고1","The policy is intended to reduce pollution.|그 정책은 오염을 줄이기 위한 것이다.|고1",
+"He is determined to finish the project.|그는 그 프로젝트를 끝내기로 결심했다.|고1","She is eager to learn new things.|그녀는 새로운 것을 배우기를 열망한다.|고1",
+"They are reluctant to change their minds.|그들은 마음을 바꾸기를 꺼린다.|고1","The evidence is sufficient to prove his guilt.|그 증거는 그의 유죄를 증명하기에 충분하다.|고1",
+"The situation is complicated enough to confuse everyone.|그 상황은 모두를 혼란스럽게 할 만큼 복잡하다.|고1","He is known as a person who never lies.|그는 절대 거짓말하지 않는 사람으로 알려져 있다.|고1",
+"She is remembered as a leader who inspired many.|그녀는 많은 사람들을 고무시킨 지도자로 기억된다.|고1","The company is committed to protecting the environment.|그 회사는 환경을 보호하는 데 전념하고 있다.|고1",
+"The research is aimed at finding a cure.|그 연구는 치료법을 찾는 것을 목표로 한다.|고1","The novel is based on a true story.|그 소설은 실화를 바탕으로 한다.|고1",
+"The decision is likely to affect many people.|그 결정은 많은 사람들에게 영향을 미칠 가능성이 있다.|고1"
+],
+3: [
+"She reads a book.|그녀는 책을 읽는다.|중2","He drives a car.|그는 차를 운전한다.|중2","I like music.|나는 음악을 좋아한다.|중2","We eat lunch together.|우리는 함께 점심을 먹는다.|중2",
+"They watch movies.|그들은 영화를 본다.|중2","She plays the piano.|그녀는 피아노를 친다.|중2","He plays soccer.|그는 축구를 한다.|중2","I love my family.|나는 내 가족을 사랑한다.|중2",
+"We clean the house.|우리는 집을 청소한다.|중2","She writes a letter.|그녀는 편지를 쓴다.|중2","He buys a ticket.|그는 표를 산다.|중2","I wash the dishes.|나는 설거지를 한다.|중2",
+"She opens the window.|그녀는 창문을 연다.|중2","He closes the door.|그는 문을 닫는다.|중2","We visit our grandmother.|우리는 할머니를 방문한다.|중2","She put the book on the table.|그녀는 책을 탁자 위에 놓았다.|중2",
+"He took the key out of his pocket.|그는 주머니에서 열쇠를 꺼냈다.|중2","I borrowed the pen from him.|나는 그에게서 펜을 빌렸다.|중2","She hung the picture on the wall.|그녀는 그림을 벽에 걸었다.|중2",
+"He threw the ball to me.|그는 나에게 공을 던졌다.|중2","I took the bag off the shelf.|나는 선반에서 가방을 꺼냈다.|중2","She wants to go home.|그녀는 집에 가고 싶어 한다.|중2",
+"He decided to study abroad.|그는 해외에서 공부하기로 결심했다.|중2","I hope to see you again.|나는 너를 다시 보기를 바란다.|중2","We plan to visit Japan.|우리는 일본을 방문할 계획이다.|중2",
+"She agreed to help me.|그녀는 나를 도와주기로 동의했다.|중2","He promised to call me.|그는 나에게 전화하겠다고 약속했다.|중2","I need to finish my homework.|나는 숙제를 끝내야 한다.|중2",
+"She learned to swim last summer.|그녀는 지난여름에 수영하는 법을 배웠다.|중2","He forgot to bring his umbrella.|그는 우산을 가져오는 것을 잊었다.|중2","I chose to stay home.|나는 집에 있기로 선택했다.|중2",
+"She likes to read novels.|그녀는 소설 읽는 것을 좋아한다.|중2","He enjoys playing games.|그는 게임하는 것을 즐긴다.|중2","We started to clean the room.|우리는 방을 청소하기 시작했다.|중2",
+"The factory produces cars.|그 공장은 자동차를 생산한다.|중3","The wind broke the window.|바람이 창문을 깨뜨렸다.|중3","The machine makes coffee.|그 기계는 커피를 만든다.|중3",
+"The fire destroyed the house.|불이 그 집을 파괴했다.|중3","The company sells computers.|그 회사는 컴퓨터를 판매한다.|중3","The earthquake damaged the bridge.|지진이 그 다리를 손상시켰다.|중3",
+"The rain washed the dust off the car.|비가 차에서 먼지를 씻어냈다.|중3","The machine pumps water into the tank.|그 기계는 탱크 안으로 물을 퍼 넣는다.|중3",
+"The wind blew the leaves off the tree.|바람이 나뭇잎들을 나무에서 떨어뜨렸다.|중3","The flood carried the car down the street.|홍수가 차를 거리 아래로 떠내려 보냈다.|중3",
+"The company plans to expand.|그 회사는 확장할 계획이다.|중3","The team failed to win the game.|그 팀은 경기에서 이기지 못했다.|중3","The government decided to raise taxes.|정부는 세금을 인상하기로 결정했다.|중3",
+"The school agreed to change the schedule.|학교는 일정을 바꾸기로 동의했다.|중3","She thinks that he is honest.|그녀는 그가 정직하다고 생각한다.|중3","I believe that she will succeed.|나는 그녀가 성공할 것이라고 믿는다.|중3",
+"He said that he was sorry.|그는 미안하다고 말했다.|중3","We know that the answer is correct.|우리는 그 답이 맞다는 것을 안다.|중3","She hopes that the weather will be nice.|그녀는 날씨가 좋기를 바란다.|중3",
+"I heard that he moved to Busan.|나는 그가 부산으로 이사했다고 들었다.|중3","He explained that the machine was broken.|그는 그 기계가 고장 났다고 설명했다.|중3","She admitted that she made a mistake.|그녀는 실수를 했다고 인정했다.|중3",
+"I noticed that the door was open.|나는 문이 열려 있는 것을 알아챘다.|중3","He warned us that the road was dangerous.|그는 우리에게 그 길이 위험하다고 경고했다.|중3","She asked him to close the window.|그녀는 그에게 창문을 닫아달라고 부탁했다.|중3",
+"He told me to wait outside.|그는 나에게 밖에서 기다리라고 말했다.|중3","I want you to meet my friend.|나는 네가 내 친구를 만나기를 원한다.|중3","She expects him to arrive soon.|그녀는 그가 곧 도착할 것으로 기대한다.|중3",
+"We allowed her to leave early.|우리는 그녀가 일찍 떠나는 것을 허락했다.|중3","He advised me to see a doctor.|그는 나에게 병원에 가보라고 조언했다.|중3","She reminded him to bring his passport.|그녀는 그에게 여권을 가져오라고 상기시켰다.|중3",
+"I encouraged her to try again.|나는 그녀에게 다시 시도해보라고 격려했다.|중3","The teacher required students to submit the report.|선생님은 학생들에게 보고서를 제출하도록 요구했다.|중3",
+"The report shows that sales increased.|그 보고서는 매출이 증가했다는 것을 보여준다.|고1","The study proves that exercise improves health.|그 연구는 운동이 건강을 향상시킨다는 것을 증명한다.|고1",
+"The data suggests that prices will rise.|그 자료는 가격이 오를 것임을 시사한다.|고1","The survey reveals that most people prefer online shopping.|그 설문조사는 대부분의 사람들이 온라인 쇼핑을 선호한다는 것을 드러낸다.|고1",
+"The experiment confirms that the theory is correct.|그 실험은 그 이론이 맞다는 것을 확인해준다.|고1","The article argues that education should be free.|그 기사는 교육이 무료여야 한다고 주장한다.|고1",
+"The evidence indicates that the suspect was present.|그 증거는 용의자가 그 자리에 있었음을 나타낸다.|고1","The results demonstrate that the new method works.|그 결과는 그 새로운 방법이 효과가 있다는 것을 보여준다.|고1",
+"The committee acknowledged that the plan had flaws.|위원회는 그 계획에 결함이 있음을 인정했다.|고1","The government announced that taxes would increase.|정부는 세금이 인상될 것이라고 발표했다.|고1",
+"Scientists discovered that the virus spreads through water.|과학자들은 그 바이러스가 물을 통해 퍼진다는 것을 발견했다.|고1","The court ruled that the contract was invalid.|법원은 그 계약이 무효라고 판결했다.|고1",
+"The company aims to reduce carbon emissions.|그 회사는 탄소 배출을 줄이는 것을 목표로 한다.|고1","The organization seeks to protect endangered species.|그 단체는 멸종 위기종을 보호하고자 한다.|고1",
+"The policy intends to lower unemployment.|그 정책은 실업률을 낮추려는 의도이다.|고1","The government requires companies to disclose their profits.|정부는 기업들이 이익을 공개하도록 요구한다.|고1",
+"The law forbids drivers to use phones while driving.|그 법은 운전자들이 운전 중 전화 사용하는 것을 금지한다.|고1","The teacher encouraged the students to think critically.|선생님은 학생들에게 비판적으로 생각하도록 격려했다.|고1",
+"The manager persuaded the team to accept the offer.|관리자는 팀이 그 제안을 받아들이도록 설득했다.|고1","Critics accused the director of copying the original film.|평론가들은 그 감독이 원작 영화를 베꼈다고 비난했다.|고1",
+"The economist predicts that the recession will end soon.|그 경제학자는 불황이 곧 끝날 것이라고 예측한다.|고1","Experts warn that climate change will worsen droughts.|전문가들은 기후 변화가 가뭄을 악화시킬 것이라고 경고한다.|고1",
+"The board decided to postpone the merger.|이사회는 합병을 연기하기로 결정했다.|고1","The council proposed to build a new library.|의회는 새로운 도서관을 짓자고 제안했다.|고1",
+"The findings challenge the idea that money buys happiness.|그 연구 결과는 돈이 행복을 산다는 생각에 이의를 제기한다.|고1","The report highlights that inequality is growing.|그 보고서는 불평등이 커지고 있다는 것을 강조한다.|고1",
+"Historians believe that the city was destroyed by fire.|역사가들은 그 도시가 화재로 파괴되었다고 믿는다.|고1","The analysis reveals that the strategy failed to work.|그 분석은 그 전략이 효과가 없었다는 것을 드러낸다.|고1",
+"The jury concluded that the defendant was guilty.|배심원단은 피고가 유죄라고 결론지었다.|고1","The agency requires applicants to submit proof of income.|그 기관은 지원자들에게 소득 증빙을 제출하도록 요구한다.|고1",
+"The public expects the government to solve the crisis.|대중은 정부가 그 위기를 해결하기를 기대한다.|고1","The professor challenged the students to question everything.|그 교수는 학생들에게 모든 것에 의문을 제기하도록 도전 과제를 주었다.|고1",
+"The council urged residents to conserve water during the drought.|의회는 가뭄 동안 주민들에게 물을 절약하라고 촉구했다.|고1"
+],
+4: [
+"I gave him a book.|나는 그에게 책을 주었다.|중2","She showed me her picture.|그녀는 나에게 그녀의 사진을 보여주었다.|중2","He told us the truth.|그는 우리에게 진실을 말했다.|중2",
+"I gave a book to him.|나는 그에게 책을 주었다.|중2","She sent a letter to her friend.|그녀는 친구에게 편지를 보냈다.|중2","He showed the picture to me.|그는 나에게 그 사진을 보여주었다.|중2",
+"I gave Tom a book.|나는 톰에게 책을 주었다.|중2","She bought her sister a gift.|그녀는 여동생에게 선물을 사주었다.|중2","He taught the students English.|그는 학생들에게 영어를 가르쳤다.|중2",
+"I bought a gift for her.|나는 그녀를 위해 선물을 샀다.|중2","She made a cake for him.|그녀는 그를 위해 케이크를 만들었다.|중2","He cooked dinner for his family.|그는 가족을 위해 저녁을 요리했다.|중2",
+"I lent him my umbrella.|나는 그에게 내 우산을 빌려주었다.|중2","She handed me the phone.|그녀는 나에게 전화기를 건네주었다.|중2","He passed me the salt.|그는 나에게 소금을 건네주었다.|중2",
+"I wrote her a letter.|나는 그녀에게 편지를 썼다.|중2","She asked me a question.|그녀는 나에게 질문을 했다.|중2","He brought me some coffee.|그는 나에게 커피를 가져다주었다.|중2",
+"I gave my mom a hug.|나는 엄마에게 포옹을 해드렸다.|중2","She offered him some advice.|그녀는 그에게 조언을 해주었다.|중2","I sent him a text message.|나는 그에게 문자 메시지를 보냈다.|중2",
+"She sent a message to him.|그녀는 그에게 메시지를 보냈다.|중2","He gave Mary a present.|그는 메리에게 선물을 주었다.|중2","I made her a sandwich.|나는 그녀에게 샌드위치를 만들어주었다.|중2",
+"She bought a toy for her son.|그녀는 아들을 위해 장난감을 샀다.|중2","He built a house for his parents.|그는 부모님을 위해 집을 지었다.|중2","I told him a secret.|나는 그에게 비밀을 말해주었다.|중2",
+"She showed her friends the photos.|그녀는 친구들에게 사진들을 보여주었다.|중2","He handed the teacher his homework.|그는 선생님에게 숙제를 건네주었다.|중2","I gave the waiter my order.|나는 웨이터에게 주문을 말했다.|중2",
+"She lent her notes to me.|그녀는 나에게 필기를 빌려주었다.|중2","He sang her a song.|그는 그녀에게 노래를 불러주었다.|중2","I poured him a glass of water.|나는 그에게 물 한 잔을 따라주었다.|중2","She saved me a seat.|그녀는 나에게 자리를 맡아주었다.|중2",
+"He gave his classmates a warning.|그는 반 친구들에게 경고를 했다.|중3","She taught her students a valuable lesson.|그녀는 학생들에게 소중한 교훈을 가르쳤다.|중3","I wrote my grandmother a long letter.|나는 할머니께 긴 편지를 썼다.|중3",
+"He showed the tourists the old castle.|그는 관광객들에게 그 오래된 성을 보여주었다.|중3","She sent the manager an email.|그녀는 매니저에게 이메일을 보냈다.|중3","He bought his coworkers lunch.|그는 동료들에게 점심을 사주었다.|중3",
+"I made my team a presentation.|나는 우리 팀에게 발표 자료를 만들어주었다.|중3","She gave the injured man first aid.|그녀는 다친 남자에게 응급 처치를 해주었다.|중3","He handed the officer his license.|그는 경찰관에게 면허증을 건네주었다.|중3",
+"I offered my seat to the elderly man.|나는 그 노인에게 내 자리를 양보했다.|중3","She sent a package to her cousin.|그녀는 사촌에게 소포를 보냈다.|중3","He passed the information to the reporters.|그는 기자들에게 그 정보를 전달했다.|중3",
+"I brought the children some snacks.|나는 아이들에게 간식을 좀 가져다주었다.|중3","She cooked a special meal for her parents.|그녀는 부모님을 위해 특별한 식사를 요리했다.|중3","He built a treehouse for his kids.|그는 아이들을 위해 나무 위 오두막을 지어주었다.|중3",
+"I found her a good doctor.|나는 그녀에게 좋은 의사를 찾아주었다.|중3","She got him a job interview.|그녀는 그에게 취업 면접 기회를 얻어주었다.|중3","He read the children a bedtime story.|그는 아이들에게 자기 전 이야기를 읽어주었다.|중3",
+"I saved my brother some pizza.|나는 남동생을 위해 피자를 좀 남겨두었다.|중3","She taught the beginners the basic rules.|그녀는 초보자들에게 기본 규칙을 가르쳤다.|중3","He gave the volunteers detailed instructions.|그는 자원봉사자들에게 자세한 지시를 주었다.|중3",
+"I sent my resume to the company.|나는 그 회사에 이력서를 보냈다.|중3","She wrote the editor a formal complaint.|그녀는 편집자에게 공식적인 항의문을 썼다.|중3","He showed the investors the new product.|그는 투자자들에게 새 제품을 보여주었다.|중3",
+"I bought my parents a trip to Jeju.|나는 부모님께 제주도 여행을 선물해드렸다.|중3","She made her guests a delicious dinner.|그녀는 손님들에게 맛있는 저녁을 만들어주었다.|중3","He gave the students extra time.|그는 학생들에게 추가 시간을 주었다.|중3",
+"I lent my friend a large sum of money.|나는 친구에게 큰 액수의 돈을 빌려주었다.|중3","She handed the judges her application form.|그녀는 심사위원들에게 지원서를 건네주었다.|중3","He offered the customer a discount.|그는 고객에게 할인을 제안했다.|중3",
+"I told the class an interesting story.|나는 반 학생들에게 흥미로운 이야기를 해주었다.|중3","She sent the client an invoice.|그녀는 고객에게 청구서를 보냈다.|중3","He passed the ball to his teammate.|그는 팀 동료에게 공을 패스했다.|중3",
+"The government gave the farmers financial support.|정부는 농부들에게 재정 지원을 해주었다.|고1","The company offered its employees a new benefit.|그 회사는 직원들에게 새로운 복지 혜택을 제공했다.|고1",
+"The professor gave the students detailed feedback.|그 교수는 학생들에게 자세한 피드백을 주었다.|고1","The charity provided the victims with emergency supplies.|그 자선단체는 피해자들에게 긴급 물자를 제공했다.|고1",
+"The bank granted the company a large loan.|그 은행은 그 회사에 거액의 대출을 승인해주었다.|고1","The council offered residents a chance to comment.|의회는 주민들에게 의견을 낼 기회를 주었다.|고1",
+"The scientist showed the committee his findings.|그 과학자는 위원회에 그의 연구 결과를 보여주었다.|고1","The teacher assigned the class a difficult project.|그 교사는 학급에 어려운 과제를 내주었다.|고1",
+"The mentor gave the intern valuable career advice.|멘토는 인턴에게 소중한 진로 조언을 해주었다.|고1","The publisher offered the author a generous contract.|그 출판사는 작가에게 후한 계약을 제안했다.|고1",
+"The judge granted the defendant a second chance.|판사는 피고에게 두 번째 기회를 주었다.|고1","The university offered her a full scholarship.|그 대학은 그녀에게 전액 장학금을 제공했다.|고1",
+"The airline gave the passengers a full refund.|그 항공사는 승객들에게 전액 환불을 해주었다.|고1","The committee sent the applicants a rejection letter.|위원회는 지원자들에게 불합격 통지서를 보냈다.|고1",
+"The company promised its investors a higher return.|그 회사는 투자자들에게 더 높은 수익을 약속했다.|고1","The government owes the citizens a clear explanation.|정부는 국민들에게 명확한 설명을 해야 한다.|고1",
+"The organization awarded the researcher a prestigious prize.|그 단체는 그 연구자에게 권위 있는 상을 수여했다.|고1","The firm offered the client a customized solution.|그 회사는 고객에게 맞춤형 해결책을 제안했다.|고1",
+"The doctor gave the patient a thorough examination.|의사는 환자에게 철저한 검진을 해주었다.|고1","The professor lent the student a rare manuscript.|그 교수는 학생에게 희귀한 원고를 빌려주었다.|고1",
+"The board granted the manager full authority.|이사회는 관리자에게 전권을 부여했다.|고1","The agency provided the refugees temporary housing.|그 기관은 난민들에게 임시 주거지를 제공했다.|고1",
+"The city offered small businesses tax relief.|시는 소상공인들에게 세금 감면을 제공했다.|고1","The editor gave the article a final review.|편집자는 그 기사에 최종 검토를 해주었다.|고1",
+"The teacher assigned each student a specific role.|교사는 각 학생에게 특정한 역할을 배정했다.|고1","The board offered the CEO a new contract.|이사회는 CEO에게 새 계약을 제안했다.|고1",
+"The government promised the public greater transparency.|정부는 국민들에게 더 큰 투명성을 약속했다.|고1","The institute granted the scholars research funding.|그 연구소는 학자들에게 연구 자금을 지원했다.|고1",
+"The company owed its workers unpaid wages.|그 회사는 근로자들에게 미지급 임금을 빚지고 있었다.|고1","The tribunal granted the company an extension.|재판소는 그 회사에 기한 연장을 허가했다.|고1",
+"The council gave the proposal careful consideration.|의회는 그 제안에 신중한 검토를 했다.|고1","The foundation awarded the students merit scholarships.|그 재단은 학생들에게 성적 장학금을 수여했다.|고1",
+"The regulator gave the bank a formal warning.|규제 당국은 그 은행에 공식 경고를 했다.|고1"
+],
+5: [
+"This makes me happy.|이것은 나를 행복하게 만든다.|중2","The news made her sad.|그 소식은 그녀를 슬프게 만들었다.|중2","The movie made us laugh.|그 영화는 우리를 웃게 만들었다.|중2",
+"His joke made everyone laugh.|그의 농담은 모두를 웃게 만들었다.|중2","The cold weather made me sick.|추운 날씨는 나를 아프게 만들었다.|중2","She made her room clean.|그녀는 자기 방을 깨끗하게 만들었다.|중2",
+"I found the book interesting.|나는 그 책이 흥미롭다고 생각했다.|중2","He found the test easy.|그는 그 시험이 쉽다고 생각했다.|중2","We call her Jenny.|우리는 그녀를 제니라고 부른다.|중2",
+"They named the dog Max.|그들은 그 개를 맥스라고 이름지었다.|중2","We elected him captain.|우리는 그를 주장으로 선출했다.|중2","She wants him to come.|그녀는 그가 오기를 원한다.|중2",
+"I told her to wait.|나는 그녀에게 기다리라고 말했다.|중2","He asked me to help him.|그는 나에게 도와달라고 부탁했다.|중2","She wants me to stay.|그녀는 내가 머물기를 원한다.|중2",
+"I want you to be happy.|나는 네가 행복하기를 원한다.|중2","He told us to be quiet.|그는 우리에게 조용히 하라고 말했다.|중2","I saw him leave.|나는 그가 떠나는 것을 보았다.|중2",
+"We heard her sing.|우리는 그녀가 노래하는 것을 들었다.|중2","She felt the ground shake.|그녀는 땅이 흔들리는 것을 느꼈다.|중2","I watched him run.|나는 그가 달리는 것을 지켜보았다.|중2",
+"He made her cry.|그는 그녀를 울게 만들었다.|중2","I saw him running.|나는 그가 뛰고 있는 것을 보았다.|중2","She heard the birds singing.|그녀는 새들이 노래하고 있는 것을 들었다.|중2",
+"We found him sleeping.|우리는 그가 자고 있는 것을 발견했다.|중2","I saw her crying.|나는 그녀가 울고 있는 것을 보았다.|중2","He watched the kids playing.|그는 아이들이 놀고 있는 것을 지켜보았다.|중2",
+"This keeps me busy.|이것은 나를 바쁘게 유지시킨다.|중2","The coffee keeps me awake.|커피는 나를 깨어있게 유지시킨다.|중2","His words made her angry.|그의 말은 그녀를 화나게 만들었다.|중2",
+"I found the movie boring.|나는 그 영화가 지루하다고 생각했다.|중2","They call him Tiger.|그들은 그를 타이거라고 부른다.|중2","She left the window open.|그녀는 창문을 열어 두었다.|중2","He left the door unlocked.|그는 문을 잠그지 않은 채로 두었다.|중2",
+"The heavy rain made the road slippery.|폭우는 도로를 미끄럽게 만들었다.|중3","His success made his parents proud.|그의 성공은 부모님을 자랑스럽게 만들었다.|중3","The long meeting made everyone tired.|긴 회의는 모두를 지치게 만들었다.|중3",
+"Loud music kept the baby awake.|시끄러운 음악은 아기를 깨어있게 했다.|중3","The team considered the plan risky.|팀은 그 계획을 위험하다고 여겼다.|중3","I found her explanation confusing.|나는 그녀의 설명이 혼란스럽다고 생각했다.|중3",
+"We consider him a genius.|우리는 그를 천재로 여긴다.|중3","They chose her class president.|그들은 그녀를 반장으로 뽑았다.|중3","The board appointed him manager.|이사회는 그를 관리자로 임명했다.|중3",
+"People consider him a hero.|사람들은 그를 영웅으로 여긴다.|중3","The coach wants the players to practice harder.|코치는 선수들이 더 열심히 연습하기를 원한다.|중3","The teacher expects students to submit homework on time.|선생님은 학생들이 제시간에 숙제를 제출하기를 기대한다.|중3",
+"She persuaded him to change his mind.|그녀는 그가 마음을 바꾸도록 설득했다.|중3","He advised her to see a specialist.|그는 그녀에게 전문의를 만나보라고 조언했다.|중3","I encouraged him to apply for the job.|나는 그에게 그 일자리에 지원해보라고 격려했다.|중3",
+"They forced the workers to work overtime.|그들은 근로자들이 초과 근무를 하도록 강요했다.|중3","I noticed him leave the room quietly.|나는 그가 조용히 방을 떠나는 것을 알아챘다.|중3","We watched the sun set behind the mountains.|우리는 태양이 산 뒤로 지는 것을 지켜보았다.|중3",
+"She felt someone touch her shoulder.|그녀는 누군가 자신의 어깨를 만지는 것을 느꼈다.|중3","I heard the phone ring twice.|나는 전화가 두 번 울리는 것을 들었다.|중3","He saw the car crash into the wall.|그는 차가 벽에 부딪히는 것을 보았다.|중3",
+"I saw the leaves falling from the trees.|나는 나뭇잎들이 나무에서 떨어지고 있는 것을 보았다.|중3","We watched the plane taking off.|우리는 비행기가 이륙하고 있는 것을 지켜보았다.|중3","She heard someone knocking on the door.|그녀는 누군가 문을 두드리고 있는 것을 들었다.|중3",
+"I noticed the water boiling over.|나는 물이 넘쳐 끓고 있는 것을 알아챘다.|중3","He caught his brother eating his snacks.|그는 남동생이 자기 간식을 먹고 있는 것을 목격했다.|중3","The medicine made him feel better.|그 약은 그를 더 나아진 기분이 들게 만들었다.|중3",
+"The bad news left her speechless.|그 나쁜 소식은 그녀를 말문이 막히게 만들었다.|중3","The manager kept the project running smoothly.|그 관리자는 프로젝트가 원활히 진행되게 유지했다.|중3","His constant complaints made the team frustrated.|그의 끊임없는 불평은 팀을 짜증나게 만들었다.|중3",
+"We consider honesty an important value.|우리는 정직을 중요한 가치로 여긴다.|중3","The critics called the film a masterpiece.|평론가들은 그 영화를 걸작이라고 불렀다.|중3","The public views her as a role model.|대중은 그녀를 롤모델로 여긴다.|중3",
+"The scandal left the company's reputation damaged.|그 스캔들은 회사의 평판을 손상된 채로 남겼다.|고1","The prolonged drought left the fields barren.|장기간의 가뭄은 들판을 황폐하게 만들었다.|고1",
+"The committee found the proposal unconvincing.|위원회는 그 제안이 설득력이 없다고 판단했다.|고1","The judge declared the trial unfair.|판사는 그 재판이 불공정하다고 선언했다.|고1",
+"The evidence proved the theory correct.|그 증거는 그 이론이 옳다는 것을 증명했다.|고1","Experts consider the region highly vulnerable to floods.|전문가들은 그 지역이 홍수에 매우 취약하다고 여긴다.|고1",
+"The critics regard the novel a masterpiece of modern literature.|평론가들은 그 소설을 현대 문학의 걸작으로 여긴다.|고1","The board declared the merger complete.|이사회는 합병이 완료되었다고 선언했다.|고1",
+"Historians consider the treaty a turning point.|역사가들은 그 조약을 전환점으로 여긴다.|고1","The public perceives the policy as unfair.|대중은 그 정책을 불공정하다고 인식한다.|고1",
+"The company urged its employees to report any misconduct.|그 회사는 직원들에게 어떤 부정행위든 신고하도록 촉구했다.|고1","The government required citizens to register their vehicles.|정부는 시민들에게 차량을 등록하도록 요구했다.|고1",
+"The professor challenged the students to rethink their assumptions.|그 교수는 학생들에게 자신들의 가정을 다시 생각해보도록 도전 과제를 주었다.|고1","The manager instructed the staff to double-check every report.|관리자는 직원들에게 모든 보고서를 다시 확인하도록 지시했다.|고1",
+"The coach pushed the athletes to exceed their limits.|코치는 선수들이 한계를 뛰어넘도록 밀어붙였다.|고1","Scientists observed the ice sheets melting rapidly.|과학자들은 빙상이 빠르게 녹고 있는 것을 관찰했다.|고1",
+"Investigators discovered the documents missing from the file.|수사관들은 그 서류들이 파일에서 사라진 것을 발견했다.|고1","The residents watched the old building being demolished.|주민들은 그 오래된 건물이 철거되고 있는 것을 지켜보았다.|고1",
+"The auditors found several transactions unrecorded.|감사관들은 몇몇 거래가 기록되지 않은 것을 발견했다.|고1","The analysts consider the market highly unpredictable this year.|분석가들은 올해 시장이 매우 예측불가하다고 여긴다.|고1",
+"The prolonged conflict left thousands of families displaced.|장기간의 갈등은 수천 가구를 이재민이 되게 만들었다.|고1","The new policy rendered the old regulations obsolete.|그 새로운 정책은 기존 규정을 쓸모없게 만들었다.|고1",
+"The discovery proved the earlier theory wrong.|그 발견은 이전 이론이 틀렸음을 증명했다.|고1","The scandal rendered his career effectively over.|그 스캔들은 그의 경력을 사실상 끝나게 만들었다.|고1",
+"The committee considers the current system inadequate.|위원회는 현재 시스템이 부적절하다고 여긴다.|고1","The board deemed the risk acceptable.|이사회는 그 위험을 감수할 만하다고 판단했다.|고1",
+"The report labeled the project a failure.|그 보고서는 그 프로젝트를 실패라고 규정했다.|고1","The teacher caught the students copying each other's answers.|교사는 학생들이 서로의 답을 베끼고 있는 것을 발견했다.|고1",
+"The inspectors found the building violating safety codes.|조사관들은 그 건물이 안전 규정을 위반하고 있는 것을 발견했다.|고1","The regulators consider the merger likely to reduce competition.|규제 당국은 그 합병이 경쟁을 감소시킬 가능성이 있다고 본다.|고1",
+"The evidence left the jury with no doubt about his guilt.|그 증거는 배심원단에게 그의 유죄에 대한 의심의 여지를 남기지 않았다.|고1","The prolonged silence made the negotiations feel hopeless.|긴 침묵은 협상을 절망적으로 느끼게 만들었다.|고1",
+"The scandal forced the CEO to resign immediately.|그 스캔들은 CEO가 즉시 사임하도록 만들었다.|고1"
+]
+};
+
+const FORMAT_META = {
+  1: { name:"1형식", desc:"주인공 + 동작", solid:"#3B82F6", bg:"#EFF6FF", text:"#1D4ED8" },
+  2: { name:"2형식", desc:"사람·사물의 상태 / 현상", solid:"#10B981", bg:"#ECFDF5", text:"#047857" },
+  3: { name:"3형식", desc:"주인공 + 동작 + 대상", solid:"#F59E0B", bg:"#FFFBEB", text:"#B45309" },
+  4: { name:"4형식", desc:"~에게 ~을 (해)주다", solid:"#8B5CF6", bg:"#F5F3FF", text:"#6D28D9" },
+  5: { name:"5형식", desc:"목적어 + 목적보어", solid:"#EC4899", bg:"#FFF1F2", text:"#BE123C" },
+};
+
+function parseFormat(f){
+  return DATA[f].map(line=>{
+    const [en,ko,level] = line.split("|");
+    return {en,ko,level};
+  });
+}
+
+/* ===================== 상태 ===================== */
+const appState = {
+  name: "",
+  format: null,
+  setNum: null,
+  items: [],
+  idx: 0,
+  marks: [],
+  revealed: false,
+  userAnswer: "",
+  wrongPool: null // {format,setNum,items} when in "오답만 다시" mode
+};
+
+function el(id){ return document.getElementById(id); }
+
+function goHome(){
+  appState.format = null;
+  appState.setNum = null;
+  appState.wrongPool = null;
+  render();
+}
+
+function selectFormat(f){
+  appState.format = f;
+  render();
+}
+
+function backToFormats(){
+  appState.format = null;
+  render();
+}
+
+function startPractice(setNum){
+  appState.setNum = setNum;
+  const all = parseFormat(appState.format);
+  appState.items = all.slice((setNum-1)*50, setNum*50);
+  appState.idx = 0;
+  appState.marks = new Array(appState.items.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  appState.wrongPool = null;
+  renderPracticeView();
+}
+
+function checkAnswer(){
+  const val = el("answerInput").value;
+  appState.userAnswer = val;
+  appState.revealed = true;
+  renderPracticeView();
+}
+
+function mark(value){
+  appState.marks[appState.idx] = value;
+  if(appState.idx < appState.items.length - 1){
+    appState.idx += 1;
+    appState.revealed = false;
+    appState.userAnswer = "";
+    renderPracticeView();
+  } else {
+    renderResultView();
+  }
+}
+
+function retryWrong(){
+  const wrongItems = appState.items.filter((_,i)=>appState.marks[i]==="x");
+  if(wrongItems.length === 0) return;
+  appState.wrongPool = true;
+  appState.items = wrongItems;
+  appState.idx = 0;
+  appState.marks = new Array(wrongItems.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  renderPracticeView();
+}
+
+function copyResult(){
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const meta = FORMAT_META[appState.format];
+  const setLabel = appState.wrongPool ? "오답 복습" : `Set ${appState.setNum} (${(appState.setNum-1)*50+1}~${appState.setNum*50})`;
+  const text = "📘 씨유에탑 기초형식 해석하기 결과\n" +
+    "이름: " + (appState.name || "이름 미입력") + "\n" +
+    "형식: " + meta.name + " · " + meta.desc + "\n" +
+    "범위: " + setLabel + "\n" +
+    "날짜: " + new Date().toLocaleDateString('ko-KR') + "\n" +
+    "정답: " + correct + " / " + total + "\n" +
+    "오답: " + wrong + " / " + total;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showCopied).catch(()=>fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showCopied(); }
+  catch(e){ alert('복사에 실패했어요. 아래 텍스트를 직접 선택해 복사해주세요.\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showCopied(){
+  const btn = el("copyBtn");
+  if(!btn) return;
+  const old = btn.innerText;
+  btn.innerText = "복사되었습니다 ✓";
+  setTimeout(()=>{ btn.innerText = old; }, 1800);
+}
+
+/* ===================== 렌더 ===================== */
+function render(){
+  if(!appState.format){
+    renderHomeFormats();
+  } else {
+    renderHomeSets();
+  }
+}
+
+function renderHomeFormats(){
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 기초형식 해석하기</h1></div>
+    </header>
+    <div class="card">
+      <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
+      <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
+      <p class="label" style="margin-bottom:10px;">형식을 선택하세요 (형식당 100문제 · 50문제씩 2세트)</p>
+      <div class="grid5">
+        ${[1,2,3,4,5].map(f=>{
+          const m = FORMAT_META[f];
+          return `<button class="fmtbtn" onclick="selectFormat(${f})">
+            <div><span class="dot" style="background:${m.solid}"></span><span class="fmtname">${m.name}</span><div class="fmtdesc">${m.desc}</div></div>
+            <span style="color:#CBD5E1;font-size:20px;">›</span>
+          </button>`;
+        }).join("")}
+      </div>
+    </div>
+    <p class="note">단문 위주로 먼저 연습하고, 장문 독해는 별도 과제로 활용해보세요.</p>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderHomeSets(){
+  const m = FORMAT_META[appState.format];
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 기초형식 해석하기</h1></div>
+    </header>
+    <span class="backlink" onclick="backToFormats()">‹ 형식 다시 선택</span>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill" style="background:${m.bg};color:${m.text}">${m.name}</span>
+        <span class="pillmuted">${m.desc}</span>
+      </div>
+      <p class="label" style="margin-top:10px;">세트를 선택하세요</p>
+      <div class="setgrid">
+        <div class="setbtn" onclick="startPractice(1)">Set 1<small>1~50번 · 중2~중3</small></div>
+        <div class="setbtn" onclick="startPractice(2)">Set 2<small>51~100번 · 중3~고1</small></div>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderPracticeView(){
+  const m = FORMAT_META[appState.format];
+  const sentence = appState.items[appState.idx];
+  const pct = Math.round(((appState.idx) / appState.items.length) * 100);
+  const correctSoFar = appState.marks.filter(x=>x==="o").length;
+  const wrongSoFar = appState.marks.filter(x=>x==="x").length;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 기초형식 해석하기</h1></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="progressbar"><div style="width:${pct}%;background:${m.solid}"></div></div>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill" style="background:${m.bg};color:${m.text}">${m.name}${appState.wrongPool ? ' · 오답 복습' : ''}</span>
+        <span class="pillmuted">${sentence.level}</span>
+        <span class="tally">${appState.idx+1} / ${appState.items.length} · 정답 ${correctSoFar} 오답 ${wrongSoFar}</span>
+      </div>
+      <p class="sentence">${escapeHtml(sentence.en)}</p>
+      <textarea id="answerInput" placeholder="이 문장을 우리말로 해석해서 적어보세요" ${appState.revealed ? "disabled" : ""}>${appState.revealed ? escapeHtml(appState.userAnswer) : ""}</textarea>
+  `;
+
+  if(!appState.revealed){
+    html += `<button class="primarybtn" style="background:${m.solid}" onclick="checkAnswer()">정답 확인</button>`;
+  } else {
+    html += `
+      <div class="answerbox" style="background:${m.bg}">
+        <p class="lbl" style="color:${m.text}">모범 해석</p>
+        <p class="val" style="color:${m.text}">${escapeHtml(sentence.ko)}</p>
+      </div>
+      <p class="hint">내가 쓴 해석과 비교해서 스스로 채점해주세요</p>
+      <div class="btnrow">
+        <button onclick="mark('x')">다시 볼게요</button>
+        <button class="wide" style="background:${m.solid}" onclick="mark('o')">맞았어요</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  el("app").innerHTML = html;
+}
+
+function renderResultView(){
+  const m = FORMAT_META[appState.format];
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const setLabel = appState.wrongPool ? "오답 복습" : `Set ${appState.setNum} (${(appState.setNum-1)*50+1}~${appState.setNum*50})`;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 기초형식 해석하기</h1></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="card resultcard">
+      <p class="pillmuted" style="display:inline-block;">${m.name} · ${setLabel}</p>
+      <p class="score" style="color:${m.solid}">${correct} / ${total}</p>
+      <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div style="text-align:left;margin-top:18px;">
+        <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
+        <div class="metarow"><span>형식</span><span>${m.name}</span></div>
+        <div class="metarow"><span>범위</span><span>${setLabel}</span></div>
+        <div class="metarow"><span>날짜</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+      </div>
+      <div class="stack">
+        <button id="copyBtn" class="solid" style="background:#1E2A3A" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
+        ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
+        ${(!appState.wrongPool && appState.setNum===1) ? `<button style="border-color:${m.solid};color:${m.solid}" onclick="startPractice(2)">Set 2 (51~100) 풀기</button>` : ""}
+        <button onclick="goHome()">처음 화면으로</button>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+render();
+</script>
+</body>
+</html>
