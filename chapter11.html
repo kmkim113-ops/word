@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨유에탑 구문독해 - Chapter 11 등위절과 병렬구조</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; background:#EEF1F5; font-family:'Noto Sans KR', sans-serif; color:#1E2530; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .eyebrow { font-size:11px; letter-spacing:2px; font-weight:700; color:#98A2B3; }
+  h1 { font-size:20px; font-weight:900; margin:2px 0 0; }
+  .chline { font-size:13px; color:#475569; font-weight:700; margin-top:2px; }
+  .homebtn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#5B6472; background:#fff; border:1px solid #DCE1E8; padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .homebtn:hover { border-color:#98A2B3; }
+  .card { background:#fff; border:1px solid #DCE1E8; border-radius:18px; padding:22px; }
+  .label { font-size:13px; color:#5B6472; margin-bottom:6px; }
+  .progresscard { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .progresscard .pct { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#475569; border:4px solid #DDE2E8; }
+  .unititem { text-align:left; border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; transition:.15s; margin-bottom:10px; border:1px solid #DCE1E8; background:#fff; cursor:pointer; }
+  .unititem:hover { border-color:#98A2B3; transform:translateY(-1px); }
+  .unititem.locked { background:#F3F5F7; border-color:#F3F5F7; cursor:not-allowed; opacity:.6; }
+  .unititem.current { box-shadow: 0 0 0 2px #CBD5E1; }
+  .unumber { font-size:11px; font-weight:800; color:#475569; letter-spacing:1px; }
+  .utitle { font-weight:800; font-size:15px; margin-top:2px; }
+  .ucount { font-size:12px; color:#98A2B3; margin-top:2px; }
+  .badge { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .progressbar { height:6px; background:#DCE1E8; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .progressbar > div { height:100%; background:#475569; }
+  .toprow { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .pill { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#E7EAEF; color:#334155; }
+  .pillmuted { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#F0F2F5; color:#64748B; }
+  .tally { margin-left:auto; font-size:12px; color:#98A2B3; }
+  .sentence { font-size:23px; font-weight:900; line-height:1.4; margin: 16px 0 20px; }
+  textarea { width:100%; height:80px; border:1px solid #DCE1E8; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; resize:none; }
+  textarea:disabled { background:#F8F9FA; }
+  .primarybtn { width:100%; margin-top:16px; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:15px; color:#fff; cursor:pointer; background:#475569; }
+  .primarybtn:disabled { background:#CBD5E1 !important; cursor:not-allowed; }
+  .answerbox { border-radius:12px; padding:14px; margin:16px 0 10px; background:#E7EAEF; }
+  .answerbox .lbl { font-size:12px; font-weight:700; color:#334155; margin-bottom:4px; }
+  .answerbox .val { font-weight:800; font-size:16px; color:#1E293B; }
+  .hint { font-size:12px; color:#98A2B3; margin:10px 0 8px; }
+  .btnrow { display:flex; gap:10px; }
+  .btnrow button { flex:1; padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #DCE1E8; background:#fff; color:#5B6472; }
+  .btnrow button.wide { color:#fff; border:none; background:#475569; }
+  .resultcard { text-align:center; padding:30px 22px; }
+  .resultcard .score { font-size:40px; font-weight:900; margin:8px 0 2px; color:#475569; }
+  .resultcard .sub { font-size:13px; color:#98A2B3; }
+  .metarow { display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-bottom:1px solid #F0F2F5; }
+  .metarow:last-child { border-bottom:none; }
+  .metarow span:first-child { color:#98A2B3; }
+  .metarow span:last-child { font-weight:700; }
+  .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+  .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #DCE1E8; background:#fff; }
+  .stack button.solid { color:#fff; border:none; background:#1E2530; }
+  .reviewlist { text-align:left; margin-top:18px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .reviewitem { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #F1F1F1; }
+  .reviewitem:last-child { border-bottom:none; }
+  .reviewbadge { flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:2px; }
+  .reviewbadge.ok { background:#D1FAE5; color:#059669; }
+  .reviewbadge.ng { background:#FEE2E2; color:#DC2626; }
+  .rv-en { font-weight:700; font-size:13px; text-align:left; margin:0; }
+  .rv-ko { font-size:12px; color:#94A3B8; text-align:left; margin:2px 0 0; }
+  .rv-label { text-align:left; font-size:13px; color:#94A3B8; font-weight:700; margin:0 0 8px; }
+  .note { font-size:12px; color:#98A2B3; text-align:center; margin-top:16px; line-height:1.6; }
+  input[type=text] { width:100%; border:1px solid #DCE1E8; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+/* ===================== 데이터: Unit별 문장 (en|ko|level) ===================== */
+const UNITS = [
+{ num:"60", title:"등위접속사", note:"and, but, or, for, nor, yet, so — 대등한 요소를 연결하는 접속사", sentences:[
+"She is smart and kind.|그녀는 똑똑하고 친절하다.|고1",
+"I wanted to go, but I was too tired.|나는 가고 싶었지만, 너무 피곤했다.|고1",
+"You can take the bus or walk.|너는 버스를 타거나 걸어갈 수 있다.|고1",
+"He was late, for the traffic was heavy.|그는 늦었는데, 교통이 혼잡했기 때문이다.|고2",
+"She doesn't like coffee, nor does she like tea.|그녀는 커피를 좋아하지 않고, 차도 좋아하지 않는다.|고2",
+"He studied hard, yet he failed the exam.|그는 열심히 공부했지만, 시험에 떨어졌다.|고2",
+"I called her, but she didn't answer.|나는 그녀에게 전화했지만, 그녀는 받지 않았다.|고1",
+"We can eat now, or we can wait for him.|우리는 지금 먹을 수도 있고, 그를 기다릴 수도 있다.|고1",
+"She was tired, so she went to bed early.|그녀는 피곤해서, 일찍 잠자리에 들었다.|고1",
+"He is poor but happy.|그는 가난하지만 행복하다.|고1",
+"I have neither time nor money.|나는 시간도 돈도 없다.|고2",
+"It was raining, so we canceled the trip.|비가 오고 있어서, 우리는 여행을 취소했다.|고1",
+"He didn't study, so he failed the test.|그는 공부하지 않아서, 시험에 떨어졌다.|고1",
+"She likes music, and she also plays the piano.|그녀는 음악을 좋아하고, 피아노도 친다.|고1",
+"He apologized, yet she still refused to forgive him.|그는 사과했지만, 그녀는 여전히 그를 용서하기를 거부했다.|고2",
+"The team practiced hard, for the final match was near.|그 팀은 열심히 연습했는데, 결승전이 가까웠기 때문이다.|고2",
+"I didn't call him, nor did I text him.|나는 그에게 전화하지 않았고, 문자도 보내지 않았다.|고2",
+"She is not only smart but also diligent.|그녀는 똑똑할 뿐만 아니라 부지런하기도 하다.|고1",
+"He wanted to help, but he had no time.|그는 돕고 싶었지만, 시간이 없었다.|고1",
+"The plan sounds good, yet it has some risks.|그 계획은 좋게 들리지만, 몇 가지 위험이 있다.|고2"
+]},
+{ num:"61", title:"병렬구조", note:"등위접속사·상관접속사로 연결된 요소들이 문법적으로 대등한 형태를 이루는 구조", sentences:[
+"She likes reading, writing, and painting.|그녀는 독서, 글쓰기, 그림 그리기를 좋아한다.|고1",
+"He is smart, honest, and hardworking.|그는 똑똑하고, 정직하고, 근면하다.|고1",
+"I went to the store, bought some milk, and came home.|나는 가게에 가서, 우유를 사고, 집에 왔다.|고1",
+"She not only sings well but also dances beautifully.|그녀는 노래를 잘할 뿐만 아니라 춤도 아름답게 춘다.|고1",
+"He likes to swim, to run, and to hike.|그는 수영하는 것, 달리는 것, 그리고 하이킹 하는 것을 좋아한다.|고1",
+"Studying hard and getting enough sleep are both important.|열심히 공부하는 것과 충분히 자는 것 둘 다 중요하다.|고2",
+"She enjoys cooking as well as baking.|그녀는 요리하는 것뿐만 아니라 제빵도 즐긴다.|고1",
+"The task requires patience, skill, and dedication.|그 일은 인내심, 기술, 그리고 헌신을 필요로 한다.|고2",
+"He spent the weekend cleaning the house and washing the car.|그는 주말을 집을 청소하고 차를 세차하며 보냈다.|고1",
+"She wants to travel, learn new languages, and meet new people.|그녀는 여행하고, 새로운 언어를 배우고, 새로운 사람들을 만나고 싶어 한다.|고2",
+"The report was clear, concise, and well organized.|그 보고서는 명확하고, 간결하고, 잘 정리되어 있었다.|고2",
+"He decided to quit smoking and to start exercising.|그는 담배를 끊고 운동을 시작하기로 결심했다.|고1",
+"She is interested in painting rather than sculpting.|그녀는 조각보다는 그림 그리는 것에 관심이 있다.|고2",
+"To succeed in life, you need patience, effort, and a positive attitude.|인생에서 성공하려면, 인내심, 노력, 그리고 긍정적인 태도가 필요하다.|고2",
+"He talked about his job, his family, and his hobbies.|그는 자신의 직업, 가족, 그리고 취미에 대해 이야기했다.|고1",
+"The company focuses on quality rather than quantity.|그 회사는 양보다 질에 중점을 둔다.|고2",
+"She spends her free time reading books and watching movies.|그녀는 여가 시간을 책을 읽고 영화를 보며 보낸다.|고1",
+"He is responsible for planning, organizing, and managing the event.|그는 그 행사를 계획하고, 조직하고, 관리하는 것을 책임지고 있다.|고2",
+"The teacher explained the rule clearly and answered every question patiently.|선생님은 그 규칙을 명확하게 설명하고 모든 질문에 참을성 있게 답했다.|고2",
+"Learning to code is more about practicing than memorizing.|코딩을 배우는 것은 암기하는 것보다 연습하는 것에 관한 일이다.|고2"
+]},
+{ num:"62", title:"both A and B 등", note:"both A and B, either A or B, neither A nor B, not only A but also B, B as well as A", sentences:[
+"Both my sister and I love music.|내 여동생과 나 둘 다 음악을 좋아한다.|고1",
+"She is both smart and kind.|그녀는 똑똑하기도 하고 친절하기도 하다.|고1",
+"You can either call me or send an email.|너는 나에게 전화하거나 이메일을 보낼 수 있다.|고1",
+"He is neither rich nor famous.|그는 부자도 아니고 유명하지도 않다.|고1",
+"She speaks not only English but also French.|그녀는 영어뿐만 아니라 프랑스어도 한다.|고1",
+"My brother, as well as my parents, supports my decision.|내 부모님뿐만 아니라 내 남동생도 내 결정을 지지한다.|고2",
+"Both the manager and the staff agreed to the plan.|매니저와 직원들 둘 다 그 계획에 동의했다.|고1",
+"Either you or I have to finish this task.|너나 나 둘 중 하나가 이 일을 끝내야 한다.|고2",
+"Neither the students nor the teacher knew the answer.|학생들도 선생님도 그 답을 몰랐다.|고2",
+"Not only did he apologize, but he also offered to help.|그는 사과했을 뿐만 아니라, 도와주겠다고 제안했다.|고2",
+"She is both a teacher and a writer.|그녀는 선생님이자 작가이기도 하다.|고1",
+"The event was canceled due to both the rain and the cold.|그 행사는 비와 추위 둘 다로 인해 취소되었다.|고2",
+"He is good at both math and science.|그는 수학과 과학 둘 다 잘한다.|고1",
+"I like neither the color nor the design.|나는 그 색깔도 디자인도 마음에 들지 않는다.|고1",
+"This product is popular not only in Korea but also abroad.|이 제품은 한국뿐만 아니라 해외에서도 인기가 있다.|고2",
+"Both the movie and the book are worth your time.|그 영화와 책 둘 다 시간을 들일 가치가 있다.|고2",
+"Either the plan works, or we need a new one.|그 계획이 효과가 있거나, 아니면 우리는 새로운 계획이 필요하다.|고2",
+"She is fluent in both Spanish and Portuguese.|그녀는 스페인어와 포르투갈어 둘 다 유창하다.|고2",
+"The company as well as its employees benefited from the change.|직원들뿐만 아니라 그 회사도 그 변화로부터 이익을 얻었다.|고2",
+"Neither hard work nor talent alone guarantees success.|노력도 재능도 그 자체만으로는 성공을 보장하지 않는다.|고2"
+]},
+{ num:"63", title:"one/another/the other가 만드는 표현", note:"둘/셋 이상을 나열할 때 쓰는 one, another, the other, some, others 표현", sentences:[
+"I have two dogs; one is white, and the other is black.|나는 개가 두 마리 있는데, 하나는 하얗고 다른 하나는 검다.|고1",
+"There are three books on the desk; one is mine, another is yours, and the other is his.|책상 위에 책이 세 권 있는데, 하나는 내 것이고, 다른 하나는 네 것이고, 나머지 하나는 그의 것이다.|고2",
+"Some people like coffee, while others prefer tea.|어떤 사람들은 커피를 좋아하는 반면, 다른 사람들은 차를 선호한다.|고1",
+"I don't like this shirt. Show me another one.|나는 이 셔츠가 마음에 들지 않는다. 다른 것을 보여줘.|고1",
+"One of my friends is a doctor, and another is a lawyer.|내 친구 중 한 명은 의사이고, 다른 한 명은 변호사이다.|고1",
+"Some students study in the library, others study at home.|일부 학생들은 도서관에서 공부하고, 다른 학생들은 집에서 공부한다.|고2",
+"Of the two options, one is cheaper, and the other is faster.|두 가지 선택지 중, 하나는 더 저렴하고 다른 하나는 더 빠르다.|고2",
+"He has two cars; one is old, and the other is brand new.|그는 차가 두 대 있는데, 하나는 오래되었고 다른 하나는 새것이다.|고1",
+"I tried on several dresses, but none of them fit; can you bring me another?|나는 드레스를 여러 벌 입어봤지만 하나도 맞지 않았다. 다른 것을 가져다줄 수 있니?|고2",
+"Each of the twins has a different personality; one is outgoing, and the other is shy.|그 쌍둥이는 각각 다른 성격을 가지고 있는데, 하나는 외향적이고 다른 하나는 수줍음이 많다.|고2",
+"On one hand, the plan saves money; on the other hand, it takes more time.|한편으로는, 그 계획이 돈을 절약해주지만, 다른 한편으로는 시간이 더 걸린다.|고2",
+"We visited two museums; one was modern, and the other was historic.|우리는 박물관 두 곳을 방문했는데, 하나는 현대적이었고 다른 하나는 역사적이었다.|고1",
+"Some countries have adopted the policy, while others have rejected it.|어떤 나라들은 그 정책을 채택했지만, 다른 나라들은 거부했다.|고2",
+"I have three sisters; one lives in Seoul, another lives in Busan, and the other lives abroad.|나는 여동생이 세 명 있는데, 한 명은 서울에 살고, 한 명은 부산에 살고, 나머지 한 명은 해외에 산다.|고2",
+"This bag is too small; do you have a bigger one?|이 가방은 너무 작다. 더 큰 것이 있나요?|고1",
+"Among the applicants, one stood out from the others.|지원자들 중에서, 한 명이 다른 사람들보다 두드러졌다.|고2",
+"Some employees prefer working remotely, while others like the office.|어떤 직원들은 재택근무를 선호하지만, 다른 직원들은 사무실을 좋아한다.|고2",
+"One should respect others' opinions.|사람은 다른 사람들의 의견을 존중해야 한다.|고2"
+]}
+];
+
+const CH = { code:"chapter11", title:"Chapter 11", desc:"등위절과 병렬구조", solid:"#475569" };
+
+/* ===================== 상태 ===================== */
+const appState = {
+  name: "",
+  unitIdx: null,
+  items: [],
+  idx: 0,
+  marks: [],
+  revealed: false,
+  userAnswer: "",
+  wrongPool: false,
+  completed: new Set()
+};
+
+function el(id){ return document.getElementById(id); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function parseUnit(u){
+  return u.sentences.map(line=>{
+    const [en,ko,level] = line.split("|");
+    return {en,ko,level};
+  });
+}
+
+function goHome(){
+  appState.unitIdx = null;
+  appState.wrongPool = false;
+  render();
+}
+
+function startUnit(i){
+  appState.unitIdx = i;
+  appState.items = parseUnit(UNITS[i]);
+  appState.idx = 0;
+  appState.marks = new Array(appState.items.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  appState.wrongPool = false;
+  renderPracticeView();
+}
+
+function checkAnswer(){
+  appState.userAnswer = el("answerInput").value;
+  appState.revealed = true;
+  renderPracticeView();
+}
+
+function mark(value){
+  appState.marks[appState.idx] = value;
+  if(appState.idx < appState.items.length - 1){
+    appState.idx += 1;
+    appState.revealed = false;
+    appState.userAnswer = "";
+    renderPracticeView();
+  } else {
+    if(!appState.wrongPool) appState.completed.add(appState.unitIdx);
+    renderResultView();
+  }
+}
+
+function retryWrong(){
+  const wrongItems = appState.items.filter((_,i)=>appState.marks[i]==="x");
+  if(wrongItems.length === 0) return;
+  appState.wrongPool = true;
+  appState.items = wrongItems;
+  appState.idx = 0;
+  appState.marks = new Array(wrongItems.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  renderPracticeView();
+}
+
+function copyResult(){
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const unit = UNITS[appState.unitIdx];
+  const text = "📘 " + CH.title + " · " + CH.desc + " 결과\n" +
+    "이름: " + (appState.name || "이름 미입력") + "\n" +
+    "Unit " + unit.num + " · " + unit.title + (appState.wrongPool ? " (오답 복습)" : "") + "\n" +
+    "날짜: " + new Date().toLocaleDateString('ko-KR') + "\n" +
+    "정답: " + correct + " / " + total + "\n" +
+    "오답: " + wrong + " / " + total;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showCopied).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showCopied(); }
+  catch(e){ alert('복사에 실패했어요. 아래 텍스트를 직접 선택해 복사해주세요.\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showCopied(){
+  const btn = el("copyBtn");
+  if(!btn) return;
+  const old = btn.innerText;
+  btn.innerText = "복사되었습니다 ✓";
+  setTimeout(()=>{ btn.innerText = old; }, 1800);
+}
+
+/* ===================== 렌더 ===================== */
+function render(){
+  if(appState.unitIdx === null) renderHome();
+  else renderPracticeView();
+}
+
+function renderHome(){
+  const doneCount = appState.completed.size;
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+    </header>
+    <div class="card">
+      <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
+      <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
+      <div class="progresscard" style="margin-top:14px;">
+        <div>
+          <p class="label" style="margin-bottom:0;">전체 진행률</p>
+          <p style="font-weight:900;font-size:18px;">${doneCount} / ${UNITS.length} Unit 완료</p>
+        </div>
+        <div class="pct">${Math.round((doneCount/UNITS.length)*100)}%</div>
+      </div>
+      ${UNITS.map((u,i)=>{
+        const isDone = appState.completed.has(i);
+        const firstIncomplete = UNITS.findIndex((_,j)=>!appState.completed.has(j));
+        const isUnlocked = isDone || i === (firstIncomplete === -1 ? UNITS.length : firstIncomplete);
+        const isCurrent = !isDone && i === firstIncomplete;
+        return `<div class="unititem ${!isUnlocked ? 'locked':''} ${isCurrent?'current':''}" onclick="${isUnlocked ? `startUnit(${i})` : ''}">
+          <div>
+            <div class="unumber">UNIT ${u.num}</div>
+            <div class="utitle">${u.title}</div>
+            <div class="ucount">${u.sentences.length}문장 · ${u.note}</div>
+          </div>
+          <div class="badge" style="background:${isDone?'#E7EAEF':'transparent'};color:${CH.solid}">${isDone ? '✓' : (isUnlocked ? '›' : '🔒')}</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="note">단문 위주로 먼저 익히고, 익숙해지면 문장 길이를 늘려보세요.</p>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderPracticeView(){
+  const unit = UNITS[appState.unitIdx];
+  const sentence = appState.items[appState.idx];
+  const pct = Math.round((appState.idx / appState.items.length) * 100);
+  const correctSoFar = appState.marks.filter(x=>x==="o").length;
+  const wrongSoFar = appState.marks.filter(x=>x==="x").length;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="progressbar"><div style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' · 오답 복습' : ''}</span>
+        <span class="pillmuted">${sentence.level}</span>
+        <span class="tally">${appState.idx+1} / ${appState.items.length} · 정답 ${correctSoFar} 오답 ${wrongSoFar}</span>
+      </div>
+      <p class="sentence">${escapeHtml(sentence.en)}</p>
+      <textarea id="answerInput" placeholder="이 문장을 우리말로 해석해서 적어보세요" ${appState.revealed ? "disabled" : ""}>${appState.revealed ? escapeHtml(appState.userAnswer) : ""}</textarea>
+  `;
+  if(!appState.revealed){
+    html += `<button class="primarybtn" onclick="checkAnswer()">정답 확인</button>`;
+  } else {
+    html += `
+      <div class="answerbox">
+        <p class="lbl">모범 해석</p>
+        <p class="val">${escapeHtml(sentence.ko)}</p>
+      </div>
+      <p class="hint">내가 쓴 해석과 비교해서 스스로 채점해주세요</p>
+      <div class="btnrow">
+        <button onclick="mark('x')">다시 볼게요</button>
+        <button class="wide" onclick="mark('o')">맞았어요</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  el("app").innerHTML = html;
+}
+
+function renderResultView(){
+  const unit = UNITS[appState.unitIdx];
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const nextIdx = appState.unitIdx + 1;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="card resultcard">
+      <p class="pillmuted" style="display:inline-block;">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' (오답 복습)' : ''}</p>
+      <p class="score">${correct} / ${total}</p>
+      <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div class="reviewlist">
+        <p class="rv-label">문장별 결과</p>
+        ${appState.items.map((it,i)=>`
+          <div class="reviewitem">
+            <span class="reviewbadge ${appState.marks[i]==='o'?'ok':'ng'}">${appState.marks[i]==='o'?'O':'X'}</span>
+            <div>
+              <p class="rv-en">${escapeHtml(it.en)}</p>
+              <p class="rv-ko">${escapeHtml(it.ko)}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="text-align:left;margin-top:18px;">
+        <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
+        <div class="metarow"><span>Unit</span><span>${unit.num} · ${unit.title}</span></div>
+        <div class="metarow"><span>날짜</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+      </div>
+      <div class="stack">
+        <button id="copyBtn" class="solid" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
+        ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
+        ${(!appState.wrongPool && nextIdx < UNITS.length) ? `<button style="border-color:${CH.solid};color:${CH.solid}" onclick="startUnit(${nextIdx})">다음 Unit (${UNITS[nextIdx].num}) 풀기</button>` : ""}
+        <button onclick="goHome()">처음 화면으로</button>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
