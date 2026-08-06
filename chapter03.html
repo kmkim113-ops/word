@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨유에탑 구문독해 - Chapter 3 목적어의 이해</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; background:#EDF6F5; font-family:'Noto Sans KR', sans-serif; color:#1E2B2A; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .eyebrow { font-size:11px; letter-spacing:2px; font-weight:700; color:#94A8A6; }
+  h1 { font-size:20px; font-weight:900; margin:2px 0 0; }
+  .chline { font-size:13px; color:#0D9488; font-weight:700; margin-top:2px; }
+  .homebtn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#647B79; background:#fff; border:1px solid #DCEDEA; padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .homebtn:hover { border-color:#94A8A6; }
+  .card { background:#fff; border:1px solid #DCEDEA; border-radius:18px; padding:22px; }
+  .label { font-size:13px; color:#647B79; margin-bottom:6px; }
+  .progresscard { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .progresscard .pct { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#0D9488; border:4px solid #D2F1EC; }
+  .unititem { text-align:left; border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; transition:.15s; margin-bottom:10px; border:1px solid #DCEDEA; background:#fff; cursor:pointer; }
+  .unititem:hover { border-color:#94A8A6; transform:translateY(-1px); }
+  .unititem.locked { background:#F2F8F7; border-color:#F2F8F7; cursor:not-allowed; opacity:.6; }
+  .unititem.current { box-shadow: 0 0 0 2px #99F6E4; }
+  .unumber { font-size:11px; font-weight:800; color:#0D9488; letter-spacing:1px; }
+  .utitle { font-weight:800; font-size:15px; margin-top:2px; }
+  .ucount { font-size:12px; color:#94A8A6; margin-top:2px; }
+  .badge { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .progressbar { height:6px; background:#DCEDEA; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .progressbar > div { height:100%; background:#0D9488; }
+  .toprow { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .pill { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#E6FBF8; color:#0D9488; }
+  .pillmuted { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#F1F5F4; color:#64748B; }
+  .tally { margin-left:auto; font-size:12px; color:#94A8A6; }
+  .sentence { font-size:23px; font-weight:900; line-height:1.4; margin: 16px 0 20px; }
+  textarea { width:100%; height:80px; border:1px solid #DCEDEA; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; resize:none; }
+  textarea:disabled { background:#F8FAFC; }
+  .primarybtn { width:100%; margin-top:16px; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:15px; color:#fff; cursor:pointer; background:#0D9488; }
+  .primarybtn:disabled { background:#CBD5E1 !important; cursor:not-allowed; }
+  .answerbox { border-radius:12px; padding:14px; margin:16px 0 10px; background:#E6FBF8; }
+  .answerbox .lbl { font-size:12px; font-weight:700; color:#0D9488; margin-bottom:4px; }
+  .answerbox .val { font-weight:800; font-size:16px; color:#115E59; }
+  .hint { font-size:12px; color:#94A8A6; margin:10px 0 8px; }
+  .btnrow { display:flex; gap:10px; }
+  .btnrow button { flex:1; padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #DCEDEA; background:#fff; color:#647B79; }
+  .btnrow button.wide { color:#fff; border:none; background:#0D9488; }
+  .resultcard { text-align:center; padding:30px 22px; }
+  .resultcard .score { font-size:40px; font-weight:900; margin:8px 0 2px; color:#0D9488; }
+  .resultcard .sub { font-size:13px; color:#94A8A6; }
+  .metarow { display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-bottom:1px solid #F1F5F4; }
+  .metarow:last-child { border-bottom:none; }
+  .metarow span:first-child { color:#94A8A6; }
+  .metarow span:last-child { font-weight:700; }
+  .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+  .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #DCEDEA; background:#fff; }
+  .stack button.solid { color:#fff; border:none; background:#1E2B2A; }
+  .reviewlist { text-align:left; margin-top:18px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .reviewitem { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #F1F1F1; }
+  .reviewitem:last-child { border-bottom:none; }
+  .reviewbadge { flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:2px; }
+  .reviewbadge.ok { background:#D1FAE5; color:#059669; }
+  .reviewbadge.ng { background:#FEE2E2; color:#DC2626; }
+  .rv-en { font-weight:700; font-size:13px; text-align:left; margin:0; }
+  .rv-ko { font-size:12px; color:#94A3B8; text-align:left; margin:2px 0 0; }
+  .rv-label { text-align:left; font-size:13px; color:#94A3B8; font-weight:700; margin:0 0 8px; }
+  .note { font-size:12px; color:#94A8A6; text-align:center; margin-top:16px; line-height:1.6; }
+  input[type=text] { width:100%; border:1px solid #DCEDEA; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+/* ===================== 데이터: Unit별 문장 (en|ko|level) ===================== */
+const UNITS = [
+{ num:"15", title:"to부정사/동명사 목적어 Ⅰ", note:"to부정사만, 또는 동명사만 목적어로 취하는 동사", sentences:[
+"She wants to travel around the world.|그녀는 세계를 여행하고 싶어 한다.|고1",
+"He decided to quit his job.|그는 직장을 그만두기로 결심했다.|고1",
+"I hope to see you soon.|나는 곧 너를 보기를 바란다.|고1",
+"They promised to finish the project on time.|그들은 제시간에 프로젝트를 끝내기로 약속했다.|고1",
+"She refused to answer the question.|그녀는 그 질문에 답하기를 거부했다.|고1",
+"We agreed to meet at noon.|우리는 정오에 만나기로 동의했다.|고1",
+"He managed to solve the problem.|그는 가까스로 그 문제를 해결했다.|고1",
+"I expect to arrive by six.|나는 6시까지 도착할 것으로 예상한다.|고1",
+"She offered to help us.|그녀는 우리를 돕겠다고 제안했다.|고1",
+"He enjoys playing the guitar.|그는 기타 치는 것을 즐긴다.|고1",
+"She avoided answering the question.|그녀는 그 질문에 답하는 것을 피했다.|고1",
+"I finished writing the report.|나는 보고서 쓰는 것을 끝냈다.|고1",
+"Would you mind closing the window?|창문을 닫아주시겠어요?|고1",
+"He suggested going for a walk.|그는 산책하러 가는 것을 제안했다.|고1",
+"We are considering moving to another city.|우리는 다른 도시로 이사하는 것을 고려하고 있다.|고1",
+"She practices speaking English every day.|그녀는 매일 영어로 말하는 것을 연습한다.|고1",
+"He quit smoking last year.|그는 작년에 담배를 끊었다.|고1",
+"She denied stealing the money.|그녀는 돈을 훔쳤다는 것을 부인했다.|고1"
+]},
+{ num:"16", title:"to부정사/동명사 목적어 Ⅱ", note:"둘 다 취하지만 의미가 달라지는 동사 (remember, forget, stop, try, regret, need 등)", sentences:[
+"I remember locking the door.|나는 문을 잠갔던 것을 기억한다.|고1",
+"Please remember to lock the door.|문을 잠그는 것을 잊지 마라.|고1",
+"I forgot to call her.|나는 그녀에게 전화하는 것을 잊었다.|고1",
+"I will never forget meeting him.|나는 그를 만났던 것을 결코 잊지 못할 것이다.|고1",
+"He stopped smoking.|그는 담배 피우는 것을 그만두었다.|고1",
+"He stopped to smoke.|그는 담배를 피우기 위해 멈췄다.|고1",
+"She tried to open the door.|그녀는 문을 열려고 시도했다.|고1",
+"She tried opening the window for fresh air.|그녀는 신선한 공기를 위해 창문을 열어보았다.|고2",
+"I regret to inform you that the flight is delayed.|비행기가 지연되었음을 알리게 되어 유감이다.|고2",
+"I regret telling him the secret.|나는 그에게 비밀을 말한 것을 후회한다.|고1",
+"We need to finish this today.|우리는 오늘 이것을 끝낼 필요가 있다.|고1",
+"This report needs revising.|이 보고서는 수정될 필요가 있다.|고2",
+"The car needs washing.|그 차는 세차될 필요가 있다.|고1",
+"He went on talking for an hour.|그는 한 시간 동안 계속 이야기했다.|고1",
+"After the break, he went on to explain the results.|휴식 후 그는 이어서 결과를 설명했다.|고2",
+"I cannot help laughing at his jokes.|나는 그의 농담에 웃지 않을 수 없다.|고2",
+"She stopped to check her phone.|그녀는 휴대폰을 확인하기 위해 멈췄다.|고1",
+"He remembered turning off the stove.|그는 가스레인지를 껐던 것을 기억해냈다.|고1"
+]},
+{ num:"17", title:"명사절 목적어", note:"that절/의문사절이 동사의 목적어로 쓰이는 문장", sentences:[
+"I think that he is honest.|나는 그가 정직하다고 생각한다.|고1",
+"She believes that hard work pays off.|그녀는 노력이 보답한다고 믿는다.|고1",
+"We know that the meeting starts at nine.|우리는 회의가 9시에 시작한다는 것을 안다.|고1",
+"I hope that you feel better soon.|나는 네가 곧 나아지기를 바란다.|고1",
+"He said that he would be late.|그는 늦을 것이라고 말했다.|고1",
+"She admitted that she had made a mistake.|그녀는 실수를 했다는 것을 인정했다.|고1",
+"I realized that I had forgotten my wallet.|나는 지갑을 잊고 왔다는 것을 깨달았다.|고1",
+"He doubts that the plan will work.|그는 그 계획이 성공할지 의심한다.|고1",
+"I wonder whether he will come.|나는 그가 올지 궁금하다.|고1",
+"She asked what time the store closed.|그녀는 가게가 몇 시에 닫는지 물었다.|고1",
+"He explained why he was late.|그는 왜 늦었는지 설명했다.|고1",
+"I remember that we met at the party.|나는 우리가 파티에서 만났던 것을 기억한다.|고1",
+"She noticed that something was wrong.|그녀는 무언가 잘못되었다는 것을 알아챘다.|고1",
+"Scientists discovered that the drug had side effects.|과학자들은 그 약이 부작용이 있다는 것을 발견했다.|고2",
+"I do not understand why he did that.|나는 그가 왜 그렇게 했는지 이해하지 못한다.|고1",
+"I guess that she is tired.|나는 그녀가 피곤한 것 같다고 추측한다.|고1",
+"We suppose that the rumor is untrue.|우리는 그 소문이 사실이 아니라고 추측한다.|고2",
+"I forgot that today was your birthday.|나는 오늘이 네 생일이라는 것을 잊었다.|고1",
+"They decided that they would move to Seoul.|그들은 서울로 이사하기로 결정했다.|고1",
+"Do you mind if I open the window?|창문을 열어도 괜찮을까요?|고1"
+]},
+{ num:"18", title:"재귀대명사의 목적어", note:"동사+재귀대명사가 굳어진 관용 표현", sentences:[
+"Please help yourself to some cookies.|쿠키 좀 마음껏 드세요.|고1",
+"He introduced himself to the class.|그는 반 학생들에게 자신을 소개했다.|고1",
+"She hurt herself while skiing.|그녀는 스키를 타다가 다쳤다.|고1",
+"Enjoy yourselves at the party tonight.|오늘 밤 파티에서 즐거운 시간 보내세요.|고1",
+"He blamed himself for the accident.|그는 그 사고에 대해 자신을 탓했다.|고1",
+"Children should learn to behave themselves in public.|아이들은 공공장소에서 예의 바르게 행동하는 법을 배워야 한다.|고1",
+"She taught herself how to play the piano.|그녀는 독학으로 피아노 치는 법을 배웠다.|고1",
+"He pushed himself to finish the marathon.|그는 마라톤을 끝내려고 스스로를 몰아붙였다.|고2",
+"I found myself lost in the woods.|나는 숲에서 길을 잃은 나 자신을 발견했다.|고2",
+"She expressed herself clearly during the interview.|그녀는 인터뷰 동안 자신의 생각을 명확히 표현했다.|고2",
+"He devoted himself to helping the poor.|그는 가난한 사람들을 돕는 데 헌신했다.|고2",
+"She prides herself on her honesty.|그녀는 자신의 정직함에 자부심을 느낀다.|고2",
+"He availed himself of every opportunity.|그는 모든 기회를 이용했다.|고2",
+"They congratulated themselves on their success.|그들은 자신들의 성공을 자축했다.|고2",
+"I sometimes talk to myself when I am nervous.|나는 긴장할 때 가끔 혼잣말을 한다.|고1"
+]},
+{ num:"19", title:"전치사의 목적어", note:"전치사 뒤에 동명사가 오는 구조, 동사+전치사+Ving 표현", sentences:[
+"She is good at solving problems.|그녀는 문제를 해결하는 데 능숙하다.|고1",
+"He is interested in learning new languages.|그는 새로운 언어를 배우는 것에 관심이 있다.|고1",
+"I am tired of waiting for the bus.|나는 버스를 기다리는 것에 지쳤다.|고1",
+"They succeeded in raising enough money.|그들은 충분한 돈을 모으는 데 성공했다.|고1",
+"She apologized for being late.|그녀는 늦은 것에 대해 사과했다.|고1",
+"He is afraid of making mistakes.|그는 실수하는 것을 두려워한다.|고1",
+"We look forward to seeing you again.|우리는 너를 다시 만나기를 고대한다.|고1",
+"The rain prevented us from going outside.|비는 우리가 밖에 나가지 못하게 막았다.|고1",
+"She kept me from finishing the report.|그녀는 내가 보고서를 끝내지 못하게 했다.|고2",
+"He insisted on paying for the meal.|그는 식사비를 내겠다고 고집했다.|고1",
+"I am thinking about changing jobs.|나는 직업을 바꾸는 것에 대해 생각하고 있다.|고1",
+"She is capable of handling the situation.|그녀는 그 상황을 처리할 능력이 있다.|고2",
+"He complained about being ignored.|그는 무시당하는 것에 대해 불평했다.|고2",
+"They congratulated her on passing the exam.|그들은 그녀가 시험에 합격한 것을 축하했다.|고1",
+"I am used to getting up early.|나는 일찍 일어나는 것에 익숙하다.|고1"
+]},
+{ num:"20", title:"가목적어 it", note:"진짜 목적어(to부정사/that절)를 뒤로 보내고 it이 자리를 채우는 구문", sentences:[
+"I found it difficult to solve the puzzle.|나는 그 퍼즐을 푸는 것이 어렵다는 것을 알았다.|고1",
+"She made it clear that she disagreed.|그녀는 자신이 동의하지 않는다는 것을 분명히 했다.|고1",
+"We think it important to save energy.|우리는 에너지를 절약하는 것이 중요하다고 생각한다.|고1",
+"He considers it wrong to lie.|그는 거짓말하는 것이 잘못이라고 여긴다.|고1",
+"I believe it necessary to apologize.|나는 사과하는 것이 필요하다고 믿는다.|고1",
+"She finds it hard to trust strangers.|그녀는 낯선 사람을 믿는 것이 어렵다고 생각한다.|고1",
+"The rain made it impossible to travel.|비는 여행하는 것을 불가능하게 만들었다.|고1",
+"I owe it to you to tell the truth.|나는 진실을 말할 의무가 너에게 있다.|고2",
+"He thought it strange that no one answered.|그는 아무도 대답하지 않은 것이 이상하다고 생각했다.|고2",
+"We consider it essential to protect the environment.|우리는 환경을 보호하는 것이 필수적이라고 여긴다.|고2",
+"She made it a rule to exercise every morning.|그녀는 매일 아침 운동하는 것을 규칙으로 삼았다.|고2",
+"I find it interesting to learn about history.|나는 역사에 대해 배우는 것이 흥미롭다고 생각한다.|고1",
+"They thought it best to leave early.|그들은 일찍 떠나는 것이 최선이라고 생각했다.|고2",
+"He made it possible for us to finish on time.|그는 우리가 제시간에 끝낼 수 있도록 했다.|고2",
+"She takes it for granted that he will help her.|그녀는 그가 자신을 도와줄 것을 당연하게 여긴다.|고2"
+]}
+];
+
+const CH = { code:"chapter03", title:"Chapter 3", desc:"목적어의 이해", solid:"#0D9488" };
+
+/* ===================== 상태 ===================== */
+const appState = {
+  name: "",
+  unitIdx: null,
+  items: [],
+  idx: 0,
+  marks: [],
+  revealed: false,
+  userAnswer: "",
+  wrongPool: false,
+  completed: new Set()
+};
+
+function el(id){ return document.getElementById(id); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function parseUnit(u){
+  return u.sentences.map(line=>{
+    const [en,ko,level] = line.split("|");
+    return {en,ko,level};
+  });
+}
+
+function goHome(){
+  appState.unitIdx = null;
+  appState.wrongPool = false;
+  render();
+}
+
+function startUnit(i){
+  appState.unitIdx = i;
+  appState.items = parseUnit(UNITS[i]);
+  appState.idx = 0;
+  appState.marks = new Array(appState.items.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  appState.wrongPool = false;
+  renderPracticeView();
+}
+
+function checkAnswer(){
+  appState.userAnswer = el("answerInput").value;
+  appState.revealed = true;
+  renderPracticeView();
+}
+
+function mark(value){
+  appState.marks[appState.idx] = value;
+  if(appState.idx < appState.items.length - 1){
+    appState.idx += 1;
+    appState.revealed = false;
+    appState.userAnswer = "";
+    renderPracticeView();
+  } else {
+    if(!appState.wrongPool) appState.completed.add(appState.unitIdx);
+    renderResultView();
+  }
+}
+
+function retryWrong(){
+  const wrongItems = appState.items.filter((_,i)=>appState.marks[i]==="x");
+  if(wrongItems.length === 0) return;
+  appState.wrongPool = true;
+  appState.items = wrongItems;
+  appState.idx = 0;
+  appState.marks = new Array(wrongItems.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  renderPracticeView();
+}
+
+function copyResult(){
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const unit = UNITS[appState.unitIdx];
+  const text = "📘 " + CH.title + " · " + CH.desc + " 결과\n" +
+    "이름: " + (appState.name || "이름 미입력") + "\n" +
+    "Unit " + unit.num + " · " + unit.title + (appState.wrongPool ? " (오답 복습)" : "") + "\n" +
+    "날짜: " + new Date().toLocaleDateString('ko-KR') + "\n" +
+    "정답: " + correct + " / " + total + "\n" +
+    "오답: " + wrong + " / " + total;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showCopied).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showCopied(); }
+  catch(e){ alert('복사에 실패했어요. 아래 텍스트를 직접 선택해 복사해주세요.\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showCopied(){
+  const btn = el("copyBtn");
+  if(!btn) return;
+  const old = btn.innerText;
+  btn.innerText = "복사되었습니다 ✓";
+  setTimeout(()=>{ btn.innerText = old; }, 1800);
+}
+
+/* ===================== 렌더 ===================== */
+function render(){
+  if(appState.unitIdx === null) renderHome();
+  else renderPracticeView();
+}
+
+function renderHome(){
+  const doneCount = appState.completed.size;
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+    </header>
+    <div class="card">
+      <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
+      <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
+      <div class="progresscard" style="margin-top:14px;">
+        <div>
+          <p class="label" style="margin-bottom:0;">전체 진행률</p>
+          <p style="font-weight:900;font-size:18px;">${doneCount} / ${UNITS.length} Unit 완료</p>
+        </div>
+        <div class="pct">${Math.round((doneCount/UNITS.length)*100)}%</div>
+      </div>
+      ${UNITS.map((u,i)=>{
+        const isDone = appState.completed.has(i);
+        const firstIncomplete = UNITS.findIndex((_,j)=>!appState.completed.has(j));
+        const isUnlocked = isDone || i === (firstIncomplete === -1 ? UNITS.length : firstIncomplete);
+        const isCurrent = !isDone && i === firstIncomplete;
+        return `<div class="unititem ${!isUnlocked ? 'locked':''} ${isCurrent?'current':''}" onclick="${isUnlocked ? `startUnit(${i})` : ''}">
+          <div>
+            <div class="unumber">UNIT ${u.num}</div>
+            <div class="utitle">${u.title}</div>
+            <div class="ucount">${u.sentences.length}문장 · ${u.note}</div>
+          </div>
+          <div class="badge" style="background:${isDone?'#E6FBF8':'transparent'};color:${CH.solid}">${isDone ? '✓' : (isUnlocked ? '›' : '🔒')}</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="note">단문 위주로 먼저 익히고, 익숙해지면 문장 길이를 늘려보세요.</p>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderPracticeView(){
+  const unit = UNITS[appState.unitIdx];
+  const sentence = appState.items[appState.idx];
+  const pct = Math.round((appState.idx / appState.items.length) * 100);
+  const correctSoFar = appState.marks.filter(x=>x==="o").length;
+  const wrongSoFar = appState.marks.filter(x=>x==="x").length;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="progressbar"><div style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' · 오답 복습' : ''}</span>
+        <span class="pillmuted">${sentence.level}</span>
+        <span class="tally">${appState.idx+1} / ${appState.items.length} · 정답 ${correctSoFar} 오답 ${wrongSoFar}</span>
+      </div>
+      <p class="sentence">${escapeHtml(sentence.en)}</p>
+      <textarea id="answerInput" placeholder="이 문장을 우리말로 해석해서 적어보세요" ${appState.revealed ? "disabled" : ""}>${appState.revealed ? escapeHtml(appState.userAnswer) : ""}</textarea>
+  `;
+  if(!appState.revealed){
+    html += `<button class="primarybtn" onclick="checkAnswer()">정답 확인</button>`;
+  } else {
+    html += `
+      <div class="answerbox">
+        <p class="lbl">모범 해석</p>
+        <p class="val">${escapeHtml(sentence.ko)}</p>
+      </div>
+      <p class="hint">내가 쓴 해석과 비교해서 스스로 채점해주세요</p>
+      <div class="btnrow">
+        <button onclick="mark('x')">다시 볼게요</button>
+        <button class="wide" onclick="mark('o')">맞았어요</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  el("app").innerHTML = html;
+}
+
+function renderResultView(){
+  const unit = UNITS[appState.unitIdx];
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const nextIdx = appState.unitIdx + 1;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="card resultcard">
+      <p class="pillmuted" style="display:inline-block;">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' (오답 복습)' : ''}</p>
+      <p class="score">${correct} / ${total}</p>
+      <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div class="reviewlist">
+        <p class="rv-label">문장별 결과</p>
+        ${appState.items.map((it,i)=>`
+          <div class="reviewitem">
+            <span class="reviewbadge ${appState.marks[i]==='o'?'ok':'ng'}">${appState.marks[i]==='o'?'O':'X'}</span>
+            <div>
+              <p class="rv-en">${escapeHtml(it.en)}</p>
+              <p class="rv-ko">${escapeHtml(it.ko)}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="text-align:left;margin-top:18px;">
+        <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
+        <div class="metarow"><span>Unit</span><span>${unit.num} · ${unit.title}</span></div>
+        <div class="metarow"><span>날짜</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+      </div>
+      <div class="stack">
+        <button id="copyBtn" class="solid" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
+        ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
+        ${(!appState.wrongPool && nextIdx < UNITS.length) ? `<button style="border-color:${CH.solid};color:${CH.solid}" onclick="startUnit(${nextIdx})">다음 Unit (${UNITS[nextIdx].num}) 풀기</button>` : ""}
+        <button onclick="goHome()">처음 화면으로</button>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
