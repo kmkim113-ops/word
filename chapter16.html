@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨유에탑 구문독해 - Chapter 16 특수구문</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; background:#EDEEF1; font-family:'Noto Sans KR', sans-serif; color:#111827; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .eyebrow { font-size:11px; letter-spacing:2px; font-weight:700; color:#9CA3AF; }
+  h1 { font-size:20px; font-weight:900; margin:2px 0 0; }
+  .chline { font-size:13px; color:#111827; font-weight:700; margin-top:2px; }
+  .homebtn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#4B5563; background:#fff; border:1px solid #DDE0E5; padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .homebtn:hover { border-color:#9CA3AF; }
+  .card { background:#fff; border:1px solid #DDE0E5; border-radius:18px; padding:22px; }
+  .label { font-size:13px; color:#4B5563; margin-bottom:6px; }
+  .progresscard { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .progresscard .pct { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#111827; border:4px solid #E5E7EB; }
+  .unititem { text-align:left; border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; transition:.15s; margin-bottom:10px; border:1px solid #DDE0E5; background:#fff; cursor:pointer; }
+  .unititem:hover { border-color:#9CA3AF; transform:translateY(-1px); }
+  .unititem.locked { background:#F2F3F5; border-color:#F2F3F5; cursor:not-allowed; opacity:.6; }
+  .unititem.current { box-shadow: 0 0 0 2px #D1D5DB; }
+  .unumber { font-size:11px; font-weight:800; color:#111827; letter-spacing:1px; }
+  .utitle { font-weight:800; font-size:15px; margin-top:2px; }
+  .ucount { font-size:12px; color:#9CA3AF; margin-top:2px; }
+  .badge { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .progressbar { height:6px; background:#DDE0E5; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .progressbar > div { height:100%; background:#111827; }
+  .toprow { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .pill { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#E5E7EB; color:#111827; }
+  .pillmuted { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#F0F1F3; color:#64748B; }
+  .tally { margin-left:auto; font-size:12px; color:#9CA3AF; }
+  .sentence { font-size:23px; font-weight:900; line-height:1.4; margin: 16px 0 20px; }
+  textarea { width:100%; height:80px; border:1px solid #DDE0E5; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; resize:none; }
+  textarea:disabled { background:#F9FAFB; }
+  .primarybtn { width:100%; margin-top:16px; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:15px; color:#fff; cursor:pointer; background:#111827; }
+  .primarybtn:disabled { background:#CBD5E1 !important; cursor:not-allowed; }
+  .answerbox { border-radius:12px; padding:14px; margin:16px 0 10px; background:#E5E7EB; }
+  .answerbox .lbl { font-size:12px; font-weight:700; color:#374151; margin-bottom:4px; }
+  .answerbox .val { font-weight:800; font-size:16px; color:#111827; }
+  .hint { font-size:12px; color:#9CA3AF; margin:10px 0 8px; }
+  .btnrow { display:flex; gap:10px; }
+  .btnrow button { flex:1; padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #DDE0E5; background:#fff; color:#4B5563; }
+  .btnrow button.wide { color:#fff; border:none; background:#111827; }
+  .resultcard { text-align:center; padding:30px 22px; }
+  .resultcard .score { font-size:40px; font-weight:900; margin:8px 0 2px; color:#111827; }
+  .resultcard .sub { font-size:13px; color:#9CA3AF; }
+  .metarow { display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-bottom:1px solid #F0F1F3; }
+  .metarow:last-child { border-bottom:none; }
+  .metarow span:first-child { color:#9CA3AF; }
+  .metarow span:last-child { font-weight:700; }
+  .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+  .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #DDE0E5; background:#fff; }
+  .stack button.solid { color:#fff; border:none; background:#111827; }
+  .reviewlist { text-align:left; margin-top:18px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .reviewitem { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #F1F1F1; }
+  .reviewitem:last-child { border-bottom:none; }
+  .reviewbadge { flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:2px; }
+  .reviewbadge.ok { background:#D1FAE5; color:#059669; }
+  .reviewbadge.ng { background:#FEE2E2; color:#DC2626; }
+  .rv-en { font-weight:700; font-size:13px; text-align:left; margin:0; }
+  .rv-ko { font-size:12px; color:#94A3B8; text-align:left; margin:2px 0 0; }
+  .rv-label { text-align:left; font-size:13px; color:#94A3B8; font-weight:700; margin:0 0 8px; }
+  .note { font-size:12px; color:#9CA3AF; text-align:center; margin-top:16px; line-height:1.6; }
+  input[type=text] { width:100%; border:1px solid #DDE0E5; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+/* ===================== 데이터: Unit별 문장 (en|ko|level) ===================== */
+const UNITS = [
+{ num:"94", title:"도치구문", note:"부정어, 장소부사구, so/neither, only+부사구가 앞에 나가며 주어-동사가 도치되는 구문", sentences:[
+"Never have I seen such a beautiful sunset.|나는 이렇게 아름다운 일몰을 본 적이 없다.|고2",
+"Rarely does he complain about anything.|그는 어떤 것에 대해서도 좀처럼 불평하지 않는다.|고2",
+"Little did I know that he was lying.|나는 그가 거짓말을 하고 있다는 것을 전혀 몰랐다.|고2",
+"Not only did she pass the exam, but she also got the highest score.|그녀는 시험에 합격했을 뿐만 아니라 최고 점수도 받았다.|고2",
+"Under no circumstances should you open this door.|어떤 상황에서도 너는 이 문을 열어서는 안 된다.|고2",
+"On the hill stood an old castle.|언덕 위에 오래된 성이 서 있었다.|고1",
+"In the corner of the room was a small table.|방의 구석에 작은 탁자가 있었다.|고1",
+"Down came the rain, soaking everyone.|비가 쏟아져 내려, 모두를 흠뻑 적셨다.|고2",
+"So beautiful was the scenery that we stopped to take photos.|풍경이 너무 아름다워서 우리는 멈춰서 사진을 찍었다.|고2",
+"I like coffee, and so does she.|나는 커피를 좋아하고, 그녀도 그렇다.|고1",
+"He can't swim, and neither can I.|그는 수영을 못하고, 나도 못한다.|고1",
+"Only after the meeting did he realize his mistake.|회의가 끝난 후에야 그는 자신의 실수를 깨달았다.|고2",
+"Only then did she understand what he meant.|그때서야 비로소 그녀는 그가 의미하는 바를 이해했다.|고2",
+"Hardly had I arrived when the phone rang.|내가 도착하자마자 전화가 울렸다.|고2",
+"No sooner had he sat down than the bell rang.|그가 앉자마자 종이 울렸다.|고2",
+"Such was the shock that she couldn't speak for a moment.|충격이 너무 커서 그녀는 잠시 동안 말을 할 수 없었다.|고2",
+"Seldom have I encountered such determination.|나는 그런 결단력을 좀처럼 접해본 적이 없다.|고2",
+"Not until she apologized did he forgive her.|그녀가 사과하고 나서야 그는 그녀를 용서했다.|고2"
+]},
+{ num:"95", title:"강조구문", note:"It is ~ that 강조구문, 동사 앞의 do/does/did 강조", sentences:[
+"It was Tom who broke the window.|창문을 깬 것은 바로 톰이었다.|고1",
+"It was yesterday that the accident happened.|그 사고가 일어난 것은 바로 어제였다.|고1",
+"It is money that matters most to him.|그에게 가장 중요한 것은 바로 돈이다.|고2",
+"It was in Paris that they first met.|그들이 처음 만난 곳은 바로 파리였다.|고2",
+"It is not the result but the effort that counts.|중요한 것은 결과가 아니라 바로 노력이다.|고2",
+"I do believe that he is telling the truth.|나는 정말로 그가 진실을 말하고 있다고 믿는다.|고2",
+"She does love him, despite everything.|그녀는 모든 것에도 불구하고 정말로 그를 사랑한다.|고2",
+"He did finish the project, even though it took longer than expected.|그는 예상보다 오래 걸렸지만 정말로 그 프로젝트를 끝냈다.|고2",
+"It was his kindness that impressed everyone.|모두를 감동시킨 것은 바로 그의 친절함이었다.|고2",
+"It is because of your support that we succeeded.|우리가 성공한 것은 바로 당신의 지지 덕분이다.|고2",
+"It was not until midnight that he finally arrived.|그가 마침내 도착한 것은 자정이 되어서였다.|고2",
+"Do come to the party; we really want you there.|정말 파티에 와줘. 우리는 네가 그곳에 있기를 정말 원해.|고2",
+"It was she, not her sister, who won the prize.|상을 받은 것은 그녀의 언니가 아니라 바로 그녀였다.|고2",
+"It is what you do, not what you say, that defines you.|너를 정의하는 것은 네가 말하는 것이 아니라 바로 네가 하는 행동이다.|고2",
+"It was only after years of practice that he became a master.|그가 대가가 된 것은 수년간의 연습 후에서였다.|고2"
+]},
+{ num:"96", title:"생략구문", note:"반복되는 요소나 부사절의 '주어+be동사'가 생략되는 구조", sentences:[
+"She wanted to go, but I didn't want to.|그녀는 가고 싶어 했지만, 나는 그러고 싶지 않았다.|고1",
+"He can play the piano, but she can't.|그는 피아노를 칠 수 있지만, 그녀는 못한다.|고1",
+"I will help if I can.|할 수 있다면 나는 도울 것이다.|고1",
+"He is taller than his brother is.|그는 남동생보다 키가 크다.|고1",
+"While waiting for the bus, she read a book.|버스를 기다리는 동안, 그녀는 책을 읽었다.|고1",
+"Though tired, he kept working.|피곤했지만, 그는 계속 일했다.|고1",
+"If necessary, we will change the plan.|필요하다면, 우리는 계획을 바꿀 것이다.|고1",
+"He works harder than she does.|그는 그녀보다 더 열심히 일한다.|고1",
+"Some liked the movie; others didn't.|어떤 사람들은 그 영화를 좋아했지만, 다른 사람들은 그렇지 않았다.|고2",
+"Whether right or wrong, he always stands by his decisions.|옳든 그르든, 그는 항상 자신의 결정을 지지한다.|고2",
+"Once finished, the report will be sent to the manager.|끝나면, 그 보고서는 관리자에게 보내질 것이다.|고2",
+"Although exhausted, she refused to give up.|지쳤지만, 그녀는 포기하기를 거부했다.|고2",
+"If in doubt, ask a professional for advice.|의심스러우면, 전문가에게 조언을 구해라.|고2",
+"When ready, please let me know.|준비가 되면, 저에게 알려주세요.|고2",
+"She earns more than he does.|그녀는 그보다 더 많이 번다.|고2"
+]},
+{ num:"97", title:"공통구문", note:"하나의 동사·전치사가 둘 이상의 목적어나 요소에 공통으로 걸리는 구조", sentences:[
+"He bought and sold houses for a living.|그는 생계를 위해 집을 사고팔았다.|고2",
+"She likes and respects her teacher.|그녀는 자신의 선생님을 좋아하고 존경한다.|고1",
+"The company develops, manufactures, and sells electronics.|그 회사는 전자제품을 개발하고, 제조하고, 판매한다.|고2",
+"He neither smokes nor drinks.|그는 담배도 피우지 않고 술도 마시지 않는다.|고1",
+"She studies math, science, and history at school.|그녀는 학교에서 수학, 과학, 역사를 공부한다.|고1",
+"The team practices before and after school.|그 팀은 방과 전과 후에 연습한다.|고2",
+"He is interested in, and skilled at, painting.|그는 그림에 관심이 있고 재능도 있다.|고2",
+"We discussed the causes and effects of climate change.|우리는 기후 변화의 원인과 결과에 대해 논의했다.|고2",
+"She wrote to and received letters from her pen pal.|그녀는 펜팔 친구에게 편지를 쓰고 받았다.|고2",
+"The policy affects both large and small businesses.|그 정책은 대기업과 소기업 모두에 영향을 미친다.|고2",
+"He designed, built, and sold the furniture himself.|그는 직접 그 가구를 디자인하고, 만들고, 판매했다.|고2",
+"The teacher explained the theory before and after the experiment.|선생님은 실험 전과 후에 그 이론을 설명했다.|고2"
+]},
+{ num:"98", title:"삽입구문", note:"I believe, needless to say, if any, if ever 등 문장 중간에 끼어드는 삽입어구", sentences:[
+"He is, I believe, the best candidate for the job.|그는, 내가 믿기로는, 그 일자리에 가장 적합한 후보이다.|고2",
+"This is, in my opinion, the best solution.|이것은, 내 생각에는, 가장 좋은 해결책이다.|고2",
+"If any, mistakes should be corrected immediately.|만약 있다면, 실수는 즉시 수정되어야 한다.|고2",
+"He rarely, if ever, complains about his job.|그는, 설령 그런 적이 있다 해도, 자기 일에 대해 좀처럼 불평하지 않는다.|고2",
+"She is, as far as I know, still living in Seoul.|그녀는, 내가 아는 한, 여전히 서울에 살고 있다.|고2",
+"The plan, I suspect, will not work.|그 계획은, 내가 의심하기로는, 효과가 없을 것이다.|고2",
+"This, needless to say, is a serious matter.|이것은, 말할 필요도 없이, 심각한 문제이다.|고2",
+"He was, to be honest, quite rude to me.|그는, 솔직히 말해서, 나에게 꽤 무례했다.|고2",
+"The results, surprisingly, showed no significant difference.|그 결과는, 놀랍게도, 유의미한 차이를 보이지 않았다.|고2",
+"This medicine, if taken properly, can cure the disease.|이 약은, 제대로 복용하면, 그 병을 치료할 수 있다.|고2",
+"The movie, unlike the book, focuses on the villain's story.|그 영화는, 책과 달리, 악당의 이야기에 초점을 맞춘다.|고2",
+"He seldom, if ever, apologizes for his mistakes.|그는, 설령 그런 적이 있다 해도, 자신의 실수에 대해 좀처럼 사과하지 않는다.|고2",
+"The company's profits, according to the report, have doubled.|그 회사의 수익은, 보고서에 따르면, 두 배가 되었다.|고2",
+"This decision, whether right or wrong, cannot be reversed now.|이 결정은, 옳든 그르든, 지금은 되돌릴 수 없다.|고2",
+"She is, without doubt, the most talented singer in the group.|그녀는, 의심할 여지 없이, 그 그룹에서 가장 재능 있는 가수이다.|고2"
+]},
+{ num:"99", title:"동격구문", note:"명사+that절, 콤마를 이용한 동격 표현 — 앞의 명사를 구체적으로 설명", sentences:[
+"The fact that he lied surprised everyone.|그가 거짓말을 했다는 사실은 모두를 놀라게 했다.|고1",
+"The news that she had won the award spread quickly.|그녀가 상을 받았다는 소식이 빠르게 퍼졌다.|고1",
+"The idea that money brings happiness is questionable.|돈이 행복을 가져다준다는 생각은 의심스럽다.|고2",
+"The rumor that the company would close turned out to be false.|그 회사가 문을 닫을 것이라는 소문은 거짓으로 밝혀졌다.|고2",
+"There is no evidence that the drug is effective.|그 약이 효과적이라는 증거는 없다.|고2",
+"The belief that hard work always pays off is not always true.|노력이 항상 보답한다는 믿음은 항상 사실인 것은 아니다.|고2",
+"My brother, a doctor, works at the city hospital.|의사인 내 남동생은 시립 병원에서 일한다.|고1",
+"Seoul, the capital of Korea, is a huge city.|한국의 수도인 서울은 거대한 도시이다.|고1",
+"Mr. Kim, our new manager, will start next week.|우리의 새 매니저인 김 씨는 다음 주에 시작할 것이다.|고1",
+"His hobby, collecting stamps, has become a valuable investment.|우표를 수집하는 그의 취미는 가치 있는 투자가 되었다.|고2",
+"The theory that the universe is expanding is widely accepted.|우주가 팽창하고 있다는 이론은 널리 받아들여진다.|고2",
+"The claim that the earth is flat has been disproven.|지구가 평평하다는 주장은 반증되었다.|고2",
+"The possibility that he might resign worried the staff.|그가 사임할지도 모른다는 가능성은 직원들을 걱정하게 했다.|고2",
+"The fact that she never gave up impressed her coach.|그녀가 결코 포기하지 않았다는 사실은 코치를 감동시켰다.|고2",
+"His proposal, a plan to cut costs, was rejected by the board.|비용을 절감하는 계획인 그의 제안은 이사회에 의해 거부되었다.|고2",
+"The report contains the finding that pollution levels have risen.|그 보고서는 오염 수준이 상승했다는 결과를 담고 있다.|고2"
+]},
+{ num:"100", title:"부정구문", note:"부분부정(not all/always), 전체부정(none/neither/nobody), 이중부정", sentences:[
+"Not all students passed the exam.|모든 학생이 시험에 합격한 것은 아니다.|고1",
+"I don't know all of them.|나는 그들 모두를 아는 것은 아니다.|고1",
+"Not every rich person is happy.|모든 부유한 사람이 행복한 것은 아니다.|고2",
+"She doesn't always agree with her boss.|그녀가 항상 상사에게 동의하는 것은 아니다.|고1",
+"Both of them are not doctors.|그들 둘 다 의사인 것은 아니다.|고2",
+"None of the students passed the exam.|학생 중 아무도 시험에 합격하지 못했다.|고1",
+"Neither of them knows the answer.|그들 둘 다 답을 모른다.|고1",
+"Nobody believed his story.|아무도 그의 이야기를 믿지 않았다.|고1",
+"I have never seen such a thing.|나는 그런 것을 본 적이 전혀 없다.|고1",
+"There is nothing I can do about it.|내가 그것에 대해 할 수 있는 것은 아무것도 없다.|고1",
+"It is not impossible to finish this by tomorrow.|이것을 내일까지 끝내는 것이 불가능하지는 않다.|고2",
+"There is no rule without exceptions.|예외 없는 규칙은 없다.|고2",
+"Not a single student failed to submit the assignment.|과제를 제출하지 못한 학생은 단 한 명도 없었다.|고2",
+"Nothing is impossible if you never give up.|네가 결코 포기하지 않는다면 불가능한 것은 없다.|고2",
+"He is not unaware of the risks involved.|그는 관련된 위험을 모르지 않는다.|고2",
+"No one can deny that she worked hard.|그녀가 열심히 일했다는 것을 아무도 부인할 수 없다.|고2"
+]},
+{ num:"101", title:"주어를 부사로 해석해야 하는 구문", note:"무생물주어 구문 — 사물/사건 주어를 '~ 때문에, ~ 덕분에'처럼 부사적으로 해석", sentences:[
+"This medicine will make you feel better.|이 약을 먹으면 너는 기분이 나아질 것이다.|고1",
+"The rain kept us from going out.|비 때문에 우리는 밖에 나갈 수 없었다.|고1",
+"Five minutes' walk will bring you to the station.|5분만 걸으면 너는 역에 도착할 것이다.|고2",
+"This road will take you to the museum.|이 길로 가면 너는 박물관에 도착할 것이다.|고1",
+"The news made her very happy.|그 소식을 듣고 그녀는 매우 행복해했다.|고1",
+"A sudden noise woke me up in the middle of the night.|갑작스러운 소음 때문에 나는 한밤중에 잠에서 깼다.|고2",
+"His success brought him fame and fortune.|성공 덕분에 그는 명성과 부를 얻었다.|고2",
+"Heavy traffic delayed our arrival by an hour.|극심한 교통 체증 때문에 우리는 한 시간 늦게 도착했다.|고2",
+"The scandal cost him his career.|그 스캔들 때문에 그는 경력을 잃었다.|고2",
+"What brings you here today?|무슨 일로 오늘 여기 오셨어요?|고1",
+"This discovery changed the way we see the universe.|이 발견 덕분에 우리가 우주를 바라보는 방식이 바뀌었다.|고2",
+"A slight mistake could ruin the whole project.|작은 실수만으로도 프로젝트 전체를 망칠 수 있다.|고2",
+"Ten years of research led him to this conclusion.|10년간의 연구 끝에 그는 이 결론에 도달했다.|고2",
+"The pandemic forced many companies to close.|팬데믹 때문에 많은 회사들이 문을 닫아야 했다.|고2",
+"Curiosity drove her to explore the abandoned house.|호기심 때문에 그녀는 버려진 집을 탐험하게 되었다.|고2"
+]}
+];
+
+const CH = { code:"chapter16", title:"Chapter 16", desc:"특수구문", solid:"#111827" };
+
+/* ===================== 상태 ===================== */
+const appState = {
+  name: "",
+  unitIdx: null,
+  items: [],
+  idx: 0,
+  marks: [],
+  revealed: false,
+  userAnswer: "",
+  wrongPool: false,
+  completed: new Set()
+};
+
+function el(id){ return document.getElementById(id); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function parseUnit(u){
+  return u.sentences.map(line=>{
+    const [en,ko,level] = line.split("|");
+    return {en,ko,level};
+  });
+}
+
+function goHome(){
+  appState.unitIdx = null;
+  appState.wrongPool = false;
+  render();
+}
+
+function startUnit(i){
+  appState.unitIdx = i;
+  appState.items = parseUnit(UNITS[i]);
+  appState.idx = 0;
+  appState.marks = new Array(appState.items.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  appState.wrongPool = false;
+  renderPracticeView();
+}
+
+function checkAnswer(){
+  appState.userAnswer = el("answerInput").value;
+  appState.revealed = true;
+  renderPracticeView();
+}
+
+function mark(value){
+  appState.marks[appState.idx] = value;
+  if(appState.idx < appState.items.length - 1){
+    appState.idx += 1;
+    appState.revealed = false;
+    appState.userAnswer = "";
+    renderPracticeView();
+  } else {
+    if(!appState.wrongPool) appState.completed.add(appState.unitIdx);
+    renderResultView();
+  }
+}
+
+function retryWrong(){
+  const wrongItems = appState.items.filter((_,i)=>appState.marks[i]==="x");
+  if(wrongItems.length === 0) return;
+  appState.wrongPool = true;
+  appState.items = wrongItems;
+  appState.idx = 0;
+  appState.marks = new Array(wrongItems.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  renderPracticeView();
+}
+
+function copyResult(){
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const unit = UNITS[appState.unitIdx];
+  const text = "📘 " + CH.title + " · " + CH.desc + " 결과\n" +
+    "이름: " + (appState.name || "이름 미입력") + "\n" +
+    "Unit " + unit.num + " · " + unit.title + (appState.wrongPool ? " (오답 복습)" : "") + "\n" +
+    "날짜: " + new Date().toLocaleDateString('ko-KR') + "\n" +
+    "정답: " + correct + " / " + total + "\n" +
+    "오답: " + wrong + " / " + total;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showCopied).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showCopied(); }
+  catch(e){ alert('복사에 실패했어요. 아래 텍스트를 직접 선택해 복사해주세요.\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showCopied(){
+  const btn = el("copyBtn");
+  if(!btn) return;
+  const old = btn.innerText;
+  btn.innerText = "복사되었습니다 ✓";
+  setTimeout(()=>{ btn.innerText = old; }, 1800);
+}
+
+/* ===================== 렌더 ===================== */
+function render(){
+  if(appState.unitIdx === null) renderHome();
+  else renderPracticeView();
+}
+
+function renderHome(){
+  const doneCount = appState.completed.size;
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+    </header>
+    <div class="card">
+      <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
+      <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
+      <div class="progresscard" style="margin-top:14px;">
+        <div>
+          <p class="label" style="margin-bottom:0;">전체 진행률</p>
+          <p style="font-weight:900;font-size:18px;">${doneCount} / ${UNITS.length} Unit 완료</p>
+        </div>
+        <div class="pct">${Math.round((doneCount/UNITS.length)*100)}%</div>
+      </div>
+      ${UNITS.map((u,i)=>{
+        const isDone = appState.completed.has(i);
+        const firstIncomplete = UNITS.findIndex((_,j)=>!appState.completed.has(j));
+        const isUnlocked = isDone || i === (firstIncomplete === -1 ? UNITS.length : firstIncomplete);
+        const isCurrent = !isDone && i === firstIncomplete;
+        return `<div class="unititem ${!isUnlocked ? 'locked':''} ${isCurrent?'current':''}" onclick="${isUnlocked ? `startUnit(${i})` : ''}">
+          <div>
+            <div class="unumber">UNIT ${u.num}</div>
+            <div class="utitle">${u.title}</div>
+            <div class="ucount">${u.sentences.length}문장 · ${u.note}</div>
+          </div>
+          <div class="badge" style="background:${isDone?'#E5E7EB':'transparent'};color:${CH.solid}">${isDone ? '✓' : (isUnlocked ? '›' : '🔒')}</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="note">여기까지 오셨다면 Chapter 2~16 전 과정 완주예요. 마지막까지 화이팅!</p>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderPracticeView(){
+  const unit = UNITS[appState.unitIdx];
+  const sentence = appState.items[appState.idx];
+  const pct = Math.round((appState.idx / appState.items.length) * 100);
+  const correctSoFar = appState.marks.filter(x=>x==="o").length;
+  const wrongSoFar = appState.marks.filter(x=>x==="x").length;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="progressbar"><div style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' · 오답 복습' : ''}</span>
+        <span class="pillmuted">${sentence.level}</span>
+        <span class="tally">${appState.idx+1} / ${appState.items.length} · 정답 ${correctSoFar} 오답 ${wrongSoFar}</span>
+      </div>
+      <p class="sentence">${escapeHtml(sentence.en)}</p>
+      <textarea id="answerInput" placeholder="이 문장을 우리말로 해석해서 적어보세요" ${appState.revealed ? "disabled" : ""}>${appState.revealed ? escapeHtml(appState.userAnswer) : ""}</textarea>
+  `;
+  if(!appState.revealed){
+    html += `<button class="primarybtn" onclick="checkAnswer()">정답 확인</button>`;
+  } else {
+    html += `
+      <div class="answerbox">
+        <p class="lbl">모범 해석</p>
+        <p class="val">${escapeHtml(sentence.ko)}</p>
+      </div>
+      <p class="hint">내가 쓴 해석과 비교해서 스스로 채점해주세요</p>
+      <div class="btnrow">
+        <button onclick="mark('x')">다시 볼게요</button>
+        <button class="wide" onclick="mark('o')">맞았어요</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  el("app").innerHTML = html;
+}
+
+function renderResultView(){
+  const unit = UNITS[appState.unitIdx];
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const nextIdx = appState.unitIdx + 1;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="card resultcard">
+      <p class="pillmuted" style="display:inline-block;">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' (오답 복습)' : ''}</p>
+      <p class="score">${correct} / ${total}</p>
+      <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div class="reviewlist">
+        <p class="rv-label">문장별 결과</p>
+        ${appState.items.map((it,i)=>`
+          <div class="reviewitem">
+            <span class="reviewbadge ${appState.marks[i]==='o'?'ok':'ng'}">${appState.marks[i]==='o'?'O':'X'}</span>
+            <div>
+              <p class="rv-en">${escapeHtml(it.en)}</p>
+              <p class="rv-ko">${escapeHtml(it.ko)}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="text-align:left;margin-top:18px;">
+        <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
+        <div class="metarow"><span>Unit</span><span>${unit.num} · ${unit.title}</span></div>
+        <div class="metarow"><span>날짜</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+      </div>
+      <div class="stack">
+        <button id="copyBtn" class="solid" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
+        ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
+        ${(!appState.wrongPool && nextIdx < UNITS.length) ? `<button style="border-color:${CH.solid};color:${CH.solid}" onclick="startUnit(${nextIdx})">다음 Unit (${UNITS[nextIdx].num}) 풀기</button>` : ""}
+        <button onclick="goHome()">처음 화면으로</button>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
