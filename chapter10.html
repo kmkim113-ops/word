@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨유에탑 구문독해 - Chapter 10 분사구문</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; background:#F7EEE4; font-family:'Noto Sans KR', sans-serif; color:#2B2015; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .eyebrow { font-size:11px; letter-spacing:2px; font-weight:700; color:#B39D82; }
+  h1 { font-size:20px; font-weight:900; margin:2px 0 0; }
+  .chline { font-size:13px; color:#92400E; font-weight:700; margin-top:2px; }
+  .homebtn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#8A7259; background:#fff; border:1px solid #EDDFCC; padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .homebtn:hover { border-color:#B39D82; }
+  .card { background:#fff; border:1px solid #EDDFCC; border-radius:18px; padding:22px; }
+  .label { font-size:13px; color:#8A7259; margin-bottom:6px; }
+  .progresscard { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .progresscard .pct { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#92400E; border:4px solid #F0E0C8; }
+  .unititem { text-align:left; border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; transition:.15s; margin-bottom:10px; border:1px solid #EDDFCC; background:#fff; cursor:pointer; }
+  .unititem:hover { border-color:#B39D82; transform:translateY(-1px); }
+  .unititem.locked { background:#F9F1E6; border-color:#F9F1E6; cursor:not-allowed; opacity:.6; }
+  .unititem.current { box-shadow: 0 0 0 2px #FDE7C5; }
+  .unumber { font-size:11px; font-weight:800; color:#92400E; letter-spacing:1px; }
+  .utitle { font-weight:800; font-size:15px; margin-top:2px; }
+  .ucount { font-size:12px; color:#B39D82; margin-top:2px; }
+  .badge { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .progressbar { height:6px; background:#EDDFCC; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .progressbar > div { height:100%; background:#92400E; }
+  .toprow { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .pill { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#FBEEDA; color:#7C2D12; }
+  .pillmuted { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#F4EDE3; color:#64748B; }
+  .tally { margin-left:auto; font-size:12px; color:#B39D82; }
+  .sentence { font-size:23px; font-weight:900; line-height:1.4; margin: 16px 0 20px; }
+  textarea { width:100%; height:80px; border:1px solid #EDDFCC; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; resize:none; }
+  textarea:disabled { background:#FBF6EF; }
+  .primarybtn { width:100%; margin-top:16px; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:15px; color:#fff; cursor:pointer; background:#92400E; }
+  .primarybtn:disabled { background:#CBD5E1 !important; cursor:not-allowed; }
+  .answerbox { border-radius:12px; padding:14px; margin:16px 0 10px; background:#FBEEDA; }
+  .answerbox .lbl { font-size:12px; font-weight:700; color:#7C2D12; margin-bottom:4px; }
+  .answerbox .val { font-weight:800; font-size:16px; color:#6C2E0E; }
+  .hint { font-size:12px; color:#B39D82; margin:10px 0 8px; }
+  .btnrow { display:flex; gap:10px; }
+  .btnrow button { flex:1; padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #EDDFCC; background:#fff; color:#8A7259; }
+  .btnrow button.wide { color:#fff; border:none; background:#92400E; }
+  .resultcard { text-align:center; padding:30px 22px; }
+  .resultcard .score { font-size:40px; font-weight:900; margin:8px 0 2px; color:#92400E; }
+  .resultcard .sub { font-size:13px; color:#B39D82; }
+  .metarow { display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-bottom:1px solid #F4EDE3; }
+  .metarow:last-child { border-bottom:none; }
+  .metarow span:first-child { color:#B39D82; }
+  .metarow span:last-child { font-weight:700; }
+  .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+  .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #EDDFCC; background:#fff; }
+  .stack button.solid { color:#fff; border:none; background:#2B2015; }
+  .reviewlist { text-align:left; margin-top:18px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .reviewitem { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #F1F1F1; }
+  .reviewitem:last-child { border-bottom:none; }
+  .reviewbadge { flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:2px; }
+  .reviewbadge.ok { background:#D1FAE5; color:#059669; }
+  .reviewbadge.ng { background:#FEE2E2; color:#DC2626; }
+  .rv-en { font-weight:700; font-size:13px; text-align:left; margin:0; }
+  .rv-ko { font-size:12px; color:#94A3B8; text-align:left; margin:2px 0 0; }
+  .rv-label { text-align:left; font-size:13px; color:#94A3B8; font-weight:700; margin:0 0 8px; }
+  .note { font-size:12px; color:#B39D82; text-align:center; margin-top:16px; line-height:1.6; }
+  input[type=text] { width:100%; border:1px solid #EDDFCC; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+/* ===================== 데이터: Unit별 문장 (en|ko|level) ===================== */
+const UNITS = [
+{ num:"57", title:"분사구문의 의미", note:"시간·이유·조건·양보·동시동작·연속동작 등 문맥에 따라 달라지는 분사구문의 의미", sentences:[
+"Walking down the street, I saw an old friend.|길을 걷다가, 나는 오랜 친구를 보았다.|고1",
+"Feeling tired, she went to bed early.|피곤함을 느껴서, 그녀는 일찍 잠자리에 들었다.|고1",
+"Turning left, you will find the store.|왼쪽으로 돌면, 그 가게를 찾을 것이다.|고1",
+"Living next door, they rarely talk to each other.|옆집에 살면서도, 그들은 서로 거의 이야기하지 않는다.|고2",
+"Smiling brightly, she greeted the guests.|밝게 웃으면서, 그녀는 손님들을 맞이했다.|고1",
+"He left the house, slamming the door behind him.|그는 문을 쾅 닫으며 집을 나갔다.|고1",
+"Seeing the police, the thief ran away.|경찰을 보고, 그 도둑은 도망갔다.|고1",
+"Not knowing what to say, she remained silent.|무슨 말을 해야 할지 몰라서, 그녀는 침묵했다.|고1",
+"Studying abroad, he learned a lot about different cultures.|해외에서 공부하면서, 그는 다양한 문화에 대해 많이 배웠다.|고2",
+"Arriving at the station, we found the train had already left.|역에 도착했을 때, 우리는 기차가 이미 떠났다는 것을 알았다.|고2",
+"Having no money, he couldn't buy the ticket.|돈이 없어서, 그는 표를 살 수 없었다.|고2",
+"Written in simple English, the book is easy to understand.|쉬운 영어로 쓰여서, 그 책은 이해하기 쉽다.|고2",
+"Surprised by the news, she couldn't say a word.|그 소식에 놀라서, 그녀는 한마디도 할 수 없었다.|고1",
+"Given more time, he could have finished the project.|시간이 더 주어졌다면, 그는 그 프로젝트를 끝낼 수 있었을 텐데.|고2",
+"Compared to last year, sales have increased significantly.|작년과 비교하면, 매출이 크게 증가했다.|고2",
+"Standing on the hill, we could see the whole city.|언덕 위에 서서, 우리는 도시 전체를 볼 수 있었다.|고1",
+"Knowing the risks, she still decided to go.|위험을 알면서도, 그녀는 여전히 가기로 결심했다.|고2",
+"Exhausted from the trip, they fell asleep immediately.|여행으로 지쳐서, 그들은 즉시 잠들었다.|고1",
+"Reading the letter, she began to cry.|편지를 읽으면서, 그녀는 울기 시작했다.|고1",
+"Checking his phone, he noticed a missed call.|휴대폰을 확인하다가, 그는 부재중 전화를 알아챘다.|고2",
+"Born in a small village, she grew up to become a famous writer.|작은 마을에서 태어나, 그녀는 자라서 유명한 작가가 되었다.|고2",
+"Encouraged by her teacher, she decided to enter the competition.|선생님에게 격려받아, 그녀는 대회에 참가하기로 결심했다.|고2"
+]},
+{ num:"58", title:"주의해야 할 분사구문의 형태", note:"완료 분사구문(Having p.p.), 부정 분사구문(Not/Never Ving), 수동 분사구문((Being) p.p.)", sentences:[
+"Having finished his homework, he went out to play.|숙제를 끝낸 후, 그는 놀러 나갔다.|고1",
+"Having lived in Japan for years, she speaks Japanese fluently.|일본에서 여러 해 산 적이 있어서, 그녀는 일본어를 유창하게 한다.|고2",
+"Having lost his job, he had to find a new one.|직장을 잃었기 때문에, 그는 새 직장을 찾아야 했다.|고2",
+"Having been warned before, they were more careful this time.|이전에 경고를 받았기 때문에, 그들은 이번에는 더 조심했다.|고2",
+"Not knowing the answer, I remained silent.|답을 몰라서, 나는 침묵했다.|고1",
+"Not having finished the report, she stayed late at the office.|보고서를 끝내지 못해서, 그녀는 사무실에 늦게까지 남았다.|고2",
+"Never having seen snow before, the children were excited.|전에 눈을 본 적이 없어서, 아이들은 신이 났다.|고2",
+"Not being invited, he decided not to go to the party.|초대받지 못해서, 그는 파티에 가지 않기로 결심했다.|고2",
+"Written by a child, the essay was surprisingly mature.|아이가 썼음에도, 그 에세이는 놀랍도록 성숙했다.|고2",
+"Left alone, the dog began to bark.|혼자 남겨져서, 그 개는 짖기 시작했다.|고1",
+"Made of pure gold, the ring was very expensive.|순금으로 만들어져서, 그 반지는 매우 비쌌다.|고1",
+"Seen from above, the city looked beautiful.|위에서 보면, 그 도시는 아름다워 보였다.|고2",
+"Being tired, she decided to take a rest.|피곤해서, 그녀는 쉬기로 결심했다.|고1",
+"Being a doctor, he knew exactly what to do.|의사였기 때문에, 그는 무엇을 해야 할지 정확히 알았다.|고1",
+"Having been rejected several times, he never gave up.|여러 번 거절당했음에도, 그는 결코 포기하지 않았다.|고2",
+"Not wanting to disturb her, he left the room quietly.|그녀를 방해하고 싶지 않아서, 그는 조용히 방을 나갔다.|고2",
+"Having no other choice, she accepted the offer.|다른 선택이 없어서, 그녀는 그 제안을 받아들였다.|고2",
+"Surrounded by reporters, the actor refused to comment.|기자들에게 둘러싸여, 그 배우는 언급을 거부했다.|고2",
+"Having studied the issue carefully, the committee made its decision.|그 문제를 신중히 연구한 후, 위원회는 결정을 내렸다.|고2",
+"Not expecting such a large crowd, the organizers ran out of seats.|그렇게 많은 인파를 예상하지 못해서, 주최자들은 좌석이 부족했다.|고2"
+]},
+{ num:"59", title:"주의해야 할 분사구문의 의미상의 주어", note:"주절과 다른 주어를 갖는 독립분사구문, with+명사+분사의 부대상황 표현", sentences:[
+"It being Sunday, the shops were all closed.|일요일이었기 때문에, 가게들이 모두 문을 닫았다.|고2",
+"The weather being fine, we decided to go on a picnic.|날씨가 좋아서, 우리는 소풍을 가기로 결정했다.|고2",
+"The sun having set, it grew dark quickly.|해가 진 후, 곧 어두워졌다.|고2",
+"There being no bus, we had to walk home.|버스가 없어서, 우리는 집까지 걸어가야 했다.|고2",
+"Night having fallen, the town became quiet.|밤이 되자, 마을은 조용해졌다.|고2",
+"All things considered, the plan seems reasonable.|모든 것을 고려하면, 그 계획은 합리적으로 보인다.|고2",
+"Generally speaking, women live longer than men.|일반적으로 말하면, 여성이 남성보다 오래 산다.|고2",
+"Judging from his accent, he must be from the South.|그의 억양으로 판단하건대, 그는 남부 출신임이 틀림없다.|고2",
+"Frankly speaking, I don't like his attitude.|솔직히 말해서, 나는 그의 태도가 마음에 들지 않는다.|고2",
+"She sat with her eyes closed.|그녀는 눈을 감은 채 앉아 있었다.|고1",
+"He stood there with his arms folded.|그는 팔짱을 낀 채 그곳에 서 있었다.|고1",
+"She spoke with tears running down her face.|그녀는 눈물이 얼굴로 흘러내리는 채로 말했다.|고2",
+"He fell asleep with the TV on.|그는 TV를 켜 놓은 채로 잠들었다.|고1",
+"She walked into the room with her hair wet.|그녀는 머리가 젖은 채로 방에 들어왔다.|고1",
+"With night approaching, we hurried back to the camp.|밤이 다가오고 있어서, 우리는 서둘러 캠프로 돌아갔다.|고2",
+"With prices rising, people are spending less.|물가가 오르고 있어서, 사람들은 지출을 줄이고 있다.|고2",
+"Weather permitting, the game will be held outdoors.|날씨가 허락한다면, 그 경기는 야외에서 열릴 것이다.|고2",
+"Considering his age, he is in remarkably good shape.|그의 나이를 고려하면, 그는 놀라울 만큼 건강 상태가 좋다.|고2"
+]}
+];
+
+const CH = { code:"chapter10", title:"Chapter 10", desc:"분사구문", solid:"#92400E" };
+
+/* ===================== 상태 ===================== */
+const appState = {
+  name: "",
+  unitIdx: null,
+  items: [],
+  idx: 0,
+  marks: [],
+  revealed: false,
+  userAnswer: "",
+  wrongPool: false,
+  completed: new Set()
+};
+
+function el(id){ return document.getElementById(id); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function parseUnit(u){
+  return u.sentences.map(line=>{
+    const [en,ko,level] = line.split("|");
+    return {en,ko,level};
+  });
+}
+
+function goHome(){
+  appState.unitIdx = null;
+  appState.wrongPool = false;
+  render();
+}
+
+function startUnit(i){
+  appState.unitIdx = i;
+  appState.items = parseUnit(UNITS[i]);
+  appState.idx = 0;
+  appState.marks = new Array(appState.items.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  appState.wrongPool = false;
+  renderPracticeView();
+}
+
+function checkAnswer(){
+  appState.userAnswer = el("answerInput").value;
+  appState.revealed = true;
+  renderPracticeView();
+}
+
+function mark(value){
+  appState.marks[appState.idx] = value;
+  if(appState.idx < appState.items.length - 1){
+    appState.idx += 1;
+    appState.revealed = false;
+    appState.userAnswer = "";
+    renderPracticeView();
+  } else {
+    if(!appState.wrongPool) appState.completed.add(appState.unitIdx);
+    renderResultView();
+  }
+}
+
+function retryWrong(){
+  const wrongItems = appState.items.filter((_,i)=>appState.marks[i]==="x");
+  if(wrongItems.length === 0) return;
+  appState.wrongPool = true;
+  appState.items = wrongItems;
+  appState.idx = 0;
+  appState.marks = new Array(wrongItems.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  renderPracticeView();
+}
+
+function copyResult(){
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const unit = UNITS[appState.unitIdx];
+  const text = "📘 " + CH.title + " · " + CH.desc + " 결과\n" +
+    "이름: " + (appState.name || "이름 미입력") + "\n" +
+    "Unit " + unit.num + " · " + unit.title + (appState.wrongPool ? " (오답 복습)" : "") + "\n" +
+    "날짜: " + new Date().toLocaleDateString('ko-KR') + "\n" +
+    "정답: " + correct + " / " + total + "\n" +
+    "오답: " + wrong + " / " + total;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showCopied).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showCopied(); }
+  catch(e){ alert('복사에 실패했어요. 아래 텍스트를 직접 선택해 복사해주세요.\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showCopied(){
+  const btn = el("copyBtn");
+  if(!btn) return;
+  const old = btn.innerText;
+  btn.innerText = "복사되었습니다 ✓";
+  setTimeout(()=>{ btn.innerText = old; }, 1800);
+}
+
+/* ===================== 렌더 ===================== */
+function render(){
+  if(appState.unitIdx === null) renderHome();
+  else renderPracticeView();
+}
+
+function renderHome(){
+  const doneCount = appState.completed.size;
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+    </header>
+    <div class="card">
+      <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
+      <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
+      <div class="progresscard" style="margin-top:14px;">
+        <div>
+          <p class="label" style="margin-bottom:0;">전체 진행률</p>
+          <p style="font-weight:900;font-size:18px;">${doneCount} / ${UNITS.length} Unit 완료</p>
+        </div>
+        <div class="pct">${Math.round((doneCount/UNITS.length)*100)}%</div>
+      </div>
+      ${UNITS.map((u,i)=>{
+        const isDone = appState.completed.has(i);
+        const firstIncomplete = UNITS.findIndex((_,j)=>!appState.completed.has(j));
+        const isUnlocked = isDone || i === (firstIncomplete === -1 ? UNITS.length : firstIncomplete);
+        const isCurrent = !isDone && i === firstIncomplete;
+        return `<div class="unititem ${!isUnlocked ? 'locked':''} ${isCurrent?'current':''}" onclick="${isUnlocked ? `startUnit(${i})` : ''}">
+          <div>
+            <div class="unumber">UNIT ${u.num}</div>
+            <div class="utitle">${u.title}</div>
+            <div class="ucount">${u.sentences.length}문장 · ${u.note}</div>
+          </div>
+          <div class="badge" style="background:${isDone?'#FBEEDA':'transparent'};color:${CH.solid}">${isDone ? '✓' : (isUnlocked ? '›' : '🔒')}</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="note">단문 위주로 먼저 익히고, 익숙해지면 문장 길이를 늘려보세요.</p>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderPracticeView(){
+  const unit = UNITS[appState.unitIdx];
+  const sentence = appState.items[appState.idx];
+  const pct = Math.round((appState.idx / appState.items.length) * 100);
+  const correctSoFar = appState.marks.filter(x=>x==="o").length;
+  const wrongSoFar = appState.marks.filter(x=>x==="x").length;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="progressbar"><div style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' · 오답 복습' : ''}</span>
+        <span class="pillmuted">${sentence.level}</span>
+        <span class="tally">${appState.idx+1} / ${appState.items.length} · 정답 ${correctSoFar} 오답 ${wrongSoFar}</span>
+      </div>
+      <p class="sentence">${escapeHtml(sentence.en)}</p>
+      <textarea id="answerInput" placeholder="이 문장을 우리말로 해석해서 적어보세요" ${appState.revealed ? "disabled" : ""}>${appState.revealed ? escapeHtml(appState.userAnswer) : ""}</textarea>
+  `;
+  if(!appState.revealed){
+    html += `<button class="primarybtn" onclick="checkAnswer()">정답 확인</button>`;
+  } else {
+    html += `
+      <div class="answerbox">
+        <p class="lbl">모범 해석</p>
+        <p class="val">${escapeHtml(sentence.ko)}</p>
+      </div>
+      <p class="hint">내가 쓴 해석과 비교해서 스스로 채점해주세요</p>
+      <div class="btnrow">
+        <button onclick="mark('x')">다시 볼게요</button>
+        <button class="wide" onclick="mark('o')">맞았어요</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  el("app").innerHTML = html;
+}
+
+function renderResultView(){
+  const unit = UNITS[appState.unitIdx];
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const nextIdx = appState.unitIdx + 1;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="card resultcard">
+      <p class="pillmuted" style="display:inline-block;">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' (오답 복습)' : ''}</p>
+      <p class="score">${correct} / ${total}</p>
+      <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div class="reviewlist">
+        <p class="rv-label">문장별 결과</p>
+        ${appState.items.map((it,i)=>`
+          <div class="reviewitem">
+            <span class="reviewbadge ${appState.marks[i]==='o'?'ok':'ng'}">${appState.marks[i]==='o'?'O':'X'}</span>
+            <div>
+              <p class="rv-en">${escapeHtml(it.en)}</p>
+              <p class="rv-ko">${escapeHtml(it.ko)}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="text-align:left;margin-top:18px;">
+        <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
+        <div class="metarow"><span>Unit</span><span>${unit.num} · ${unit.title}</span></div>
+        <div class="metarow"><span>날짜</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+      </div>
+      <div class="stack">
+        <button id="copyBtn" class="solid" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
+        ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
+        ${(!appState.wrongPool && nextIdx < UNITS.length) ? `<button style="border-color:${CH.solid};color:${CH.solid}" onclick="startUnit(${nextIdx})">다음 Unit (${UNITS[nextIdx].num}) 풀기</button>` : ""}
+        <button onclick="goHome()">처음 화면으로</button>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
