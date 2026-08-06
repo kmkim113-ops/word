@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨유에탑 구문독해 - Chapter 13 부사절</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; background:#EAEEF6; font-family:'Noto Sans KR', sans-serif; color:#161E30; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .eyebrow { font-size:11px; letter-spacing:2px; font-weight:700; color:#8B95AC; }
+  h1 { font-size:20px; font-weight:900; margin:2px 0 0; }
+  .chline { font-size:13px; color:#1E3A8A; font-weight:700; margin-top:2px; }
+  .homebtn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#556082; background:#fff; border:1px solid #D9E0EE; padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .homebtn:hover { border-color:#8B95AC; }
+  .card { background:#fff; border:1px solid #D9E0EE; border-radius:18px; padding:22px; }
+  .label { font-size:13px; color:#556082; margin-bottom:6px; }
+  .progresscard { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .progresscard .pct { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#1E3A8A; border:4px solid #DCE3F3; }
+  .unititem { text-align:left; border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; transition:.15s; margin-bottom:10px; border:1px solid #D9E0EE; background:#fff; cursor:pointer; }
+  .unititem:hover { border-color:#8B95AC; transform:translateY(-1px); }
+  .unititem.locked { background:#F1F3F9; border-color:#F1F3F9; cursor:not-allowed; opacity:.6; }
+  .unititem.current { box-shadow: 0 0 0 2px #BFD1F5; }
+  .unumber { font-size:11px; font-weight:800; color:#1E3A8A; letter-spacing:1px; }
+  .utitle { font-weight:800; font-size:15px; margin-top:2px; }
+  .ucount { font-size:12px; color:#8B95AC; margin-top:2px; }
+  .badge { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .progressbar { height:6px; background:#D9E0EE; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .progressbar > div { height:100%; background:#1E3A8A; }
+  .toprow { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .pill { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#E1E8FA; color:#1E3A8A; }
+  .pillmuted { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#EFF1F7; color:#64748B; }
+  .tally { margin-left:auto; font-size:12px; color:#8B95AC; }
+  .sentence { font-size:23px; font-weight:900; line-height:1.4; margin: 16px 0 20px; }
+  textarea { width:100%; height:80px; border:1px solid #D9E0EE; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; resize:none; }
+  textarea:disabled { background:#F8F9FC; }
+  .primarybtn { width:100%; margin-top:16px; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:15px; color:#fff; cursor:pointer; background:#1E3A8A; }
+  .primarybtn:disabled { background:#CBD5E1 !important; cursor:not-allowed; }
+  .answerbox { border-radius:12px; padding:14px; margin:16px 0 10px; background:#E1E8FA; }
+  .answerbox .lbl { font-size:12px; font-weight:700; color:#1E3A8A; margin-bottom:4px; }
+  .answerbox .val { font-weight:800; font-size:16px; color:#1E2E6B; }
+  .hint { font-size:12px; color:#8B95AC; margin:10px 0 8px; }
+  .btnrow { display:flex; gap:10px; }
+  .btnrow button { flex:1; padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #D9E0EE; background:#fff; color:#556082; }
+  .btnrow button.wide { color:#fff; border:none; background:#1E3A8A; }
+  .resultcard { text-align:center; padding:30px 22px; }
+  .resultcard .score { font-size:40px; font-weight:900; margin:8px 0 2px; color:#1E3A8A; }
+  .resultcard .sub { font-size:13px; color:#8B95AC; }
+  .metarow { display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-bottom:1px solid #EFF1F7; }
+  .metarow:last-child { border-bottom:none; }
+  .metarow span:first-child { color:#8B95AC; }
+  .metarow span:last-child { font-weight:700; }
+  .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+  .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #D9E0EE; background:#fff; }
+  .stack button.solid { color:#fff; border:none; background:#161E30; }
+  .reviewlist { text-align:left; margin-top:18px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .reviewitem { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #F1F1F1; }
+  .reviewitem:last-child { border-bottom:none; }
+  .reviewbadge { flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:2px; }
+  .reviewbadge.ok { background:#D1FAE5; color:#059669; }
+  .reviewbadge.ng { background:#FEE2E2; color:#DC2626; }
+  .rv-en { font-weight:700; font-size:13px; text-align:left; margin:0; }
+  .rv-ko { font-size:12px; color:#94A3B8; text-align:left; margin:2px 0 0; }
+  .rv-label { text-align:left; font-size:13px; color:#94A3B8; font-weight:700; margin:0 0 8px; }
+  .note { font-size:12px; color:#8B95AC; text-align:center; margin-top:16px; line-height:1.6; }
+  input[type=text] { width:100%; border:1px solid #D9E0EE; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+/* ===================== 데이터: Unit별 문장 (en|ko|level) ===================== */
+const UNITS = [
+{ num:"73", title:"시간을 나타내는 부사절 Ⅰ", note:"when, while, as, before, after — 기본 시간 접속사", sentences:[
+"When I got home, it was already dark.|내가 집에 도착했을 때, 이미 어두웠다.|고1",
+"While she was cooking, the phone rang.|그녀가 요리를 하는 동안, 전화가 울렸다.|고1",
+"As I was leaving, it started to rain.|내가 떠나고 있을 때, 비가 오기 시작했다.|고1",
+"Before you leave, please turn off the lights.|네가 떠나기 전에, 불을 꺼줘.|고1",
+"After he finished his homework, he watched TV.|그가 숙제를 끝낸 후에, 그는 TV를 보았다.|고1",
+"When the bell rang, all the students stood up.|종이 울렸을 때, 모든 학생들이 일어섰다.|고1",
+"While I was walking in the park, I met an old friend.|내가 공원에서 걷고 있는 동안, 나는 오랜 친구를 만났다.|고1",
+"As the sun rose, the birds began to sing.|해가 뜨자, 새들이 노래하기 시작했다.|고1",
+"Before the meeting starts, let's review the agenda.|회의가 시작되기 전에, 안건을 검토하자.|고1",
+"After the war ended, the country began to rebuild.|전쟁이 끝난 후, 그 나라는 재건을 시작했다.|고2",
+"When she saw the results, she couldn't hide her joy.|그녀는 결과를 보았을 때, 기쁨을 감출 수 없었다.|고1",
+"While the negotiations continued, tensions remained high.|협상이 계속되는 동안, 긴장은 계속 높았다.|고2",
+"As the deadline approached, everyone worked faster.|마감일이 다가오자, 모두가 더 빨리 일했다.|고2",
+"Before scientists discovered penicillin, infections often proved fatal.|과학자들이 페니실린을 발견하기 전에는, 감염이 종종 치명적이었다.|고2",
+"After the storm passed, the sky turned clear.|폭풍이 지나간 후, 하늘이 맑아졌다.|고1",
+"When technology advances, society changes with it.|기술이 발전하면, 사회도 그와 함께 변한다.|고2"
+]},
+{ num:"74", title:"시간을 나타내는 부사절 Ⅱ", note:"until, since, as soon as, by the time, once", sentences:[
+"I waited until the rain stopped.|나는 비가 그칠 때까지 기다렸다.|고1",
+"She has lived here since she was a child.|그녀는 어렸을 때부터 이곳에 살아왔다.|고1",
+"As soon as I heard the news, I called her.|나는 그 소식을 듣자마자, 그녀에게 전화했다.|고1",
+"By the time we arrived, the show had already started.|우리가 도착했을 때쯤, 공연은 이미 시작되어 있었다.|고1",
+"Once you learn to ride a bike, you never forget.|자전거 타는 법을 한번 배우면, 절대 잊지 않는다.|고1",
+"He didn't leave until he finished all his work.|그는 모든 일을 끝낼 때까지 떠나지 않았다.|고1",
+"Since the policy changed, prices have gone up.|그 정책이 바뀐 이후로, 물가가 올랐다.|고2",
+"As soon as the door opened, the crowd rushed in.|문이 열리자마자, 군중이 몰려들었다.|고1",
+"By the time you read this letter, I will be gone.|네가 이 편지를 읽을 때쯤이면, 나는 떠나 있을 것이다.|고2",
+"Once the contract is signed, it cannot be changed.|일단 계약이 서명되면, 그것은 바뀔 수 없다.|고2",
+"I hadn't realized how much I missed home until I traveled abroad.|나는 해외여행을 하고 나서야 비로소 내가 집을 얼마나 그리워하는지 깨달았다.|고2",
+"Since he moved to Seoul, he has changed a lot.|그가 서울로 이사한 이후로, 그는 많이 변했다.|고2",
+"By the time the ambulance arrived, it was too late.|구급차가 도착했을 때쯤, 이미 너무 늦었다.|고2",
+"Once you understand the basic rule, the rest becomes easy.|기본 규칙을 이해하고 나면, 나머지는 쉬워진다.|고2",
+"As soon as she saw him, she knew something was wrong.|그녀는 그를 보자마자, 뭔가 잘못되었다는 것을 알았다.|고2",
+"Nothing will change until people start taking action.|사람들이 행동하기 시작할 때까지 아무것도 바뀌지 않을 것이다.|고2"
+]},
+{ num:"75", title:"이유/원인을 나타내는 부사절", note:"because, since, as, now that — '~때문에'의 의미를 나타내는 부사절", sentences:[
+"I stayed home because it was raining.|비가 오고 있어서, 나는 집에 있었다.|고1",
+"Since you are tired, you should rest.|네가 피곤하니까, 쉬어야 한다.|고1",
+"As she was busy, she couldn't answer the phone.|그녀는 바빴기 때문에, 전화를 받을 수 없었다.|고1",
+"Now that you are here, we can start the meeting.|네가 이제 여기 왔으니, 우리는 회의를 시작할 수 있다.|고2",
+"He couldn't sleep because he was worried about the exam.|그는 시험에 대해 걱정했기 때문에, 잠을 잘 수 없었다.|고1",
+"Since the store was closed, we went home.|가게가 닫혀 있어서, 우리는 집에 갔다.|고1",
+"As the weather was bad, the game was postponed.|날씨가 나빴기 때문에, 경기가 연기되었다.|고1",
+"Now that the project is finished, we can relax.|프로젝트가 끝났으니, 우리는 이제 쉴 수 있다.|고2",
+"Because he apologized sincerely, she forgave him.|그가 진심으로 사과했기 때문에, 그녀는 그를 용서했다.|고1",
+"Since the results were disappointing, the team changed its strategy.|결과가 실망스러웠기 때문에, 그 팀은 전략을 바꾸었다.|고2",
+"As prices continue to rise, people are cutting back on spending.|물가가 계속 오르고 있기 때문에, 사람들은 지출을 줄이고 있다.|고2",
+"Now that she has more experience, she feels more confident.|그녀는 이제 경험이 더 많기 때문에, 더 자신감을 느낀다.|고2",
+"Because the bridge was damaged, traffic was rerouted.|다리가 손상되었기 때문에, 교통이 우회되었다.|고2",
+"Since technology has advanced so much, our lives have become more convenient.|기술이 너무 많이 발전했기 때문에, 우리의 삶이 더 편리해졌다.|고2",
+"As the evidence was insufficient, the case was dismissed.|증거가 불충분했기 때문에, 그 사건은 기각되었다.|고2",
+"Now that the truth has come out, no one can deny it.|진실이 밝혀졌으니, 아무도 그것을 부인할 수 없다.|고2"
+]},
+{ num:"76", title:"조건을 나타내는 부사절", note:"if, unless, as long as, provided that, once, in case", sentences:[
+"If it rains tomorrow, we will stay home.|내일 비가 오면, 우리는 집에 있을 것이다.|고1",
+"Unless you hurry, you will be late.|서두르지 않으면, 너는 늦을 것이다.|고1",
+"You can go out as long as you finish your homework.|숙제를 끝내는 한, 너는 나가도 된다.|고1",
+"Provided that the weather is good, the festival will be held outdoors.|날씨가 좋다면, 그 축제는 야외에서 열릴 것이다.|고2",
+"Once you sign the form, you cannot cancel the order.|일단 그 양식에 서명하면, 너는 주문을 취소할 수 없다.|고2",
+"In case it rains, bring an umbrella.|비가 올 경우에 대비해서, 우산을 가져와라.|고1",
+"You will pass the exam as long as you study hard.|열심히 공부하는 한, 너는 시험에 합격할 것이다.|고1",
+"Unless something unexpected happens, the plan will proceed as scheduled.|예상치 못한 일이 일어나지 않는 한, 그 계획은 예정대로 진행될 것이다.|고2",
+"Provided that everyone agrees, we can finalize the contract today.|모두가 동의한다면, 우리는 오늘 계약을 마무리할 수 있다.|고2",
+"If the price drops, more people will buy the product.|가격이 떨어지면, 더 많은 사람들이 그 제품을 살 것이다.|고1",
+"In case of an emergency, please use the stairs.|비상시에는, 계단을 이용해주세요.|고2",
+"As long as you keep trying, you will eventually succeed.|계속 노력하는 한, 너는 결국 성공할 것이다.|고2",
+"Unless the government takes action, the problem will only get worse.|정부가 조치를 취하지 않는 한, 그 문제는 더 악화되기만 할 것이다.|고2",
+"If the evidence is strong enough, the jury will convict him.|증거가 충분히 강력하다면, 배심원단은 그에게 유죄를 선고할 것이다.|고2",
+"Provided that the funding is approved, the research will begin next month.|자금 지원이 승인된다면, 그 연구는 다음 달에 시작될 것이다.|고2",
+"In case you need help, my number is on the card.|도움이 필요할 경우를 대비해서, 내 번호는 카드에 있다.|고2"
+]},
+{ num:"77", title:"양보/대조를 나타내는 부사절 Ⅰ", note:"although, though, even though, while — '~에도 불구하고, ~이지만'", sentences:[
+"Although it was raining, we went out for a walk.|비가 오고 있었지만, 우리는 산책을 하러 나갔다.|고1",
+"Though he is young, he is very wise.|그는 어리지만, 매우 지혜롭다.|고1",
+"Even though she studied hard, she failed the exam.|그녀는 열심히 공부했지만, 시험에 떨어졌다.|고1",
+"While I understand your point, I still disagree.|네 요점을 이해하지만, 나는 여전히 동의하지 않는다.|고2",
+"Although he apologized, she was still upset.|그는 사과했지만, 그녀는 여전히 화가 나 있었다.|고1",
+"Even though the movie was long, it was very interesting.|그 영화는 길었지만, 매우 흥미로웠다.|고1",
+"Though the road was icy, he drove carefully and arrived safely.|길이 얼어 있었지만, 그는 조심스럽게 운전해서 안전하게 도착했다.|고2",
+"While some people love the city, others prefer the countryside.|어떤 사람들은 도시를 사랑하지만, 다른 사람들은 시골을 선호한다.|고2",
+"Although the team lost, they played very well.|그 팀은 졌지만, 매우 잘 경기했다.|고1",
+"Even though he had little experience, he handled the situation calmly.|그는 경험이 거의 없었지만, 상황을 침착하게 처리했다.|고2",
+"Though the company faced financial difficulties, it managed to survive.|그 회사는 재정적 어려움에 직면했지만, 살아남을 수 있었다.|고2",
+"While the plan sounds good in theory, it may not work in practice.|그 계획은 이론상으로는 좋게 들리지만, 실제로는 효과가 없을 수도 있다.|고2",
+"Although scientists have made progress, a cure has not been found yet.|과학자들이 진전을 이루었지만, 치료법은 아직 발견되지 않았다.|고2",
+"Even though she was exhausted, she kept working until midnight.|그녀는 지쳤지만, 자정까지 계속 일했다.|고2",
+"Though the results were disappointing, the researchers remained hopeful.|결과는 실망스러웠지만, 연구자들은 여전히 희망을 가지고 있었다.|고2",
+"While the risks are real, the potential benefits are enormous.|위험은 실재하지만, 잠재적 이익은 엄청나다.|고2"
+]},
+{ num:"78", title:"양보/대조를 나타내는 부사절 Ⅱ", note:"no matter how/what/who, however, even if — '아무리 ~해도'", sentences:[
+"No matter how hard I try, I can't solve this problem.|아무리 열심히 노력해도, 나는 이 문제를 풀 수 없다.|고2",
+"No matter what happens, I will always support you.|무슨 일이 일어나든, 나는 항상 너를 지지할 것이다.|고1",
+"No matter where you go, you will always be welcome here.|네가 어디를 가든, 너는 항상 이곳에서 환영받을 것이다.|고2",
+"No matter who calls, tell them I'm busy.|누가 전화하든, 내가 바쁘다고 말해줘.|고2",
+"However hard it may be, we must finish this task.|아무리 어렵더라도, 우리는 이 일을 끝내야 한다.|고2",
+"However tired you are, you should finish your homework.|아무리 피곤하더라도, 너는 숙제를 끝내야 한다.|고2",
+"Even if it rains, the event will go on as planned.|비가 오더라도, 그 행사는 계획대로 진행될 것이다.|고1",
+"Even if you disagree, please respect my decision.|네가 동의하지 않더라도, 내 결정을 존중해줘.|고2",
+"Whatever you decide, I will respect your choice.|네가 무엇을 결정하든, 나는 네 선택을 존중할 것이다.|고2",
+"Whoever you are, you deserve to be treated with respect.|네가 누구든, 너는 존중받을 자격이 있다.|고2",
+"No matter how difficult the exam is, she always does well.|시험이 아무리 어렵더라도, 그녀는 항상 잘한다.|고2",
+"Even if the odds are against us, we will keep fighting.|승산이 우리에게 불리하더라도, 우리는 계속 싸울 것이다.|고2",
+"However busy he is, he always makes time for his family.|그는 아무리 바쁘더라도, 항상 가족을 위한 시간을 낸다.|고2",
+"No matter how much money he makes, he never seems satisfied.|그는 아무리 많은 돈을 벌어도, 결코 만족하는 것 같지 않다.|고2",
+"Even if the plan fails, we will have learned something valuable.|그 계획이 실패하더라도, 우리는 가치 있는 것을 배웠을 것이다.|고2"
+]},
+{ num:"79", title:"목적/결과를 나타내는 부사절", note:"so that, in order that (목적), so~that, such~that (결과)", sentences:[
+"She studied hard so that she could pass the exam.|그녀는 시험에 합격할 수 있도록 열심히 공부했다.|고1",
+"He spoke slowly so that everyone could understand.|그는 모두가 이해할 수 있도록 천천히 말했다.|고1",
+"I saved money so that I could buy a new car.|나는 새 차를 살 수 있도록 돈을 저축했다.|고1",
+"She worked hard in order that her family could live comfortably.|그녀는 가족이 편안하게 살 수 있도록 열심히 일했다.|고2",
+"It was so cold that we couldn't go outside.|너무 추워서 우리는 밖에 나갈 수 없었다.|고1",
+"She was so tired that she fell asleep immediately.|그녀는 너무 피곤해서 즉시 잠들었다.|고1",
+"He ran so fast that he won the race.|그는 너무 빨리 달려서 경주에서 이겼다.|고1",
+"It was such a difficult exam that many students failed.|너무 어려운 시험이어서 많은 학생들이 떨어졌다.|고1",
+"She spoke so quietly that I could hardly hear her.|그녀는 너무 조용히 말해서 나는 그녀의 말을 거의 들을 수 없었다.|고2",
+"He left early so that he wouldn't miss the train.|그는 기차를 놓치지 않도록 일찍 떠났다.|고1",
+"The company invested heavily so that it could stay competitive.|그 회사는 경쟁력을 유지할 수 있도록 대규모로 투자했다.|고2",
+"It was such a beautiful day that we decided to have a picnic.|너무 아름다운 날이어서 우리는 소풍을 가기로 결정했다.|고1",
+"She locked the door carefully so that no one could get in.|그녀는 아무도 들어올 수 없도록 문을 조심스럽게 잠갔다.|고2",
+"The teacher explained it twice so that all the students would understand.|선생님은 모든 학생들이 이해할 수 있도록 그것을 두 번 설명했다.|고2",
+"The signal was so weak that the call kept dropping.|신호가 너무 약해서 통화가 계속 끊겼다.|고2",
+"He trained every day so that he could compete in the Olympics.|그는 올림픽에 출전할 수 있도록 매일 훈련했다.|고2"
+]},
+{ num:"80", title:"양태를 나타내는 부사절", note:"as — '~하는 대로, ~하듯이'의 의미로 방식·양태를 나타내는 부사절", sentences:[
+"Do as I tell you.|내가 말하는 대로 해라.|고1",
+"As you know, the meeting starts at nine.|네가 알다시피, 회의는 9시에 시작한다.|고1",
+"Leave everything as it is.|모든 것을 있는 그대로 놔둬라.|고1",
+"As is often the case, he arrived late.|흔히 그렇듯이, 그는 늦게 도착했다.|고2",
+"Please fill out the form as instructed.|지시받은 대로 그 양식을 작성해주세요.|고2",
+"As expected, the team won the championship.|예상대로, 그 팀은 챔피언십에서 우승했다.|고2",
+"He behaved as if nothing had happened.|그는 마치 아무 일도 없었던 것처럼 행동했다.|고2",
+"She looked at me as though she didn't recognize me.|그녀는 마치 나를 알아보지 못하는 것처럼 나를 쳐다보았다.|고2",
+"As planned, the project was completed on time.|계획대로, 그 프로젝트는 제시간에 완료되었다.|고2",
+"Everything turned out as we had hoped.|모든 것이 우리가 바랐던 대로 이루어졌다.|고2",
+"As times change, so do people's values.|시대가 변함에 따라, 사람들의 가치관도 변한다.|고2",
+"As the report shows, sales have improved significantly.|보고서가 보여주듯이, 매출이 크게 개선되었다.|고2"
+]}
+];
+
+const CH = { code:"chapter13", title:"Chapter 13", desc:"부사절", solid:"#1E3A8A" };
+
+/* ===================== 상태 ===================== */
+const appState = {
+  name: "",
+  unitIdx: null,
+  items: [],
+  idx: 0,
+  marks: [],
+  revealed: false,
+  userAnswer: "",
+  wrongPool: false,
+  completed: new Set()
+};
+
+function el(id){ return document.getElementById(id); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function parseUnit(u){
+  return u.sentences.map(line=>{
+    const [en,ko,level] = line.split("|");
+    return {en,ko,level};
+  });
+}
+
+function goHome(){
+  appState.unitIdx = null;
+  appState.wrongPool = false;
+  render();
+}
+
+function startUnit(i){
+  appState.unitIdx = i;
+  appState.items = parseUnit(UNITS[i]);
+  appState.idx = 0;
+  appState.marks = new Array(appState.items.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  appState.wrongPool = false;
+  renderPracticeView();
+}
+
+function checkAnswer(){
+  appState.userAnswer = el("answerInput").value;
+  appState.revealed = true;
+  renderPracticeView();
+}
+
+function mark(value){
+  appState.marks[appState.idx] = value;
+  if(appState.idx < appState.items.length - 1){
+    appState.idx += 1;
+    appState.revealed = false;
+    appState.userAnswer = "";
+    renderPracticeView();
+  } else {
+    if(!appState.wrongPool) appState.completed.add(appState.unitIdx);
+    renderResultView();
+  }
+}
+
+function retryWrong(){
+  const wrongItems = appState.items.filter((_,i)=>appState.marks[i]==="x");
+  if(wrongItems.length === 0) return;
+  appState.wrongPool = true;
+  appState.items = wrongItems;
+  appState.idx = 0;
+  appState.marks = new Array(wrongItems.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  renderPracticeView();
+}
+
+function copyResult(){
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const unit = UNITS[appState.unitIdx];
+  const text = "📘 " + CH.title + " · " + CH.desc + " 결과\n" +
+    "이름: " + (appState.name || "이름 미입력") + "\n" +
+    "Unit " + unit.num + " · " + unit.title + (appState.wrongPool ? " (오답 복습)" : "") + "\n" +
+    "날짜: " + new Date().toLocaleDateString('ko-KR') + "\n" +
+    "정답: " + correct + " / " + total + "\n" +
+    "오답: " + wrong + " / " + total;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showCopied).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showCopied(); }
+  catch(e){ alert('복사에 실패했어요. 아래 텍스트를 직접 선택해 복사해주세요.\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showCopied(){
+  const btn = el("copyBtn");
+  if(!btn) return;
+  const old = btn.innerText;
+  btn.innerText = "복사되었습니다 ✓";
+  setTimeout(()=>{ btn.innerText = old; }, 1800);
+}
+
+/* ===================== 렌더 ===================== */
+function render(){
+  if(appState.unitIdx === null) renderHome();
+  else renderPracticeView();
+}
+
+function renderHome(){
+  const doneCount = appState.completed.size;
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+    </header>
+    <div class="card">
+      <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
+      <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
+      <div class="progresscard" style="margin-top:14px;">
+        <div>
+          <p class="label" style="margin-bottom:0;">전체 진행률</p>
+          <p style="font-weight:900;font-size:18px;">${doneCount} / ${UNITS.length} Unit 완료</p>
+        </div>
+        <div class="pct">${Math.round((doneCount/UNITS.length)*100)}%</div>
+      </div>
+      ${UNITS.map((u,i)=>{
+        const isDone = appState.completed.has(i);
+        const firstIncomplete = UNITS.findIndex((_,j)=>!appState.completed.has(j));
+        const isUnlocked = isDone || i === (firstIncomplete === -1 ? UNITS.length : firstIncomplete);
+        const isCurrent = !isDone && i === firstIncomplete;
+        return `<div class="unititem ${!isUnlocked ? 'locked':''} ${isCurrent?'current':''}" onclick="${isUnlocked ? `startUnit(${i})` : ''}">
+          <div>
+            <div class="unumber">UNIT ${u.num}</div>
+            <div class="utitle">${u.title}</div>
+            <div class="ucount">${u.sentences.length}문장 · ${u.note}</div>
+          </div>
+          <div class="badge" style="background:${isDone?'#E1E8FA':'transparent'};color:${CH.solid}">${isDone ? '✓' : (isUnlocked ? '›' : '🔒')}</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="note">단문 위주로 먼저 익히고, 익숙해지면 문장 길이를 늘려보세요.</p>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderPracticeView(){
+  const unit = UNITS[appState.unitIdx];
+  const sentence = appState.items[appState.idx];
+  const pct = Math.round((appState.idx / appState.items.length) * 100);
+  const correctSoFar = appState.marks.filter(x=>x==="o").length;
+  const wrongSoFar = appState.marks.filter(x=>x==="x").length;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="progressbar"><div style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' · 오답 복습' : ''}</span>
+        <span class="pillmuted">${sentence.level}</span>
+        <span class="tally">${appState.idx+1} / ${appState.items.length} · 정답 ${correctSoFar} 오답 ${wrongSoFar}</span>
+      </div>
+      <p class="sentence">${escapeHtml(sentence.en)}</p>
+      <textarea id="answerInput" placeholder="이 문장을 우리말로 해석해서 적어보세요" ${appState.revealed ? "disabled" : ""}>${appState.revealed ? escapeHtml(appState.userAnswer) : ""}</textarea>
+  `;
+  if(!appState.revealed){
+    html += `<button class="primarybtn" onclick="checkAnswer()">정답 확인</button>`;
+  } else {
+    html += `
+      <div class="answerbox">
+        <p class="lbl">모범 해석</p>
+        <p class="val">${escapeHtml(sentence.ko)}</p>
+      </div>
+      <p class="hint">내가 쓴 해석과 비교해서 스스로 채점해주세요</p>
+      <div class="btnrow">
+        <button onclick="mark('x')">다시 볼게요</button>
+        <button class="wide" onclick="mark('o')">맞았어요</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  el("app").innerHTML = html;
+}
+
+function renderResultView(){
+  const unit = UNITS[appState.unitIdx];
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const nextIdx = appState.unitIdx + 1;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="card resultcard">
+      <p class="pillmuted" style="display:inline-block;">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' (오답 복습)' : ''}</p>
+      <p class="score">${correct} / ${total}</p>
+      <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div class="reviewlist">
+        <p class="rv-label">문장별 결과</p>
+        ${appState.items.map((it,i)=>`
+          <div class="reviewitem">
+            <span class="reviewbadge ${appState.marks[i]==='o'?'ok':'ng'}">${appState.marks[i]==='o'?'O':'X'}</span>
+            <div>
+              <p class="rv-en">${escapeHtml(it.en)}</p>
+              <p class="rv-ko">${escapeHtml(it.ko)}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="text-align:left;margin-top:18px;">
+        <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
+        <div class="metarow"><span>Unit</span><span>${unit.num} · ${unit.title}</span></div>
+        <div class="metarow"><span>날짜</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+      </div>
+      <div class="stack">
+        <button id="copyBtn" class="solid" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
+        ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
+        ${(!appState.wrongPool && nextIdx < UNITS.length) ? `<button style="border-color:${CH.solid};color:${CH.solid}" onclick="startUnit(${nextIdx})">다음 Unit (${UNITS[nextIdx].num}) 풀기</button>` : ""}
+        <button onclick="goHome()">처음 화면으로</button>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
