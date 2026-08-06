@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨유에탑 구문독해 - Chapter 7 동사의 태</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; background:#FCEEEE; font-family:'Noto Sans KR', sans-serif; color:#2C1E1E; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .eyebrow { font-size:11px; letter-spacing:2px; font-weight:700; color:#C79A9A; }
+  h1 { font-size:20px; font-weight:900; margin:2px 0 0; }
+  .chline { font-size:13px; color:#DC2626; font-weight:700; margin-top:2px; }
+  .homebtn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#8A6767; background:#fff; border:1px solid #F5D9D9; padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .homebtn:hover { border-color:#C79A9A; }
+  .card { background:#fff; border:1px solid #F5D9D9; border-radius:18px; padding:22px; }
+  .label { font-size:13px; color:#8A6767; margin-bottom:6px; }
+  .progresscard { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .progresscard .pct { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#DC2626; border:4px solid #FBD5D5; }
+  .unititem { text-align:left; border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; transition:.15s; margin-bottom:10px; border:1px solid #F5D9D9; background:#fff; cursor:pointer; }
+  .unititem:hover { border-color:#C79A9A; transform:translateY(-1px); }
+  .unititem.locked { background:#FBF0F0; border-color:#FBF0F0; cursor:not-allowed; opacity:.6; }
+  .unititem.current { box-shadow: 0 0 0 2px #FECACA; }
+  .unumber { font-size:11px; font-weight:800; color:#DC2626; letter-spacing:1px; }
+  .utitle { font-weight:800; font-size:15px; margin-top:2px; }
+  .ucount { font-size:12px; color:#C79A9A; margin-top:2px; }
+  .badge { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .progressbar { height:6px; background:#F5D9D9; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .progressbar > div { height:100%; background:#DC2626; }
+  .toprow { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .pill { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#FEE2E2; color:#B91C1C; }
+  .pillmuted { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#F5EDED; color:#64748B; }
+  .tally { margin-left:auto; font-size:12px; color:#C79A9A; }
+  .sentence { font-size:23px; font-weight:900; line-height:1.4; margin: 16px 0 20px; }
+  textarea { width:100%; height:80px; border:1px solid #F5D9D9; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; resize:none; }
+  textarea:disabled { background:#FDF6F6; }
+  .primarybtn { width:100%; margin-top:16px; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:15px; color:#fff; cursor:pointer; background:#DC2626; }
+  .primarybtn:disabled { background:#CBD5E1 !important; cursor:not-allowed; }
+  .answerbox { border-radius:12px; padding:14px; margin:16px 0 10px; background:#FEE2E2; }
+  .answerbox .lbl { font-size:12px; font-weight:700; color:#B91C1C; margin-bottom:4px; }
+  .answerbox .val { font-weight:800; font-size:16px; color:#991B1B; }
+  .hint { font-size:12px; color:#C79A9A; margin:10px 0 8px; }
+  .btnrow { display:flex; gap:10px; }
+  .btnrow button { flex:1; padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #F5D9D9; background:#fff; color:#8A6767; }
+  .btnrow button.wide { color:#fff; border:none; background:#DC2626; }
+  .resultcard { text-align:center; padding:30px 22px; }
+  .resultcard .score { font-size:40px; font-weight:900; margin:8px 0 2px; color:#DC2626; }
+  .resultcard .sub { font-size:13px; color:#C79A9A; }
+  .metarow { display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-bottom:1px solid #F5EDED; }
+  .metarow:last-child { border-bottom:none; }
+  .metarow span:first-child { color:#C79A9A; }
+  .metarow span:last-child { font-weight:700; }
+  .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+  .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #F5D9D9; background:#fff; }
+  .stack button.solid { color:#fff; border:none; background:#2C1E1E; }
+  .reviewlist { text-align:left; margin-top:18px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .reviewitem { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #F1F1F1; }
+  .reviewitem:last-child { border-bottom:none; }
+  .reviewbadge { flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:2px; }
+  .reviewbadge.ok { background:#D1FAE5; color:#059669; }
+  .reviewbadge.ng { background:#FEE2E2; color:#DC2626; }
+  .rv-en { font-weight:700; font-size:13px; text-align:left; margin:0; }
+  .rv-ko { font-size:12px; color:#94A3B8; text-align:left; margin:2px 0 0; }
+  .rv-label { text-align:left; font-size:13px; color:#94A3B8; font-weight:700; margin:0 0 8px; }
+  .note { font-size:12px; color:#C79A9A; text-align:center; margin-top:16px; line-height:1.6; }
+  input[type=text] { width:100%; border:1px solid #F5D9D9; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+/* ===================== 데이터: Unit별 문장 (en|ko|level) ===================== */
+const UNITS = [
+{ num:"38", title:"3형식/4형식의 수동태", note:"기본 3형식 수동태와, 간접목적어·직접목적어가 있는 4형식의 수동태", sentences:[
+"The window was broken by the storm.|그 창문은 폭풍에 의해 깨졌다.|고1",
+"This book was written by a famous author.|이 책은 유명한 작가에 의해 쓰여졌다.|고1",
+"The letter was sent yesterday.|그 편지는 어제 보내졌다.|고1",
+"The bridge was built in 1990.|그 다리는 1990년에 지어졌다.|고1",
+"The cake was made by my mother.|그 케이크는 우리 엄마가 만드셨다.|고1",
+"The house was sold last month.|그 집은 지난달에 팔렸다.|고1",
+"English is spoken in many countries.|영어는 많은 나라에서 사용된다.|고1",
+"A new book was given to me by my teacher.|새 책이 선생님에 의해 나에게 주어졌다.|고1",
+"I was given a book by my teacher.|나는 선생님에게서 책을 받았다.|고1",
+"A prize was awarded to the winner.|상이 우승자에게 수여되었다.|고1",
+"The winner was awarded a prize.|우승자는 상을 받았다.|고1",
+"A question was asked of the speaker.|질문이 그 연사에게 던져졌다.|고2",
+"He was told the truth by his friend.|그는 친구로부터 진실을 들었다.|고2",
+"The report was shown to the board.|그 보고서는 이사회에 보여졌다.|고2",
+"The award was presented to her by the mayor.|그 상은 시장에 의해 그녀에게 수여되었다.|고2",
+"My car was repaired by a mechanic.|내 차는 정비사에 의해 수리되었다.|고1",
+"The new policy was announced by the government.|그 새로운 정책은 정부에 의해 발표되었다.|고2",
+"The suspect was arrested by the police.|그 용의자는 경찰에 의해 체포되었다.|고1",
+"The proposal was rejected by the committee.|그 제안은 위원회에 의해 거부되었다.|고2",
+"The information was provided to the public.|그 정보는 대중에게 제공되었다.|고2"
+]},
+{ num:"39", title:"5형식의 수동태", note:"목적격보어를 가진 5형식 문장의 수동태 (원형부정사→to부정사 전환 포함)", sentences:[
+"He was made to apologize.|그는 사과하도록 만들어졌다.|고1",
+"She was seen to enter the building.|그녀가 건물에 들어가는 것이 목격되었다.|고1",
+"He was heard to sing beautifully.|그가 아름답게 노래하는 것이 들렸다.|고2",
+"She was elected president.|그녀는 대통령으로 선출되었다.|고1",
+"He is called a genius by his friends.|그는 친구들에 의해 천재라고 불린다.|고1",
+"The room was found empty.|그 방은 비어 있는 것이 발견되었다.|고1",
+"The door was left open.|그 문은 열린 채로 남겨졌다.|고1",
+"She was seen crying in the hallway.|그녀가 복도에서 울고 있는 것이 목격되었다.|고2",
+"He was heard shouting outside.|그가 밖에서 소리치는 것이 들렸다.|고2",
+"The problem was considered serious.|그 문제는 심각하다고 여겨졌다.|고1",
+"The plan was thought impossible.|그 계획은 불가능하다고 여겨졌다.|고2",
+"He was believed to be innocent.|그는 무죄라고 여겨졌다.|고2",
+"The suspect was seen leaving the scene.|그 용의자가 현장을 떠나는 것이 목격되었다.|고2",
+"She was made captain of the team.|그녀는 팀의 주장으로 임명되었다.|고1",
+"The witness was made to testify.|그 증인은 증언하도록 만들어졌다.|고2",
+"The building was found damaged after the fire.|그 건물은 화재 후 손상된 것이 발견되었다.|고2",
+"He was expected to arrive on time.|그는 제시간에 도착할 것으로 기대되었다.|고2",
+"The device was designed to reduce energy use.|그 장치는 에너지 사용을 줄이도록 설계되었다.|고2"
+]},
+{ num:"40", title:"조동사/시제와 결합한 수동태", note:"조동사+be p.p., 완료수동태, 진행수동태", sentences:[
+"The work must be finished by tomorrow.|그 일은 내일까지 끝나야 한다.|고1",
+"The problem can be solved easily.|그 문제는 쉽게 해결될 수 있다.|고1",
+"The rules should be followed by everyone.|그 규칙은 모두에 의해 지켜져야 한다.|고1",
+"This medicine should be taken twice a day.|이 약은 하루에 두 번 복용되어야 한다.|고1",
+"The house is being painted right now.|그 집은 지금 페인트칠 되고 있다.|고1",
+"The road is being repaired this week.|그 도로는 이번 주에 수리되고 있다.|고1",
+"The bridge was being built when the storm hit.|그 다리는 폭풍이 몰아쳤을 때 지어지고 있었다.|고2",
+"The report has been finished already.|그 보고서는 이미 끝나 있다.|고1",
+"The tickets have already been sold out.|표는 이미 매진되었다.|고1",
+"The building has been damaged by the earthquake.|그 건물은 지진에 의해 손상되었다.|고1",
+"The email had been sent before I called.|그 이메일은 내가 전화하기 전에 이미 보내져 있었다.|고2",
+"The project will have been completed by next year.|그 프로젝트는 내년까지 완료되어 있을 것이다.|고2",
+"The letter must have been delivered by now.|그 편지는 지금쯤 배달되었음이 틀림없다.|고2",
+"The mistake could have been avoided.|그 실수는 피할 수 있었을 것이다.|고2",
+"The building may be demolished next year.|그 건물은 내년에 철거될지도 모른다.|고2",
+"This issue needs to be addressed immediately.|이 문제는 즉시 해결되어야 한다.|고2",
+"The new law will be enforced starting next month.|그 새로운 법은 다음 달부터 시행될 것이다.|고2",
+"The results are being reviewed by the committee.|그 결과는 위원회에 의해 검토되고 있다.|고2",
+"All applications must have been submitted by Friday.|모든 지원서는 금요일까지 제출되어 있어야 한다.|고2",
+"The damage caused by the flood could not be repaired quickly.|홍수로 인한 피해는 빨리 복구될 수 없었다.|고2"
+]},
+{ num:"41", title:"형태에 유의해야 할 수동태", note:"by 이외의 전치사를 쓰는 수동태 관용표현, 수동태로 쓸 수 없는 자동사", sentences:[
+"She is interested in learning new languages.|그녀는 새로운 언어를 배우는 것에 관심이 있다.|고1",
+"I was surprised at the news.|나는 그 소식에 놀랐다.|고1",
+"The mountain was covered with snow.|그 산은 눈으로 덮여 있었다.|고1",
+"He is known for his kindness.|그는 친절함으로 알려져 있다.|고1",
+"She is known as a great scientist.|그녀는 위대한 과학자로 알려져 있다.|고1",
+"Einstein is known to everyone.|아인슈타인은 모두에게 알려져 있다.|고1",
+"He is married to a doctor.|그는 의사와 결혼했다.|고1",
+"I was pleased with the result.|나는 그 결과에 만족했다.|고1",
+"She was satisfied with her performance.|그녀는 자신의 실력에 만족했다.|고1",
+"The room was filled with smoke.|그 방은 연기로 가득 찼다.|고1",
+"He was disappointed at the outcome.|그는 그 결과에 실망했다.|고1",
+"The event was crowded with tourists.|그 행사는 관광객들로 붐볐다.|고2",
+"I was shocked by the accident.|나는 그 사고에 충격을 받았다.|고1",
+"The event took place last weekend.|그 행사는 지난 주말에 열렸다.|고2",
+"What happened to your car?|네 차에 무슨 일이 있었니?|고2",
+"The accident occurred near the intersection.|그 사고는 교차로 근처에서 발생했다.|고2",
+"She resembles her mother closely.|그녀는 어머니를 많이 닮았다.|고2",
+"The dinner consisted of five courses.|그 저녁 식사는 다섯 코스로 구성되어 있었다.|고2"
+]},
+{ num:"42", title:"명령문/의문문 수동태", note:"Let + O + be p.p.로 바꾸는 명령문 수동태, 의문사를 포함한 의문문 수동태", sentences:[
+"Let it be done immediately.|그것이 즉시 이루어지게 하라.|고2",
+"Let the window be closed before you leave.|네가 떠나기 전에 창문이 닫히게 하라.|고2",
+"Let the door not be locked while we are inside.|우리가 안에 있는 동안 문이 잠기지 않게 하라.|고2",
+"Was this letter written by him?|이 편지는 그에 의해 쓰였는가?|고1",
+"By whom was the window broken?|누구에 의해 창문이 깨졌는가?|고2",
+"What was said by her during the meeting?|회의 중에 그녀에 의해 무엇이 말해졌는가?|고2",
+"When was the project finished?|그 프로젝트는 언제 끝났는가?|고1",
+"Where was this bag bought?|이 가방은 어디서 구매되었는가?|고1",
+"How was the problem solved?|그 문제는 어떻게 해결되었는가?|고1",
+"Why was the meeting canceled?|회의는 왜 취소되었는가?|고1",
+"Let your homework be finished before dinner.|숙제가 저녁 전에 끝나게 하라.|고2",
+"Is the report going to be submitted on time?|그 보고서는 제시간에 제출될 예정인가?|고2"
+]},
+{ num:"43", title:"to부정사/동명사의 수동형", note:"to be p.p., being p.p., having been p.p. — 준동사의 수동 표현", sentences:[
+"She wants to be respected by her colleagues.|그녀는 동료들에게 존경받기를 원한다.|고2",
+"He hopes to be selected for the team.|그는 그 팀에 선발되기를 바란다.|고1",
+"I don't like to be interrupted while working.|나는 일하는 동안 방해받는 것을 좋아하지 않는다.|고2",
+"She hates being told what to do.|그녀는 무엇을 하라고 지시받는 것을 싫어한다.|고2",
+"He is afraid of being criticized.|그는 비판받는 것을 두려워한다.|고2",
+"Being loved by everyone made her happy.|모두에게 사랑받는 것은 그녀를 행복하게 만들었다.|고2",
+"He remembers being praised by his teacher.|그는 선생님에게 칭찬받았던 것을 기억한다.|고2",
+"She avoided being seen by the reporters.|그녀는 기자들에게 목격되는 것을 피했다.|고2",
+"I appreciate being invited to the event.|나는 그 행사에 초대받은 것에 감사한다.|고2",
+"Having been rejected once, he tried again.|한 번 거절당한 후, 그는 다시 시도했다.|고2",
+"Having been warned before, they were more cautious this time.|이전에 경고를 받았기 때문에 그들은 이번에는 더 조심했다.|고2",
+"The plan needs to be approved before we proceed.|그 계획은 우리가 진행하기 전에 승인되어야 한다.|고2",
+"He seems to be respected by everyone in the office.|그는 사무실의 모두에게 존경받는 것처럼 보인다.|고2",
+"She dislikes being compared to her sister.|그녀는 언니와 비교되는 것을 싫어한다.|고2",
+"Having been trained well, the dog obeyed every command.|잘 훈련받았기 때문에 그 개는 모든 명령에 복종했다.|고2"
+]}
+];
+
+const CH = { code:"chapter07", title:"Chapter 7", desc:"동사의 태", solid:"#DC2626" };
+
+/* ===================== 상태 ===================== */
+const appState = {
+  name: "",
+  unitIdx: null,
+  items: [],
+  idx: 0,
+  marks: [],
+  revealed: false,
+  userAnswer: "",
+  wrongPool: false,
+  completed: new Set()
+};
+
+function el(id){ return document.getElementById(id); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function parseUnit(u){
+  return u.sentences.map(line=>{
+    const [en,ko,level] = line.split("|");
+    return {en,ko,level};
+  });
+}
+
+function goHome(){
+  appState.unitIdx = null;
+  appState.wrongPool = false;
+  render();
+}
+
+function startUnit(i){
+  appState.unitIdx = i;
+  appState.items = parseUnit(UNITS[i]);
+  appState.idx = 0;
+  appState.marks = new Array(appState.items.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  appState.wrongPool = false;
+  renderPracticeView();
+}
+
+function checkAnswer(){
+  appState.userAnswer = el("answerInput").value;
+  appState.revealed = true;
+  renderPracticeView();
+}
+
+function mark(value){
+  appState.marks[appState.idx] = value;
+  if(appState.idx < appState.items.length - 1){
+    appState.idx += 1;
+    appState.revealed = false;
+    appState.userAnswer = "";
+    renderPracticeView();
+  } else {
+    if(!appState.wrongPool) appState.completed.add(appState.unitIdx);
+    renderResultView();
+  }
+}
+
+function retryWrong(){
+  const wrongItems = appState.items.filter((_,i)=>appState.marks[i]==="x");
+  if(wrongItems.length === 0) return;
+  appState.wrongPool = true;
+  appState.items = wrongItems;
+  appState.idx = 0;
+  appState.marks = new Array(wrongItems.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  renderPracticeView();
+}
+
+function copyResult(){
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const unit = UNITS[appState.unitIdx];
+  const text = "📘 " + CH.title + " · " + CH.desc + " 결과\n" +
+    "이름: " + (appState.name || "이름 미입력") + "\n" +
+    "Unit " + unit.num + " · " + unit.title + (appState.wrongPool ? " (오답 복습)" : "") + "\n" +
+    "날짜: " + new Date().toLocaleDateString('ko-KR') + "\n" +
+    "정답: " + correct + " / " + total + "\n" +
+    "오답: " + wrong + " / " + total;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showCopied).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showCopied(); }
+  catch(e){ alert('복사에 실패했어요. 아래 텍스트를 직접 선택해 복사해주세요.\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showCopied(){
+  const btn = el("copyBtn");
+  if(!btn) return;
+  const old = btn.innerText;
+  btn.innerText = "복사되었습니다 ✓";
+  setTimeout(()=>{ btn.innerText = old; }, 1800);
+}
+
+/* ===================== 렌더 ===================== */
+function render(){
+  if(appState.unitIdx === null) renderHome();
+  else renderPracticeView();
+}
+
+function renderHome(){
+  const doneCount = appState.completed.size;
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+    </header>
+    <div class="card">
+      <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
+      <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
+      <div class="progresscard" style="margin-top:14px;">
+        <div>
+          <p class="label" style="margin-bottom:0;">전체 진행률</p>
+          <p style="font-weight:900;font-size:18px;">${doneCount} / ${UNITS.length} Unit 완료</p>
+        </div>
+        <div class="pct">${Math.round((doneCount/UNITS.length)*100)}%</div>
+      </div>
+      ${UNITS.map((u,i)=>{
+        const isDone = appState.completed.has(i);
+        const firstIncomplete = UNITS.findIndex((_,j)=>!appState.completed.has(j));
+        const isUnlocked = isDone || i === (firstIncomplete === -1 ? UNITS.length : firstIncomplete);
+        const isCurrent = !isDone && i === firstIncomplete;
+        return `<div class="unititem ${!isUnlocked ? 'locked':''} ${isCurrent?'current':''}" onclick="${isUnlocked ? `startUnit(${i})` : ''}">
+          <div>
+            <div class="unumber">UNIT ${u.num}</div>
+            <div class="utitle">${u.title}</div>
+            <div class="ucount">${u.sentences.length}문장 · ${u.note}</div>
+          </div>
+          <div class="badge" style="background:${isDone?'#FEE2E2':'transparent'};color:${CH.solid}">${isDone ? '✓' : (isUnlocked ? '›' : '🔒')}</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="note">단문 위주로 먼저 익히고, 익숙해지면 문장 길이를 늘려보세요.</p>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderPracticeView(){
+  const unit = UNITS[appState.unitIdx];
+  const sentence = appState.items[appState.idx];
+  const pct = Math.round((appState.idx / appState.items.length) * 100);
+  const correctSoFar = appState.marks.filter(x=>x==="o").length;
+  const wrongSoFar = appState.marks.filter(x=>x==="x").length;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="progressbar"><div style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' · 오답 복습' : ''}</span>
+        <span class="pillmuted">${sentence.level}</span>
+        <span class="tally">${appState.idx+1} / ${appState.items.length} · 정답 ${correctSoFar} 오답 ${wrongSoFar}</span>
+      </div>
+      <p class="sentence">${escapeHtml(sentence.en)}</p>
+      <textarea id="answerInput" placeholder="이 문장을 우리말로 해석해서 적어보세요" ${appState.revealed ? "disabled" : ""}>${appState.revealed ? escapeHtml(appState.userAnswer) : ""}</textarea>
+  `;
+  if(!appState.revealed){
+    html += `<button class="primarybtn" onclick="checkAnswer()">정답 확인</button>`;
+  } else {
+    html += `
+      <div class="answerbox">
+        <p class="lbl">모범 해석</p>
+        <p class="val">${escapeHtml(sentence.ko)}</p>
+      </div>
+      <p class="hint">내가 쓴 해석과 비교해서 스스로 채점해주세요</p>
+      <div class="btnrow">
+        <button onclick="mark('x')">다시 볼게요</button>
+        <button class="wide" onclick="mark('o')">맞았어요</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  el("app").innerHTML = html;
+}
+
+function renderResultView(){
+  const unit = UNITS[appState.unitIdx];
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const nextIdx = appState.unitIdx + 1;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="card resultcard">
+      <p class="pillmuted" style="display:inline-block;">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' (오답 복습)' : ''}</p>
+      <p class="score">${correct} / ${total}</p>
+      <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div class="reviewlist">
+        <p class="rv-label">문장별 결과</p>
+        ${appState.items.map((it,i)=>`
+          <div class="reviewitem">
+            <span class="reviewbadge ${appState.marks[i]==='o'?'ok':'ng'}">${appState.marks[i]==='o'?'O':'X'}</span>
+            <div>
+              <p class="rv-en">${escapeHtml(it.en)}</p>
+              <p class="rv-ko">${escapeHtml(it.ko)}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="text-align:left;margin-top:18px;">
+        <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
+        <div class="metarow"><span>Unit</span><span>${unit.num} · ${unit.title}</span></div>
+        <div class="metarow"><span>날짜</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+      </div>
+      <div class="stack">
+        <button id="copyBtn" class="solid" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
+        ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
+        ${(!appState.wrongPool && nextIdx < UNITS.length) ? `<button style="border-color:${CH.solid};color:${CH.solid}" onclick="startUnit(${nextIdx})">다음 Unit (${UNITS[nextIdx].num}) 풀기</button>` : ""}
+        <button onclick="goHome()">처음 화면으로</button>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
