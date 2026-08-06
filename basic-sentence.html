@@ -58,6 +58,15 @@
   .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
   .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #E2E8F0; background:#fff; }
   .stack button.solid { color:#fff; border:none; }
+  .reviewlist { text-align:left; margin-top:18px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .reviewitem { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #F1F1F1; }
+  .reviewitem:last-child { border-bottom:none; }
+  .reviewbadge { flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:2px; }
+  .reviewbadge.ok { background:#D1FAE5; color:#059669; }
+  .reviewbadge.ng { background:#FEE2E2; color:#DC2626; }
+  .rv-en { font-weight:700; font-size:13px; text-align:left; margin:0; }
+  .rv-ko { font-size:12px; color:#94A3B8; text-align:left; margin:2px 0 0; }
+  .rv-label { text-align:left; font-size:13px; color:#94A3B8; font-weight:700; margin:0 0 8px; }
   .note { font-size:12px; color:#94A3B8; text-align:center; margin-top:16px; line-height:1.6; }
 </style>
 </head>
@@ -330,10 +339,12 @@ function backToFormats(){
   render();
 }
 
+const SET_SIZE = 10;
+
 function startPractice(setNum){
   appState.setNum = setNum;
   const all = parseFormat(appState.format);
-  appState.items = all.slice((setNum-1)*50, setNum*50);
+  appState.items = all.slice((setNum-1)*SET_SIZE, setNum*SET_SIZE);
   appState.idx = 0;
   appState.marks = new Array(appState.items.length).fill(null);
   appState.revealed = false;
@@ -378,7 +389,7 @@ function copyResult(){
   const correct = appState.marks.filter(x=>x==="o").length;
   const wrong = total - correct;
   const meta = FORMAT_META[appState.format];
-  const setLabel = appState.wrongPool ? "오답 복습" : `Set ${appState.setNum} (${(appState.setNum-1)*50+1}~${appState.setNum*50})`;
+  const setLabel = appState.wrongPool ? "오답 복습" : `Set ${appState.setNum} (${(appState.setNum-1)*SET_SIZE+1}~${Math.min(appState.setNum*SET_SIZE,100)})`;
   const text = "📘 씨유에탑 기초형식 해석하기 결과\n" +
     "이름: " + (appState.name || "이름 미입력") + "\n" +
     "형식: " + meta.name + " · " + meta.desc + "\n" +
@@ -430,7 +441,7 @@ function renderHomeFormats(){
     <div class="card">
       <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
       <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
-      <p class="label" style="margin-bottom:10px;">형식을 선택하세요 (형식당 100문제 · 50문제씩 2세트)</p>
+      <p class="label" style="margin-bottom:10px;">형식을 선택하세요 (형식당 100문제 · 10문제씩 10세트)</p>
       <div class="grid5">
         ${[1,2,3,4,5].map(f=>{
           const m = FORMAT_META[f];
@@ -448,6 +459,16 @@ function renderHomeFormats(){
 
 function renderHomeSets(){
   const m = FORMAT_META[appState.format];
+  const all = parseFormat(appState.format);
+  const totalSets = Math.ceil(all.length / SET_SIZE);
+  const setButtons = Array.from({length: totalSets}, (_, i) => i + 1).map(setNum => {
+    const start = (setNum - 1) * SET_SIZE;
+    const end = Math.min(setNum * SET_SIZE, all.length);
+    const slice = all.slice(start, end);
+    const levels = [...new Set(slice.map(x => x.level))];
+    const levelLabel = levels.length > 1 ? `${levels[0]}~${levels[levels.length - 1]}` : levels[0];
+    return `<div class="setbtn" onclick="startPractice(${setNum})">Set ${setNum}<small>${start + 1}~${end}번 · ${levelLabel}</small></div>`;
+  }).join("");
   let html = `
     <header class="top">
       <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 기초형식 해석하기</h1></div>
@@ -458,10 +479,9 @@ function renderHomeSets(){
         <span class="pill" style="background:${m.bg};color:${m.text}">${m.name}</span>
         <span class="pillmuted">${m.desc}</span>
       </div>
-      <p class="label" style="margin-top:10px;">세트를 선택하세요</p>
+      <p class="label" style="margin-top:10px;">세트를 선택하세요 (10문제씩 ${totalSets}세트)</p>
       <div class="setgrid">
-        <div class="setbtn" onclick="startPractice(1)">Set 1<small>1~50번 · 중2~중3</small></div>
-        <div class="setbtn" onclick="startPractice(2)">Set 2<small>51~100번 · 중3~고1</small></div>
+        ${setButtons}
       </div>
     </div>
   `;
@@ -515,7 +535,8 @@ function renderResultView(){
   const total = appState.marks.length;
   const correct = appState.marks.filter(x=>x==="o").length;
   const wrong = total - correct;
-  const setLabel = appState.wrongPool ? "오답 복습" : `Set ${appState.setNum} (${(appState.setNum-1)*50+1}~${appState.setNum*50})`;
+  const setLabel = appState.wrongPool ? "오답 복습" : `Set ${appState.setNum} (${(appState.setNum-1)*SET_SIZE+1}~${Math.min(appState.setNum*SET_SIZE,100)})`;
+  const totalSets = Math.ceil(100 / SET_SIZE);
 
   let html = `
     <header class="top">
@@ -526,6 +547,18 @@ function renderResultView(){
       <p class="pillmuted" style="display:inline-block;">${m.name} · ${setLabel}</p>
       <p class="score" style="color:${m.solid}">${correct} / ${total}</p>
       <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div class="reviewlist">
+        <p class="rv-label">문장별 결과</p>
+        ${appState.items.map((it,i)=>`
+          <div class="reviewitem">
+            <span class="reviewbadge ${appState.marks[i]==='o'?'ok':'ng'}">${appState.marks[i]==='o'?'O':'X'}</span>
+            <div>
+              <p class="rv-en">${escapeHtml(it.en)}</p>
+              <p class="rv-ko">${escapeHtml(it.ko)}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
       <div style="text-align:left;margin-top:18px;">
         <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
         <div class="metarow"><span>형식</span><span>${m.name}</span></div>
@@ -535,7 +568,7 @@ function renderResultView(){
       <div class="stack">
         <button id="copyBtn" class="solid" style="background:#1E2A3A" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
         ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
-        ${(!appState.wrongPool && appState.setNum===1) ? `<button style="border-color:${m.solid};color:${m.solid}" onclick="startPractice(2)">Set 2 (51~100) 풀기</button>` : ""}
+        ${(!appState.wrongPool && appState.setNum < totalSets) ? `<button style="border-color:${m.solid};color:${m.solid}" onclick="startPractice(${appState.setNum+1})">다음 세트 (Set ${appState.setNum+1}) 풀기</button>` : ""}
         <button onclick="goHome()">처음 화면으로</button>
       </div>
     </div>
