@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨유에탑 구문독해 - Chapter 5 동사의 시제</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; background:#EAF6FC; font-family:'Noto Sans KR', sans-serif; color:#1B2B33; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .eyebrow { font-size:11px; letter-spacing:2px; font-weight:700; color:#8FADBB; }
+  h1 { font-size:20px; font-weight:900; margin:2px 0 0; }
+  .chline { font-size:13px; color:#0EA5E9; font-weight:700; margin-top:2px; }
+  .homebtn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#5E7A87; background:#fff; border:1px solid #D8ECF5; padding:8px 14px; border-radius:999px; cursor:pointer; }
+  .homebtn:hover { border-color:#8FADBB; }
+  .card { background:#fff; border:1px solid #D8ECF5; border-radius:18px; padding:22px; }
+  .label { font-size:13px; color:#5E7A87; margin-bottom:6px; }
+  .progresscard { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .progresscard .pct { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#0EA5E9; border:4px solid #CDEBFB; }
+  .unititem { text-align:left; border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; transition:.15s; margin-bottom:10px; border:1px solid #D8ECF5; background:#fff; cursor:pointer; }
+  .unititem:hover { border-color:#8FADBB; transform:translateY(-1px); }
+  .unititem.locked { background:#F0F8FC; border-color:#F0F8FC; cursor:not-allowed; opacity:.6; }
+  .unititem.current { box-shadow: 0 0 0 2px #BAE6FD; }
+  .unumber { font-size:11px; font-weight:800; color:#0EA5E9; letter-spacing:1px; }
+  .utitle { font-weight:800; font-size:15px; margin-top:2px; }
+  .ucount { font-size:12px; color:#8FADBB; margin-top:2px; }
+  .badge { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .progressbar { height:6px; background:#D8ECF5; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .progressbar > div { height:100%; background:#0EA5E9; }
+  .toprow { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .pill { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#E0F5FE; color:#0284C7; }
+  .pillmuted { font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:#EEF4F7; color:#64748B; }
+  .tally { margin-left:auto; font-size:12px; color:#8FADBB; }
+  .sentence { font-size:23px; font-weight:900; line-height:1.4; margin: 16px 0 20px; }
+  textarea { width:100%; height:80px; border:1px solid #D8ECF5; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; resize:none; }
+  textarea:disabled { background:#F7FBFD; }
+  .primarybtn { width:100%; margin-top:16px; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:15px; color:#fff; cursor:pointer; background:#0EA5E9; }
+  .primarybtn:disabled { background:#CBD5E1 !important; cursor:not-allowed; }
+  .answerbox { border-radius:12px; padding:14px; margin:16px 0 10px; background:#E0F5FE; }
+  .answerbox .lbl { font-size:12px; font-weight:700; color:#0284C7; margin-bottom:4px; }
+  .answerbox .val { font-weight:800; font-size:16px; color:#0369A1; }
+  .hint { font-size:12px; color:#8FADBB; margin:10px 0 8px; }
+  .btnrow { display:flex; gap:10px; }
+  .btnrow button { flex:1; padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #D8ECF5; background:#fff; color:#5E7A87; }
+  .btnrow button.wide { color:#fff; border:none; background:#0EA5E9; }
+  .resultcard { text-align:center; padding:30px 22px; }
+  .resultcard .score { font-size:40px; font-weight:900; margin:8px 0 2px; color:#0EA5E9; }
+  .resultcard .sub { font-size:13px; color:#8FADBB; }
+  .metarow { display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-bottom:1px solid #EEF4F7; }
+  .metarow:last-child { border-bottom:none; }
+  .metarow span:first-child { color:#8FADBB; }
+  .metarow span:last-child { font-weight:700; }
+  .stack { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+  .stack button { padding:14px; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid #D8ECF5; background:#fff; }
+  .stack button.solid { color:#fff; border:none; background:#1B2B33; }
+  .reviewlist { text-align:left; margin-top:18px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .reviewitem { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #F1F1F1; }
+  .reviewitem:last-child { border-bottom:none; }
+  .reviewbadge { flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:2px; }
+  .reviewbadge.ok { background:#D1FAE5; color:#059669; }
+  .reviewbadge.ng { background:#FEE2E2; color:#DC2626; }
+  .rv-en { font-weight:700; font-size:13px; text-align:left; margin:0; }
+  .rv-ko { font-size:12px; color:#94A3B8; text-align:left; margin:2px 0 0; }
+  .rv-label { text-align:left; font-size:13px; color:#94A3B8; font-weight:700; margin:0 0 8px; }
+  .note { font-size:12px; color:#8FADBB; text-align:center; margin-top:16px; line-height:1.6; }
+  input[type=text] { width:100%; border:1px solid #D8ECF5; border-radius:12px; padding:12px 14px; font-size:14px; font-family:inherit; margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+/* ===================== 데이터: Unit별 문장 (en|ko|level) ===================== */
+const UNITS = [
+{ num:"27", title:"현재시제의 다양한 의미", note:"습관·불변의 진리·예정된 일정, 시간/조건 부사절에서 미래 대신 쓰는 현재시제", sentences:[
+"She brushes her teeth twice a day.|그녀는 하루에 두 번 이를 닦는다.|고1",
+"Water boils at 100 degrees Celsius.|물은 섭씨 100도에서 끓는다.|고1",
+"The earth revolves around the sun.|지구는 태양 주위를 돈다.|고1",
+"The train leaves at nine tomorrow morning.|기차는 내일 아침 9시에 출발한다.|고1",
+"The movie starts at seven this evening.|그 영화는 오늘 저녁 7시에 시작한다.|고1",
+"If it rains tomorrow, we will stay home.|내일 비가 오면 우리는 집에 있을 것이다.|고1",
+"I will call you when he arrives.|그가 도착하면 내가 너에게 전화할게.|고1",
+"As soon as she finishes her homework, she will go out.|그녀는 숙제를 끝내자마자 밖에 나갈 것이다.|고1",
+"He always complains about his job.|그는 항상 자기 직장에 대해 불평한다.|고1",
+"My grandfather gets up at five every day.|내 할아버지는 매일 5시에 일어나신다.|고1",
+"The store opens at ten on weekdays.|그 가게는 평일에 10시에 문을 연다.|고1",
+"Honesty is the best policy.|정직이 최선의 방책이다.|고1",
+"The plane departs from gate 12 at noon.|비행기는 정오에 12번 게이트에서 출발한다.|고2",
+"Unless you hurry, you will miss the bus.|서두르지 않으면 버스를 놓칠 것이다.|고2",
+"Once the contract is signed, both parties are bound by it.|계약이 서명되면 양측은 그것에 구속된다.|고2",
+"The semester ends next Friday.|학기는 다음 주 금요일에 끝난다.|고2",
+"Light travels faster than sound.|빛은 소리보다 빠르게 이동한다.|고1",
+"She never eats breakfast before work.|그녀는 출근 전에 절대 아침을 먹지 않는다.|고1",
+"Before the sun sets, we need to reach the camp.|해가 지기 전에 우리는 캠프에 도착해야 한다.|고2",
+"The exhibition runs until the end of the month.|그 전시회는 이달 말까지 계속된다.|고2"
+]},
+{ num:"28", title:"미래를 나타내는 표현", note:"will, be going to, be about to, be to, 현재진행형의 미래 용법", sentences:[
+"I will help you with your homework.|내가 네 숙제를 도와줄게.|고1",
+"She is going to visit her grandmother this weekend.|그녀는 이번 주말에 할머니를 방문할 것이다.|고1",
+"We are meeting our clients tomorrow morning.|우리는 내일 아침 고객들을 만날 예정이다.|고1",
+"The plane is about to take off.|비행기가 막 이륙하려고 한다.|고1",
+"The president is to visit the factory next week.|대통령은 다음 주에 그 공장을 방문할 예정이다.|고2",
+"I am leaving for Paris tomorrow.|나는 내일 파리로 떠난다.|고1",
+"It is going to rain soon.|곧 비가 올 것 같다.|고1",
+"They will have finished the project by next month.|그들은 다음 달까지 그 프로젝트를 끝낼 것이다.|고2",
+"She is about to give a speech.|그녀는 막 연설을 하려고 한다.|고1",
+"The conference is to be held in Seoul this year.|그 회의는 올해 서울에서 열릴 예정이다.|고2",
+"We shall overcome these difficulties together.|우리는 이 어려움들을 함께 극복할 것이다.|고2",
+"I am going to start my own business next year.|나는 내년에 내 사업을 시작할 것이다.|고1",
+"The new policy is to take effect in March.|그 새로운 정책은 3월에 시행될 예정이다.|고2",
+"He is bound to succeed if he keeps trying.|그는 계속 노력하면 반드시 성공할 것이다.|고2",
+"The company is expected to announce its results soon.|그 회사는 곧 결과를 발표할 것으로 예상된다.|고2",
+"She is due to arrive at the airport at noon.|그녀는 정오에 공항에 도착할 예정이다.|고2",
+"If nothing changes, prices are set to rise next month.|아무것도 바뀌지 않는다면 물가는 다음 달에 오를 것이다.|고2",
+"I was just about to call you.|나는 막 너에게 전화하려던 참이었다.|고2"
+]},
+{ num:"29", title:"현재완료형/현재완료진행형", note:"경험·완료·계속·결과의 현재완료, 지속되는 동작을 강조하는 현재완료진행형", sentences:[
+"I have visited Japan twice.|나는 일본을 두 번 방문한 적이 있다.|고1",
+"She has just finished her homework.|그녀는 방금 숙제를 끝냈다.|고1",
+"He has lived in Seoul for ten years.|그는 서울에서 10년 동안 살아왔다.|고1",
+"I have lost my keys.|나는 열쇠를 잃어버렸다.|고1",
+"Have you ever eaten Thai food?|태국 음식을 먹어본 적이 있니?|고1",
+"She has already left the office.|그녀는 이미 사무실을 떠났다.|고1",
+"They have known each other since childhood.|그들은 어린 시절부터 서로 알고 지냈다.|고1",
+"He has broken his leg.|그는 다리가 부러졌다.|고1",
+"We have not decided yet.|우리는 아직 결정하지 않았다.|고1",
+"I have been studying English for three years.|나는 3년 동안 영어를 공부해오고 있다.|고1",
+"She has been waiting for the bus for twenty minutes.|그녀는 20분 동안 버스를 기다리고 있다.|고1",
+"It has been raining since morning.|아침부터 비가 계속 오고 있다.|고1",
+"He has been working on this project for months.|그는 몇 달 동안 이 프로젝트를 진행해오고 있다.|고2",
+"They have been arguing about the same issue for hours.|그들은 몇 시간 동안 같은 문제로 다투고 있다.|고2",
+"I have never seen such a beautiful sunset.|나는 이렇게 아름다운 일몰을 본 적이 없다.|고2",
+"The company has grown rapidly since it was founded.|그 회사는 설립된 이후 빠르게 성장해왔다.|고2",
+"She has just come back from her trip.|그녀는 방금 여행에서 돌아왔다.|고1",
+"Have you finished reading the book yet?|그 책을 다 읽었니?|고1",
+"We have been living in this house since 2015.|우리는 2015년부터 이 집에서 살아오고 있다.|고2",
+"Prices have risen sharply over the past few months.|지난 몇 달 동안 물가가 급격히 올랐다.|고2"
+]},
+{ num:"30", title:"과거완료형/미래완료형", note:"과거의 한 시점보다 이전(과거완료), 미래의 한 시점까지 완료(미래완료)", sentences:[
+"She had already left when I arrived.|내가 도착했을 때 그녀는 이미 떠나고 없었다.|고1",
+"I had never seen snow before I moved here.|나는 이곳으로 이사 오기 전에는 눈을 본 적이 없었다.|고1",
+"By the time he called, I had finished dinner.|그가 전화했을 때쯤 나는 저녁을 다 먹은 상태였다.|고1",
+"He had studied French before he went to Paris.|그는 파리에 가기 전에 프랑스어를 공부한 적이 있었다.|고1",
+"She realized she had forgotten her passport.|그녀는 여권을 두고 왔다는 것을 깨달았다.|고1",
+"They had already sold the tickets by the time we got there.|우리가 그곳에 도착했을 때쯤 그들은 이미 표를 다 팔았다.|고2",
+"I had lived in three countries before I turned twenty.|나는 스무 살이 되기 전에 세 나라에서 살아본 적이 있었다.|고2",
+"The train had left before we reached the station.|우리가 역에 도착하기 전에 기차는 이미 떠났다.|고1",
+"She had worked there for five years before she resigned.|그녀는 사직하기 전 그곳에서 5년 동안 일했었다.|고2",
+"He had never spoken in public until that day.|그는 그날 전까지 대중 앞에서 말해본 적이 없었다.|고2",
+"By next year, I will have graduated from college.|내년쯤이면 나는 대학을 졸업했을 것이다.|고1",
+"By the time you arrive, we will have finished the meeting.|네가 도착할 때쯤이면 우리는 회의를 끝냈을 것이다.|고1",
+"She will have lived here for ten years next month.|다음 달이면 그녀는 이곳에 10년째 살고 있는 것이 된다.|고2",
+"By 2030, scientists will have developed new treatments.|2030년쯤이면 과학자들은 새로운 치료법을 개발했을 것이다.|고2",
+"He will have finished the report by Friday.|그는 금요일까지 보고서를 끝냈을 것이다.|고1",
+"By the end of this year, the company will have opened ten new stores.|올해 말까지 그 회사는 새 매장 열 곳을 열었을 것이다.|고2",
+"We will have been married for twenty years next spring.|다음 봄이면 우리는 결혼한 지 20년이 된다.|고2",
+"By the time the movie ends, it will have been three hours.|영화가 끝날 때쯤이면 세 시간이 지나 있을 것이다.|고2"
+]},
+{ num:"31", title:"to부정사/동명사의 완료형", note:"to have p.p. / having p.p. — 주절 시제보다 앞선 시점을 나타내는 완료형", sentences:[
+"He seems to have finished the work already.|그는 이미 그 일을 끝낸 것 같다.|고2",
+"She is believed to have left the country.|그녀는 그 나라를 떠난 것으로 여겨진다.|고2",
+"He is said to have been a famous singer.|그는 유명한 가수였다고 한다.|고2",
+"I am sorry to have kept you waiting.|기다리게 해서 죄송합니다.|고2",
+"She seemed to have forgotten my name.|그녀는 내 이름을 잊어버린 것 같았다.|고2",
+"He claims to have seen a ghost.|그는 유령을 본 적이 있다고 주장한다.|고2",
+"Having finished her homework, she went out to play.|숙제를 끝낸 후, 그녀는 놀러 나갔다.|고2",
+"Having lived abroad for years, he speaks three languages fluently.|여러 해 동안 해외에서 살았기 때문에 그는 세 언어를 유창하게 구사한다.|고2",
+"Having lost his job, he had to find a new one quickly.|직장을 잃었기 때문에 그는 빨리 새 직장을 찾아야 했다.|고2",
+"I regret not having studied harder in school.|나는 학교에서 더 열심히 공부하지 않은 것을 후회한다.|고2",
+"He denied having taken the money.|그는 그 돈을 가져갔다는 것을 부인했다.|고2",
+"She admitted having made a mistake.|그녀는 실수를 했다는 것을 인정했다.|고2",
+"The building appears to have been damaged in the storm.|그 건물은 폭풍우로 손상된 것처럼 보인다.|고2",
+"He is thought to have escaped through the back door.|그는 뒷문으로 도망친 것으로 여겨진다.|고2",
+"Having been warned before, he was more careful this time.|이전에 경고를 받았기 때문에 그는 이번에는 더 조심했다.|고2"
+]}
+];
+
+const CH = { code:"chapter05", title:"Chapter 5", desc:"동사의 시제", solid:"#0EA5E9" };
+
+/* ===================== 상태 ===================== */
+const appState = {
+  name: "",
+  unitIdx: null,
+  items: [],
+  idx: 0,
+  marks: [],
+  revealed: false,
+  userAnswer: "",
+  wrongPool: false,
+  completed: new Set()
+};
+
+function el(id){ return document.getElementById(id); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function parseUnit(u){
+  return u.sentences.map(line=>{
+    const [en,ko,level] = line.split("|");
+    return {en,ko,level};
+  });
+}
+
+function goHome(){
+  appState.unitIdx = null;
+  appState.wrongPool = false;
+  render();
+}
+
+function startUnit(i){
+  appState.unitIdx = i;
+  appState.items = parseUnit(UNITS[i]);
+  appState.idx = 0;
+  appState.marks = new Array(appState.items.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  appState.wrongPool = false;
+  renderPracticeView();
+}
+
+function checkAnswer(){
+  appState.userAnswer = el("answerInput").value;
+  appState.revealed = true;
+  renderPracticeView();
+}
+
+function mark(value){
+  appState.marks[appState.idx] = value;
+  if(appState.idx < appState.items.length - 1){
+    appState.idx += 1;
+    appState.revealed = false;
+    appState.userAnswer = "";
+    renderPracticeView();
+  } else {
+    if(!appState.wrongPool) appState.completed.add(appState.unitIdx);
+    renderResultView();
+  }
+}
+
+function retryWrong(){
+  const wrongItems = appState.items.filter((_,i)=>appState.marks[i]==="x");
+  if(wrongItems.length === 0) return;
+  appState.wrongPool = true;
+  appState.items = wrongItems;
+  appState.idx = 0;
+  appState.marks = new Array(wrongItems.length).fill(null);
+  appState.revealed = false;
+  appState.userAnswer = "";
+  renderPracticeView();
+}
+
+function copyResult(){
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const unit = UNITS[appState.unitIdx];
+  const text = "📘 " + CH.title + " · " + CH.desc + " 결과\n" +
+    "이름: " + (appState.name || "이름 미입력") + "\n" +
+    "Unit " + unit.num + " · " + unit.title + (appState.wrongPool ? " (오답 복습)" : "") + "\n" +
+    "날짜: " + new Date().toLocaleDateString('ko-KR') + "\n" +
+    "정답: " + correct + " / " + total + "\n" +
+    "오답: " + wrong + " / " + total;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showCopied).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showCopied(); }
+  catch(e){ alert('복사에 실패했어요. 아래 텍스트를 직접 선택해 복사해주세요.\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showCopied(){
+  const btn = el("copyBtn");
+  if(!btn) return;
+  const old = btn.innerText;
+  btn.innerText = "복사되었습니다 ✓";
+  setTimeout(()=>{ btn.innerText = old; }, 1800);
+}
+
+/* ===================== 렌더 ===================== */
+function render(){
+  if(appState.unitIdx === null) renderHome();
+  else renderPracticeView();
+}
+
+function renderHome(){
+  const doneCount = appState.completed.size;
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+    </header>
+    <div class="card">
+      <p class="label">이름 (선택 · 결과 복사에 표시돼요)</p>
+      <input type="text" id="nameInput" placeholder="예: 홍길동" value="${escapeHtml(appState.name)}" oninput="appState.name=this.value">
+      <div class="progresscard" style="margin-top:14px;">
+        <div>
+          <p class="label" style="margin-bottom:0;">전체 진행률</p>
+          <p style="font-weight:900;font-size:18px;">${doneCount} / ${UNITS.length} Unit 완료</p>
+        </div>
+        <div class="pct">${Math.round((doneCount/UNITS.length)*100)}%</div>
+      </div>
+      ${UNITS.map((u,i)=>{
+        const isDone = appState.completed.has(i);
+        const firstIncomplete = UNITS.findIndex((_,j)=>!appState.completed.has(j));
+        const isUnlocked = isDone || i === (firstIncomplete === -1 ? UNITS.length : firstIncomplete);
+        const isCurrent = !isDone && i === firstIncomplete;
+        return `<div class="unititem ${!isUnlocked ? 'locked':''} ${isCurrent?'current':''}" onclick="${isUnlocked ? `startUnit(${i})` : ''}">
+          <div>
+            <div class="unumber">UNIT ${u.num}</div>
+            <div class="utitle">${u.title}</div>
+            <div class="ucount">${u.sentences.length}문장 · ${u.note}</div>
+          </div>
+          <div class="badge" style="background:${isDone?'#E0F5FE':'transparent'};color:${CH.solid}">${isDone ? '✓' : (isUnlocked ? '›' : '🔒')}</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="note">단문 위주로 먼저 익히고, 익숙해지면 문장 길이를 늘려보세요.</p>
+  `;
+  el("app").innerHTML = html;
+}
+
+function renderPracticeView(){
+  const unit = UNITS[appState.unitIdx];
+  const sentence = appState.items[appState.idx];
+  const pct = Math.round((appState.idx / appState.items.length) * 100);
+  const correctSoFar = appState.marks.filter(x=>x==="o").length;
+  const wrongSoFar = appState.marks.filter(x=>x==="x").length;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="progressbar"><div style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="toprow">
+        <span class="pill">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' · 오답 복습' : ''}</span>
+        <span class="pillmuted">${sentence.level}</span>
+        <span class="tally">${appState.idx+1} / ${appState.items.length} · 정답 ${correctSoFar} 오답 ${wrongSoFar}</span>
+      </div>
+      <p class="sentence">${escapeHtml(sentence.en)}</p>
+      <textarea id="answerInput" placeholder="이 문장을 우리말로 해석해서 적어보세요" ${appState.revealed ? "disabled" : ""}>${appState.revealed ? escapeHtml(appState.userAnswer) : ""}</textarea>
+  `;
+  if(!appState.revealed){
+    html += `<button class="primarybtn" onclick="checkAnswer()">정답 확인</button>`;
+  } else {
+    html += `
+      <div class="answerbox">
+        <p class="lbl">모범 해석</p>
+        <p class="val">${escapeHtml(sentence.ko)}</p>
+      </div>
+      <p class="hint">내가 쓴 해석과 비교해서 스스로 채점해주세요</p>
+      <div class="btnrow">
+        <button onclick="mark('x')">다시 볼게요</button>
+        <button class="wide" onclick="mark('o')">맞았어요</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  el("app").innerHTML = html;
+}
+
+function renderResultView(){
+  const unit = UNITS[appState.unitIdx];
+  const total = appState.marks.length;
+  const correct = appState.marks.filter(x=>x==="o").length;
+  const wrong = total - correct;
+  const nextIdx = appState.unitIdx + 1;
+
+  let html = `
+    <header class="top">
+      <div><p class="eyebrow">SENTENCE PATTERN LAB</p><h1>씨유에탑 구문독해</h1><p class="chline">${CH.title} · ${CH.desc}</p></div>
+      <button class="homebtn" onclick="goHome()">홈</button>
+    </header>
+    <div class="card resultcard">
+      <p class="pillmuted" style="display:inline-block;">UNIT ${unit.num} · ${unit.title}${appState.wrongPool ? ' (오답 복습)' : ''}</p>
+      <p class="score">${correct} / ${total}</p>
+      <p class="sub">정답 ${correct}개 · 오답 ${wrong}개</p>
+      <div class="reviewlist">
+        <p class="rv-label">문장별 결과</p>
+        ${appState.items.map((it,i)=>`
+          <div class="reviewitem">
+            <span class="reviewbadge ${appState.marks[i]==='o'?'ok':'ng'}">${appState.marks[i]==='o'?'O':'X'}</span>
+            <div>
+              <p class="rv-en">${escapeHtml(it.en)}</p>
+              <p class="rv-ko">${escapeHtml(it.ko)}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="text-align:left;margin-top:18px;">
+        <div class="metarow"><span>이름</span><span>${appState.name ? escapeHtml(appState.name) : "미입력"}</span></div>
+        <div class="metarow"><span>Unit</span><span>${unit.num} · ${unit.title}</span></div>
+        <div class="metarow"><span>날짜</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+      </div>
+      <div class="stack">
+        <button id="copyBtn" class="solid" onclick="copyResult()">📋 결과 복사하기 (카톡 붙여넣기용)</button>
+        ${wrong>0 ? `<button onclick="retryWrong()">오답 ${wrong}개만 다시 풀기</button>` : ""}
+        ${(!appState.wrongPool && nextIdx < UNITS.length) ? `<button style="border-color:${CH.solid};color:${CH.solid}" onclick="startUnit(${nextIdx})">다음 Unit (${UNITS[nextIdx].num}) 풀기</button>` : ""}
+        <button onclick="goHome()">처음 화면으로</button>
+      </div>
+    </div>
+  `;
+  el("app").innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
