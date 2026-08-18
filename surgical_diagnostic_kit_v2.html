@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SURG-KIT · 외과 현장 진단 키트 (출처 명시판)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e13;
+    --surface:#121821;
+    --surface2:#1a222d;
+    --surface3:#212b38;
+    --border:#28323f;
+    --text:#e7edf3;
+    --muted:#8fa1b3;
+    --muted2:#5d6c7c;
+    --critical:#ff5252;
+    --critical-bg:rgba(255,82,82,0.1);
+    --urgent:#ffb020;
+    --urgent-bg:rgba(255,176,32,0.1);
+    --routine:#2dd4bf;
+    --routine-bg:rgba(45,212,191,0.1);
+    --accent:#4cc9f0;
+    --evidence:#b98cf2;
+    --evidence-bg:rgba(185,140,242,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(76,201,240,0.06), transparent),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(255,82,82,0.05), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans KR', sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  header{
+    border-bottom:1px solid var(--border);
+    padding:28px 24px 20px;
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,14,19,0.92);
+    backdrop-filter:blur(10px);
+  }
+  .header-inner{max-width:1080px; margin:0 auto;}
+  .brand-row{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .brand-mark{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px; font-weight:600; letter-spacing:0.12em;
+    color:var(--accent);
+    border:1px solid rgba(76,201,240,0.35);
+    padding:3px 8px; border-radius:3px;
+  }
+  h1{font-size:22px; font-weight:600; letter-spacing:-0.01em;}
+  .subtitle{color:var(--muted); font-size:13.5px; margin-top:6px; line-height:1.6;}
+  .disclaimer{
+    margin-top:14px;
+    font-size:11.5px;
+    color:var(--muted2);
+    border-left:2px solid var(--urgent);
+    padding:8px 12px;
+    background:var(--surface);
+    border-radius:0 4px 4px 0;
+    line-height:1.65;
+  }
+  .disclaimer b{color:var(--muted);}
+  .verify-note{
+    margin-top:8px; font-size:11px; color:var(--muted2);
+    display:flex; align-items:center; gap:6px;
+  }
+  .verify-note::before{content:'✓'; color:var(--routine); font-weight:700;}
+
+  .controls{max-width:1080px; margin:20px auto 0; padding:0 24px;}
+  .search-wrap{position:relative;}
+  #search{
+    width:100%;
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:13px 16px 13px 42px;
+    border-radius:8px;
+    font-size:15px;
+    font-family:inherit;
+    outline:none;
+    transition:border-color .15s;
+  }
+  #search:focus{border-color:var(--accent);}
+  #search::placeholder{color:var(--muted2);}
+  .search-icon{
+    position:absolute; left:15px; top:50%; transform:translateY(-50%);
+    width:16px; height:16px; color:var(--muted2); pointer-events:none;
+  }
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
+  .chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:7px 13px;
+    border-radius:20px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--muted);
+    cursor:pointer;
+    transition:all .15s;
+    user-select:none;
+  }
+  .chip:hover{border-color:var(--muted2); color:var(--text);}
+  .chip.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#04141c;
+    font-weight:600;
+  }
+  .urgency-legend{
+    display:flex; gap:18px; margin-top:16px; flex-wrap:wrap;
+    font-size:11.5px; color:var(--muted);
+  }
+  .urgency-legend span{display:flex; align-items:center; gap:6px;}
+  .dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
+
+  .count-row{
+    max-width:1080px; margin:18px auto 0; padding:0 24px;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--muted2);
+    letter-spacing:0.04em;
+  }
+
+  #results{max-width:1080px; margin:14px auto 0; padding:0 24px; display:flex; flex-direction:column; gap:10px;}
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-left:3px solid var(--muted2);
+    border-radius:8px;
+    overflow:hidden;
+    transition:border-color .15s;
+  }
+  .card.critical{border-left-color:var(--critical);}
+  .card.urgent{border-left-color:var(--urgent);}
+  .card.routine{border-left-color:var(--routine);}
+
+  .card-head{
+    padding:16px 18px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    cursor:pointer;
+  }
+  .card-head:hover{background:var(--surface2);}
+  .card-title-block{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .card-code{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted2);
+    letter-spacing:0.06em;
+  }
+  .card-title{font-size:16px; font-weight:600;}
+  .card-cat{
+    font-size:11px; color:var(--muted); font-family:'IBM Plex Mono', monospace;
+    background:var(--surface3); padding:2px 8px; border-radius:4px;
+  }
+  .badge{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px; font-weight:700; letter-spacing:0.08em;
+    padding:4px 9px; border-radius:4px; white-space:nowrap;
+  }
+  .badge.critical{background:var(--critical-bg); color:var(--critical);}
+  .badge.urgent{background:var(--urgent-bg); color:var(--urgent);}
+  .badge.routine{background:var(--routine-bg); color:var(--routine);}
+
+  .chevron{color:var(--muted2); font-size:12px; transition:transform .2s; flex-shrink:0;}
+  .card.open .chevron{transform:rotate(90deg);}
+
+  .card-body{
+    max-height:0; overflow:hidden; transition:max-height .3s ease;
+  }
+  .card-body-inner{
+    padding:0 18px 20px; border-top:1px solid var(--border);
+    display:grid; grid-template-columns:1fr 1fr; gap:18px 28px;
+    padding-top:16px;
+  }
+  .field{grid-column:span 1;}
+  .field.full{grid-column:1 / -1;}
+  .field-label{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+    color:var(--accent); letter-spacing:0.1em; margin-bottom:7px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .field-label::before{content:''; width:5px; height:5px; background:var(--accent); border-radius:1px;}
+  .field ul{list-style:none;}
+  .field li{
+    font-size:13.5px; line-height:1.7; color:#cbd6e0;
+    padding-left:14px; position:relative;
+  }
+  .field li::before{
+    content:'–'; position:absolute; left:0; color:var(--muted2);
+  }
+  .field.action li::before{content:'▸'; color:var(--urgent);}
+  .field.consult li::before{content:'☎'; color:var(--routine); font-size:11px;}
+
+  .evidence-box{
+    grid-column:1 / -1;
+    background:var(--evidence-bg);
+    border:1px solid rgba(185,140,242,0.25);
+    border-radius:6px;
+    padding:12px 14px;
+    margin-top:2px;
+  }
+  .evidence-box .field-label{color:var(--evidence); margin-bottom:8px;}
+  .evidence-box .field-label::before{background:var(--evidence);}
+  .evidence-item{
+    font-size:12.5px; line-height:1.7; color:#d8cdea;
+    padding-left:14px; position:relative; margin-bottom:4px;
+  }
+  .evidence-item:last-child{margin-bottom:0;}
+  .evidence-item::before{content:'§'; position:absolute; left:0; color:var(--evidence); font-size:11px;}
+  .evidence-general{
+    font-size:11.5px; color:var(--muted2); font-style:italic; margin-top:6px;
+    padding-left:14px; line-height:1.6;
+  }
+
+  @media (max-width:640px){
+    .card-body-inner{grid-template-columns:1fr;}
+    .card-title{font-size:15px;}
+    h1{font-size:19px;}
+  }
+
+  .empty-state{
+    text-align:center; padding:60px 20px; color:var(--muted2);
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+  }
+
+  footer{
+    max-width:1080px; margin:40px auto 0; padding:20px 24px 0;
+    border-top:1px solid var(--border);
+    font-size:11.5px; color:var(--muted2); line-height:1.8;
+  }
+  footer a{color:var(--accent); text-decoration:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand-row">
+      <span class="brand-mark">SURG · KIT</span>
+      <h1>외과 현장 진단 체크리스트</h1>
+      <span class="card-cat" style="color:var(--evidence); background:var(--evidence-bg);">v2 · 출처 명시판</span>
+    </div>
+    <p class="subtitle">주호소·증상을 검색하면 감별진단 · 필요검사 · 즉시 조치 · 컨설트 대상과, 각 항목이 근거한 실제 학회 가이드라인을 함께 확인합니다.</p>
+    <div class="disclaimer">
+      ⚠ 이 도구는 당직 시 신속한 사고 정리를 돕는 참고용 체크리스트입니다. 최종 진단·처치는 반드시 임상 판단, 상급의 확인, 소속 기관의 프로토콜을 따라야 합니다. <b>보라색 EVIDENCE 박스</b>는 실제 웹 검색으로 확인한 학회/저널 출처이며, 일부 항목(수술후 발열·수술부위 출혈)은 단일 가이드라인이 아닌 표준 교과서적 원칙(일반 원칙)에 근거함을 명시했습니다.
+    </div>
+    <div class="verify-note">2026년 8월 기준 웹 검색으로 각 가이드라인의 최신판 여부를 확인했습니다 (항목별 EVIDENCE 참조)</div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" type="text" placeholder="증상 검색 — 예) 우하복부 통증, 토혈, 수술후 발열, 서혜부 종괴...">
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="urgency-legend">
+    <span><i class="dot" style="background:var(--critical)"></i>CRITICAL — 즉시 생명위협 가능</span>
+    <span><i class="dot" style="background:var(--urgent)"></i>URGENT — 신속한 처치/평가 필요</span>
+    <span><i class="dot" style="background:var(--routine)"></i>ROUTINE — 계획된 평가 진행</span>
+    <span><i class="dot" style="background:var(--evidence)"></i>EVIDENCE — 실제 검증된 출처</span>
+  </div>
+</div>
+
+<div class="count-row" id="countRow"></div>
+<div id="results"></div>
+
+<footer>
+  SURG-KIT v2.0 · 일반외과 당직 참고용 · 2026년 8월 웹 검색으로 각 가이드라인의 최신 개정 여부를 확인했습니다.<br>
+  가이드라인은 학회·국가마다 다를 수 있고 지속적으로 개정되므로, 실제 처치 전 반드시 소속 기관 프로토콜 및 원문 가이드라인을 대조하시기 바랍니다.<br>
+  "일반 원칙" 표기 항목은 특정 학회의 단일 가이드라인이 아닌 널리 통용되는 임상 교육 원칙(교과서 수준)에 근거합니다.
+</footer>
+
+<script>
+const DATA = [
+  {
+    code:"AB-01", cat:"급성복통", title:"우하복부 통증 (RLQ)", urgency:"urgent",
+    ddx:["급성 충수돌기염","메켈게실염","우측 요관결석","난소염전 / 낭종파열 (여성)","크론병 급성 악화","장간막 림프절염"],
+    labs:["CBC + differential","CRP","U/A","β-hCG (가임기 여성 필수)","전해질, BUN/Cr"],
+    imaging:["복부/골반 CT (조영증강) — 1차","소아·임신부는 초음파 우선 고려"],
+    actions:["금식(NPO) 유지","IV line 확보 및 수액 시작","진통제 투여 (진단 지연 우려 없음 — 조기 통증조절 권장)","Alvarado score 참고하여 임상 확률 평가"],
+    consult:["외과 당직 콜","가임기 여성 부인과 감별 필요 시 산부인과"],
+    evidence:["WSES Jerusalem Guidelines, 2020 update — World J Emerg Surg. 2020;15:27 (Di Saverio et al.)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"AB-02", cat:"급성복통", title:"우상복부 통증 (RUQ)", urgency:"urgent",
+    ddx:["급성 담낭염","급성 담관염","담석산통 (biliary colic)","소화성궤양","우하엽 폐렴"],
+    labs:["CBC","LFT (AST/ALT/ALP/Bilirubin)","Lipase","CRP","혈액배양 (담관염 의심 시)"],
+    imaging:["복부 초음파 — 1차","MRCP / HIDA scan (진단 모호 시)"],
+    actions:["NPO, 수액","Charcot triad(발열·황달·복통) / Reynold pentad 확인","담관염·담낭염 의심 시 경험적 항생제 조기 투여","진통제"],
+    consult:["외과 당직","패혈증 동반 담관염 → 소화기내과 응급 ERCP 콜"],
+    evidence:["Tokyo Guidelines 2018 (TG18) — J Hepatobiliary Pancreat Sci. 2018 (진단기준·중증도·항생제 각 논문, 현재까지 최신판)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"AB-03", cat:"급성복통", title:"상복부 통증 + 방사통 (췌장염 의심)", urgency:"urgent",
+    ddx:["급성췌장염","천공성 소화성궤양","담석췌장염","대동맥박리 (감별 필수)"],
+    labs:["Lipase / Amylase","CBC","LFT, Ca, Triglyceride","BUN/Cr","ABGA"],
+    imaging:["복부 초음파 (담석 확인)","복부 CT — 진단 모호 시 또는 합병증 평가"],
+    actions:["NPO, 적극적 수액 소생 (Ringer's lactate)","통증 조절","Ranson / BISAP score로 중증도 평가","중증 시 ICU 전원 고려"],
+    consult:["외과","중증췌장염 → 중환자의학과"],
+    evidence:["IAP/APA Evidence-Based Guidelines for Acute Pancreatitis — Pancreatology. 2013;13:e1-15","WSES 2019 Guidelines for Severe Acute Pancreatitis — World J Emerg Surg. 2019;14:27 (Leppäniemi et al.)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"AB-04", cat:"급성복통", title:"미만성 복막염 (범발성 압통 + 반발통)", urgency:"critical",
+    ddx:["위/십이지장 천공","대장 천공","천공성 게실염","허혈성 장염에 의한 천공"],
+    labs:["CBC","젖산(lactate)","ABGA","CRP, 전해질, BUN/Cr","수술 전 응고검사 (PT/INR, aPTT)"],
+    imaging:["흉부/복부 단순촬영 (free air 확인)","복부 CT (조영증강) — 즉시"],
+    actions:["즉시 NPO","IV line 2개 이상 확보, 공격적 수액 소생","광범위 항생제 즉시 투여","Foley catheter 삽입 (소변량 감시)","패혈증 번들 적용, 응급수술 준비"],
+    consult:["외과 응급 콜 — 즉시","마취과 (응급수술)","중환자의학과"],
+    evidence:["WSES Guidelines: Perforated and Bleeding Peptic Ulcer — World J Emerg Surg. 2020;15:3 (Tarasconi et al.)","WSES Guidelines for Management of Intra-Abdominal Infections — World J Emerg Surg. 2017;12:29 (Sartelli et al.)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"AB-05", cat:"급성복통", title:"복부팽만 + 구토 + 배변배기 중단 (장폐쇄)", urgency:"urgent",
+    ddx:["유착성 장폐쇄","감돈탈장에 의한 폐쇄","종양에 의한 폐쇄","장중첩증","장염전"],
+    labs:["CBC","전해질 (특히 K — 반복 구토)","BUN/Cr","Lactate (교액 의심 시)"],
+    imaging:["복부 단순촬영 (supine/upright)","복부 CT (조영증강) — 폐쇄 부위/원인/폐색 정도 평가"],
+    actions:["NPO, 비위관(L-tube) 감압","IV 수액 및 전해질 교정","Foley catheter로 소변량 감시","교액(strangulation) 징후 감시: 발열·빈맥·국소압통·lactate 상승"],
+    consult:["외과 — 보존적 치료 vs 수술적 치료 결정"],
+    evidence:["Bologna Guidelines for Adhesive Small Bowel Obstruction, 2017 update — World J Emerg Surg. 2018;13:24 (ten Broek et al., WSES ASBO Working Group)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"AB-06", cat:"급성복통", title:"서혜부 종괴 + 통증 (감돈/교액성 탈장)", urgency:"critical",
+    ddx:["감돈 서혜부탈장","대퇴탈장","교액성 탈장 (장허혈 동반)","림프절병증","정삭염전 (남성)"],
+    labs:["CBC","Lactate","전해질"],
+    imaging:["서혜부/복부 초음파 또는 CT — 장허혈 평가"],
+    actions:["발적·압통 없고 증상 6시간 이내인 경우에 한해 도수정복 시도","교액 의심 시 도수정복 시도 금지, 즉시 응급수술","NPO"],
+    consult:["외과 응급 콜"],
+    evidence:["HerniaSurge Group, International Guidelines for Groin Hernia Management — Hernia. 2018;22:1-165","2023 Update of HerniaSurge Guidelines — BJS Open. 2023;7:zrad080"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"HM-01", cat:"출혈", title:"토혈 / 흑색변 (상부위장관출혈)", urgency:"critical",
+    ddx:["소화성궤양 출혈","정맥류 출혈 (간경변 동반)","Mallory-Weiss syndrome","위암에 의한 출혈"],
+    labs:["CBC","PT/INR","Type & cross-match (수혈 대비)","LFT, BUN/Cr"],
+    imaging:["1차 영상검사 없음 — 상부내시경이 진단 및 치료"],
+    actions:["대량 IV line 2개 확보","수액/수혈 소생 (Hb 7 g/dL 목표)","Glasgow-Blatchford score로 위험도 평가","PPI 정주 시작","의식저하 시 기도보호 우선","응급 상부내시경 의뢰"],
+    consult:["소화기내과 (응급내시경)","내시경 지혈 실패 시 외과"],
+    evidence:["ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding — Am J Gastroenterol. 2021;116(5):899-917 (Laine et al.)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"HM-02", cat:"출혈", title:"혈변 (하부위장관출혈)", urgency:"urgent",
+    ddx:["게실출혈","허혈성 장염","대장암","치핵 출혈","혈관이형성증 (angiodysplasia)"],
+    labs:["CBC","PT/INR","Type & screen"],
+    imaging:["CT 혈관조영술 — 활동성 출혈 의심 시","대장내시경 (안정화 후, 비응급 시행 권장)"],
+    actions:["활력징후 안정화, IV line 확보","Oakland score 등으로 위험도 평가 및 조기 퇴원 가능군 선별","항응고제 복용력 확인 및 필요 시 교정"],
+    consult:["소화기내과","활동성 출혈 시 영상의학과 (색전술 고려)"],
+    evidence:["ACG Clinical Guideline: Management of Patients With Acute Lower GI Bleeding (Updated) — Am J Gastroenterol. 2023;118(2):208-231 (Sengupta et al., 2016판 개정)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"IF-01", cat:"감염/발열", title:"수술 후 발열 (POD Fever)", urgency:"routine",
+    ddx:["POD 1-2: 무기폐/폐렴 (Wind)","POD 3-5: 요로감염 (Water)","POD 5-7: DVT/PE (Walking)","POD 5-7: 창상감염 (Wound)","약물열 (Wonder drug)"],
+    labs:["CBC, CRP","U/A + 소변배양","고열 시 혈액배양 2세트","분비물 있으면 창상배양"],
+    imaging:["흉부 X-ray","DVT 의심 시 하지 정맥 도플러","문합부누출/농양 의심 시 복부 CT"],
+    actions:["발열 시기(POD)별 5W's 순서로 원인 감별","창상 확인 및 필요 시 개방/배액","산소포화도, 호흡음 청진","조기 보행 격려"],
+    consult:["원인 불명 지속 발열 시 감염내과"],
+    evidence:[],
+    evidenceType:"general",
+    evidenceNote:"'5W's' 발열 시기별 감별 프레임워크는 특정 단일 학회 가이드라인이 아니라 외과 교과서(예: Sabiston, Schwartz)와 임상교육에서 오랫동안 통용되어 온 일반 원칙입니다. 기관별 SSI 예방 프로토콜은 ASCRS Preventing Surgical Site Infection (2024) 등 세부 가이드라인을 참고하세요."
+  },
+  {
+    code:"PC-01", cat:"수술후합병증", title:"문합부 누출 의심 (POD 3-7 빈맥+복통+발열)", urgency:"critical",
+    ddx:["문합부 누출 (anastomotic leak)","복강내 농양","장폐쇄"],
+    labs:["CBC","CRP (추세 확인 — 지속 상승 시 의심)","Lactate"],
+    imaging:["조영증강 복부 CT (경구조영제 병행 고려)"],
+    actions:["NPO 전환","광범위 항생제 시작","활력징후 집중 감시","패혈증 징후 시 즉시 재수술 또는 경피적 배액 논의"],
+    consult:["외과 응급 콜","경피배액 필요 시 영상의학과"],
+    evidence:["WSES Guidelines for Management of Intra-Abdominal Infections — World J Emerg Surg. 2017;12:29 (복강내 감염원 조절 원칙 적용)"],
+    evidenceType:"general",
+    evidenceNote:"문합부 누출 자체를 다루는 단일 통합 국제 가이드라인은 아직 확립되어 있지 않으며, 위 WSES 가이드라인의 복강내 감염 관리 원칙을 준용한 것입니다. 대장 수술은 ERAS/ASCRS 관련 지침을, 상부위장관은 개별 술식별 문헌을 추가로 확인하세요."
+  },
+  {
+    code:"PC-02", cat:"수술후합병증", title:"수술부위 출혈 / 혈종 (POD 조기)", urgency:"urgent",
+    ddx:["표재성 출혈","창상 혈종","복강내 출혈","문합부 출혈"],
+    labs:["CBC (추세 확인)","응고검사 (PT/INR, aPTT)","Type & cross-match"],
+    imaging:["필요 시 초음파 또는 CT"],
+    actions:["활력징후 모니터링 강화","압박 드레싱","혈역학 불안정 시 재수술 고려"],
+    consult:["외과 당직"],
+    evidence:[],
+    evidenceType:"general",
+    evidenceNote:"수술부위 출혈에 대한 초기 대응은 특정 단일 가이드라인보다 일반 외과 수련 원칙(활력징후·혈색소 추세 감시, 압박, 혈역학 불안정 시 재수술)에 근거합니다."
+  },
+  {
+    code:"VS-01", cat:"혈관응급", title:"급성 사지 허혈 (6P)", urgency:"critical",
+    ddx:["급성 동맥 색전증","급성 동맥 혈전증","대동맥박리에 의한 폐쇄"],
+    labs:["CBC","PT/aPTT","Lactate","CK (횡문근융해 평가)"],
+    imaging:["하지 동맥 도플러","CT 혈관조영술"],
+    actions:["금기 없으면 즉시 헤파린 정주 시작","환側 사지 거상 금지","6P (Pain, Pallor, Pulselessness, Paresthesia, Paralysis, Poikilothermia) 재평가"],
+    consult:["혈관외과 응급 콜"],
+    evidence:["ESVS 2020 Clinical Practice Guidelines on the Management of Acute Limb Ischaemia — Eur J Vasc Endovasc Surg. 2020;59:173-218 (Björck et al.)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"TR-01", cat:"외상", title:"복부 둔상 (Blunt Abdominal Trauma)", urgency:"critical",
+    ddx:["비장 손상","간 손상","장간막 손상","장/방광 파열","후복막 출혈"],
+    labs:["CBC","Type & cross-match","Lactate, 전해질","U/A (혈뇨 확인)"],
+    imaging:["FAST — 혈역학 불안정 시 1차","복부 CT 조영증강 — 안정 시"],
+    actions:["ATLS 프로토콜 (ABCDE) 순서 준수","대량수혈 프로토콜 대비","혈역학 불안정 시 즉시 수술실 이송"],
+    consult:["외상외과 응급 콜"],
+    evidence:["ATLS (Advanced Trauma Life Support) Student Course Manual, 10th ed. — American College of Surgeons Committee on Trauma, 2018 (현재까지 최신판)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"TR-02", cat:"외상", title:"관통성 외상 (Penetrating Trauma)", urgency:"critical",
+    ddx:["손상 경로에 따라 장기 손상 범위 다양 — 궤적 추정 필수"],
+    labs:["CBC","Type & cross-match","응고검사"],
+    imaging:["혈역학 안정 시 CT","불안정 시 즉시 수술 (영상 지연 금지)"],
+    actions:["응급실에서 상처 탐색·이물질 제거 금지","ATLS 프로토콜 적용","파상풍 예방접종 여부 확인"],
+    consult:["외상외과 응급 콜"],
+    evidence:["ATLS (Advanced Trauma Life Support) Student Course Manual, 10th ed. — American College of Surgeons Committee on Trauma, 2018 (현재까지 최신판)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"IF-02", cat:"감염/발열", title:"괴사성 근막염 의심 (통증 불균형 + 전신독성)", urgency:"critical",
+    ddx:["괴사성 근막염","중증 봉와직염","가스괴저 (clostridial myonecrosis)"],
+    labs:["CBC","CRP","CK","Lactate","LRINEC score 계산 (참고용, 아래 주의사항 참조)"],
+    imaging:["단순 X-ray (피하 가스 확인)","CT — 신속히 시행, 결과 대기로 수술 지연 금지"],
+    actions:["즉시 광범위 항생제 투여 (그람양성·음성·혐기균 커버)","응급 외과적 절개 및 괴사조직제거술 준비","패혈증 번들 적용"],
+    consult:["외과 응급 콜","감염내과","중환자의학과"],
+    evidence:["LRINEC score 원 논문 — Wong CH et al. Crit Care Med. 2004;32:1535-1541"],
+    evidenceType:"guideline",
+    evidenceNote:"⚠ 최신 문헌에 따르면 LRINEC score의 민감도는 연구마다 36~77%로 편차가 커서 단독 선별검사로는 부적합하다는 재검증 결과가 다수 보고되었습니다 (예: Ann Emerg Med. 2019;73:22-24). 임상적으로 강하게 의심되면 LRINEC 점수와 무관하게 즉시 수술적 확인을 우선해야 합니다."
+  },
+  {
+    code:"MS-01", cat:"종괴/기타", title:"항문 통증 + 종괴", urgency:"routine",
+    ddx:["혈전성 치핵","급성 치열","항문주위 농양","항문암 (만성 병변 시 감별)"],
+    labs:["일반적으로 불필요 (당뇨 환자는 혈당 확인)"],
+    imaging:["복잡성 누공/농양 의심 시 골반 MRI"],
+    actions:["시진 및 직장수지검사 시행","농양 의심 시 절개 배농","좌욕 및 변완화제 처방"],
+    consult:["복잡성 병변 시 대장항문외과"],
+    evidence:["ASCRS Clinical Practice Guidelines for Management of Hemorrhoids — Dis Colon Rectum, 2024","ASCRS Clinical Practice Guidelines for Management of Anal Fissures — Dis Colon Rectum, 2023","ASCRS Clinical Practice Guidelines for Anorectal Abscess, Fistula-in-Ano — Dis Colon Rectum, 2022"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"MS-02", cat:"종괴/기타", title:"유방 종괴", urgency:"routine",
+    ddx:["섬유선종","낭종","유방암","유방염 / 유방농양"],
+    labs:["일반적으로 불필요 (농양 의심 시 CBC)"],
+    imaging:["35세 미만: 유방 초음파","35세 이상: 유방촬영술 + 초음파","필요 시 조직검사 (core needle biopsy)"],
+    actions:["삼중진단(triple assessment: 진찰+영상+조직검사) 원칙 적용","농양 제외 시 응급성 낮음"],
+    consult:["유방외과","영상의학과"],
+    evidence:["NCCN Clinical Practice Guidelines: Breast Cancer Screening and Diagnosis — 최신판 지속 개정 중 (2023 Insights 버전 등)"],
+    evidenceType:"guideline"
+  },
+  {
+    code:"MS-03", cat:"종괴/기타", title:"갑상선 종괴", urgency:"routine",
+    ddx:["양성 결절","갑상선암","갑상선염","갑상선기능항진증에 의한 종대"],
+    labs:["TSH, Free T4"],
+    imaging:["갑상선 초음파","필요 시 세침흡인검사 (FNA)"],
+    actions:["기도 압박 증상 확인 (응급성 평가)","쉰목소리 등 성대마비 여부 확인"],
+    consult:["내분비외과"],
+    evidence:["ATA Management Guidelines for Thyroid Nodules — Thyroid. 2016;26(1):1-133 (Haugen et al., 결절 평가 기준의 표준)"],
+    evidenceType:"guideline",
+    evidenceNote:"결절 평가(초음파 패턴·FNA 기준)는 2015년판이 현재도 표준입니다. 다만 암 진단 후 치료 방침은 2025년 8월 새로 발표된 ATA 분화갑상선암 가이드라인(Ringel et al., Thyroid. 2025;35(8):841-985)으로 개정되었으니, 확진 후 치료 계획 수립 시 최신판을 반드시 참고하세요."
+  },
+];
+
+const CATS = ["전체","급성복통","출혈","감염/발열","수술후합병증","혈관응급","외상","종괴/기타"];
+const URGENCY_LABEL = {critical:"CRITICAL", urgent:"URGENT", routine:"ROUTINE"};
+
+let activeCat = "전체";
+let query = "";
+
+const chipsEl = document.getElementById('chips');
+CATS.forEach(cat=>{
+  const chip = document.createElement('div');
+  chip.className = 'chip' + (cat==='전체' ? ' active':'');
+  chip.textContent = cat;
+  chip.dataset.cat = cat;
+  chip.addEventListener('click', ()=>{
+    activeCat = cat;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    render();
+  });
+  chipsEl.appendChild(chip);
+});
+
+document.getElementById('search').addEventListener('input', (e)=>{
+  query = e.target.value.trim().toLowerCase();
+  render();
+});
+
+function matches(item){
+  if(activeCat !== '전체' && item.cat !== activeCat) return false;
+  if(!query) return true;
+  const haystack = [item.title, item.cat, ...item.ddx].join(' ').toLowerCase();
+  return haystack.includes(query);
+}
+
+function fieldBlock(label, arr, extraClass){
+  return `<div class="field ${extraClass||''}">
+    <div class="field-label">${label}</div>
+    <ul>${arr.map(x=>`<li>${x}</li>`).join('')}</ul>
+  </div>`;
+}
+
+function evidenceBlock(item){
+  const hasItems = item.evidence && item.evidence.length > 0;
+  const itemsHtml = hasItems
+    ? item.evidence.map(x=>`<div class="evidence-item">${x}</div>`).join('')
+    : `<div class="evidence-item" style="opacity:0.7;">단일 학회 가이드라인 없음 — 일반 임상 교육 원칙에 근거 (아래 참조)</div>`;
+  const noteHtml = item.evidenceNote ? `<div class="evidence-general">${item.evidenceNote}</div>` : '';
+  const label = item.evidenceType === 'general' ? 'EVIDENCE — 일반 원칙 (단일 가이드라인 아님)' : 'EVIDENCE — 검증된 출처';
+  return `<div class="evidence-box">
+    <div class="field-label">${label}</div>
+    ${itemsHtml}
+    ${noteHtml}
+  </div>`;
+}
+
+function render(){
+  const results = document.getElementById('results');
+  const filtered = DATA.filter(matches);
+  document.getElementById('countRow').textContent = `${filtered.length}건 표시 중 · 전체 ${DATA.length}건`;
+
+  if(filtered.length===0){
+    results.innerHTML = `<div class="empty-state">일치하는 항목이 없습니다. 다른 검색어를 시도해보세요.</div>`;
+    return;
+  }
+
+  results.innerHTML = filtered.map((item, idx)=>`
+    <div class="card ${item.urgency}" data-idx="${idx}">
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-title-block">
+          <span class="card-code mono">${item.code}</span>
+          <span class="card-title">${item.title}</span>
+          <span class="card-cat">${item.cat}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="badge ${item.urgency}">${URGENCY_LABEL[item.urgency]}</span>
+          <span class="chevron">▶</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          ${fieldBlock('감별진단 DDx', item.ddx, 'full')}
+          ${fieldBlock('필요 검사실검사 LABS', item.labs)}
+          ${fieldBlock('영상검사 IMAGING', item.imaging)}
+          ${fieldBlock('즉시 조치 ACTIONS', item.actions, 'action full')}
+          ${fieldBlock('컨설트 CONSULT', item.consult, 'consult')}
+          ${evidenceBlock(item)}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCard(headEl){
+  const card = headEl.closest('.card');
+  const body = card.querySelector('.card-body');
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.card.open').forEach(c=>{
+    if(c!==card){
+      c.classList.remove('open');
+      c.querySelector('.card-body').style.maxHeight = null;
+    }
+  });
+  if(isOpen){
+    card.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    card.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+
+render();
+</script>
+</body>
+</html>
