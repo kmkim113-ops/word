@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SURGERY-MATE V3</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#0b1220;color:#eef4ff;margin:0;padding:20px}
+.wrap{max-width:1200px;margin:auto}.card{background:#121c30;border:1px solid #2a3957;border-radius:16px;padding:16px;margin-bottom:14px}
+h1{margin:0 0 6px}.muted{color:#9fb0ca;font-size:13px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button,input,select,textarea{font:inherit}.mode,button{border:0;border-radius:10px;padding:10px 12px;background:#21314f;color:white;cursor:pointer}
+.mode.active{background:#17648c}.mic{background:#b72e52}.go{background:#226fc5}.copy{background:#17704f}
+textarea,input,select{width:100%;box-sizing:border-box;background:#091324;color:white;border:1px solid #2a3957;border-radius:10px;padding:10px}
+textarea{min-height:220px;line-height:1.6}.modes,.tabs,.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.tab.active{background:#235b8b}.out{white-space:pre-wrap;background:#091324;border:1px solid #2a3957;border-radius:12px;padding:14px;min-height:260px;line-height:1.6}
+.status{color:#9fb0ca;font-size:12px;margin-top:8px}.warn{display:none;background:#351820;border:1px solid #763342;padding:10px;border-radius:10px;color:#ffc2c8;margin-bottom:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{font-size:11px;padding:5px 8px;border-radius:999px;background:#192a43;border:1px solid #385472}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:850px){.grid,.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<h1>SURGERY-MATE V3 AI</h1>
+<div class="muted">말을 두서없이 해도 → 핵심 추출 → 교수님 20초 보고 / 당직 인계 / EMR Note</div>
+<div id="warn" class="warn">⚠️ 위험 신호가 감지되었습니다. 문서 작성보다 bedside reassessment / escalation이 우선입니다.</div>
+
+<div class="grid">
+<div class="card">
+<h3>1. 그냥 말하세요</h3>
+<div class="modes">
+<button class="mode active" data-mode="postop">Post-op</button>
+<button class="mode" data-mode="consult">Consult</button>
+<button class="mode" data-mode="abdomen">Acute Abdomen</button>
+<button class="mode" data-mode="icu">ICU</button>
+<button class="mode" data-mode="drain">Drain/Wound</button>
+</div>
+<div class="row">
+<div><div class="muted">환자 태그</div><input id="tag" placeholder="예: 72병동 03 / POD3"></div>
+<div><div class="muted">우선순위</div><select id="priority"><option>Routine</option><option selected>Urgent</option><option>Emergent</option></select></div>
+</div>
+<br>
+<textarea id="raw" placeholder="평소 교수님께 보고하듯 그냥 말하세요. 예: 교수님 72병동 환자인데요..."></textarea>
+<div class="buttons">
+<button id="mic" class="mic">🎙 음성 입력 시작</button>
+<button id="gen" class="go">✨ 다시 정리</button>
+<button id="sample">예시</button>
+<button id="clear">초기화</button>
+</div>
+<div id="status" class="status">마이크 대기 중 · AI 서버 상태 확인 중</div>
+<hr style="border-color:#2a3957">
+<div class="muted">Red flags</div><div id="reds" class="chips"></div><br>
+<div class="muted">Working problems</div><div id="problems" class="chips"></div><br>
+<div class="muted">빠진 핵심정보</div><div id="missing" class="chips"></div>
+</div>
+
+<div class="card">
+<h3>2. 목적별 자동 문서</h3>
+<div class="tabs">
+<button class="tab active" data-view="prof">👨‍⚕️ 교수님 20초 보고</button>
+<button class="tab" data-view="handoff">🌙 당직 인계</button>
+<button class="tab" data-view="emr">📝 EMR Note</button>
+</div>
+<div id="out" class="out">음성 입력을 종료하면 자동 생성됩니다.</div>
+<div class="buttons">
+<button id="copy" class="copy">📋 현재 문서 원클릭 복사</button>
+<button id="speak">🔊 읽어주기</button>
+<button id="copyall">3개 모두 복사</button>
+</div>
+</div>
+</div>
+<div class="muted">※ 실제 환자 직접식별정보는 병원 정책 승인 없이 입력하지 마세요. AI 결과는 반드시 원자료와 대조하세요.</div>
+</div>
+
+<script>
+let mode='postop',view='prof',listening=false,rec=null,docs={prof:'',handoff:'',emr:''};
+const $=x=>document.getElementById(x), raw=$('raw');
+document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');view=b.dataset.view;render()});
+
+const reds=[['저혈압/쇼크',['bp 8','bp 7','저혈압','shock','쇼크']],['빈맥',['hr 12','hr 13','hr 14','hr 15','맥박 12','맥박 13','빈맥']],['복막자극',['rigid','guarding','rebound','복막']],['발열/패혈증',['38.5','38.6','38.7','38.8','38.9','39','sepsis','패혈증']],['소변량 감소',['oliguria','urine output 감소','소변 줄','소변량 감소']],['호흡악화',['hypoxia','spo2 8','호흡곤란']],['출혈',['bleeding','출혈','혈성']]];
+const probs=[['Intra-abdominal infection / sepsis',['38.','fever','열','turbid','sepsis','복막']],['Anastomotic / bowel leak',['leak','문합','turbid','복막']],['AKI / hypoperfusion',['oliguria','소변 줄','urine output 감소','저혈압']],['Postoperative bleeding',['bleeding','출혈','혈성']],['Respiratory complication',['hypoxia','spo2','호흡곤란']]];
+const req={postop:[['수술명/POD',['pod','수술']],['V/S',['bp','혈압','hr','맥박']],['U/O',['urine','소변']],['drain',['drain','배액']],['복부진찰',['복부','abdomen','guarding','rigid']]],consult:[['V/S',['bp','혈압','hr','맥박']],['exam',['복부','abdomen','wound']],['lab',['wbc','hb','cr','lactate']],['영상',['ct','영상','초음파']]],abdomen:[['V/S',['bp','혈압','hr','맥박']],['peritoneal sign',['guarding','rebound','rigid','복막']],['lactate',['lactate']],['CT',['ct']]],icu:[['MAP/pressor',['map','pressor','norepi','nor','vaso','혈압']],['lactate',['lactate']],['U/O',['urine','소변']],['ABGA',['abga','pco2','po2']],['source control',['source','ct','drain']]],drain:[['output',['cc','ml','배액량']],['성상',['turbid','serous','bilious','bloody','혼탁']],['fever',['38.','fever','열']],['wound',['wound','상처','발적']]]};
+function any(t,a){return a.some(k=>t.includes(k))} function ch(id,a){$(id).innerHTML=a.map(x=>'<span class="chip">'+x+'</span>').join('')||'<span class="chip">특이사항 없음</span>'}
+function local(rawtext){
+ let t=rawtext.toLowerCase(),r=reds.filter(x=>any(t,x[1])).map(x=>x[0]),p=[...new Set(probs.filter(x=>any(t,x[1])).map(x=>x[0]))],m=(req[mode]||[]).filter(x=>!any(t,x[1])).map(x=>x[0]);
+ ch('reds',r);ch('problems',p);ch('missing',m);$('warn').style.display=r.length?'block':'none';
+ let tag=$('tag').value||'환자',pri=$('priority').value, clean=rawtext.replace(/\s+/g,' ').trim(), rt=r.join(', ')||'명확한 red flag 없음',pt=p.join(', ')||'추가 평가 필요',mt=m.join(', ')||'핵심 항목 대부분 언급됨';
+ docs.prof=`${tag} ${pri} 보고드립니다. ${clean} 현재 ${rt}가 확인되고, ${pt} 가능성을 고려하고 있습니다. 추가 bedside reassessment와 원자료 확인이 필요하겠습니다.`;
+ docs.handoff=`[${tag}] ${pri}\n\n■ Current issue\n${clean}\n\n■ Red flags\n${rt}\n\n■ Working problems\n${pt}\n\n■ 빠진 정보\n${mt}`;
+ docs.emr=`${tag} | ${mode.toUpperCase()} | ${pri}\n\nEvent / Subjective\n${clean}\n\nAssessment\n${p.length?p.map((x,i)=>`${i+1}. ${x}`).join('\n'):'1. Clinical change requiring reassessment'}\n\nPlan framework\n1. Bedside reassessment / V/S trend review\n2. Relevant lab, imaging, I/O, drain data verification\n3. Persistent instability or deterioration 시 senior escalation\n\n※ 자동 생성 초안. EMR 입력 전 원자료와 대조`;
+ render(); return {r,p,m}
+}
+async function generate(){
+ if(!raw.value.trim())return;
+ $('status').textContent='정리 중...'; let x=local(raw.value);
+ try{
+   let res=await fetch('http://127.0.0.1:8787/rewrite',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raw:raw.value,mode,tag:$('tag').value,priority:$('priority').value,red_flags:x.r,working_problems:x.p,missing:x.m})});
+   if(!res.ok)throw 0; let d=await res.json(); docs={prof:d.professor_report,handoff:d.handoff,emr:d.emr_note};render();$('status').textContent='✓ AI Mode로 재작성 완료';
+ }catch(e){$('status').textContent='✓ Local Smart Mode 완료 · AI 서버 실행 시 자연어 재작성 활성화'}
+}
+function render(){$('out').textContent=docs[view]||'아직 생성되지 않았습니다.'}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){rec=new SR();rec.lang='ko-KR';rec.continuous=true;rec.interimResults=true;
+rec.onstart=()=>{listening=true;$('mic').textContent='⏹ 음성 입력 종료';$('status').textContent='● 듣는 중...'};
+rec.onresult=e=>{let f='',i='';for(let n=e.resultIndex;n<e.results.length;n++){let s=e.results[n][0].transcript;e.results[n].isFinal?f+=s+' ':i+=s}if(f)raw.value+=(raw.value?' ':'')+f;if(i)$('status').textContent='인식 중: '+i};
+rec.onend=()=>{listening=false;$('mic').textContent='🎙 새 음성 입력 시작';generate()}}
+else{$('mic').disabled=true;$('status').textContent='이 브라우저는 음성 인식을 지원하지 않습니다. 텍스트 입력은 가능합니다.'}
+$('mic').onclick=()=>{if(rec)(listening?rec.stop():rec.start())};$('gen').onclick=generate;
+$('sample').onclick=()=>{ $('tag').value='72병동 03 / POD3'; raw.value='교수님 65세 여자 right hemicolectomy POD 3 환자인데요 오늘 새벽부터 복통이 심해졌고 열 38.7, 혈압 86에 54, 맥박 132입니다. abdomen rigid하고 drain이 turbid하게 150cc 나왔고 소변도 줄었습니다. WBC 18000 lactate 4.2이고 CT는 아직 안 찍었습니다.'};
+$('clear').onclick=()=>{raw.value='';docs={prof:'',handoff:'',emr:''};render();ch('reds',[]);ch('problems',[]);ch('missing',[]);$('warn').style.display='none'};
+async function cp(t){try{await navigator.clipboard.writeText(t);$('copy').textContent='✓ 복사 완료';setTimeout(()=>$('copy').textContent='📋 현재 문서 원클릭 복사',1000)}catch(e){alert('클립보드 권한을 확인하세요.')}}
+$('copy').onclick=()=>cp(docs[view]||$('out').textContent);$('copyall').onclick=()=>cp(`=== 교수님 20초 보고 ===\n${docs.prof}\n\n=== 당직 인계 ===\n${docs.handoff}\n\n=== EMR NOTE ===\n${docs.emr}`);
+$('speak').onclick=()=>{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance($('out').textContent);u.lang='ko-KR';speechSynthesis.speak(u)}
+</script></body></html>
