@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고2 26년 6월 모의고사 2회 — 청킹 해석 훈련</title>
+<style>
+  :root{
+    --navy:#182a4d;
+    --navy-2:#24365c;
+    --cream:#f6f2e8;
+    --paper:#fffdf8;
+    --ink:#242021;
+    --ink-soft:#5a5450;
+    --amber:#c98a3b;
+    --amber-2:#e0a458;
+    --line:#e4dcc9;
+    --ok:#3f7d5c;
+    --ok-bg:#e7f2eb;
+    --bad:#b5453a;
+    --bad-bg:#faeae8;
+    --lock:#bdb6a6;
+    --radius:14px;
+    --serif: "Noto Serif KR","Nanum Myeongjo","Apple SD Gothic Neo",serif;
+    --sans: "Pretendard","Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    min-height:100vh;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px;}
+
+  /* header */
+  .masthead{
+    border-bottom:3px solid var(--navy);
+    padding-bottom:18px;
+    margin-bottom:28px;
+  }
+  .masthead .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    color:var(--amber);
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .masthead h1{
+    font-family:var(--serif);
+    font-size:28px;
+    margin:6px 0 4px;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+  }
+  .masthead p{margin:0;color:var(--ink-soft);font-size:14px;}
+
+  .name-box{
+    margin-top:16px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .name-box label{font-size:13px;color:var(--ink-soft);}
+  .name-box input{
+    border:1px solid var(--line);
+    background:var(--paper);
+    border-radius:8px;
+    padding:7px 10px;
+    font-size:14px;
+    font-family:var(--sans);
+    color:var(--ink);
+    min-width:140px;
+  }
+  .name-box input:focus{outline:2px solid var(--amber-2);outline-offset:1px;}
+
+  /* stage map */
+  .map-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:10px;
+  }
+  @media (min-width:520px){
+    .map-grid{grid-template-columns:repeat(4,1fr);}
+  }
+  .unit-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 12px;
+    text-align:center;
+    cursor:pointer;
+    position:relative;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .unit-card:hover:not(.locked){
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(24,42,77,0.1);
+    border-color:var(--amber-2);
+  }
+  .unit-card .num{
+    font-family:var(--serif);
+    font-size:26px;
+    color:var(--navy);
+    font-weight:700;
+  }
+  .unit-card .lv{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .unit-card .status{
+    margin-top:8px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.03em;
+  }
+  .unit-card .status.done{color:var(--ok);}
+  .unit-card .status.ready{color:var(--amber);}
+  .unit-card .status.locked{color:var(--lock);}
+  .unit-card.locked{cursor:not-allowed;opacity:.55;}
+  .unit-card .lock-icon{position:absolute;top:8px;right:10px;font-size:13px;color:var(--lock);}
+  .unit-card .check-icon{position:absolute;top:8px;right:10px;font-size:13px;color:var(--ok);}
+
+  .map-note{font-size:12.5px;color:var(--ink-soft);margin-top:14px;margin-bottom:6px;}
+
+  /* unit view */
+  .unit-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+    gap:10px;
+  }
+  .back-btn{
+    background:none;border:none;color:var(--navy);font-size:14px;cursor:pointer;
+    font-weight:600;padding:6px 0;display:flex;align-items:center;gap:5px;
+  }
+  .back-btn:hover{color:var(--amber);}
+  .unit-title-block{text-align:right;}
+  .unit-title-block .tag{
+    font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.05em;
+  }
+  .unit-title-block h2{
+    font-family:var(--serif);font-size:20px;margin:2px 0 0;color:var(--navy);
+  }
+
+  .progress-strip{
+    display:flex;gap:6px;margin-bottom:22px;
+  }
+  .progress-strip .seg{
+    flex:1;height:5px;border-radius:3px;background:var(--line);
+  }
+  .progress-strip .seg.active{background:var(--amber-2);}
+  .progress-strip .seg.done{background:var(--navy);}
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 18px 20px;
+    margin-bottom:14px;
+  }
+  .card .idx{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    color:#fff;
+    background:var(--navy);
+    border-radius:5px;
+    padding:2px 7px;
+    margin-bottom:10px;
+  }
+  .card .source-en{
+    font-size:15.5px;
+    line-height:1.65;
+    color:var(--ink);
+    margin-bottom:12px;
+  }
+  .card .en-word{
+    font-family:var(--serif);
+    font-size:17px;
+    color:var(--navy);
+    font-weight:700;
+  }
+  textarea, input[type=text]{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:9px 11px;
+    font-family:var(--sans);
+    font-size:14.5px;
+    color:var(--ink);
+    background:#fffefc;
+    resize:vertical;
+  }
+  textarea:focus, input[type=text]:focus{outline:2px solid var(--amber-2);outline-offset:1px;}
+  textarea{min-height:52px;}
+
+  .reveal-box{
+    margin-top:12px;
+    padding:12px 13px;
+    background:var(--cream);
+    border-left:3px solid var(--amber-2);
+    border-radius:6px;
+    font-size:14.5px;
+    display:none;
+  }
+  .reveal-box.shown{display:block;}
+  .reveal-box .label{font-size:11px;color:var(--amber);font-weight:700;margin-bottom:4px;letter-spacing:.03em;}
+
+  .btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
+  .btn{
+    border:none;border-radius:8px;padding:9px 16px;font-size:13.5px;font-weight:700;
+    cursor:pointer;font-family:var(--sans);transition:opacity .12s ease, transform .1s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:hover{background:var(--navy-2);}
+  .btn-ghost{background:transparent;color:var(--navy);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--navy);}
+  .btn-amber{background:var(--amber-2);color:#2a2016;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  .self-grade{display:flex;gap:8px;margin-top:12px;}
+  .grade-btn{
+    flex:1;border-radius:8px;border:1.5px solid var(--line);background:#fff;
+    padding:9px;font-weight:700;cursor:pointer;font-size:13.5px;font-family:var(--sans);
+    color:var(--ink-soft);
+  }
+  .grade-btn.o.picked{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);}
+  .grade-btn.x.picked{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);}
+
+  .bottom-bar{
+    position:sticky;bottom:0;
+    background:linear-gradient(to top, var(--cream) 70%, transparent);
+    padding-top:18px;margin-top:6px;
+  }
+  .bottom-bar .btn{width:100%;padding:13px;font-size:15px;}
+
+  /* result */
+  .score-panel{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;
+  }
+  .score-box{
+    background:var(--navy);color:#fff;border-radius:var(--radius);
+    padding:18px 14px;text-align:center;
+  }
+  .score-box .n{font-family:var(--serif);font-size:30px;font-weight:700;}
+  .score-box .l{font-size:12px;opacity:.8;margin-top:2px;}
+
+  .section-label{
+    font-family:var(--serif);font-size:16px;color:var(--navy);
+    margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--line);
+  }
+  .wrong-item{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;margin-bottom:10px;
+  }
+  .wrong-item .en{font-size:14px;color:var(--ink);margin-bottom:8px;}
+  .wrong-item .compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .wrong-item .compare div{font-size:13px;padding:7px 9px;border-radius:6px;}
+  .wrong-item .mine{background:var(--bad-bg);color:#7a352c;}
+  .wrong-item .model{background:var(--ok-bg);color:#2e5c42;}
+  .wrong-item .compare .k{font-size:10.5px;font-weight:700;display:block;margin-bottom:3px;letter-spacing:.03em;}
+  .empty-note{font-size:13.5px;color:var(--ink-soft);padding:10px 2px;}
+
+  /* full passage with chunk marks */
+  .passage-card{
+    background:var(--navy);
+    color:#f3efe2;
+    border-radius:var(--radius);
+    padding:18px 18px 16px;
+    margin-bottom:20px;
+  }
+  .passage-card .plabel{
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--amber-2);font-weight:700;margin-bottom:12px;
+  }
+  .passage-flow{
+    display:flex;flex-wrap:wrap;align-items:center;gap:7px 3px;
+  }
+  .passage-flow .cchunk{
+    display:inline-flex;align-items:baseline;gap:5px;
+    padding:5px 9px;border-radius:7px;
+    background:rgba(224,164,88,0.14);
+    line-height:1.55;
+  }
+  .passage-flow .cchunk.alt{background:rgba(224,164,88,0.26);}
+  .passage-flow .cnum{
+    font-size:9.5px;font-weight:800;color:var(--navy);
+    background:var(--amber-2);border-radius:4px;padding:0 4px;
+    flex-shrink:0;
+  }
+  .passage-flow .ctxt{font-size:14px;color:#f3efe2;}
+  .passage-flow .cdiv{color:var(--amber-2);font-weight:700;font-size:15px;}
+
+  .copy-area{margin-top:26px;}
+  .copy-status{font-size:12.5px;color:var(--ok);margin-top:8px;display:none;}
+  .copy-status.shown{display:inline-block;}
+
+  footer{
+    text-align:center;color:var(--ink-soft);font-size:12px;margin-top:40px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ================= DATA ================= */
+const SET_TITLE = "고2 26년 6월 모의고사 2회";
+const SET_SUBTITLE = "청킹(의미 단위) 해석 훈련 · 자기 채점형";
+
+const UNITS = [
+{
+  id:32, level:"고2", source:"26년 6월 모의고사 2회 · 32번",
+  vocab:[
+    {w:"genomics", m:"유전체학"},
+    {w:"impactful", m:"영향력이 큰"},
+    {w:"weedy", m:"잡초 같은"},
+    {w:"trigger", m:"유발하다"},
+    {w:"hormone", m:"호르몬"},
+    {w:"gene expression", m:"유전자 발현"},
+    {w:"inhibit", m:"억제하다"},
+    {w:"stroke", m:"쓰다듬다"},
+    {w:"genome", m:"유전체"},
+    {w:"alter", m:"바꾸다, 변화시키다"},
+    {w:"reorganize", m:"재조정하다, 재편성하다"},
+    {w:"disturbance", m:"교란, 방해"},
+  ],
+  chunks:[
+    {en:`The genomics revolution made it possible / to see just how impactful touch is to plants on a deeper level.`, ko:`유전체학 혁명은 촉감이 식물에게 얼마나 큰 영향을 미치는지를 더 깊은 수준에서 볼 수 있게 해주었다.`},
+    {en:`Peering at the genes of Arabidopsis thaliana, / a weedy plant in the mustard family and the lab rat of the plant biology world, / researchers saw / that touch quietly triggered such a dramatic response in their hormones and gene expression / that it could substantially inhibit their growth.`, ko:`겨자과에 속하는 잡초 같은 식물이자 식물 생물학계의 실험용 쥐인 애기장대(Arabidopsis thaliana)의 유전자를 들여다보다가, 연구자들은 접촉이 조용히 호르몬과 유전자 발현에 매우 극적인 반응을 유발해서 그것이 그들의 성장을 상당히 억제할 수 있을 정도라는 것을 알게 되었다.`},
+    {en:`They stroked the arabidopsis with soft paintbrushes, / and then analyzed the plants' genetic responses.`, ko:`그들은 부드러운 붓으로 애기장대를 쓰다듬은 다음, 그 식물들의 유전적 반응을 분석했다.`},
+    {en:`Within thirty minutes of being touched, / 10 percent of the plant's genome was altered.`, ko:`접촉을 받은 지 30분 이내에, 그 식물의 유전체 중 10퍼센트가 변화했다.`},
+    {en:`Clearly, the plant was reorganizing its priorities to deal with the disturbance, / and rerouting energy away from the hard work of getting taller.`, ko:`분명히, 그 식물은 그 교란에 대처하기 위해 자신의 우선순위를 재조정하고 있었으며, 키가 자라는 힘든 작업으로부터 에너지를 다른 곳으로 돌리고 있었다.`},
+    {en:`Touched multiple times, arabidopsis cut its upward growth rate by as much as 30 percent.`, ko:`여러 번 접촉을 받자, 애기장대는 위쪽으로의 성장 속도를 최대 30퍼센트까지 줄였다.`},
+  ]
+},
+{
+  id:33, level:"고2", source:"26년 6월 모의고사 2회 · 33번",
+  vocab:[
+    {w:"standstill", m:"정체, 멈춤"},
+    {w:"onset", m:"시작, 개시"},
+    {w:"prevailing wind", m:"우세풍, 탁월풍"},
+    {w:"timescale", m:"시간 척도"},
+    {w:"consequence", m:"결과"},
+    {w:"drift", m:"(서서히 일어나는) 변화, 이동"},
+    {w:"persist", m:"지속되다"},
+    {w:"propel", m:"나아가게 하다, 떠밀다"},
+    {w:"selection pressure", m:"선택 압력"},
+    {w:"coat", m:"(동물의) 털"},
+    {w:"reverse", m:"반전되다"},
+    {w:"creep up", m:"서서히 오르다"},
+  ],
+  chunks:[
+    {en:`Evolution will come to a standstill / until something in the conditions changes: / the onset of an ice age, a change in the average rainfall of the area, a shift in the prevailing wind.`, ko:`진화는 조건들 중 무언가가—빙하기의 시작, 그 지역 평균 강우량의 변화, 우세풍의 변화 같은 것이—변할 때까지는 정체 상태에 이를 것이다.`},
+    {en:`Such changes do happen / when we are dealing with a timescale as long as the evolutionary one.`, ko:`그러한 변화는 우리가 진화만큼이나 긴 시간 척도를 다루고 있을 때는 실제로 일어난다.`},
+    {en:`As a consequence, evolution normally does not come to a halt, / but constantly tracks the changing environment.`, ko:`그 결과, 진화는 보통 완전히 멈추지 않고, 끊임없이 변화하는 환경을 뒤쫓는다.`},
+    {en:`If there is a steady downward drift in the average temperature in the area, / a drift that persists over centuries, / successive generations of animals will be propelled by a steady selection 'pressure' / in the direction, say, of growing longer coats of hair.`, ko:`만약 그 지역의 평균 기온이 꾸준히 하락하는 추세, 즉 수 세기에 걸쳐 지속되는 추세가 있다면, 연속된 세대의 동물들은 이를테면 더 긴 털 코트를 기르는 방향으로 꾸준한 선택 '압력'에 의해 떠밀릴 것이다.`},
+    {en:`If after a few thousand years of reduced temperature the trend reverses / and average temperatures creep up again, / the animals will come under the influence of a new selection pressure, / and will be pushed towards growing shorter coats again.`, ko:`만약 기온 하강이 수천 년 지속된 후 그 추세가 반전되어 평균 기온이 다시 서서히 오른다면, 그 동물들은 새로운 선택 압력의 영향을 받게 될 것이고, 다시 더 짧은 털 코트를 기르는 쪽으로 떠밀리게 될 것이다.`},
+  ]
+},
+{
+  id:34, level:"고2", source:"26년 6월 모의고사 2회 · 34번",
+  vocab:[
+    {w:"metropolitan", m:"대도시의"},
+    {w:"implication", m:"영향, 함의"},
+    {w:"entrepreneurial", m:"기업가의"},
+    {w:"intermediate goods", m:"중간재"},
+    {w:"retail space", m:"소매 공간"},
+    {w:"commercial space", m:"상업 공간"},
+    {w:"permit", m:"허가증"},
+    {w:"vendor", m:"노점상, 행상인"},
+    {w:"substitute A for B", m:"B 대신 A를 쓰다"},
+    {w:"profit-maximizing", m:"이윤을 극대화하는"},
+    {w:"square foot", m:"평방피트"},
+  ],
+  chunks:[
+    {en:`The high price of land in metropolitan areas / has implications for the efficient employment of resources.`, ko:`대도시 지역의 높은 땅값은 자원의 효율적인 사용에 영향을 미친다.`},
+    {en:`For example, in New York City, as in many large cities, / sidewalk vending carts sell everything from hot dogs to ice cream.`, ko:`예를 들어, 뉴욕시에서는, 다른 많은 대도시와 마찬가지로, 노점 손수레들이 핫도그부터 아이스크림까지 온갖 것을 판다.`},
+    {en:`Why are these carts so popular, / with over 3,000 in New York City alone?`, ko:`이 손수레들은 뉴욕시에만 3,000개가 넘는데, 왜 그렇게 인기가 있을까?`},
+    {en:`Consider the resources used to supply hot dogs: / land, labor, capital, entrepreneurial ability, / plus intermediate goods such as hot dogs, buns, and other ingredients.`, ko:`핫도그를 공급하는 데 사용되는 자원, 즉 토지, 노동, 자본, 기업가적 능력, 그리고 핫도그, 빵, 기타 재료 같은 중간재까지 생각해 보자.`},
+    {en:`Which of these do you suppose is most expensive in New York City?`, ko:`이 중에서 뉴욕시에서 가장 비싼 것은 무엇이라고 생각하는가?`},
+    {en:`Retail space along Madison Avenue rents for an average of $550 a year per square foot.`, ko:`매디슨 애비뉴를 따라 있는 소매 공간은 평균적으로 평방피트당 연간 550달러에 임대된다.`},
+    {en:`Because operating a hot dog cart requires about 4 square yards, / it could cost as much as $20,000 a year to rent that much commercial space.`, ko:`핫도그 손수레를 운영하는 데는 약 4평방야드가 필요하기 때문에, 그만큼의 상업 공간을 임대하는 데 연간 20,000달러나 들 수 있다.`},
+    {en:`Aside from the necessary public permits, however, / space on the public sidewalk is free to vendors.`, ko:`그러나 필요한 공공 허가증을 제외하면, 공공 보도 위의 공간은 노점상들에게 무료다.`},
+    {en:`Profit-maximizing street vendors substitute public sidewalks for costly commercial space.`, ko:`이윤을 극대화하려는 노점상들은 비용이 많이 드는 상업 공간 대신 공공 보도를 사용한다.`},
+  ]
+},
+{
+  id:36, level:"고2", source:"26년 6월 모의고사 2회 · 36번",
+  vocab:[
+    {w:"struggle", m:"투쟁, 몸부림"},
+    {w:"predator", m:"포식자"},
+    {w:"migrate", m:"이동하다"},
+    {w:"reproduce", m:"번식하다"},
+    {w:"surplus", m:"여분의, 잉여의"},
+    {w:"ancestor", m:"조상"},
+    {w:"brawn", m:"완력, 근력"},
+    {w:"prey", m:"먹잇감"},
+    {w:"affluence", m:"풍요"},
+    {w:"plentiful", m:"풍부한"},
+    {w:"prosperity", m:"번영"},
+  ],
+  chunks:[
+    {en:`For most animals the struggle to survive / takes up all their time.`, ko:`대부분의 동물에게 생존을 위한 투쟁은 그들의 모든 시간을 차지한다.`},
+    {en:`Finding food and drink, keeping warm and clean, avoiding predators, migrating and reproducing / use up all their energies.`, ko:`먹이와 물을 찾고, 몸을 따뜻하고 깨끗하게 유지하고, 포식자를 피하고, 이동하고 번식하는 일이 그들의 모든 에너지를 다 써버린다.`},
+    {en:`If they do have any time to spare, / they spend it resting or sleeping.`, ko:`만약 그들에게 남는 시간이 조금이라도 있다면, 그들은 그 시간을 쉬거나 자는 데 쓴다.`},
+    {en:`Only very young animals, under the protection of their parents, / have enough surplus energy to engage in lively bouts of play.`, ko:`아주 어린 동물들만이, 부모의 보호를 받으며, 활발하게 놀이를 할 만큼 충분한 여분의 에너지를 가지고 있다.`},
+    {en:`This was also true for our early ancestors.`, ko:`이는 우리의 초기 조상들에게도 마찬가지였다.`},
+    {en:`The constant search for food would have put heavy demands upon them.`, ko:`끊임없는 먹이 탐색은 그들에게 큰 부담을 주었을 것이다.`},
+    {en:`But as they slowly evolved into more and more efficient hunters, / the situation changed.`, ko:`그러나 그들이 점점 더 효율적인 사냥꾼으로 서서히 진화하면서, 상황이 달라졌다.`},
+    {en:`The secret of their success was the development of much greater intelligence.`, ko:`그들의 성공의 비결은 훨씬 더 뛰어난 지능의 발달이었다.`},
+    {en:`They used brain not brawn to kill their prey.`, ko:`그들은 먹잇감을 죽이는 데 힘이 아니라 두뇌를 사용했다.`},
+    {en:`At the end of the long hunting era, before they turned to farming, / they were already enjoying some degree of affluence.`, ko:`농경으로 전환하기 전, 오랜 수렵 시대의 말기에, 그들은 이미 어느 정도의 풍요를 누리고 있었다.`},
+    {en:`In certain regions, at particular times of year, / the prey was sufficiently plentiful and their hunting techniques sufficiently advanced / for them to experience a remarkable degree of prosperity.`, ko:`특정 지역에서, 한 해의 특정 시기에는, 먹잇감이 충분히 풍부했고 그들의 사냥 기술도 충분히 발전해 있어서 그들이 상당한 정도의 번영을 경험할 수 있었다.`},
+    {en:`They had time on their hands.`, ko:`그들은 시간이 남아돌았다.`},
+  ]
+},
+{
+  id:37, level:"고2", source:"26년 6월 모의고사 2회 · 37번",
+  vocab:[
+    {w:"startled", m:"깜짝 놀란"},
+    {w:"freeze", m:"얼어붙다, 동작을 멈추다"},
+    {w:"threat", m:"위협"},
+    {w:"detection", m:"발각, 탐지"},
+    {w:"flee", m:"도망치다"},
+    {w:"sophisticated", m:"정교한"},
+    {w:"give away", m:"드러내다, 누설하다"},
+    {w:"inhibition", m:"억제"},
+    {w:"traumatic", m:"충격적인, 정신적 외상의"},
+    {w:"conserve", m:"보존하다"},
+    {w:"interference", m:"방해, 간섭"},
+    {w:"chronic", m:"만성적인"},
+  ],
+  chunks:[
+    {en:`Think about a time when you were startled.`, ko:`당신이 깜짝 놀랐던 순간을 떠올려 보라.`},
+    {en:`Did you come to a sudden stop, freeze all your movements, / and hold your breath as you scanned the environment for a threat?`, ko:`갑자기 멈춰서고, 모든 동작을 얼어붙게 하고, 위협을 살피며 숨을 참았던 적이 있는가?`},
+    {en:`All these responses maximize our ability to avoid detection, / locate the source of possible danger, / and prepare to fight or flee.`, ko:`이 모든 반응은 발각되는 것을 피하고, 있을 수 있는 위험의 근원을 찾아내고, 싸우거나 도망칠 준비를 하는 우리의 능력을 최대화한다.`},
+    {en:`As sophisticated as language has become, / it is still the creation of sound that might give away our location to a potential predator.`, ko:`언어가 아무리 정교해졌다 해도, 여전히 소리를 만들어내는 것이야말로 우리의 위치를 잠재적 포식자에게 드러낼 수 있는 것이다.`},
+    {en:`Because of this, the freeze response results in the inhibition of language / in highly stressful and traumatic situations.`, ko:`이 때문에, 얼어붙기 반응은 극도로 스트레스가 크고 충격적인 상황에서 언어의 억제로 이어진다.`},
+    {en:`Natural selection promoted the evolution of language / but conserved the freeze rule.`, ko:`자연 선택은 언어의 진화를 촉진했지만 얼어붙기 규칙은 그대로 보존했다.`},
+    {en:`When the threat passes, we begin to relax and find our voices again, / perhaps even to laugh at our own reactions.`, ko:`위협이 지나가면, 우리는 긴장을 풀고 다시 목소리를 되찾기 시작하며, 심지어 자기 자신의 반응에 웃기도 한다.`},
+    {en:`But what if we can never relax?`, ko:`그러나 만약 우리가 결코 긴장을 풀 수 없다면 어떻게 될까?`},
+    {en:`What if our experiences shape our brain to be in a constant state of fear?`, ko:`만약 우리의 경험이 우리의 뇌를 끊임없는 두려움의 상태에 있도록 만든다면 어떻게 될까?`},
+    {en:`This interference with the proper development and integration of neural networks / can result in chronic stress and even mental illness.`, ko:`신경망의 적절한 발달과 통합에 대한 이러한 방해는 만성적인 스트레스와 심지어 정신 질환으로까지 이어질 수 있다.`},
+  ]
+},
+{
+  id:38, level:"고2", source:"26년 6월 모의고사 2회 · 38번",
+  vocab:[
+    {w:"empathy", m:"공감"},
+    {w:"longstanding", m:"오래된, 지속되어 온"},
+    {w:"formulate", m:"(설명 등을) 만들어내다, 공식화하다"},
+    {w:"credible", m:"신뢰할 만한"},
+    {w:"physiological arousal", m:"생리적 각성"},
+    {w:"disgust", m:"혐오감"},
+    {w:"exposure", m:"노출"},
+    {w:"blunted", m:"둔화된"},
+    {w:"desensitization", m:"둔감화"},
+    {w:"diminished", m:"감소된, 줄어든"},
+    {w:"sympathize", m:"공감하다, 동정하다"},
+  ],
+  chunks:[
+    {en:`Video gaming is one of the most studied technologies with regard to empathy.`, ko:`비디오 게임은 공감과 관련해 가장 많이 연구된 기술 중 하나이다.`},
+    {en:`Because there have been longstanding concerns about the impact of violent video games on youth, / much research has been conducted over the last couple of decades on the topic.`, ko:`폭력적인 비디오 게임이 청소년에게 미치는 영향에 대한 오랜 우려가 있었기 때문에, 지난 수십 년 동안 이 주제에 대해 많은 연구가 이루어졌다.`},
+    {en:`While measuring and documenting the impact of video game violence, / scientists have formulated credible explanations of how video gaming could affect empathy.`, ko:`비디오 게임 폭력성의 영향을 측정하고 기록하는 과정에서, 과학자들은 비디오 게임이 공감에 어떻게 영향을 미칠 수 있는지에 대한 신뢰할 만한 설명을 만들어냈다.`},
+    {en:`Part of a normal, healthy reaction to witnessing violent events / is to feel negative emotions, / and to experience physiological arousal that is connected to fear or disgust.`, ko:`폭력적인 사건을 목격했을 때 나타나는 정상적이고 건강한 반응의 일부는 부정적인 감정을 느끼는 것과, 공포나 혐오감과 연결된 생리적 각성을 경험하는 것이다.`},
+    {en:`With repeated exposure to violent events—such as what might happen when a person plays violent video games— / this normal reaction might become blunted, a phenomenon known as desensitization.`, ko:`폭력적인 사건에 반복적으로 노출되면, 즉 사람이 폭력적인 비디오 게임을 할 때 일어날 수 있는 것처럼, 이 정상적인 반응이 둔화될 수 있는데, 이는 둔감화라고 알려진 현상이다.`},
+    {en:`The next step in this problematic process / would be having diminished emotional responses to violence, / which could also interfere with the ability to recognize and/or to sympathize with others, / leading to reduced empathy.`, ko:`이 문제적인 과정의 다음 단계는 폭력에 대한 감소된 정서적 반응을 갖게 되는 것인데, 이는 또한 다른 사람을 인식하거나 공감하는 능력을 방해할 수 있어서, 공감 능력의 감소로 이어진다.`},
+    {en:`A significant body of work shows / an association between extensive violent video gaming and reduced empathy in people.`, ko:`상당한 양의 연구가 광범위한 폭력적 비디오 게임 이용과 사람들의 공감 능력 감소 사이의 연관성을 보여준다.`},
+  ]
+},
+{
+  id:39, level:"고2", source:"26년 6월 모의고사 2회 · 39번",
+  vocab:[
+    {w:"differentiation", m:"차별화"},
+    {w:"broadcast", m:"널리 알리다, 퍼뜨리다"},
+    {w:"embrace", m:"(진심으로) 받아들이다"},
+    {w:"authentic", m:"진정성 있는"},
+    {w:"commitment", m:"헌신, 전념"},
+    {w:"window-dressing", m:"겉치레, 눈속임"},
+    {w:"purpose-washing", m:"목적 세탁 (사회적 목적을 내세워 이미지를 포장하는 행위)"},
+    {w:"publicity", m:"홍보"},
+    {w:"charade", m:"속임수, 위장"},
+    {w:"disrupt", m:"뒤흔들다, 붕괴시키다"},
+    {w:"positioning", m:"입지, 포지셔닝"},
+  ],
+  chunks:[
+    {en:`Realising the benefits of differentiation, / some brands broadcast their social purpose before they do much actual good.`, ko:`차별화의 이점을 깨닫고, 일부 브랜드는 실제로 많은 선행을 하기도 전에 자신들의 사회적 목적을 널리 알린다.`},
+    {en:`Their marketers are using social purpose to boost the brand's reputation, / rather than embracing the purpose itself.`, ko:`그들의 마케팅 담당자들은 그 목적 자체를 진심으로 받아들이기보다는, 사회적 목적을 브랜드의 평판을 높이는 데 이용하고 있다.`},
+    {en:`Making a real difference with social problems is hard enough; / to succeed, it has to follow from an authentic, company-wide commitment to the purpose.`, ko:`사회 문제에 실질적인 변화를 만들어내는 것은 그 자체로 충분히 어려운 일이며, 성공하려면 그 목적에 대한 진정성 있는, 회사 전체의 헌신에서 비롯되어야 한다.`},
+    {en:`Otherwise the mission is just window-dressing, / or what we call "purpose-washing"— / similar to green-washing, where purpose-driven activities serve mainly for publicity purposes.`, ko:`그렇지 않으면 그 사명은 그저 겉치레, 즉 우리가 '목적 세탁(purpose-washing)'이라고 부르는 것이 되는데, 이는 목적 주도 활동이 주로 홍보 목적에 이바지하는 '그린워싱'과 비슷하다.`},
+    {en:`We end up with what Anand Giridhardas describes in Winners Take All: / "social purpose that just furthers the charade of elites disrupting the old order without giving much back".`, ko:`우리는 결국 아난드 기리다라다스가 《승자독식사회》에서 '별로 돌려주는 것 없이 기존 질서를 뒤흔드는 엘리트들의 속임수를 그저 지속시키는 사회적 목적'이라고 묘사한 것과 마주하게 된다.`},
+    {en:`Purpose-washing brands gain one of the benefits of social purpose, differentiation, / but only for a short while.`, ko:`목적 세탁을 하는 브랜드들은 사회적 목적의 이점 중 하나인 차별화를 얻지만, 그것은 잠시뿐이다.`},
+    {en:`They lose out on positioning for future markets, / and they might even make employees feel worse about working for them.`, ko:`그들은 미래 시장에서의 입지를 잃게 되고, 심지어 직원들이 그 회사에서 일하는 것에 대해 더 나쁘게 느끼게 만들 수도 있다.`},
+  ]
+},
+{
+  id:40, level:"고2", source:"26년 6월 모의고사 2회 · 40번",
+  vocab:[
+    {w:"pulse", m:"박동, 맥박"},
+    {w:"schema", m:"도식, 스키마"},
+    {w:"conform to", m:"~을 따르다, 순응하다"},
+    {w:"representation", m:"표상, 표현"},
+    {w:"take liberties with", m:"~을 자유롭게 변형하다, 마음대로 다루다"},
+    {w:"metrical", m:"박자의, 운율의"},
+    {w:"crucial", m:"결정적인, 중요한"},
+    {w:"violation", m:"위반"},
+    {w:"domain", m:"영역"},
+    {w:"organized", m:"조직화된"},
+    {w:"robotic", m:"기계적인, 로봇 같은"},
+    {w:"anticipate", m:"예상하다"},
+  ],
+  chunks:[
+    {en:`The brain needs to create a model of a constant pulse—a schema— / so that we know when the musicians are not conforming to it.`, ko:`뇌는 우리가 연주자들이 그것을 따르지 않을 때를 알 수 있도록, 일정한 박동, 즉 도식(스키마)의 모델을 만들어낼 필요가 있다.`},
+    {en:`This is similar to variations of a melody: / We need to have a mental representation of what the melody is / in order to know—and appreciate—when the musician is taking liberties with it.`, ko:`이는 멜로디의 변주와 비슷한데, 우리는 연주자가 그것을 자유롭게 변형할 때를 알아차리고 감상하기 위해 멜로디가 무엇인지에 대한 정신적 표상을 가지고 있어야 한다.`},
+    {en:`Metrical extraction, knowing what the pulse is and when we expect it to occur, / is a crucial part of musical emotion.`, ko:`박동이 무엇인지, 그리고 우리가 그것을 언제 기대해야 하는지를 아는 박자 추출은, 음악적 감정의 핵심적인 부분이다.`},
+    {en:`Music communicates to us emotionally through systematic violations of expectations.`, ko:`음악은 기대에 대한 체계적인 위반을 통해 우리에게 감정적으로 전달된다.`},
+    {en:`These violations can occur in any domain—the domain of pitch, rhythm, tempo, and so on— / but occur they must.`, ko:`이러한 위반은 음높이, 리듬, 박자 등 어떤 영역에서든 일어날 수 있지만, 반드시 일어나야만 한다.`},
+    {en:`Music is organized sound, / but the organization has to involve some element of the unexpected / or it is emotionally flat and robotic.`, ko:`음악은 조직화된 소리이지만, 그 조직화는 예상치 못한 어떤 요소를 반드시 포함해야 하며, 그렇지 않으면 감정적으로 밋밋하고 기계적으로 느껴진다.`},
+    {en:`Too much organization may technically still be music, / but it would be music that no one wants to listen to.`, ko:`지나치게 조직화된 것도 기술적으로는 여전히 음악일 수 있지만, 그것은 아무도 듣고 싶어 하지 않는 음악이 될 것이다.`},
+    {en:`[요약문] The brain models anticipated musical patterns, / which creates the possibility for emotional impact to arise when musicians break these patterns, making music engaging.`, ko:`[요약문] 뇌는 예상되는 음악적 패턴을 모델링하며, 이는 연주자들이 이러한 패턴을 깰 때 감정적 효과가 발생할 가능성을 만들어내고, 그럼으로써 음악을 매력적으로 만든다.`},
+  ]
+},
+];
+
+/* ================= STATE (in-memory only, no localStorage) ================= */
+const state = {
+  userName:"",
+  unitProgress: UNITS.map(()=>({
+    completed:false,
+    chunkDone:false,
+    chunkMarks: [], // 'O' | 'X' | null per chunk item
+    chunkInputs: [],
+    chunkDifficult: [], // true/false per chunk (학생이 어려웠다고 표시)
+    chunkRevealed:false,
+  })),
+  currentUnit:-1,   // -1 = map view
+  currentStage:0,   // 0 문장 해석, 1 결과
+};
+
+const app = document.getElementById('app');
+
+function isUnlocked(i){
+  if(i===0) return true;
+  return state.unitProgress[i-1].completed;
+}
+
+/* ================= RENDER: MAP ================= */
+function renderMap(){
+  state.currentUnit=-1;
+  let cardsHtml = UNITS.map((u,i)=>{
+    const unlocked = isUnlocked(i);
+    const done = state.unitProgress[i].completed;
+    let statusHtml, icon="";
+    if(done){ statusHtml = `<div class="status done">완료</div>`; icon=`<span class="check-icon">✓</span>`; }
+    else if(unlocked){ statusHtml = `<div class="status ready">도전 가능</div>`; }
+    else { statusHtml = `<div class="status locked">잠김</div>`; icon=`<span class="lock-icon">🔒</span>`; }
+    return `
+      <div class="unit-card ${unlocked?'':'locked'}" data-unit="${i}">
+        ${icon}
+        <div class="num">${u.id}</div>
+        <div class="lv">${u.level}</div>
+        ${statusHtml}
+      </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="masthead">
+      <div class="eyebrow">Chunk Reading Lab</div>
+      <h1>${SET_TITLE}</h1>
+      <p>${SET_SUBTITLE}</p>
+      <div class="name-box">
+        <label for="nameInput">이름(선택):</label>
+        <input type="text" id="nameInput" placeholder="예: 홍길동" value="${state.userName}">
+      </div>
+    </div>
+    <div class="map-grid">${cardsHtml}</div>
+    <div class="map-note">지문을 순서대로 완료하면 다음 지문이 열립니다. 각 지문은 문장 해석 → 결과 2단계로 진행됩니다.</div>
+    <footer>총 ${UNITS.length}개 지문 · 문장 해석 자기 채점형 학습 도구</footer>
+  `;
+
+  document.getElementById('nameInput').addEventListener('input', e=>{
+    state.userName = e.target.value;
+  });
+
+  document.querySelectorAll('.unit-card').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const i = parseInt(el.dataset.unit,10);
+      if(!isUnlocked(i)) return;
+      openUnit(i);
+    });
+  });
+}
+
+/* ================= OPEN UNIT ================= */
+function openUnit(i){
+  state.currentUnit = i;
+  const p = state.unitProgress[i];
+  if(p.chunkInputs.length===0){
+    p.chunkInputs = UNITS[i].chunks.map(()=>"");
+    p.chunkMarks = UNITS[i].chunks.map(()=>null);
+    p.chunkDifficult = UNITS[i].chunks.map(()=>false);
+  }
+  state.currentStage = p.chunkDone ? 1 : 0;
+  renderUnit();
+}
+
+function progressStripHtml(){
+  const stage = state.currentStage;
+  const seg = (idx)=> idx<stage ? 'done' : (idx===stage?'active':'');
+  return `
+    <div class="progress-strip">
+      <div class="seg ${seg(0)}"></div>
+      <div class="seg ${seg(1)}"></div>
+    </div>`;
+}
+
+function unitHeaderHtml(u){
+  return `
+    <div class="unit-header">
+      <button class="back-btn" id="toMapBtn">← 목록으로</button>
+      <div class="unit-title-block">
+        <div class="tag">${u.source}</div>
+        <h2>${u.id}번 지문 · ${u.level}</h2>
+      </div>
+    </div>`;
+}
+
+function attachBackBtn(){
+  document.getElementById('toMapBtn').addEventListener('click', renderMap);
+}
+
+/* ================= RENDER: UNIT (dispatch by stage) ================= */
+function renderUnit(){
+  if(state.currentStage===0) renderChunkStage();
+  else renderResultStage();
+}
+
+/* -------- Stage 0: Chunk interpretation -------- */
+function renderChunkStage(){
+  const i = state.currentUnit;
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+
+  const itemsHtml = u.chunks.map((c,idx)=>{
+    const marked = p.chunkMarks[idx];
+    const isDiff = p.chunkDifficult[idx];
+    return `
+    <div class="card">
+      <span class="idx">${idx+1}</span>
+      <div class="source-en">${c.en}</div>
+      <textarea data-cidx="${idx}" class="chunk-input" placeholder="해석을 입력해 보세요" ${p.chunkRevealed?'disabled':''}>${p.chunkInputs[idx]}</textarea>
+      <div class="reveal-box ${p.chunkRevealed?'shown':''}">
+        <div class="label">모범 해석</div>
+        ${c.ko}
+      </div>
+      ${p.chunkRevealed ? `
+      <div class="self-grade">
+        <button class="grade-btn o ${marked==='O'?'picked':''}" data-cgrade="O" data-cidx="${idx}">O 맞았어요</button>
+        <button class="grade-btn x ${marked==='X'?'picked':''}" data-cgrade="X" data-cidx="${idx}">X 틀렸어요</button>
+      </div>
+      <button class="btn ${isDiff?'btn-amber':'btn-ghost'} diff-btn" data-cdiff="${idx}" style="width:100%;margin-top:8px;">${isDiff ? '🤔 어려운 문장으로 표시됨 (탭하면 해제)' : '🤔 이 문장 해석 어려웠어요'}</button>` : ``}
+    </div>`;
+  }).join('');
+
+  const passageFlowHtml = u.chunks.map((c,idx)=>{
+    const altClass = idx%2===1 ? ' alt' : '';
+    const chunk = `<span class="cchunk${altClass}"><span class="cnum">${idx+1}</span><span class="ctxt">${c.en}</span></span>`;
+    return chunk;
+  }).join(`<span class="cdiv">／</span>`);
+
+  app.innerHTML = `
+    ${unitHeaderHtml(u)}
+    ${progressStripHtml()}
+    <h3 style="font-family:var(--serif);color:var(--navy);margin:0 0 4px;">1단계 · 문장 해석</h3>
+    <p style="color:var(--ink-soft);font-size:13.5px;margin-top:0;margin-bottom:18px;">각 문장을 자연스러운 한글로 해석해 본 뒤 모범 해석과 비교하세요.</p>
+
+    <div class="passage-card">
+      <div class="plabel">지문 전체 · 청크 구분(／) 표시</div>
+      <div class="passage-flow">${passageFlowHtml}</div>
+    </div>
+
+    ${itemsHtml}
+    <div class="bottom-bar">
+      ${!p.chunkRevealed
+        ? `<button class="btn btn-primary" id="revealChunkBtn">모범 해석 확인하기</button>`
+        : `<button class="btn btn-amber" id="toResultBtn" ${p.chunkMarks.some(m=>m===null)?'disabled':''}>결과 확인하기 →</button>`
+      }
+    </div>
+  `;
+
+  attachBackBtn();
+
+  document.querySelectorAll('.chunk-input').forEach(el=>{
+    el.addEventListener('input', e=>{
+      p.chunkInputs[parseInt(e.target.dataset.cidx,10)] = e.target.value;
+    });
+  });
+
+  const revealBtn = document.getElementById('revealChunkBtn');
+  if(revealBtn){
+    revealBtn.addEventListener('click', ()=>{
+      p.chunkRevealed = true;
+      renderChunkStage();
+    });
+  }
+
+  document.querySelectorAll('[data-cgrade]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const idx = parseInt(e.target.dataset.cidx,10);
+      p.chunkMarks[idx] = e.target.dataset.cgrade;
+      renderChunkStage();
+    });
+  });
+
+  document.querySelectorAll('[data-cdiff]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const idx = parseInt(e.target.dataset.cdiff,10);
+      p.chunkDifficult[idx] = !p.chunkDifficult[idx];
+      renderChunkStage();
+    });
+  });
+
+  const toResultBtn = document.getElementById('toResultBtn');
+  if(toResultBtn){
+    toResultBtn.addEventListener('click', ()=>{
+      p.chunkDone = true;
+      p.completed = true;
+      state.currentStage = 1;
+      renderUnit();
+    });
+  }
+}
+
+/* -------- Stage 2: Result -------- */
+function renderResultStage(){
+  const i = state.currentUnit;
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+
+  const chunkScore = p.chunkMarks.filter(m=>m==='O').length;
+
+  const wrongChunk = u.chunks.map((c,idx)=>({...c, idx})).filter((c)=>p.chunkMarks[c.idx]==='X');
+  const diffNums = u.chunks.map((c,idx)=>idx+1).filter(n=>p.chunkDifficult[n-1]);
+
+  const allChunkHtml = u.chunks.map((c,idx)=>{
+    const mark = p.chunkMarks[idx];
+    const isDiff = p.chunkDifficult[idx];
+    const markBadge = mark==='O'
+      ? `<span style="color:var(--ok);font-weight:800;">O</span>`
+      : `<span style="color:var(--bad);font-weight:800;">X</span>`;
+    return `
+    <div class="wrong-item">
+      <div class="en"><b>${idx+1}.</b> ${markBadge} ${isDiff?'<span style="color:var(--amber);font-weight:700;">🤔 어려움</span>':''} ${c.en}</div>
+      <div class="compare">
+        <div class="mine"><span class="k">학생이 쓴 해석</span>${p.chunkInputs[idx] || '(입력 안 함)'}</div>
+        <div class="model"><span class="k">모범 해석</span>${c.ko}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const nextIdx = i+1;
+  const hasNext = nextIdx < UNITS.length;
+
+  app.innerHTML = `
+    ${unitHeaderHtml(u)}
+    ${progressStripHtml()}
+    <h3 style="font-family:var(--serif);color:var(--navy);margin:0 0 16px;">2단계 · 결과</h3>
+
+    <div class="score-panel" style="grid-template-columns:1fr;">
+      <div class="score-box">
+        <div class="n">${chunkScore} / ${u.chunks.length}</div>
+        <div class="l">해석 점수</div>
+      </div>
+    </div>
+
+    <div class="section-label">해석이 어려웠던 문장 번호</div>
+    <div class="empty-note" style="${diffNums.length?'color:var(--bad);font-weight:700;':''}">${diffNums.length ? diffNums.join(', ') + '번' : '표시된 문장이 없습니다'}</div>
+
+    <div class="section-label">전체 해석 결과 (학생 작성 ↔ 모범 해석, 총 ${u.chunks.length}개)</div>
+    ${allChunkHtml}
+    ${wrongChunk.length ? `<button class="btn btn-ghost" id="retryChunkBtn">틀린 해석만 다시 풀기</button>` : ``}
+
+    <div class="copy-area">
+      <button class="btn btn-primary" id="copyBtn">결과 복사하기</button>
+      <span class="copy-status" id="copyStatus">복사되었습니다 ✓</span>
+      <button class="btn btn-amber" id="kakaoBtn" style="margin-top:8px;">카카오톡으로 결과 보내기</button>
+      <span class="copy-status" id="kakaoStatus">공유 준비 완료 ✓ (공유 대상에서 카카오톡을 선택하세요)</span>
+    </div>
+
+    <div class="bottom-bar" style="margin-top:26px;">
+      ${hasNext
+        ? `<button class="btn btn-amber" id="nextUnitBtn">다음 지문(${UNITS[nextIdx].id}번)으로 →</button>`
+        : `<button class="btn btn-amber" id="finishAllBtn">전체 목록으로 돌아가기</button>`
+      }
+    </div>
+  `;
+
+  attachBackBtn();
+
+  const retryChunkBtn = document.getElementById('retryChunkBtn');
+  if(retryChunkBtn){
+    retryChunkBtn.addEventListener('click', ()=>{
+      wrongChunk.forEach(c=>{
+        p.chunkMarks[c.idx]=null;
+        p.chunkInputs[c.idx]="";
+      });
+      p.chunkRevealed=false;
+      state.currentStage=0;
+      renderUnit();
+    });
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', ()=>{
+    const text = buildCopyText(i);
+    copyToClipboard(text, ()=>{
+      const s = document.getElementById('copyStatus');
+      s.classList.add('shown');
+      setTimeout(()=>s.classList.remove('shown'), 2500);
+    });
+  });
+
+  document.getElementById('kakaoBtn').addEventListener('click', ()=>{
+    const text = buildCopyText(i);
+    shareResult(text, u.id, ()=>{
+      const s = document.getElementById('kakaoStatus');
+      s.classList.add('shown');
+      setTimeout(()=>s.classList.remove('shown'), 3000);
+    });
+  });
+
+  const nextUnitBtn = document.getElementById('nextUnitBtn');
+  if(nextUnitBtn){
+    nextUnitBtn.addEventListener('click', ()=> openUnit(nextIdx));
+  }
+  const finishAllBtn = document.getElementById('finishAllBtn');
+  if(finishAllBtn){
+    finishAllBtn.addEventListener('click', renderMap);
+  }
+}
+
+function buildCopyText(i){
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+  const chunkScore = p.chunkMarks.filter(m=>m==='O').length;
+  const name = state.userName ? state.userName : "(이름 미입력)";
+
+  let lines = [];
+  lines.push(`[${SET_TITLE}] ${u.id}번 지문 결과`);
+  lines.push(`이름: ${name}`);
+  lines.push(`해석 점수: ${chunkScore} / ${u.chunks.length}`);
+  lines.push('');
+
+  lines.push(`- 문장별 해석 (전체 ${u.chunks.length}개) -`);
+  u.chunks.forEach((c,idx)=>{
+    const mark = p.chunkMarks[idx]==='O' ? 'O' : 'X';
+    const diffTag = p.chunkDifficult[idx] ? ' [🤔어려움]' : '';
+    lines.push(`${idx+1}. (${mark}${diffTag}) ${c.en}`);
+    lines.push(`   학생 해석: ${p.chunkInputs[idx] || '(입력 안 함)'}`);
+    lines.push(`   모범 해석: ${c.ko}`);
+  });
+
+  lines.push('');
+  const diffNums = u.chunks.map((c,idx)=>idx+1).filter(n=>p.chunkDifficult[n-1]);
+  lines.push(`- 해석이 어려웠던 문장 번호 -`);
+  lines.push(diffNums.length ? diffNums.join(', ') + '번' : '없음');
+
+  return lines.join('\n');
+}
+
+function shareResult(text, unitId, onFallbackCopy){
+  const shareTitle = `${SET_TITLE} ${unitId}번 결과`;
+  if(navigator.share){
+    navigator.share({ title: shareTitle, text: text }).catch(()=>{
+      // 사용자가 공유를 취소한 경우 등은 무시
+    });
+  } else {
+    // 공유 API를 지원하지 않는 환경(PC 브라우저 등)에서는 클립보드로 복사
+    copyToClipboard(text, onFallbackCopy);
+  }
+}
+
+function copyToClipboard(text, onSuccess){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(onSuccess).catch(()=>fallbackCopy(text, onSuccess));
+  } else {
+    fallbackCopy(text, onSuccess);
+  }
+}
+function fallbackCopy(text, onSuccess){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position='fixed';
+  ta.style.left='-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{ document.execCommand('copy'); onSuccess(); }catch(e){ /* ignore */ }
+  document.body.removeChild(ta);
+}
+
+/* ================= INIT ================= */
+renderMap();
+</script>
+</body>
+</html>
