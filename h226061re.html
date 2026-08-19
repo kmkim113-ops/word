@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고2 26년 6월 모의고사 1회 — 청킹 해석 훈련</title>
+<style>
+  :root{
+    --navy:#182a4d;
+    --navy-2:#24365c;
+    --cream:#f6f2e8;
+    --paper:#fffdf8;
+    --ink:#242021;
+    --ink-soft:#5a5450;
+    --amber:#c98a3b;
+    --amber-2:#e0a458;
+    --line:#e4dcc9;
+    --ok:#3f7d5c;
+    --ok-bg:#e7f2eb;
+    --bad:#b5453a;
+    --bad-bg:#faeae8;
+    --lock:#bdb6a6;
+    --radius:14px;
+    --serif: "Noto Serif KR","Nanum Myeongjo","Apple SD Gothic Neo",serif;
+    --sans: "Pretendard","Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    min-height:100vh;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px;}
+
+  /* header */
+  .masthead{
+    border-bottom:3px solid var(--navy);
+    padding-bottom:18px;
+    margin-bottom:28px;
+  }
+  .masthead .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    color:var(--amber);
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .masthead h1{
+    font-family:var(--serif);
+    font-size:28px;
+    margin:6px 0 4px;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+  }
+  .masthead p{margin:0;color:var(--ink-soft);font-size:14px;}
+
+  .name-box{
+    margin-top:16px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .name-box label{font-size:13px;color:var(--ink-soft);}
+  .name-box input{
+    border:1px solid var(--line);
+    background:var(--paper);
+    border-radius:8px;
+    padding:7px 10px;
+    font-size:14px;
+    font-family:var(--sans);
+    color:var(--ink);
+    min-width:140px;
+  }
+  .name-box input:focus{outline:2px solid var(--amber-2);outline-offset:1px;}
+
+  /* stage map */
+  .map-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:10px;
+  }
+  @media (min-width:520px){
+    .map-grid{grid-template-columns:repeat(4,1fr);}
+  }
+  .unit-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 12px;
+    text-align:center;
+    cursor:pointer;
+    position:relative;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .unit-card:hover:not(.locked){
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(24,42,77,0.1);
+    border-color:var(--amber-2);
+  }
+  .unit-card .num{
+    font-family:var(--serif);
+    font-size:26px;
+    color:var(--navy);
+    font-weight:700;
+  }
+  .unit-card .lv{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .unit-card .status{
+    margin-top:8px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.03em;
+  }
+  .unit-card .status.done{color:var(--ok);}
+  .unit-card .status.ready{color:var(--amber);}
+  .unit-card .status.locked{color:var(--lock);}
+  .unit-card.locked{cursor:not-allowed;opacity:.55;}
+  .unit-card .lock-icon{position:absolute;top:8px;right:10px;font-size:13px;color:var(--lock);}
+  .unit-card .check-icon{position:absolute;top:8px;right:10px;font-size:13px;color:var(--ok);}
+
+  .map-note{font-size:12.5px;color:var(--ink-soft);margin-top:14px;margin-bottom:6px;}
+
+  /* unit view */
+  .unit-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+    gap:10px;
+  }
+  .back-btn{
+    background:none;border:none;color:var(--navy);font-size:14px;cursor:pointer;
+    font-weight:600;padding:6px 0;display:flex;align-items:center;gap:5px;
+  }
+  .back-btn:hover{color:var(--amber);}
+  .unit-title-block{text-align:right;}
+  .unit-title-block .tag{
+    font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.05em;
+  }
+  .unit-title-block h2{
+    font-family:var(--serif);font-size:20px;margin:2px 0 0;color:var(--navy);
+  }
+
+  .progress-strip{
+    display:flex;gap:6px;margin-bottom:22px;
+  }
+  .progress-strip .seg{
+    flex:1;height:5px;border-radius:3px;background:var(--line);
+  }
+  .progress-strip .seg.active{background:var(--amber-2);}
+  .progress-strip .seg.done{background:var(--navy);}
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 18px 20px;
+    margin-bottom:14px;
+  }
+  .card .idx{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    color:#fff;
+    background:var(--navy);
+    border-radius:5px;
+    padding:2px 7px;
+    margin-bottom:10px;
+  }
+  .card .source-en{
+    font-size:15.5px;
+    line-height:1.65;
+    color:var(--ink);
+    margin-bottom:12px;
+  }
+  .card .en-word{
+    font-family:var(--serif);
+    font-size:17px;
+    color:var(--navy);
+    font-weight:700;
+  }
+  textarea, input[type=text]{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:9px 11px;
+    font-family:var(--sans);
+    font-size:14.5px;
+    color:var(--ink);
+    background:#fffefc;
+    resize:vertical;
+  }
+  textarea:focus, input[type=text]:focus{outline:2px solid var(--amber-2);outline-offset:1px;}
+  textarea{min-height:52px;}
+
+  .reveal-box{
+    margin-top:12px;
+    padding:12px 13px;
+    background:var(--cream);
+    border-left:3px solid var(--amber-2);
+    border-radius:6px;
+    font-size:14.5px;
+    display:none;
+  }
+  .reveal-box.shown{display:block;}
+  .reveal-box .label{font-size:11px;color:var(--amber);font-weight:700;margin-bottom:4px;letter-spacing:.03em;}
+
+  .btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
+  .btn{
+    border:none;border-radius:8px;padding:9px 16px;font-size:13.5px;font-weight:700;
+    cursor:pointer;font-family:var(--sans);transition:opacity .12s ease, transform .1s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:hover{background:var(--navy-2);}
+  .btn-ghost{background:transparent;color:var(--navy);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--navy);}
+  .btn-amber{background:var(--amber-2);color:#2a2016;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  .self-grade{display:flex;gap:8px;margin-top:12px;}
+  .grade-btn{
+    flex:1;border-radius:8px;border:1.5px solid var(--line);background:#fff;
+    padding:9px;font-weight:700;cursor:pointer;font-size:13.5px;font-family:var(--sans);
+    color:var(--ink-soft);
+  }
+  .grade-btn.o.picked{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);}
+  .grade-btn.x.picked{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);}
+
+  .bottom-bar{
+    position:sticky;bottom:0;
+    background:linear-gradient(to top, var(--cream) 70%, transparent);
+    padding-top:18px;margin-top:6px;
+  }
+  .bottom-bar .btn{width:100%;padding:13px;font-size:15px;}
+
+  /* result */
+  .score-panel{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;
+  }
+  .score-box{
+    background:var(--navy);color:#fff;border-radius:var(--radius);
+    padding:18px 14px;text-align:center;
+  }
+  .score-box .n{font-family:var(--serif);font-size:30px;font-weight:700;}
+  .score-box .l{font-size:12px;opacity:.8;margin-top:2px;}
+
+  .section-label{
+    font-family:var(--serif);font-size:16px;color:var(--navy);
+    margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--line);
+  }
+  .wrong-item{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;margin-bottom:10px;
+  }
+  .wrong-item .en{font-size:14px;color:var(--ink);margin-bottom:8px;}
+  .wrong-item .compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .wrong-item .compare div{font-size:13px;padding:7px 9px;border-radius:6px;}
+  .wrong-item .mine{background:var(--bad-bg);color:#7a352c;}
+  .wrong-item .model{background:var(--ok-bg);color:#2e5c42;}
+  .wrong-item .compare .k{font-size:10.5px;font-weight:700;display:block;margin-bottom:3px;letter-spacing:.03em;}
+  .empty-note{font-size:13.5px;color:var(--ink-soft);padding:10px 2px;}
+
+  /* full passage with chunk marks */
+  .passage-card{
+    background:var(--navy);
+    color:#f3efe2;
+    border-radius:var(--radius);
+    padding:18px 18px 16px;
+    margin-bottom:20px;
+  }
+  .passage-card .plabel{
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--amber-2);font-weight:700;margin-bottom:12px;
+  }
+  .passage-flow{
+    display:flex;flex-wrap:wrap;align-items:center;gap:7px 3px;
+  }
+  .passage-flow .cchunk{
+    display:inline-flex;align-items:baseline;gap:5px;
+    padding:5px 9px;border-radius:7px;
+    background:rgba(224,164,88,0.14);
+    line-height:1.55;
+  }
+  .passage-flow .cchunk.alt{background:rgba(224,164,88,0.26);}
+  .passage-flow .cnum{
+    font-size:9.5px;font-weight:800;color:var(--navy);
+    background:var(--amber-2);border-radius:4px;padding:0 4px;
+    flex-shrink:0;
+  }
+  .passage-flow .ctxt{font-size:14px;color:#f3efe2;}
+  .passage-flow .cdiv{color:var(--amber-2);font-weight:700;font-size:15px;}
+
+  .copy-area{margin-top:26px;}
+  .copy-status{font-size:12.5px;color:var(--ok);margin-top:8px;display:none;}
+  .copy-status.shown{display:inline-block;}
+
+  footer{
+    text-align:center;color:var(--ink-soft);font-size:12px;margin-top:40px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ================= DATA ================= */
+const SET_TITLE = "고2 26년 6월 모의고사 1회";
+const SET_SUBTITLE = "청킹(의미 단위) 해석 훈련 · 자기 채점형";
+
+const UNITS = [
+{
+  id:20, level:"고2", source:"26년 6월 모의고사 1회 · 20번",
+  vocab:[
+    {w:"assume", m:"가정하다"},
+    {w:"productive", m:"생산적인"},
+    {w:"efficient", m:"효율적인"},
+    {w:"fallacy", m:"오류"},
+    {w:"composition", m:"합성, 구성"},
+    {w:"administrator", m:"행정 담당자, 관리자"},
+    {w:"collate", m:"(자료 등을) 정리하다, 대조하다"},
+    {w:"doomed", m:"실패할 운명인"},
+    {w:"stable", m:"안정된"},
+    {w:"overall", m:"전반적인"},
+  ],
+  chunks:[
+    {en:`We can sometimes assume / that the whole will be / as good as each of its parts.`, ko:`우리는 때때로 전체가 각 부분만큼 좋을 것이라고 가정할 수 있다.`},
+    {en:`Suppose, for example, / you're in charge of a startup, / and you know / that everyone you've brought on board / is productive and efficient.`, ko:`예를 들어, 당신이 한 스타트업을 책임지고 있고, 영입한 모든 사람이 생산적이고 효율적이라는 것을 알고 있다고 가정해 보자.`},
+    {en:`It might seem logical / to assume / that, as a result, / the startup will be productive and efficient, too— / but this isn't necessarily true.`, ko:`그 결과 스타트업도 생산적이고 효율적일 것이라고 가정하는 것이 논리적으로 보일 수 있지만, 이것이 반드시 사실인 것은 아니다.`},
+    {en:`The fallacy of composition / fails to allow for / how the different "parts" interact with each other— / if, for example, / your efficient administrator and your highly skilled head of IT / each assumes / the other is in charge of / collating prototype test results, / then you have a problem.`, ko:`합성의 오류는 서로 다른 '부분들'이 어떻게 상호작용하는지를 고려하지 못하는데, 예를 들어 유능한 행정 담당자와 뛰어난 IT 책임자가 각자 상대방이 시제품 테스트 결과 정리를 맡고 있다고 생각한다면 문제가 생긴다.`},
+    {en:`Equally, a unit composed of good people / can still be working on a doomed project, / and a project composed of good ideas / may lack a stable center.`, ko:`마찬가지로, 훌륭한 사람들로 구성된 조직도 실패할 수밖에 없는 프로젝트를 진행하고 있을 수 있고, 좋은 아이디어들로 구성된 프로젝트도 안정된 중심축이 없을 수 있다.`},
+    {en:`When assembling a team with a common goal, / always check the overall view / as well as the individuals involved.`, ko:`공동의 목표를 가진 팀을 꾸릴 때는 개개인뿐만 아니라 항상 전체적인 관점도 점검해야 한다.`},
+  ]
+},
+{
+  id:21, level:"고2", source:"26년 6월 모의고사 1회 · 21번",
+  vocab:[
+    {w:"excel at", m:"~에 뛰어나다"},
+    {w:"internal", m:"내적인"},
+    {w:"rehearse", m:"예행연습하다, 미리 연습하다"},
+    {w:"penalty", m:"대가, 손실"},
+    {w:"brain-imaging", m:"뇌 영상(의)"},
+    {w:"authentic", m:"진짜의, 진정한"},
+    {w:"self-restraint", m:"자제"},
+    {w:"substitute", m:"대체물"},
+    {w:"incentive", m:"동기, 유인"},
+    {w:"starve", m:"굶주리다"},
+    {w:"cloy", m:"(지나치게 많이 주어) 물리게 하다"},
+    {w:"appetite", m:"식욕"},
+  ],
+  chunks:[
+    {en:`Humans excel at visual imagery.`, ko:`인간은 시각적 심상(이미지)에 뛰어나다.`},
+    {en:`Our brains evolved this ability / to create an internal mental picture or model of the world / in which we can rehearse forthcoming actions, / without the risks or the penalties / of doing them in the real world.`, ko:`우리의 뇌는, 실제 세계에서 행동함으로써 생기는 위험이나 대가 없이 앞으로 할 행동을 미리 연습해 볼 수 있는, 세상에 대한 내적인 정신적 그림(모델)을 만들어내는 이 능력을 진화시켰다.`},
+    {en:`There are even hints / from brain-imaging studies by Harvard University psychologist Steve Kosslyn / showing that your brain uses the same regions / to imagine a scene / as when you actually view one.`, ko:`하버드 대학교 심리학자 스티브 코슬린의 뇌 영상 연구에서 나온 단서도 있는데, 그것은 우리의 뇌가 어떤 장면을 상상할 때 실제로 그 장면을 볼 때와 동일한 뇌 영역을 사용한다는 것을 보여준다.`},
+    {en:`But evolution has seen to it / that such internally generated representations / are never as authentic as the real thing.`, ko:`그러나 진화는 이렇게 내적으로 만들어진 표상이 결코 실제와 같을 만큼 진짜답지는 않도록 확실히 해 놓았다.`},
+    {en:`This is a wise bit of self-restraint / on your genes' part.`, ko:`이는 당신의 유전자 쪽에서 취한 현명한 자제라 할 수 있다.`},
+    {en:`If your internal model of the world / were a perfect substitute, / then anytime you felt hungry / you could simply imagine yourself at a banquet, / consuming a feast.`, ko:`만약 세상에 대한 당신의 내적 모델이 완벽한 대체물이라면, 배가 고플 때마다 당신은 그저 잔칫상 앞에서 진수성찬을 먹는 자신을 상상하기만 하면 될 것이다.`},
+    {en:`You would have no incentive / to find real food / and would soon starve to death.`, ko:`당신은 실제 음식을 찾을 동기가 전혀 없어질 것이고 곧 굶어 죽게 될 것이다.`},
+    {en:`As the Bard said, / "You cannot cloy the hungry edge of appetite / by bare imagination of a feast."`, ko:`셰익스피어가 말했듯이, '단순한 상상 속의 잔치로는 굶주린 식욕의 날카로움을 무디게 할 수 없다.'`},
+  ]
+},
+{
+  id:22, level:"고2", source:"26년 6월 모의고사 1회 · 22번",
+  vocab:[
+    {w:"objective", m:"객관적인"},
+    {w:"subjective", m:"주관적인"},
+    {w:"probability", m:"확률"},
+    {w:"weight", m:"가중치"},
+    {w:"factor into", m:"~에 영향을 미치다, 작용하다"},
+    {w:"overestimate", m:"과대평가하다"},
+    {w:"likelihood", m:"가능성"},
+    {w:"optimistic", m:"낙관적인"},
+    {w:"odds", m:"승산, 확률"},
+    {w:"lottery", m:"복권"},
+  ],
+  chunks:[
+    {en:`For each objective probability— / from one percent to 100 percent— / we want to know / the subjective probability weight.`, ko:`1퍼센트에서 100퍼센트에 이르는 각각의 객관적 확률에 대해, 우리는 주관적 확률 가중치를 알고 싶어 한다.`},
+    {en:`When we make decisions, / do we treat a one-percent chance / just like one percent, or like something else?`, ko:`우리가 의사 결정을 할 때, 1퍼센트의 가능성을 그저 1퍼센트로 취급할까, 아니면 다른 무언가로 취급할까?`},
+    {en:`Events that could happen but aren't likely— / low-probability events— / can be defined as probabilities / up to about 25 percent.`, ko:`일어날 수는 있지만 가능성이 낮은 사건, 즉 저확률 사건은 대략 25퍼센트까지의 확률로 정의될 수 있다.`},
+    {en:`Low-probability events tend to factor more into decisions / than they should.`, ko:`저확률 사건은 마땅히 그래야 하는 정도보다 더 크게 의사 결정에 작용하는 경향이 있다.`},
+    {en:`That is, an event / that has an objective one-percent chance of occurring / could subjectively seem / like it has a five-percent chance of occurring.`, ko:`즉, 객관적으로 1퍼센트의 발생 확률을 가진 사건이 주관적으로는 5퍼센트의 확률을 가진 것처럼 느껴질 수 있다.`},
+    {en:`We overestimate / the likelihood of these low-probability events.`, ko:`우리는 이러한 저확률 사건이 일어날 가능성을 과대평가한다.`},
+    {en:`In general, the smaller the probability, / the more we overestimate its likelihood.`, ko:`일반적으로 확률이 작을수록 우리는 그 가능성을 더 크게 과대평가한다.`},
+    {en:`For example, people who play the lottery / are often optimistic about winning.`, ko:`예를 들어, 복권을 사는 사람들은 흔히 당첨에 대해 낙관적이다.`},
+    {en:`However, the odds of a single ticket / winning the largest, most popular U.S. lotteries / are on the order of one in 175 million.`, ko:`그러나 미국에서 가장 크고 인기 있는 복권에서 단 한 장의 표가 당첨될 확률은 대략 1억 7천 5백만 분의 1 수준이다.`},
+  ]
+},
+{
+  id:23, level:"고2", source:"26년 6월 모의고사 1회 · 23번",
+  vocab:[
+    {w:"barrier", m:"장벽"},
+    {w:"competitive", m:"경쟁력 있는"},
+    {w:"transaction cost", m:"거래 비용"},
+    {w:"exchange cost", m:"환전 비용"},
+    {w:"hedge", m:"헤지하다, (위험에) 대비하다"},
+    {w:"currency", m:"통화"},
+    {w:"reinvest", m:"재투자하다"},
+    {w:"productivity", m:"생산성"},
+    {w:"unify", m:"통합하다"},
+    {w:"foundation", m:"기반, 토대"},
+  ],
+  chunks:[
+    {en:`Many of the barriers to trade exist / not because of a lack of markets or customers, / but because there are major barriers / to getting products to market at competitive prices.`, ko:`무역에 대한 장벽의 상당 부분은, 시장이나 고객이 부족해서가 아니라, 경쟁력 있는 가격으로 제품을 시장에 내놓는 데 큰 장벽이 있기 때문에 존재한다.`},
+    {en:`Transaction costs are significant for companies— / not only the straight exchange costs, / but also the cost of converting, paying, and hedging funds / just to pay for the goods and services.`, ko:`거래 비용은 기업들에게 상당한 부담인데, 이는 단순한 환전 비용뿐만 아니라 상품과 서비스 대금을 지불하기 위해 자금을 환전하고 지불하고 헤지하는 데 드는 비용까지 포함한다.`},
+    {en:`Having a common currency means / that many of those transaction costs disappear / and the savings can be reinvested / back into firms' productivity and innovation.`, ko:`공동 통화를 가진다는 것은 그러한 거래 비용의 상당 부분이 사라지고, 절약된 비용이 기업의 생산성과 혁신에 다시 투자될 수 있다는 것을 의미한다.`},
+    {en:`Basically, useless costs turn into productive costs— / with longer-term benefits to the whole economy.`, ko:`기본적으로, 쓸모없는 비용이 생산적인 비용으로 바뀌며, 이는 경제 전체에 장기적인 이익을 가져다준다.`},
+    {en:`By unifying some of the currencies, / whole economies benefit and grow / more than they would as independents.`, ko:`일부 통화를 통합함으로써, 경제 전체는 개별적으로 있을 때보다 더 큰 이익을 얻고 성장한다.`},
+    {en:`So a common currency provides for a strong economic foundation / that all can benefit from.`, ko:`따라서 공동 통화는 모두가 이익을 얻을 수 있는 튼튼한 경제적 기반을 제공한다.`},
+  ]
+},
+{
+  id:24, level:"고2", source:"26년 6월 모의고사 1회 · 24번",
+  vocab:[
+    {w:"stellar", m:"항성의, 별의"},
+    {w:"neighbour", m:"이웃"},
+    {w:"incredible", m:"믿기 힘든, 놀라운"},
+    {w:"constellation", m:"별자리"},
+    {w:"glow", m:"빛나다; 빛"},
+    {w:"reddish", m:"불그스름한"},
+    {w:"journey", m:"여정"},
+    {w:"distant", m:"먼"},
+    {w:"generation", m:"세대"},
+    {w:"billion", m:"10억"},
+  ],
+  chunks:[
+    {en:`The light from even our nearest stellar neighbour / takes four years to reach us.`, ko:`심지어 우리와 가장 가까운 이웃 항성에서 나온 빛조차도 우리에게 도달하는 데 4년이 걸린다.`},
+    {en:`When we look at the stars, / we are looking back in time.`, ko:`우리가 별을 바라볼 때, 우리는 과거의 시간을 들여다보고 있는 것이다.`},
+    {en:`This is an incredible gift.`, ko:`이것은 놀라운 선물이다.`},
+    {en:`We can see parts of space, parts of our universe, / as they were many years ago.`, ko:`우리는 우주의 일부, 즉 우리 우주의 여러 부분을, 그것들이 여러 해 전에 있었던 모습 그대로 볼 수 있다.`},
+    {en:`The further we can collect light from, / the further back in time we can look.`, ko:`더 먼 곳에서 온 빛을 모을 수 있을수록, 우리는 시간을 더 멀리 거슬러 올라가 볼 수 있다.`},
+    {en:`If you look at the bright star Betelgeuse, / which glows in the Orion constellation, / you wind time back more than six hundred years.`, ko:`오리온자리에서 빛나는 밝은 별 베텔게우스를 바라본다면, 당신은 600년도 더 넘는 시간을 거슬러 올라가는 셈이다.`},
+    {en:`Its reddish glow started its journey to Earth / in the Middle Ages.`, ko:`그 붉은빛은 중세 시대에 지구를 향한 여정을 시작했다.`},
+    {en:`The stars in Orion's belt are even further away.`, ko:`오리온자리의 허리띠에 있는 별들은 훨씬 더 멀리 있다.`},
+    {en:`Their light, familiar to generations of humans, / has travelled at least 1,000 years to reach us.`, ko:`여러 세대의 인류에게 친숙한 그 별빛은, 우리에게 도달하기까지 적어도 1,000년을 여행해 왔다.`},
+    {en:`This means we have a chance / of understanding the history of the universe / because we can see the more distant parts of it as they were in the past, / thousands or millions or billions of years ago.`, ko:`이는 우리가 우주의 역사를 이해할 기회를 갖는다는 것을 의미하는데, 우리가 우주의 더 먼 부분들을 수천 년, 수백만 년, 혹은 수십억 년 전 과거의 모습 그대로 볼 수 있기 때문이다.`},
+  ]
+},
+{
+  id:29, level:"고2", source:"26년 6월 모의고사 1회 · 29번",
+  vocab:[
+    {w:"renowned", m:"저명한"},
+    {w:"assert", m:"주장하다"},
+    {w:"civilization", m:"문명"},
+    {w:"operation", m:"작업, 행위"},
+    {w:"extent", m:"정도, 범위"},
+    {w:"mechanically", m:"기계적으로"},
+    {w:"illustrate", m:"잘 보여주다"},
+    {w:"recipient", m:"받는 사람, 수령인"},
+    {w:"substantial", m:"상당한"},
+    {w:"instructive", m:"시사하는 바가 큰"},
+    {w:"pocketbook", m:"지갑, 재정"},
+  ],
+  chunks:[
+    {en:`The renowned British philosopher Alfred North Whitehead asserted / that "civilization advances / by extending the number of operations / we can perform without thinking about them."`, ko:`저명한 영국 철학자 알프레드 노스 화이트헤드는 '문명은 우리가 생각하지 않고도 수행할 수 있는 작업의 수를 늘림으로써 발전한다'고 주장했다.`},
+    {en:`Take, for example, the "advance" / offered to civilization by the discount coupon, / which allows consumers to assume / that they will receive a reduced purchase price / by presenting the coupon.`, ko:`예를 들어, 소비자들이 쿠폰을 제시함으로써 할인된 구매 가격을 받을 것이라고 가정할 수 있게 해주는, 할인 쿠폰이 문명에 가져다준 '발전'을 생각해 보자.`},
+    {en:`The extent to which we have learned / to operate mechanically on that assumption / is illustrated in the experience / of one automobile-tire company.`, ko:`우리가 그러한 가정에 근거해 기계적으로 행동하도록 얼마나 학습했는지는 한 자동차 타이어 회사의 사례에서 잘 드러난다.`},
+    {en:`Mailed-out coupons / that—because of a printing error—offered no savings to recipients / produced just as much customer response / as did error-free coupons / that offered substantial savings.`, ko:`인쇄 오류 때문에 받는 사람들에게 아무런 할인 혜택도 주지 못했던 우편 발송 쿠폰이, 상당한 할인 혜택을 제공했던 오류 없는 쿠폰과 거의 같은 정도의 고객 반응을 이끌어냈다.`},
+    {en:`The obvious but instructive point here is / that we expect discount coupons to do double duty.`, ko:`여기서 분명하면서도 시사하는 바가 큰 점은 우리가 할인 쿠폰이 이중의 역할을 해 주기를 기대한다는 것이다.`},
+    {en:`Not only do we expect them to save us money, / we also expect them to save us / the time and mental energy required / to think about how to do it.`, ko:`우리는 그것이 돈을 절약해 주기를 기대할 뿐만 아니라, 그것을 어떻게 할지 생각하는 데 필요한 시간과 정신적 에너지까지 절약해 주기를 기대한다.`},
+    {en:`In today's world, we need the first advantage / to handle pocketbook strain; / but we need the second advantage / to handle something potentially more important— / brain strain.`, ko:`오늘날의 세상에서 우리는 지갑의 부담을 해결하기 위해 첫 번째 이점이 필요하지만, 잠재적으로 더 중요할 수 있는 것, 즉 두뇌의 부담을 해결하기 위해 두 번째 이점이 필요하다.`},
+  ]
+},
+{
+  id:30, level:"고2", source:"26년 6월 모의고사 1회 · 30번",
+  vocab:[
+    {w:"elasticity", m:"탄력성"},
+    {w:"variation", m:"변동, 변화"},
+    {w:"modify", m:"바꾸다, 조정하다"},
+    {w:"substitute", m:"대체재"},
+    {w:"forerunner", m:"선도자, 선구자"},
+    {w:"sensitive", m:"민감한"},
+    {w:"outstanding", m:"뛰어난, 두드러진"},
+    {w:"asset", m:"자산"},
+    {w:"perceive", m:"인식하다"},
+    {w:"reinforce", m:"강화하다"},
+    {w:"confidence", m:"신뢰, 확신"},
+  ],
+  chunks:[
+    {en:`Usually, innovative high-tech products have low price elasticity.`, ko:`보통 혁신적인 첨단 기술 제품은 가격 탄력성이 낮다.`},
+    {en:`This means / that high variation in price, an increase as well as a decrease, / does not significantly modify demand.`, ko:`이는 가격의 큰 변동이, 인상이든 인하든, 수요를 크게 변화시키지 않는다는 것을 의미한다.`},
+    {en:`These high-tech products have few substitutes, / meaning that the costs to switch to another product are high.`, ko:`이러한 첨단 기술 제품은 대체재가 거의 없는데, 이는 다른 제품으로 바꾸는 데 드는 비용이 크다는 것을 의미한다.`},
+    {en:`Additionally, at the first stage of the technology, / buyers—either innovators or forerunners— / are less sensitive to price than to additional performance; / they often have deep pockets / or are ready to spend a lot / for a new innovative and outstanding product.`, ko:`게다가, 그 기술의 초기 단계에서는, 혁신 수용자든 선도 구매자든 구매자들이 가격보다 추가적인 성능에 덜 민감한데, 그들은 흔히 여유 자금이 많거나 새롭고 혁신적이며 뛰어난 제품에 많은 돈을 쓸 준비가 되어 있기 때문이다.`},
+    {en:`For instance, with its new product range, / a high-end mobile phone manufacturer is aiming at the 3% of millionaire households / with assets of more than $2.5 million; / those are customers / who are ready to accept the price range the manufacturer has set.`, ko:`예를 들어, 새로운 제품군으로, 한 고급 휴대전화 제조업체는 250만 달러가 넘는 자산을 가진 백만장자 가구의 3퍼센트를 겨냥하고 있는데, 그들은 제조업체가 정한 가격대를 기꺼이 받아들일 준비가 되어 있는 고객들이다.`},
+    {en:`At that stage, the competitors are not interested / in lowering their price significantly whatsoever, / because they are chasing the same categories of customers, / not sensitive to price.`, ko:`그 단계에서 경쟁업체들은 자신들의 가격을 크게 낮추는 데 전혀 관심이 없는데, 이는 그들이 가격에 민감하지 않은 동일한 부류의 고객을 쫓고 있기 때문이다.`},
+    {en:`Furthermore, the high price of these products / is often perceived as a sign of quality / and reinforces a customer's confidence in the company.`, ko:`게다가 이러한 제품의 높은 가격은 흔히 품질의 표시로 인식되어 회사에 대한 고객의 신뢰를 강화한다.`},
+  ]
+},
+{
+  id:31, level:"고2", source:"26년 6월 모의고사 1회 · 31번",
+  vocab:[
+    {w:"underappreciated", m:"제대로 평가받지 못하는"},
+    {w:"feature", m:"특징"},
+    {w:"medieval", m:"중세의"},
+    {w:"infrastructure", m:"기반 시설"},
+    {w:"evolving", m:"계속 변화하는"},
+    {w:"prophet", m:"예언자"},
+    {w:"architecture", m:"건축"},
+    {w:"persistence", m:"지속성"},
+    {w:"predict", m:"예측하다"},
+    {w:"rise", m:"부상, 흥기"},
+  ],
+  chunks:[
+    {en:`One easily underappreciated feature / of a city street or square / is its "future-proof" nature.`, ko:`도시의 거리나 광장에서 쉽게 간과되는 한 가지 특징은 그것의 '미래에도 유효한' 속성이다.`},
+    {en:`The ancient medieval squares / in places like Marrakesh and Siena / are still places / where stuff is sold every day, / even if the stuff itself has changed over the last five hundred years.`, ko:`마라케시나 시에나 같은 곳에 있는 고대 중세 광장들은, 비록 팔리는 물건 자체는 지난 5백 년 동안 바뀌어 왔지만, 여전히 매일 물건이 팔리는 장소로 남아 있다.`},
+    {en:`The city square is a fairly future-proof technology, / as is the shopping street, / even in an age of online shopping.`, ko:`도시 광장은, 쇼핑 거리와 마찬가지로, 온라인 쇼핑의 시대에도 상당히 미래에도 유효한 기술이다.`},
+    {en:`For example, the same physical store / that once sold buggy whips and typewriters / might now repair damaged phones and sell bubble tea.`, ko:`예를 들어, 한때 마차용 채찍과 타자기를 팔던 바로 그 물리적인 상점이 이제는 고장 난 휴대전화를 수리하고 버블티를 팔지도 모른다.`},
+    {en:`The same infrastructure supports evolving uses.`, ko:`동일한 기반 시설이 계속 변화하는 용도들을 뒷받침해 준다.`},
+    {en:`Jane Jacobs, the great prophet of the city economy, / made much of this fact in her books, / including The Death and Life of Great American Cities and The Nature of Economies.`, ko:`도시 경제의 위대한 예언자인 제인 제이컵스는 《미국 대도시의 죽음과 삶》과 《경제의 본질》을 포함한 자신의 저서들에서 이러한 사실을 크게 강조했다.`},
+    {en:`As she pointed out, the great advantage of a city architecture / is its ability to support change in uses, / and Jacobs correctly predicted the persistence of the city itself, / unlike those who predicted / the rise of the Internet would mean the death of the city.`, ko:`그녀가 지적했듯이, 도시 건축의 큰 장점은 용도의 변화를 뒷받침할 수 있는 능력이며, 제이컵스는 인터넷의 부상이 도시의 소멸을 의미할 것이라고 예측했던 사람들과는 다르게 도시 자체의 지속성을 정확히 예측했다.`},
+  ]
+},
+];
+
+/* ================= STATE (in-memory only, no localStorage) ================= */
+const state = {
+  userName:"",
+  unitProgress: UNITS.map(()=>({
+    completed:false,
+    chunkDone:false,
+    chunkMarks: [], // 'O' | 'X' | null per chunk item
+    chunkInputs: [],
+    chunkDifficult: [], // true/false per chunk (학생이 어려웠다고 표시)
+    chunkRevealed:false,
+  })),
+  currentUnit:-1,   // -1 = map view
+  currentStage:0,   // 0 문장 해석, 1 결과
+};
+
+const app = document.getElementById('app');
+
+function isUnlocked(i){
+  if(i===0) return true;
+  return state.unitProgress[i-1].completed;
+}
+
+/* ================= RENDER: MAP ================= */
+function renderMap(){
+  state.currentUnit=-1;
+  let cardsHtml = UNITS.map((u,i)=>{
+    const unlocked = isUnlocked(i);
+    const done = state.unitProgress[i].completed;
+    let statusHtml, icon="";
+    if(done){ statusHtml = `<div class="status done">완료</div>`; icon=`<span class="check-icon">✓</span>`; }
+    else if(unlocked){ statusHtml = `<div class="status ready">도전 가능</div>`; }
+    else { statusHtml = `<div class="status locked">잠김</div>`; icon=`<span class="lock-icon">🔒</span>`; }
+    return `
+      <div class="unit-card ${unlocked?'':'locked'}" data-unit="${i}">
+        ${icon}
+        <div class="num">${u.id}</div>
+        <div class="lv">${u.level}</div>
+        ${statusHtml}
+      </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="masthead">
+      <div class="eyebrow">Chunk Reading Lab</div>
+      <h1>${SET_TITLE}</h1>
+      <p>${SET_SUBTITLE}</p>
+      <div class="name-box">
+        <label for="nameInput">이름(선택):</label>
+        <input type="text" id="nameInput" placeholder="예: 홍길동" value="${state.userName}">
+      </div>
+    </div>
+    <div class="map-grid">${cardsHtml}</div>
+    <div class="map-note">지문을 순서대로 완료하면 다음 지문이 열립니다. 각 지문은 문장 해석 → 결과 2단계로 진행됩니다.</div>
+    <footer>총 ${UNITS.length}개 지문 · 문장 해석 자기 채점형 학습 도구</footer>
+  `;
+
+  document.getElementById('nameInput').addEventListener('input', e=>{
+    state.userName = e.target.value;
+  });
+
+  document.querySelectorAll('.unit-card').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const i = parseInt(el.dataset.unit,10);
+      if(!isUnlocked(i)) return;
+      openUnit(i);
+    });
+  });
+}
+
+/* ================= OPEN UNIT ================= */
+function openUnit(i){
+  state.currentUnit = i;
+  const p = state.unitProgress[i];
+  if(p.chunkInputs.length===0){
+    p.chunkInputs = UNITS[i].chunks.map(()=>"");
+    p.chunkMarks = UNITS[i].chunks.map(()=>null);
+    p.chunkDifficult = UNITS[i].chunks.map(()=>false);
+  }
+  state.currentStage = p.chunkDone ? 1 : 0;
+  renderUnit();
+}
+
+function progressStripHtml(){
+  const stage = state.currentStage;
+  const seg = (idx)=> idx<stage ? 'done' : (idx===stage?'active':'');
+  return `
+    <div class="progress-strip">
+      <div class="seg ${seg(0)}"></div>
+      <div class="seg ${seg(1)}"></div>
+    </div>`;
+}
+
+function unitHeaderHtml(u){
+  return `
+    <div class="unit-header">
+      <button class="back-btn" id="toMapBtn">← 목록으로</button>
+      <div class="unit-title-block">
+        <div class="tag">${u.source}</div>
+        <h2>${u.id}번 지문 · ${u.level}</h2>
+      </div>
+    </div>`;
+}
+
+function attachBackBtn(){
+  document.getElementById('toMapBtn').addEventListener('click', renderMap);
+}
+
+/* ================= RENDER: UNIT (dispatch by stage) ================= */
+function renderUnit(){
+  if(state.currentStage===0) renderChunkStage();
+  else renderResultStage();
+}
+
+/* -------- Stage 0: Chunk interpretation -------- */
+function renderChunkStage(){
+  const i = state.currentUnit;
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+
+  const itemsHtml = u.chunks.map((c,idx)=>{
+    const marked = p.chunkMarks[idx];
+    const isDiff = p.chunkDifficult[idx];
+    return `
+    <div class="card">
+      <span class="idx">${idx+1}</span>
+      <div class="source-en">${c.en}</div>
+      <textarea data-cidx="${idx}" class="chunk-input" placeholder="해석을 입력해 보세요" ${p.chunkRevealed?'disabled':''}>${p.chunkInputs[idx]}</textarea>
+      <div class="reveal-box ${p.chunkRevealed?'shown':''}">
+        <div class="label">모범 해석</div>
+        ${c.ko}
+      </div>
+      ${p.chunkRevealed ? `
+      <div class="self-grade">
+        <button class="grade-btn o ${marked==='O'?'picked':''}" data-cgrade="O" data-cidx="${idx}">O 맞았어요</button>
+        <button class="grade-btn x ${marked==='X'?'picked':''}" data-cgrade="X" data-cidx="${idx}">X 틀렸어요</button>
+      </div>
+      <button class="btn ${isDiff?'btn-amber':'btn-ghost'} diff-btn" data-cdiff="${idx}" style="width:100%;margin-top:8px;">${isDiff ? '🤔 어려운 문장으로 표시됨 (탭하면 해제)' : '🤔 이 문장 해석 어려웠어요'}</button>` : ``}
+    </div>`;
+  }).join('');
+
+  const passageFlowHtml = u.chunks.map((c,idx)=>{
+    const altClass = idx%2===1 ? ' alt' : '';
+    const chunk = `<span class="cchunk${altClass}"><span class="cnum">${idx+1}</span><span class="ctxt">${c.en}</span></span>`;
+    return chunk;
+  }).join(`<span class="cdiv">／</span>`);
+
+  app.innerHTML = `
+    ${unitHeaderHtml(u)}
+    ${progressStripHtml()}
+    <h3 style="font-family:var(--serif);color:var(--navy);margin:0 0 4px;">1단계 · 문장 해석</h3>
+    <p style="color:var(--ink-soft);font-size:13.5px;margin-top:0;margin-bottom:18px;">각 의미 단위(청크)를 자연스러운 한글로 해석해 본 뒤 모범 해석과 비교하세요.</p>
+
+    <div class="passage-card">
+      <div class="plabel">지문 전체 · 청크 구분(／) 표시</div>
+      <div class="passage-flow">${passageFlowHtml}</div>
+    </div>
+
+    ${itemsHtml}
+    <div class="bottom-bar">
+      ${!p.chunkRevealed
+        ? `<button class="btn btn-primary" id="revealChunkBtn">모범 해석 확인하기</button>`
+        : `<button class="btn btn-amber" id="toResultBtn" ${p.chunkMarks.some(m=>m===null)?'disabled':''}>결과 확인하기 →</button>`
+      }
+    </div>
+  `;
+
+  attachBackBtn();
+
+  document.querySelectorAll('.chunk-input').forEach(el=>{
+    el.addEventListener('input', e=>{
+      p.chunkInputs[parseInt(e.target.dataset.cidx,10)] = e.target.value;
+    });
+  });
+
+  const revealBtn = document.getElementById('revealChunkBtn');
+  if(revealBtn){
+    revealBtn.addEventListener('click', ()=>{
+      p.chunkRevealed = true;
+      renderChunkStage();
+    });
+  }
+
+  document.querySelectorAll('[data-cgrade]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const idx = parseInt(e.target.dataset.cidx,10);
+      p.chunkMarks[idx] = e.target.dataset.cgrade;
+      renderChunkStage();
+    });
+  });
+
+  document.querySelectorAll('[data-cdiff]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const idx = parseInt(e.target.dataset.cdiff,10);
+      p.chunkDifficult[idx] = !p.chunkDifficult[idx];
+      renderChunkStage();
+    });
+  });
+
+  const toResultBtn = document.getElementById('toResultBtn');
+  if(toResultBtn){
+    toResultBtn.addEventListener('click', ()=>{
+      p.chunkDone = true;
+      p.completed = true;
+      state.currentStage = 1;
+      renderUnit();
+    });
+  }
+}
+
+/* -------- Stage 2: Result -------- */
+function renderResultStage(){
+  const i = state.currentUnit;
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+
+  const chunkScore = p.chunkMarks.filter(m=>m==='O').length;
+
+  const wrongChunk = u.chunks.map((c,idx)=>({...c, idx})).filter((c)=>p.chunkMarks[c.idx]==='X');
+  const diffNums = u.chunks.map((c,idx)=>idx+1).filter(n=>p.chunkDifficult[n-1]);
+
+  const allChunkHtml = u.chunks.map((c,idx)=>{
+    const mark = p.chunkMarks[idx];
+    const isDiff = p.chunkDifficult[idx];
+    const markBadge = mark==='O'
+      ? `<span style="color:var(--ok);font-weight:800;">O</span>`
+      : `<span style="color:var(--bad);font-weight:800;">X</span>`;
+    return `
+    <div class="wrong-item">
+      <div class="en"><b>${idx+1}.</b> ${markBadge} ${isDiff?'<span style="color:var(--amber);font-weight:700;">🤔 어려움</span>':''} ${c.en}</div>
+      <div class="compare">
+        <div class="mine"><span class="k">학생이 쓴 해석</span>${p.chunkInputs[idx] || '(입력 안 함)'}</div>
+        <div class="model"><span class="k">모범 해석</span>${c.ko}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const nextIdx = i+1;
+  const hasNext = nextIdx < UNITS.length;
+
+  app.innerHTML = `
+    ${unitHeaderHtml(u)}
+    ${progressStripHtml()}
+    <h3 style="font-family:var(--serif);color:var(--navy);margin:0 0 16px;">2단계 · 결과</h3>
+
+    <div class="score-panel" style="grid-template-columns:1fr;">
+      <div class="score-box">
+        <div class="n">${chunkScore} / ${u.chunks.length}</div>
+        <div class="l">해석 점수</div>
+      </div>
+    </div>
+
+    <div class="section-label">해석이 어려웠던 문장 번호</div>
+    <div class="empty-note" style="${diffNums.length?'color:var(--bad);font-weight:700;':''}">${diffNums.length ? diffNums.join(', ') + '번' : '표시된 문장이 없습니다'}</div>
+
+    <div class="section-label">전체 해석 결과 (학생 작성 ↔ 모범 해석, 총 ${u.chunks.length}개)</div>
+    ${allChunkHtml}
+    ${wrongChunk.length ? `<button class="btn btn-ghost" id="retryChunkBtn">틀린 해석만 다시 풀기</button>` : ``}
+
+    <div class="copy-area">
+      <button class="btn btn-primary" id="copyBtn">결과 복사하기</button>
+      <span class="copy-status" id="copyStatus">복사되었습니다 ✓</span>
+      <button class="btn btn-amber" id="kakaoBtn" style="margin-top:8px;">카카오톡으로 결과 보내기</button>
+      <span class="copy-status" id="kakaoStatus">공유 준비 완료 ✓ (공유 대상에서 카카오톡을 선택하세요)</span>
+    </div>
+
+    <div class="bottom-bar" style="margin-top:26px;">
+      ${hasNext
+        ? `<button class="btn btn-amber" id="nextUnitBtn">다음 지문(${UNITS[nextIdx].id}번)으로 →</button>`
+        : `<button class="btn btn-amber" id="finishAllBtn">전체 목록으로 돌아가기</button>`
+      }
+    </div>
+  `;
+
+  attachBackBtn();
+
+  const retryChunkBtn = document.getElementById('retryChunkBtn');
+  if(retryChunkBtn){
+    retryChunkBtn.addEventListener('click', ()=>{
+      wrongChunk.forEach(c=>{
+        p.chunkMarks[c.idx]=null;
+        p.chunkInputs[c.idx]="";
+      });
+      p.chunkRevealed=false;
+      state.currentStage=0;
+      renderUnit();
+    });
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', ()=>{
+    const text = buildCopyText(i);
+    copyToClipboard(text, ()=>{
+      const s = document.getElementById('copyStatus');
+      s.classList.add('shown');
+      setTimeout(()=>s.classList.remove('shown'), 2500);
+    });
+  });
+
+  document.getElementById('kakaoBtn').addEventListener('click', ()=>{
+    const text = buildCopyText(i);
+    shareResult(text, u.id, ()=>{
+      const s = document.getElementById('kakaoStatus');
+      s.classList.add('shown');
+      setTimeout(()=>s.classList.remove('shown'), 3000);
+    });
+  });
+
+  const nextUnitBtn = document.getElementById('nextUnitBtn');
+  if(nextUnitBtn){
+    nextUnitBtn.addEventListener('click', ()=> openUnit(nextIdx));
+  }
+  const finishAllBtn = document.getElementById('finishAllBtn');
+  if(finishAllBtn){
+    finishAllBtn.addEventListener('click', renderMap);
+  }
+}
+
+function buildCopyText(i){
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+  const chunkScore = p.chunkMarks.filter(m=>m==='O').length;
+  const name = state.userName ? state.userName : "(이름 미입력)";
+
+  let lines = [];
+  lines.push(`[${SET_TITLE}] ${u.id}번 지문 결과`);
+  lines.push(`이름: ${name}`);
+  lines.push(`해석 점수: ${chunkScore} / ${u.chunks.length}`);
+  lines.push('');
+
+  lines.push(`- 문장별 해석 (전체 ${u.chunks.length}개) -`);
+  u.chunks.forEach((c,idx)=>{
+    const mark = p.chunkMarks[idx]==='O' ? 'O' : 'X';
+    const diffTag = p.chunkDifficult[idx] ? ' [🤔어려움]' : '';
+    lines.push(`${idx+1}. (${mark}${diffTag}) ${c.en}`);
+    lines.push(`   학생 해석: ${p.chunkInputs[idx] || '(입력 안 함)'}`);
+    lines.push(`   모범 해석: ${c.ko}`);
+  });
+
+  lines.push('');
+  const diffNums = u.chunks.map((c,idx)=>idx+1).filter(n=>p.chunkDifficult[n-1]);
+  lines.push(`- 해석이 어려웠던 문장 번호 -`);
+  lines.push(diffNums.length ? diffNums.join(', ') + '번' : '없음');
+
+  return lines.join('\n');
+}
+
+function shareResult(text, unitId, onFallbackCopy){
+  const shareTitle = `${SET_TITLE} ${unitId}번 결과`;
+  if(navigator.share){
+    navigator.share({ title: shareTitle, text: text }).catch(()=>{
+      // 사용자가 공유를 취소한 경우 등은 무시
+    });
+  } else {
+    // 공유 API를 지원하지 않는 환경(PC 브라우저 등)에서는 클립보드로 복사
+    copyToClipboard(text, onFallbackCopy);
+  }
+}
+
+function copyToClipboard(text, onSuccess){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(onSuccess).catch(()=>fallbackCopy(text, onSuccess));
+  } else {
+    fallbackCopy(text, onSuccess);
+  }
+}
+function fallbackCopy(text, onSuccess){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position='fixed';
+  ta.style.left='-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{ document.execCommand('copy'); onSuccess(); }catch(e){ /* ignore */ }
+  document.body.removeChild(ta);
+}
+
+/* ================= INIT ================= */
+renderMap();
+</script>
+</body>
+</html>
