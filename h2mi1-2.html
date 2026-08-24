@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>씨유에탑 ✦ 고등영어2 미래엔 1과-2과 어휘</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --primary-light: #EFF6FF;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warn: #F59E0B;
+  --gray: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F9FAFB;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: var(--bg);
+  color: #111827;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+.en { font-family: 'Nunito', sans-serif; }
+
+.app-container {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.header {
+  padding: 16px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.header-brand {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary);
+}
+.header-sub {
+  font-size: 13px;
+  color: var(--gray);
+  margin-top: 4px;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.content {
+  flex: 1;
+  padding: 16px;
+  display: none;
+}
+.content.active {
+  display: block;
+}
+
+/* Range bar */
+.range-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  scrollbar-width: none;
+}
+.range-bar::-webkit-scrollbar { display: none; }
+.range-btn {
+  white-space: nowrap;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #fff;
+  font-size: 12px;
+  color: var(--gray);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.range-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Tab 1: List */
+.search-box {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  outline: none;
+}
+.search-box:focus { border-color: var(--primary); }
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.filter-btn {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray);
+  cursor: pointer;
+}
+.filter-btn.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.word-list { display: flex; flex-direction: column; gap: 8px; }
+.word-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  transition: opacity 0.2s;
+}
+.word-card.known { opacity: 0.35; }
+.wc-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+.chk-btn {
+  width: 22px; width: 22px; height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 12px; color: #fff;
+  flex-shrink: 0;
+}
+.word-card.known .chk-btn { background: var(--success); border-color: var(--success); }
+.wc-info { display: flex; flex-direction: column; gap: 2px; }
+.wc-word { font-weight: 700; font-size: 15px; }
+.wc-meaning { font-size: 13px; color: var(--gray); }
+.wc-right { display: flex; align-items: center; gap: 4px; }
+.ibtn {
+  border: none; background: none; font-size: 16px; cursor: pointer; padding: 4px;
+}
+
+/* Tab 2: Flashcard */
+.fc-card {
+  height: 240px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  padding: 20px;
+  text-align: center;
+  margin-top: 10px;
+}
+.fc-fav {
+  position: absolute; top: 16px; right: 16px; font-size: 20px; cursor: pointer;
+}
+.fc-word { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
+.fc-meaning { font-size: 16px; color: var(--primary); font-weight: 700; display: none; }
+.fc-card.flipped .fc-meaning { display: block; }
+.fc-hint { font-size: 12px; color: var(--gray); position: absolute; bottom: 16px; }
+
+.fc-nav {
+  display: flex; gap: 10px; margin-top: 20px;
+}
+.fc-nav-btn {
+  flex: 1; padding: 12px; border: none; border-radius: 8px;
+  background: var(--primary); color: #fff; font-weight: 700; font-size: 15px; cursor: pointer;
+}
+.fc-nav-btn.sec { background: var(--gray); }
+
+/* Tab 3: Quiz */
+.q-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  background: #fff;
+  margin-top: 10px;
+}
+.q-progress { font-size: 12px; color: var(--gray); margin-bottom: 8px; }
+.q-word { font-size: 22px; font-weight: 800; margin-bottom: 20px; text-align: center; }
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+.q-opt {
+  padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+  background: #fff; font-size: 14px; text-align: left; cursor: pointer; font-weight: 500;
+}
+.q-opt.correct { background: var(--success); color: #fff; border-color: var(--success); }
+.q-opt.wrong { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+/* Tab 4: Test */
+.test-box { display: flex; flex-direction: column; gap: 12px; }
+.input-label { font-size: 13px; font-weight: 700; color: var(--gray); }
+.t-input {
+  width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none;
+}
+.t-input:focus { border-color: var(--primary); }
+.btn-primary {
+  width: 100%; padding: 14px; border: none; border-radius: 8px;
+  background: var(--primary); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer;
+}
+
+.t-status { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--gray); margin-bottom: 8px; }
+.t-bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.t-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
+.t-qword { font-size: 26px; font-weight: 800; text-align: center; margin: 20px 0; }
+
+/* Result Screen */
+.res-box { text-align: center; padding: 20px 0; }
+.res-emoji { font-size: 48px; margin-bottom: 10px; }
+.res-score { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+.res-pct { font-size: 16px; color: var(--gray); margin-bottom: 20px; }
+.err-list { text-align: left; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 20px; max-height: 200px; overflow-y: auto; }
+.err-item { font-size: 13px; padding: 4px 0; border-bottom: 1px dashed var(--border); }
+.err-item:last-child { border-bottom: none; }
+.btn-copy { background: #25D366; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; width: 100%; cursor: pointer; margin-bottom: 8px; font-size: 14px; }
+.btn-retry { background: var(--gray); color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; width: 100%; cursor: pointer; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">고등영어2 미래엔 1과-2과 어휘 · 총 310단어</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tb-list" onclick="switchTab('list')">단어목록</button>
+    <button class="tab-btn" id="tb-flash" onclick="switchTab('flash')">플래시카드</button>
+    <button class="tab-btn" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</button>
+    <button class="tab-btn" id="tb-test" onclick="switchTab('test')">📝 테스트</button>
+  </div>
+
+  <!-- Tab 1: 목록 -->
+  <div class="content active" id="tab-list">
+    <div class="range-bar" id="lrbar"></div>
+    <input type="text" class="search-box" id="lsearch" placeholder="영어 또는 한글 검색..." oninput="renderList()">
+    <div class="filter-bar">
+      <button class="filter-btn active" id="lf-all" onclick="setLFilter('all')">전체</button>
+      <button class="filter-btn" id="lf-unk" onclick="setLFilter('unk')">모름</button>
+      <button class="filter-btn" id="lf-fav" onclick="setLFilter('fav')">⭐즐겨찾기</button>
+    </div>
+    <div class="word-list" id="wlist"></div>
+  </div>
+
+  <!-- Tab 2: 플래시카드 -->
+  <div class="content" id="tab-flash">
+    <div class="range-bar" id="fcrbar"></div>
+    <div class="fc-card" id="fccard">
+      <span class="fc-fav" id="fcfav" onclick="toggleFcFav(event)">☆</span>
+      <div class="fc-word en" id="fcword">word</div>
+      <div class="fc-meaning" id="fcmeaning">뜻</div>
+      <div class="fc-hint">카드 터치시 뜻 공개</div>
+    </div>
+    <div class="fc-nav">
+      <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+      <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+      <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+    </div>
+  </div>
+
+  <!-- Tab 3: 퀴즈 -->
+  <div class="content" id="tab-quiz">
+    <div id="qarea"></div>
+  </div>
+
+  <!-- Tab 4: 테스트 -->
+  <div class="content" id="tab-test">
+    <div id="tarea"></div>
+  </div>
+</div>
+
+<script>
+var rawWords = [
+  { word: "fandom", meaning: "팬덤, 팬 문화" },
+  { word: "accompany", meaning: "동반하다, 수반하다" },
+  { word: "aggressive", meaning: "공격적인" },
+  { word: "hostile", meaning: "적대적인" },
+  { word: "assertive", meaning: "적극적인, 단정적인" },
+  { word: "peaceful", meaning: "평화로운" },
+  { word: "annoyance", meaning: "짜증, 약화" },
+  { word: "irritation", meaning: "짜증, 화" },
+  { word: "frustration", meaning: "좌절, 불만" },
+  { word: "delight", meaning: "기쁨, 즐거움" },
+  { word: "anxious", meaning: "불안해하는, 염려하는" },
+  { word: "apprehensive", meaning: "걱정되는, 염려스러운" },
+  { word: "fearful", meaning: "두려워하는" },
+  { word: "tranquil", meaning: "평온한, 조용한" },
+  { word: "applicant", meaning: "지원자" },
+  { word: "candidate", meaning: "후보자, 지원자" },
+  { word: "examinee", meaning: "수험생, 응시자" },
+  { word: "interviewer", meaning: "면접관" },
+  { word: "appoint", meaning: "임명하다, 지명하다" },
+  { word: "assign", meaning: "부여하다, 배정하다" },
+  { word: "designate", meaning: "지정하다, 지명하다" },
+  { word: "dismiss", meaning: "해고하다, 묵살하다" },
+  { word: "artisan", meaning: "장인, 기술자" },
+  { word: "craftsman", meaning: "장인" },
+  { word: "expert", meaning: "전문가" },
+  { word: "amateur", meaning: "아마추어, 비전문가" },
+  { word: "authority", meaning: "권위, 당국" },
+  { word: "power", meaning: "권력, 힘" },
+  { word: "jurisdiction", meaning: "관할권, 사법권" },
+  { word: "powerlessness", meaning: "무력함" },
+  { word: "banish", meaning: "추방하다, 유배를 보내다" },
+  { word: "exile", meaning: "추방하다" },
+  { word: "expel", meaning: "쫓아내다, 추방하다" },
+  { word: "welcome", meaning: "환영하다" },
+  { word: "bounce", meaning: "튀기다, 바운스하다" },
+  { word: "rebound", meaning: "다시 튀어 오르다" },
+  { word: "ricochet", meaning: "~에 맞고 튕겨 나가다" },
+  { word: "stay", meaning: "머무르다" },
+  { word: "breakdown", meaning: "고장, 명세" },
+  { word: "failure", meaning: "실패, 고장" },
+  { word: "disruption", meaning: "붕괴, 분열" },
+  { word: "success", meaning: "성공" },
+  { word: "bronze", meaning: "청동, 청동 빛의" },
+  { word: "copper-alloy", meaning: "동합금" },
+  { word: "metallic", meaning: "금속성의" },
+  { word: "nonmetallic", meaning: "비금속의" },
+  { word: "browse", meaning: "둘러보다, 훑어보다" },
+  { word: "scan", meaning: "살피다, 훑어보다" },
+  { word: "skim", meaning: "지나가다, 훑어보다" },
+  { word: "scrutinize", meaning: "세심히 세밀히 조사하다" },
+  { word: "burnout", meaning: "번아웃, 극심한 피로" },
+  { word: "exhaustion", meaning: "탈진, 기진맥진" },
+  { word: "fatigue", meaning: "피로" },
+  { word: "invigoration", meaning: "기운을 북돋움" },
+  { word: "bystander", meaning: "구경꾼, 행인" },
+  { word: "onlooker", meaning: "구경꾼" },
+  { word: "spectator", meaning: "관중" },
+  { word: "participant", meaning: "참가자" },
+  { word: "candid", meaning: "솔직한, 정직한" },
+  { word: "frank", meaning: "솔직한" },
+  { word: "honest", meaning: "정직한" },
+  { word: "deceitful", meaning: "기만하는, 부정직한" },
+  { word: "casualty", meaning: "사망자, 피해자" },
+  { word: "victim", meaning: "피해자" },
+  { word: "fatality", meaning: "사망자" },
+  { word: "survivor", meaning: "생존자" },
+  { word: "charitable", meaning: "자선의, 자비로운" },
+  { word: "benevolent", meaning: "자애로운" },
+  { word: "generous", meaning: "관대한, 관대한" },
+  { word: "stingy", meaning: "구두쇠의, 인색한" },
+  { word: "clash", meaning: "충돌, 대립" },
+  { word: "conflict", meaning: "갈등, 충돌" },
+  { word: "confrontation", meaning: "대치, 대립" },
+  { word: "harmony", meaning: "조화, 화합" },
+  { word: "clutter", meaning: "어지럽히다, 잡동사니" },
+  { word: "litter", meaning: "어지럽게 피우다" },
+  { word: "jumble", meaning: "뒤섞다" },
+  { word: "organize", meaning: "정리하다, 조직하다" },
+  { word: "collision", meaning: "충돌, 부딪힘" },
+  { word: "crash", meaning: "충돌하다, 사고" },
+  { word: "impact", meaning: "충격, 영향" },
+  { word: "avoidance", meaning: "회피, 회피함" },
+  { word: "commercialize", meaning: "상업화하다" },
+  { word: "market", meaning: "시장에 내놓다" },
+  { word: "monetize", meaning: "돈으로 바꾸다" },
+  { word: "privatize", meaning: "민영화하다" },
+  { word: "commission", meaning: "위임, 위원회" },
+  { word: "board", meaning: "위원회, 이사회" },
+  { word: "committee", meaning: "위원회" },
+  { word: "individual", meaning: "개인" },
+  { word: "commitment", meaning: "헌신, 약속" },
+  { word: "dedication", meaning: "헌신" },
+  { word: "pledge", meaning: "약속, 서약" },
+  { word: "indifference", meaning: "무관심" },
+  { word: "commotion", meaning: "소란, 소동" },
+  { word: "disturbance", meaning: "방해, 소란" },
+  { word: "uproar", meaning: "소란, 소동" },
+  { word: "tranquility", meaning: "평온, 조용함" },
+  { word: "commute", meaning: "통근하다, 통근" },
+  { word: "travel", meaning: "이동하다" },
+  { word: "journey", meaning: "여정, 여정을 가다" },
+  { word: "remain", meaning: "남다, 머무르다" },
+  { word: "compatible", meaning: "양립할 수 있는, 호환되는" },
+  { word: "harmonious", meaning: "조화로운" },
+  { word: "consistent", meaning: "일관된, 호환되는" },
+  { word: "incompatible", meaning: "양립할 수 없는" },
+  { word: "compile", meaning: "수집하다, 편찬하다" },
+  { word: "assemble", meaning: "모으다, 조립하다" },
+  { word: "gather", meaning: "모으다" },
+  { word: "disperse", meaning: "흩어지게 하다" },
+  { word: "comply", meaning: "따르다, 준수하다" },
+  { word: "abide by", meaning: "준수하다" },
+  { word: "conform", meaning: "따르다, 순응하다" },
+  { word: "disobey", meaning: "불복종하다" },
+  { word: "composed", meaning: "침착한, 구성된" },
+  { word: "calm", meaning: "침착한, 고요한" },
+  { word: "collected", meaning: "침착한" },
+  { word: "agitated", meaning: "불안해하는, 동요된" },
+  { word: "compromise", meaning: "타협하다, 타협" },
+  { word: "concession", me: "양보, 타협" },
+  { word: "negotiation", meaning: "협상" },
+  { word: "disagreement", meaning: "의견 불일치" },
+  { word: "compromise", meaning: "타협하다, 위태롭게 하다" },
+  { word: "concede", meaning: "인정하다, 양보하다" },
+  { word: "endanger", meaning: "위험에 빠뜨리다" },
+  { word: "protect", meaning: "보호하다" },
+  { word: "compulsory", meaning: "강제적인, 의무적인" },
+  { word: "mandatory", meaning: "의무적인" },
+  { word: "obligatory", meaning: "의무적인" },
+  { word: "optional", meaning: "선택적인" },
+  { word: "concise", meaning: "간결한, 명료한" },
+  { word: "brief", meaning: "짧은, 간결한" },
+  { word: "succinct", meaning: "간결한" },
+  { word: "wordy", meaning: "장황한" },
+  { word: "condemn", meaning: "비난하다, 선고를 내리다" },
+  { word: "censure", meaning: "비난하다" },
+  { word: "denounce", meaning: "비난하다" },
+  { word: "praise", meaning: "칭찬하다" },
+  { word: "confident", meaning: "자신감 있는" },
+  { word: "assured", meaning: "자신감 있는, 확신하는" },
+  { word: "bold", meaning: "대담한, 용감한" },
+  { word: "timid", meaning: "소심한, 용기가 없는" },
+  { word: "confront", meaning: "직면하다, 맞서다" },
+  { word: "face", meaning: "직면하다" },
+  { word: "encounter", meaning: "마주치다" },
+  { word: "avoid", meaning: "피하다" },
+  { word: "confusion", meaning: "혼란, 혼동" },
+  { word: "disorder", meaning: "무질서, 혼란" },
+  { word: "puzzlement", meaning: "얼아송함, 얼떨떨함" },
+  { word: "clarity", meaning: "명확함, 명료성" },
+  { word: "consecutive", meaning: "연속적인" },
+  { word: "sequential", meaning: "순차적인" },
+  { word: "uninterrupted", meaning: "중단 없는, 연속적인" },
+  { word: "discontinuous", meaning: "불연속적인" },
+  { word: "consensus", meaning: "합의, 일치" },
+  { word: "agreement", meaning: "합의, 동의" },
+  { word: "concord", meaning: "화합, 일치" },
+  { word: "dissent", meaning: "반대, 반대의견" },
+  { word: "conservation", meaning: "보존, 보호" },
+  { word: "preservation", meaning: "보존" },
+  { word: "protection", meaning: "보호" },
+  { word: "destruction", meaning: "파괴" },
+  { word: "conspire", meaning: "음모를 꾸미다, 공모하다" },
+  { word: "collude", meaning: "공모하다" },
+  { word: "plot", meaning: "음모를 꾸미다" },
+  { word: "cooperate", meaning: "협력하다" },
+  { word: "contemplate", meaning: "숙고하다, 응시하다" },
+  { word: "ponder", meaning: "숙고하다" },
+  { word: "reflect", meaning: "반영하다, 숙고하다" },
+  { word: "ignore", meaning: "무시하다" },
+  { word: "contempt", meaning: "경멸, 멸시" },
+  { word: "disdain", meaning: "경멸" },
+  { word: "scorn", meaning: "경멸" },
+  { word: "respect", meaning: "존경하다" },
+  { word: "contradict", meaning: "반박하다, 모순되다" },
+  { word: "deny", meaning: "부인하다" },
+  { word: "refute", meaning: "반박하다" },
+  { word: "confirm", meaning: "확인하다" },
+  { word: "convene", meaning: "소집하다, 모이다" },
+  { word: "assemble", meaning: "모으다, 모이다" },
+  { word: "summon", meaning: "소환하다, 소집하다" },
+  { word: "disperse", meaning: "흩어지다" },
+  { word: "cordial", meaning: "화기애애한, 다정한" },
+  { word: "friendly", meaning: "친근한" },
+  { word: "warm", meaning: "따뜻한" },
+  { word: "cold", meaning: "차거운" },
+  { word: "court", meaning: "법정, 코트" },
+  { word: "bench", meaning: "판사석, 벤치" },
+  { word: "tribunal", meaning: "법정, 재판소" },
+  { word: "street", meaning: "거리" },
+  { word: "craftsman", meaning: "장인, 공예가" },
+  { word: "artisan", meaning: "장인" },
+  { word: "maker", meaning: "제작자" },
+  { word: "novice", meaning: "초보자" },
+  { word: "criteria", meaning: "기준, 규범" },
+  { word: "benchmarks", meaning: "기준, 벤치마크" },
+  { word: "standards", meaning: "기준, 표준" },
+  { word: "possibilities", meaning: "가능성들" },
+  { word: "cumulative", meaning: "누적되는, 누계의" },
+  { word: "accumulated", meaning: "축적된" },
+  { word: "increasing", meaning: "증가하는" },
+  { word: "decreasing", meaning: "감소하는" },
+  { word: "cynical", meaning: "냉소적인, 부정적인" },
+  { word: "distrustful", meaning: "의심하는" },
+  { word: "sarcastic", meaning: "비꼬는" },
+  { word: "optimistic", meaning: "낙관적인" },
+  { word: "dazzle", meaning: "눈부시게 하다, 현혹시키다" },
+  { word: "blind", meaning: "눈멀게 하다" },
+  { word: "impress", meaning: "감명을 주다" },
+  { word: "bore", meaning: "지루하게 하다" },
+  { word: "decompose", meaning: "분해되다, 부패하다" },
+  { word: "decay", meaning: "부패하다" },
+  { word: "rot", meaning: "썩다" },
+  { word: "combine", meaning: "결합하다" },
+  { word: "defy", meaning: "반대하다, 반항하다" },
+  { word: "challenge", meaning: "도전하다" },
+  { word: "resist", meaning: "저항하다" },
+  { word: "obey", meaning: "복종하다" },
+  { word: "delegation", meaning: "대표단, 위임" },
+  { word: "contingent", meaning: "파견단, 대표단" },
+  { word: "deputation", meaning: "대표단" },
+  { word: "individual", meaning: "개인" },
+  { word: "deliberate", meaning: "의도적인, 숙고하다" },
+  { word: "intentional", meaning: "의도적인" },
+  { word: "ponder", meaning: "숙고하다" },
+  { word: "accidental", meaning: "우연한" },
+  { word: "demolish", meaning: "철거하다, 파괴하다" },
+  { word: "destroy", meaning: "파괴하다" },
+  { word: "dismantle", meaning: "해체하다" },
+  { word: "build", meaning: "짓다, 건설하다" },
+  { word: "denounce", meaning: "비난하다, 고발하다" },
+  { word: "condemn", meaning: "비난하다" },
+  { word: "criticize", meaning: "비판하다" },
+  { word: "praise", meaning: "칭찬하다" },
+  { word: "depict", meaning: "그리다, 묘사하다" },
+  { word: "portray", meaning: "묘사하다" },
+  { word: "represent", meaning: "나타내다" },
+  { word: "misrepresent", meaning: "잘못 전하다" },
+  { word: "designate", meaning: "지정하다, 지명하다" },
+  { word: "appoint", meaning: "임명하다" },
+  { word: "specify", meaning: "명시하다" },
+  { word: "confuse", meaning: "혼란스럽게 하다" },
+  { word: "desolate", meaning: "황량한, 적막한" },
+  { word: "barren", meaning: "척박한, 황량한" },
+  { word: "lonely", meaning: "외로운" },
+  { word: "populous", meaning: "인구가 조밀한" },
+  { word: "deteriorate", meaning: "악화되다, 저하되다" },
+  { word: "decline", meaning: "쇠퇴하다" },
+  { word: "worsen", meaning: "악화되다" },
+  { word: "improve", meaning: "개선되다" },
+  { word: "devastate", meaning: "황폐화시키다, 대파시키다" },
+  { word: "destroy", meaning: "파괴하다" },
+  { word: "ruin", meaning: "망치다, 망가뜨리다" },
+  { word: "restore", meaning: "복원하다" },
+  { word: "dexterous", meaning: "손재주가 좋은, 솜씨 좋은" },
+  { word: "agile", meaning: "민첩한" },
+  { word: "skilful", meaning: "숙련된" },
+  { word: "clumsy", meaning: "어색한, 서투른" },
+  { word: "diplomat", meaning: "외교관" },
+  { word: "ambassador", meaning: "대사" },
+  { word: "envoy", meaning: "사절, 특사" },
+  { word: "rebel", me: "반란군" },
+  { word: "disaster", meaning: "재앙, 재난" },
+  { word: "catastrophe", meaning: "참사, 재앙" },
+  { word: "tragedy", meaning: "비극" },
+  { word: "blessing", meaning: "축복" },
+  { word: "disrupt", meaning: "방해하다, 지장을 주다" },
+  { word: "disturb", meaning: "방해하다" },
+  { word: "interrupt", meaning: "가로막다, 중단시키다" },
+  { word: "assist", meaning: "돕다" },
+  { word: "dissent", meaning: "반대, 반대의견" },
+  { word: "disagreement", meaning: "불일치" },
+  { word: "opposition", meaning: "반대" },
+  { word: "agreement", meaning: "합의, 동의" },
+  { word: "eccentric", meaning: "별난, 괴짜의" },
+  { word: "bizarre", meaning: "기이한" },
+  { word: "peculiar", meaning: "이상한, 특이한" },
+  { word: "normal", meaning: "정상적인" },
+  { word: "elaborate", meaning: "정교한, 정성들인" },
+  { word: "complex", meaning: "복잡한" },
+  { word: "intricate", meaning: "복잡한" },
+  { word: "simple", meaning: "단순한" },
+  { word: "embarrassment", meaning: "당황, 어색함" },
+  { word: "awkwardness", me: "어색함" },
+  { word: "humiliation", meaning: "굴욕" },
+  { word: "pride", meaning: "자긍심, 자랑거리" },
+  { word: "embody", meaning: "상징하다, 구현하다" },
+  { word: "exemplify", meaning: "전형적인 예가 되다" },
+  { word: "represent", meaning: "나타내다" },
+  { word: "conceal", meaning: "감추다" },
+  { word: "empathy", meaning: "공감, 감정이입" },
+  { word: "compassion", meaning: "동정심" },
+  { word: "sympathy", meaning: "공감, 동정" },
+  { word: "apathy", meaning: "무관심" },
+  { word: "empower", meaning: "권한을 주다, 자율권을 주다" },
+  { word: "authorize", meaning: "권한을 부여하다" },
+  { word: "enable", me: "가능하게 하다" },
+  { word: "disorganize", meaning: "방해하다, 혼란시키다" },
+  { word: "endeavor", meaning: "노력, 시도" },
+  { word: "attempt", meaning: "시도" },
+  { word: "effort", meaning: "노력" },
+  { word: "inactivity", meaning: "활동하지 않음" },
+  { word: "enthusiasm", meaning: "열정, 열의" },
+  { word: "eagerness", meaning: "열망, 열의" },
+  { word: "passion", meaning: "열정" },
+  { word: "indifference", meaning: "무관심" },
+  { word: "eradicate", meaning: "근절하다, 뿌리뽑다" },
+  { word: "eliminate", meaning: "없애다, 제거하다" },
+  { word: "extinguish", meaning: "끄다, 없애다" },
+  { word: "establish", meaning: "설립하다, 확립하다" },
+  { word: "evaporate", meaning: "증발하다, 사라지다" },
+  { word: "dissipate", meaning: "소멸되다" },
+  { word: "vanish", meaning: "사라지다" },
+  { word: "condense", meaning: "응축되다" },
+  { word: "exaggerate", meaning: "과장하다" },
+  { word: "amplify", meaning: "확대하다" },
+  { word: "overstate", meaning: "과장하다" },
+  { word: "understate", meaning: "축소해서 말하다" },
+  { word: "excitement", meaning: "흥분, 신남" },
+  { word: "elation", meaning: "대단한 기쁨" },
+  { word: "thrill", meaning: "전율, 스릴" },
+  { word: "boredom", meaning: "지루함" },
+  { word: "exemplify", meaning: "전형적인 예가 되다" },
+  { word: "demonstrate", meaning: "입증하다" },
+  { word: "illustrate", meaning: "설명하다, 예시를 들다" },
+  { word: "confuse", meaning: "혼란스럽게 하다" },
+  { word: "exotic", meaning: "이국적인, 외국의" },
+  { word: "alien", meaning: "외국의" },
+  { word: "unusual", me: "특이한" },
+  { word: "native", meaning: "원산지의, 토착의" },
+  { word: "expel", meaning: "퇴학시키다, 쫓아내다" },
+  { word: "banish", meaning: "추방하다" },
+  { word: "eject", meaning: "쫓아내다" },
+  { word: "admit", me: "인정하다, 입학을 허가하다" },
+  { word: "extravagant", meaning: "낭비하는, 사치스러운" },
+  { word: "excessive", meaning: "지나친" },
+  { word: "lavish", meaning: "사치스러운" },
+  { word: "frugal", meaning: "검소한" },
+  { word: "fabricate", meaning: "조작하다, 제작하다" },
+  { word: "construct", meaning: "건설하다" },
+  { word: "invent", meaning: "발명하다, 지어내다" },
+  { word: "dismantle", meaning: "해체하다" },
+  { word: "fascinate", meaning: "매료시키다, 매화시키다" },
+  { word: "captivate", meaning: "매혹하다" },
+  { word: "charm", me: "매료시키다" },
+  { word: "repel", meaning: "불쾌감을 주다, 쫓아내다" },
+  { word: "feasible", meaning: "실현 가능한" },
+  { word: "achievable", meaning: "성취 가능한" },
+  { word: "practicable", me: "실행 가능한" },
+  { word: "impossible", meaning: "불가능한" },
+  { word: "feeble", meaning: "연약한, 미약한" },
+  { word: "frail", meaning: "노쇠한, 허약한" },
+  { word: "weak", meaning: "약한" },
+  { word: "strong", meaning: "강한" },
+  { word: "flamboyant", meaning: "화려한, 현란한" },
+  { word: "extravagant", meaning: "화려한" },
+  { word: "showy", meaning: "화려한, 눈에 띄는" },
+  { word: "modest", meaning: "수수한, 겸손한" },
+  { word: "flourish", meaning: "번창하다, 잘 자라다" },
+  { word: "bloom", meaning: "꽃이 피다, 번성하다" },
+  { word: "thrive", meaning: "번창하다" },
+  { word: "wither", meaning: "시들다" },
+  { word: "foster", meaning: "조성하다, 육성하다" },
+  { word: "encourage", meaning: "격려하다, 권장하다" },
+  { word: "nurture", meaning: "양육하다, 육성하다" },
+  { word: "suppress", meaning: "진압하다, 억제하다" },
+  { word: "fragile", meaning: "부서지기 쉬운, 취약한" },
+  { word: "brittle", me: "부서지기 쉬운" },
+  { word: "delicate", meaning: "연약한, 섬세한" },
+  { word: "sturdy", meaning: "튼튼한" },
+  { word: "frank", meaning: "솔직한, 숨김없는" },
+  { word: "candid", meaning: "솔직한" },
+  { word: "direct", meaning: "직접적인, 솔직한" },
+  { word: "evasive", meaning: "얼버무리는" },
+  { word: "fraud", meaning: "사기, 사기꾼" },
+  { word: "deceit", meaning: "속임수, 사기" },
+  { word: "scam", meaning: "사기" },
+  { word: "honesty", meaning: "정직" },
+  { word: "frugal", meaning: "절약하는, 알뜰한" },
+  { word: "economical", meaning: "알뜰한, 경제적인" },
+  { word: "thrifty", meaning: "절약하는" },
+  { word: "wasteful", meaning: "낭비하는" },
+  { word: "furious", meaning: "몹시 화가 난, 맹렬한" },
+  { word: "enraged", meaning: "격분한" },
+  { word: "incensed", me: "몹시 화난" },
+  { word: "calm", meaning: "침착한" },
+  { word: "generous", meaning: "관대한, 후한" },
+  { word: "bountiful", meaning: "풍부한, 후한" },
+  { word: "charitable", meaning: "자선적인, 관대한" },
+  { word: "selfish", meaning: "이기적인" },
+  { word: "genuine", meaning: "진짜의, 진심 어린" },
+  { word: "authentic", meaning: "진짜의" },
+  { word: "real", meaning: "진짜의" },
+  { word: "fake", meaning: "가짜의" },
+  { word: "gloomy", meaning: "어두운, 침울한" },
+  { word: "dim", meaning: "어둑한" },
+  { word: "somber", meaning: "침울한, 어두운" },
+  { word: "cheerful", me: "발랄한, 기쾌한" },
+  { word: "grateful", meaning: "고마워하는, 감사하는" },
+  { word: "appreciative", meaning: "감사하는" },
+  { word: "thankful", meaning: "고마워하는" },
+  { word: "ungrateful", meaning: "배은망덕한" },
+  { word: "grief", me: "비탄, 큰 슬픔" },
+  { word: "anguish", meaning: "괴로움, 비통" },
+  { word: "sorrow", meaning: "슬픔" },
+  { word: "joy", meaning: "기쁨" },
+  { word: "grim", me: "엄숙한, 암울한" },
+  { word: "bleak", meaning: "암울한" },
+  { word: "stern", meaning: "엄격한, 엄숙한" },
+  { word: "pleasant", me: "즐거운, 유쾌한" },
+  { word: "harass", meaning: "괴롭히다, 조르다" },
+  { word: "badger", me: "조르다, 괴롭히다" },
+  { word: "pester", meaning: "성가시게 하다" },
+  { word: "soothe", meaning: "달래다, 완화하다" },
+  { word: "hostile", meaning: "적대적인, 비협조적인" },
+  { word: "antagonistic", meaning: "적대적인" },
+  { word: "unfriendly", meaning: "불친절한" },
+  { word: "hospitable", meaning: "환대하는, 친절한" },
+  { word: "humiliate", meaning: "굴욕감을 주다" },
+  { word: "degrade", meaning: "비하하다" },
+  { word: "embarrass", meaning: "당황하게 하다" },
+  { word: "honor", meaning: "영예를 주다" },
+  { word: "hypocrisy", meaning: "위선" },
+  { word: "deceit", meaning: "속임수" },
+  { word: "insincerity", meaning: "위선, 불진실" },
+  { word: "sincerity", meaning: "진실됨" },
+  { word: "illuminate", meaning: "밝게 비추다, 설명하다" },
+  { word: "brighten", meaning: "밝게 하다" },
+  { word: "clarify", meaning: "명확하게 하다" },
+  { word: "obscure", meaning: "모호하게 하다" },
+  { word: "imitate", meaning: "모방하다, 본뜨다" },
+  { word: "copy", meaning: "복사하다, 따라하다" },
+  { word: "mimic", meaning: "흉내내다" },
+  { word: "originate", meaning: "유래하다, 창작하다" },
+  { word: "immense", meaning: "엄청난, 거대한" },
+  { word: "enormous", meaning: "거대한" },
+  { word: "massive", meaning: "거대한" },
+  { word: "tiny", meaning: "아주 작은" },
+  { word: "impartial", meaning: "공정한, 치우치지 않은" },
+  { word: "fair", meaning: "공정한" },
+  { word: "neutral", meaning: "중립적인" },
+  { word: "biased", meaning: "편향된" },
+  { word: "impede", meaning: "방해하다, 지연시키다" },
+  { word: "hinder", meaning: "방해하다" },
+  { word: "obstruct", meaning: "막다, 방해하다" },
+  { word: "facilitate", meaning: "용이하게 하다" },
+  { word: "imperative", meaning: "반드시 해야 하는, 필수의" },
+  { word: "crucial", meaning: "중대한" },
+  { word: "essential", meaning: "필수적인" },
+  { word: "unnecessary", meaning: "불필요한" },
+  { word: "impetuous", meaning: "성급한, 충동적인" },
+  { word: "hasty", meaning: "성급한" },
+  { word: "impulsive", meaning: "충동적인" },
+  { word: "cautious", meaning: "조심스러운" },
+  { word: "implicit", me: "암시된, 내포된" },
+  { word: "implied", meaning: "암시된" },
+  { word: "tacit", meaning: "암묵적인" },
+  { word: "explicit", meaning: "명백한" },
+  { word: "impoverished", meaning: "빈곤한, 궁핍한" },
+  { word: "destitute", meaning: "극빈한" },
+  { word: "poor", meaning: "가난한" },
+  { word: "wealthy", meaning: "부유한" },
+  { word: "incline", meaning: "마음이 기울다, 경사" },
+  { word: "lean", me: "기울다" },
+  { word: "slope", meaning: "경사지다" },
+  { word: "level", meaning: "평평하게 하다" },
+  { word: "indifferent", meaning: "무관심한" },
+  { word: "apathetic", meaning: "무감각한, 무관심한" },
+  { word: "unconcerned", meaning: "개의치 않는" },
+  { word: "caring", meaning: "배려하는" },
+  { word: "indignant", meaning: "분개한, 억울해하는" },
+  { word: "angry", meaning: "화난" },
+  { word: "resentful", meaning: "분개하는" },
+  { word: "pleased", meaning: "기쁜" },
+  { word: "indispensable", meaning: "없어서는 안 될, 필수적인" },
+  { word: "essential", meaning: "필수적인" },
+  { word: "vital", meaning: "필수적인" },
+  { word: "dispensable", meaning: "없어도 되는" },
+  { word: "induce", meaning: "유도하다, 설득하다" },
+  { word: "persuade", meaning: "설득하다" },
+  { word: "prompt", meaning: "유도하다, 자극하다" },
+  { word: "deter", meaning: "단념시키다" },
+  { word: "inevitable", meaning: "피할 수 없는, 불가피한" },
+  { word: "unavoidable", meaning: "불가피한" },
+  { word: "certain", meaning: "확실한" },
+  { word: "avoidable", meaning: "피할 수 있는" },
+  { word: "infuriate", meaning: "극노하게 만들다" },
+  { word: "enrage", me: "격분시키다" },
+  { word: "madden", meaning: "화나게 하다" },
+  { word: "soothe", meaning: "달래다" },
+  { word: "ingenious", meaning: "독창적인, 기발한" },
+  { word: "clever", meaning: "영리한" },
+  { word: "inventive", meaning: "창의적인" },
+  { word: "unimaginative", me: "상상력이 없는" },
+  { word: "inhibit", meaning: "억제하다, 저하시키다" },
+  { word: "constrain", meaning: "제한하다" },
+  { word: "repress", meaning: "억누르다" },
+  { word: "encourage", meaning: "격려하다" },
+  { word: "innate", meaning: "타고난, 선천적인" },
+  { word: "inborn", meaning: "타고난" },
+  { word: "natural", meaning: "자연스러운, 타고난" },
+  { word: "acquired", meaning: "후천적인" },
+  { word: "innocent", meaning: "무죄의, 순진한" },
+  { word: "blameless", me: "허물이 없는" },
+  { word: "guiltless", meaning: "죄가 없는" },
+  { word: "guilty", meaning: "유죄의" },
+  { word: "innovative", meaning: "혁신적인" },
+  { word: "groundbreaking", meaning: "획기적인" },
+  { word: "original", meaning: "독창적인" },
+  { word: "traditional", meaning: "전통적인" },
+  { word: "insight", meaning: "통찰력, 이해" },
+  { word: "comprehension", meaning: "이해력" },
+  { word: "perception", meaning: "지각, 인식" },
+  { word: "ignorance", meaning: "무지" },
+  { word: "insolent", meaning: "버릇없는, 건방진" },
+  { word: "impudent", meaning: "무례한" },
+  { word: "rude", meaning: "무례한" },
+  { word: "polite", meaning: "공손한" },
+  { word: "inspect", meaning: "점검하다, 검사하다" },
+  { word: "examine", meaning: "조사하다" },
+  { word: "scrutinize", meaning: "면밀히 조사하다" },
+  { word: "ignore", meaning: "무시하다" },
+  { word: "inspire", meaning: "영감을 주다, 고무하다" },
+  { word: "encourage", meaning: "격려하다" },
+  { word: "motivate", meaning: "동기를 부여하다" },
+  { word: "discourage", meaning: "낙담시키다" },
+  { word: "integrate", me: "통합하다, 융합하다" },
+  { word: "combine", me: "결합하다" },
+  { word: "merge", meaning: "합병하다" },
+  { word: "separate", meaning: "분리하다" },
+  { word: "intimidate", meaning: "위협하다, 겁주다" },
+  { word: "frighten", meaning: "겁먹게 하다" },
+  { word: "threaten", meaning: "위협하다" },
+  { word: "reassure", me: "안심시키다" },
+  { word: "intricate", meaning: "복잡한, 얽힌" },
+  { word: "complex", meaning: "복잡한" },
+  { word: "elaborate", meaning: "정교한" },
+  { word: "simple", meaning: "단순한" },
+  { word: "intrigue", meaning: "음모, 호기심을 끌다" },
+  { word: "fascinate", me: "매료시키다" },
+  { word: "interest", meaning: "흥미를 끌다" },
+  { word: "bore", meaning: "지루하게 하다" },
+  { word: "irritable", meaning: "짜증을 잘 내는" },
+  { word: "bad-tempered", meaning: "성질이 나쁜" },
+  { word: "peevish", me: "화잘내는" },
+  { word: "easygoing", meaning: "느긋한, 매사에 다정다감한" },
+  { word: "isolation", meaning: "고립, 격리" },
+  { word: "detachment", meaning: "분리, 고립" },
+  { word: "solitude", meaning: "고독" },
+  { word: "companionship", me: "동료애, 우정" },
+  { word: "jealousy", meaning: "질투, 시기" },
+  { word: "envy", meaning: "부러움" },
+  { word: "resentment", meaning: "분개, 억울함" },
+  { word: "admiration", meaning: "감탄, 존경" },
+  { word: "jubilant", meaning: "환희에 찬, 승리감에 도취된" },
+  { word: "elated", meaning: "의기양양한" },
+  { word: "joyful", meaning: "기쁜" },
+  { word: "depressed", meaning: "우울한" },
+  { word: "judicial", meaning: "사법의, 재판의" },
+  { word: "legal", meaning: "법률의" },
+  { word: "statutory", meaning: "법에 명시된" },
+  { word: "illegal", meaning: "불법의" },
+  { word: "justify", meaning: "정당화하다" },
+  { word: "defend", meaning: "변호하다" },
+  { word: "rationalize", me: "합리화하다" },
+  { word: "condemn", meaning: "비난하다" },
+  { word: "keen", me: "열심인, 예리한" },
+  { word: "eager", me: "열망하는" },
+  { word: "sharp", meaning: "날카로운" },
+  { word: "dull", meaning: "둔한" },
+  { word: "lament", meaning: "애통해하다, 통곡" },
+  { word: "bemoan", meaning: "한탄하다" },
+  { word: "mourn", me: "애도하다" },
+  { word: "rejoice", me: "기뻐하다" },
+  { word: "legacy", meaning: "유산, 전승" },
+  { word: "bequest", meaning: "유산" },
+  { word: "heritage", meaning: "유산" },
+  { word: "debt", me: "빚, 부채" },
+  { word: "legitimate", me: "합법적인, 정당한" },
+  { word: "lawful", me: "합법적인" },
+  { word: "valid", me: "유효한, 정당한" },
+  { word: "illegal", meaning: "불법의" },
+  { word: "leniency", meaning: "관용, 관대함" },
+  { word: "clemency", meaning: "자비, 관용" },
+  { word: "mercy", me: "자비" },
+  { word: "severity", meaning: "엄격함" },
+  { word: "lethal", meaning: "치명적인" },
+  { word: "deadly", meaning: "치명적인" },
+  { word: "fatal", me: "치명적인" },
+  { word: "harmless", me: "무해한" },
+  { word: "loyal", meaning: "충실한, 충성스러운" },
+  { word: "faithful", meaning: "충실한" },
+  { word: "devoted", meaning: "헌신적인" },
+  { word: "disloyal", me: "불충한" },
+  { word: "lucrative", meaning: "수익성이 좋은" },
+  { word: "gainful", me: "이득이 되는" },
+  { word: "profitable", meaning: "수익성이 있는" },
+  { word: "unprofitable", me: "이익이 안 나는" },
+  { word: "magnificent", meaning: "장대한, 웅장한" },
+  { word: "grand", me: "웅장한" },
+  { word: "splendid", me: "훌륭한" },
+  { word: "modest", me: "수수한" },
+  { word: "mandatory", me: "의무적인, 강제적인" },
+  { word: "compulsory", meaning: "의무적인" },
+  { word: "required", meaning: "필수적인" },
+  { word: "optional", me: "선택적인" },
+  { word: "manifest", meaning: "명백히 하다, 명백한" },
+  { word: "demonstrate", me: "입증하다" },
+  { word: "evident", me: "명백한" },
+  { word: "hidden", me: "숨겨진" },
+  { word: "manipulate", meaning: "조종하다, 잘 다루다" },
+  { word: "control", me: "통제하다" },
+  { word: "influence", me: "영향을 주다" },
+  { word: "mismanage", me: "잘못 관리하다" },
+  { word: "marvelous", me: "놀라운, 경이로운" },
+  { word: "extraordinary", meaning: "기이한, 비범한" },
+  { word: "wonderful", me: "훌륭한" },
+  { word: "ordinary", me: "평범한" },
+  { word: "mediocre", meaning: "보통의, 썩 좋지 않은" },
+  { word: "average", me: "평균의" },
+  { word: "ordinary", me: "평범한" },
+  { word: "extraordinary", me: "비범한" },
+  { word: "melancholy", me: "우울감, 애수" },
+  { word: "gloom", me: "어둠, 우울" },
+  { word: "sadness", me: "슬픔" },
+  { word: "happiness", me: "행복" },
+  { word: "meticulous", meaning: "꼼꼼한, 세심한" },
+  { word: "painstaking", me: "공들인" },
+  { word: "thorough", me: "철저한" },
+  { word: "careless", me: "부주의한" },
+  { word: "mislead", meaning: "오도하다, 잘못 이끌다" },
+  { word: "deceive", me: "속이다" },
+  { word: "delude", me: "현혹하다" },
+  { word: "guide", me: "안내하다" },
+  { word: "motive", meaning: "동기, 자극" },
+  { word: "incentive", me: "유인, 자극" },
+  { word: "reason", me: "이유" },
+  { word: "result", me: "결과" },
+  { word: "municipal", me: "시의, 지방 자치제의" },
+  { word: "civic", me: "시의" },
+  { word: "local", me: "지역의" },
+  { word: "national", me: "국가의" },
+  { word: "naive", meaning: "순진한, 순박한" },
+  { word: "gullible", me: "남을 잘 속는" },
+  { word: "innocent", me: "순진한" },
+  { word: "sophisticated", me: "세련된, 정통한" },
+  { word: "neglect", meaning: "방치하다, 소홀히 하다" },
+  { word: "disregard", me: "무시하다" },
+  { word: "ignore", me: "무시하다" },
+  { word: "cherish", me: "소중히 여기다" },
+  { word: "neutral", meaning: "중립적인, 중성의" },
+  { word: "impartial", me: "공정한" },
+  { word: "unbiased", me: "편견 없는" },
+  { word: "biased", me: "편향된" },
+  { word: "notorious", me: "악명 높은" },
+  { word: "disreputable", me: "평판이 나쁜" },
+  { word: "infamous", me: "악명 높은" },
+  { word: "renowned", me: "유명한" },
+  { word: "nurture", meaning: "육성하다, 양육하다" },
+  { word: "foster", me: "육성하다" },
+  { word: "raise", me: "키우다" },
+  { word: "neglect", me: "방치하다" },
+  { word: "obedient", meaning: "순종적인, 복종하는" },
+  { word: "compliant", me: "순응하는" },
+  { word: "submissive", me: "순종적인" },
+  { word: "rebellious", me: "반항적인" },
+  { word: "oblivious", meaning: "의식하지 못하는, 잊고 있는" },
+  { word: "ignorant", me: "무지한" },
+  { word: "unaware", me: "알지 못하는" },
+  { word: "aware", me: "알고 있는" },
+  { word: "obsolete", meaning: "한물간, 구식의" },
+  { word: "antiquated", me: "구식의" },
+  { word: "outdated", me: "시대에 뒤떨어진" },
+  { word: "modern", me: "현대적인" },
+  { word: "obstacle", me: "장애물, 방해물" },
+  { word: "barrier", me: "장벽" },
+  { word: "impediment", me: "장애" },
+  { word: "aid", me: "원조, 도움" },
+  { word: "offensive", me: "불쾌한, 모욕적인" },
+  { word: "insulting", me: "모욕적인" },
+  { word: "rude", me: "무례한" },
+  { word: "polite", me: "공손한" },
+  { word: "omit", meaning: "빠뜨리다, 생략하다" },
+  { word: "exclude", me: "제외하다" },
+  { word: "leave out", me: "생략하다" },
+  { word: "include", me: "포함하다" },
+  { word: "optimistic", me: "낙관적인, 긍정적인" },
+  { word: "confident", me: "자신감 있는" },
+  { word: "hopeful", me: "희망에 찬" },
+  { word: "pessimistic", me: "비관적인" },
+  { word: "ostentatious", me: "과시하는, 허세 부리는" },
+  { word: "flamboyant", me: "화려한" },
+  { word: "pretentious", me: "허세부리는" },
+  { word: "modest", me: "겸손한, 수수한" },
+  { word: "outrageous", me: "터무니없는, 파렴치한" },
+  { word: "absurd", me: "터무니없는" },
+  { word: "shocking", me: "충격적인" },
+  { word: "acceptable", me: "용인되는" },
+  { word: "overflow", me: "넘쳐흐르다, 범람하다" },
+  { word: "flood", me: "범람하다" },
+  { word: "spill", me: "쏟아지다" },
+  { word: "drain", me: "물 배수하다" },
+  { word: "overlook", me: "간과하다, 못 본 체하다" },
+  { word: "disregard", me: "무시하다" },
+  { word: "miss", me: "놓치다" },
+  { word: "notice", me: "알아채다" },
+  { word: "pamphlet", me: "소책자, 팜플렛" },
+  { word: "brochure", me: "소책자" },
+  { word: "leaflet", me: "전단지" },
+  { word: "book", me: "책" },
+  { word: "panic", me: "공포, 당황하다" },
+  { word: "alarm", me: "불안, 경보" },
+  { word: "terror", me: "공포" },
+  { word: "calm", me: "평온" },
+  { word: "paramount", me: "최고의, 가장 중요한" },
+  { word: "chief", me: "주요한" },
+  { word: "supreme", me: "최고의" },
+  { word: "minor", me: "사소한" },
+  { word: "passion", me: "열정, 애정" },
+  { word: "enthusiasm", me: "열정" },
+  { word: "fervor", me: "열렬" },
+  { word: "apathy", me: "무관심" },
+  { word: "pathetic", me: "한심한, 불쌍한" },
+  { word: "pitiful", me: "측은한" },
+  { word: "sad", me: "슬픈" },
+  { word: "admirable", me: "감탄할 만한" },
+  { word: "peculiar", me: "기이한, 특유의" },
+  { word: "bizarre", me: "기이한" },
+  { word: "strange", me: "이상한" },
+  { word: "common", me: "흔한" },
+  { word: "penetrate", me: "관통하다, 뚫고 들어가다" },
+  { word: "pierce", me: "뚫다" },
+  { word: "punctuate", me: "구획하다, 찍다" },
+  { word: "withdraw", me: "철수하다" },
+  { word: "perceive", me: "감지하다, 인지하다" },
+  { word: "discern", me: "식별하다" },
+  { word: "notice", me: "알아채다" },
+  { word: "overlook", me: "간과하다" },
+  { word: "persevere", me: "끈기 있게 노력하다" },
+  { word: "continue", me: "계속하다" },
+  { word: "persist", me: "집요하게 계속하다" },
+  { word: "quit", me: "그만두다" },
+  { word: "perplex", me: "당혹스럽게 하다" },
+  { word: "baffle", me: "당황하게 하다" },
+  { word: "confuse", me: "혼란스럽게 하다" },
+  { word: "clarify", me: "명확하게 하다" },
+  { word: "persistent", me: "끈질긴, 집요한" },
+  { word: "determined", me: "단호한" },
+  { word: "tenacious", me: "집요한" },
+  { word: "irresolute", me: "결단력이 없는" },
+  { word: "pessimistic", me: "비관적인, 음울한" },
+  { word: "cynical", me: "냉소적인" },
+  { word: "gloomy", me: "어두운" },
+  { word: "optimistic", me: "낙관적인" },
+  { word: "plausible", me: "타당한 것 같은, 그럴듯한" },
+  { word: "credible", me: "믿을 수 있는" },
+  { word: "reasonable", me: "합리적인" },
+  { word: "implausible", me: "믿기 어려운" },
+  { word: "plentiful", me: "풍부한" },
+  { word: "abundant", me: "풍부한" },
+  { word: "copious", me: "풍부한" },
+  { word: "scarce", me: "부족한" },
+  { word: "plunge", me: "급락하다, 뛰어들다" },
+  { word: "dive", me: "뛰어들다" },
+  { word: "plummet", me: "수직으로 떨어지다" },
+  { word: "soar", me: "치솟다" },
+  { word: "pompous", me: "거만한, 거드름 피우는" },
+  { word: "arrogant", me: "거만한" },
+  { word: "haughty", me: "거만한" },
+  { word: "humble", me: "겸손한" },
+  { word: "pragmatic", me: "실용적인" },
+  { word: "practical", me: "실용적인" },
+  { word: "realistic", me: "현실적인" },
+  { word: "idealistic", me: "이상주의적인" },
+  { word: "precious", me: "귀중한, 가치 있는" },
+  { word: "invaluable", me: "매우 귀중한" },
+  { word: "valuable", me: "가치 있는" },
+  { word: "worthless", me: "가치 없는" },
+  { word: "precipitous", me: "가파른, 성급한" },
+  { word: "abrupt", me: "갑작스러운" },
+  { word: "steep", me: "가파른" },
+  { word: "gradual", me: "점진적인" },
+  { word: "precise", me: "정확한, 정밀한" },
+  { word: "accurate", me: "정확한" },
+  { word: "exact", me: "정확한" },
+  { word: "inaccurate", me: "부정확한" },
+  { word: "predicament", me: "곤경, 궁지" },
+  { word: "dilemma", me: "딜레마" },
+  { word: "plight", me: "역경" },
+  { word: "advantage", me: "유리한 점" },
+  { word: "prejudiced", me: "편견이 있는" },
+  { word: "biased", me: "편향된" },
+  { word: "partial", me: "편파적인" },
+  { word: "impartial", me: "공정한" },
+  { word: "preposterous", me: "말도 안 되는, 터무니없는" },
+  { word: "absurd", me: "터무니없는" },
+  { word: "ridiculous", me: "우스꽝스러운" },
+  { word: "reasonable", me: "합리적인" },
+  { word: "prevalent", me: "일반적인, 널리 퍼진" },
+  { word: "common", me: "흔한" },
+  { word: "widespread", me: "널리 퍼진" },
+  { word: "rare", me: "희귀한" },
+  { word: "priceless", me: "아주 귀중한, 값을 매길 수 없는" },
+  { word: "invaluable", me: "매우 귀중한" },
+  { word: "precious", me: "귀중한" },
+  { word: "worthless", me: "가치 없는" },
+  { word: "primitive", me: "원시의, 초기의" },
+  { word: "ancient", me: "고대의" },
+  { word: "primeval", me: "태고의" },
+  { word: "modern", me: "현대적인" },
+  { word: "profound", me: "깊은, 심오한" },
+  { word: "deep", me: "깊은" },
+  { word: "insightful", me: "통찰력 있는" },
+  { word: "shallow", me: "피상적인" },
+  { word: "prohibit", me: "금지하다" },
+  { word: "ban", me: "금지하다" },
+  { word: "forbid", me: "금하다" },
+  { word: "allow", me: "허용하다" },
+  { word: "prominent", me: "두드러진, 유명한" },
+  { word: "conspicuous", me: "눈에 띄는" },
+  { word: "noticeable", me: "현저한" },
+  { word: "obscure", me: "잘 알 수 없는" },
+  { word: "prompt", me: "신속한, 유발하다" },
+  { word: "immediate", me: "즉각적인" },
+  { word: "quick", me: "빠른" },
+  { word: "delayed", me: "지연된" },
+  { word: "prosperous", me: "번창하는, 부유한" },
+  { word: "flourishing", me: "번창하는" },
+  { word: "thriving", me: "번성하는" },
+  { word: "impoverished", me: "빈곤한" },
+  { word: "prudent", me: "신중한, 알뜰한" },
+  { word: "cautious", me: "조심스러운" },
+  { word: "judicious", me: "현명한" },
+  { word: "reckless", me: "무모한" },
+  { word: "punctual", me: "시간을 엄수하는" },
+  { word: "on-time", me: "제시간의" },
+  { word: "prompt", me: "신속한" },
+  { word: "late", me: "늦은" },
+  { word: "radiant", me: "빛나는, 환한" },
+  { word: "beaming", me: "빛나는" },
+  { word: "bright", me: "밝은" },
+  { word: "dull", me: "칙칙한" },
+  { word: "rash", me: "무모한, 성급한" },
+  { word: "hasty", me: "성급한" },
+  { word: "reckless", me: "무모한" },
+  { word: "cautious", me: "신중한" },
+  { word: "rebellious", me: "반항적인, 반란의" },
+  { word: "defiant", me: "반항하는" },
+  { word: "disobedient", me: "반항적인" },
+  { word: "obedient", me: "순종적인" },
+  { word: "reckless", me: "무모한, 난폭한" },
+  { word: "careless", me: "부주의한" },
+  { word: "rash", me: "무모한" },
+  { word: "careful", me: "주의 깊은" },
+  { word: "reconcile", me: "화해시키다, 조화시키다" },
+  { word: "harmonize", me: "조화시키다" },
+  { word: "resolve", me: "해결하다" },
+  { word: "estrange", me: "소원하게 만들다" },
+  { word: "refrain", me: "삼가다, 삼가하다" },
+  { word: "abstain", me: "삼가다" },
+  { word: "avoid", me: "피하다" },
+  { word: "indulge", me: "탐닉하다" },
+  { word: "reluctant", me: "꺼리는, 마지못해 하는" },
+  { word: "hesitant", me: "망설이는" },
+  { word: "unwilling", me: "꺼리는" },
+  { word: "eager", me: "열심인" },
+  { word: "remarkable", me: "놀랄 만한, 주목할 만한" },
+  { word: "extraordinary", me: "비범한" },
+  { word: "notable", me: "주목할 만한" },
+  { word: "unremarkable", me: "평범한" },
+  { word: "renounce", me: "포기하다, 단념하다" },
+  { word: "abandon", me: "버리다" },
+  { word: "relinquish", me: "포기하다" },
+  { word: "claim", me: "주장하다, 요구하다" },
+  { word: "renowned", me: "유명한, 명성 있는" },
+  { word: "famous", me: "유명한" },
+  { word: "notable", me: "주목할 만한" },
+  { word: "unknown", me: "알려지지 않은" },
+  { word: "resentment", me: "분개, 분노" },
+  { word: "anger", me: "화, 분노" },
+  { word: "bitterness", me: "쓴맛, 쓰라림" },
+  { word: "sympathy", me: "동정, 공감" },
+  { word: "resilient", me: "회복력 있는, 탄력 있는" },
+  { word: "buoyant", me: "부유하는, 회복력 있는" },
+  { word: "tough", me: "강인한" },
+  { word: "fragile", me: "취약한" },
+  { word: "resolute", me: "단호한, 의지가 확고한" },
+  { word: "determined", me: "단호한" },
+  { word: "firm", me: "확고한" },
+  { word: "hesitant", me: "주저하는" },
+  { word: "restrain", me: "억제하다, 저지하다" },
+  { word: "check", me: "억제하다" },
+  { word: "curb", me: "억제하다" },
+  { word: "release", me: "석방하다, 풀다" },
+  { word: "retaliate", me: "보복하다, 앙갚음하다" },
+  { word: "avenge", me: "복수하다" },
+  { word: "reciprocate", me: "보답하다, 보복하다" },
+  { word: "forgive", me: "용서하다" },
+  { word: "retract", me: "철회하다, 취소하다" },
+  { word: "withdraw", me: "철회하다" },
+  { word: "revoke", me: "취소하다" },
+  { word: "assert", me: "주장하다" },
+  { word: "revere", me: "숭배하다, 존경하다" },
+  { word: "admire", me: "감탄하다" },
+  { word: "respect", me: "존경하다" },
+  { word: "despise", me: "경멸하다" },
+  { word: "rigid", me: "엄격한, 융통성 없는" },
+  { word: "inflexible", me: "구부러지지 않는, 엄격한" },
+  { word: "strict", me: "엄격한" },
+  { word: "flexible", me: "유연한" },
+  { word: "robust", me: "튼튼한, 강건한" },
+  { word: "healthy", me: "건강한" },
+  { word: "strong", me: "강한" },
+  { word: "weak", me: "약한" },
+  { word: "scorn", me: "경멸하다, 멸시하다" },
+  { word: "despise", me: "경멸하다" },
+  { word: "disdain", me: "경멸" },
+  { word: "respect", me: "존경하다" },
+  { word: "scrutinize", me: "면밀히 조사하다" },
+  { word: "examine", me: "조사하다" },
+  { word: "inspect", me: "점검하다" },
+  { word: "glance", me: "흘낏 보다" },
+  { word: "skeptical", me: "회의적인, 의심 많은" },
+  { word: "doubtful", me: "의심스러운" },
+  { word: "suspicious", me: "의심하는" },
+  { word: "gullible", me: "잘 속는" },
+  { word: "solitary", me: "고독한, 혼자의" },
+  { word: "isolated", me: "고립된" },
+  { word: "lonely", me: "외로운" },
+  { word: "social", me: "사교적인" },
+  { word: "soothe", me: "달래다, 완화하다" },
+  { word: "appease", me: "달래다" },
+  { word: "calm", me: "침착하게 하다" },
+  { word: "irritate", me: "짜증나게 하다" },
+  { word: "sophisticated", me: "세련된, 정교한" },
+  { word: "advanced", me: "진보한" },
+  { word: "refined", me: "정제된, 세련된" },
+  { word: "naive", me: "순진한" },
+  { word: "splendid", me: "화려한, 아주 훌륭한" },
+  { word: "grand", me: "웅장한" },
+  { word: "magnificent", me: "장엄한" },
+  { word: "ordinary", me: "평범한" },
+  { word: "spontaneous", me: "자발적인, 즉흥적인" },
+  { word: "impromptu", me: "즉흥적인" },
+  { word: "unplanned", me: "계획되지 않은" },
+  { word: "planned", me: "계획된" },
+  { word: "spurious", me: "거짓된, 가짜의" },
+  { word: "false", me: "거짓의" },
+  { word: "fake", me: "가짜의" },
+  { word: "genuine", me: "진짜의" },
+  { word: "squander", me: "탕진하다, 낭비하다" },
+  { word: "blow", me: "날려버리다" },
+  { word: "waste", me: "낭비하다" },
+  { word: "save", me: "절약하다" },
+  { word: "stagnant", me: "침체된, 고여 있는" },
+  { word: "inactive", me: "활동하지 않는" },
+  { word: "still", me: "고요한, 움직이지 않는" },
+  { word: "flowing", me: "흐르는" },
+  { word: "stern", me: "엄격한, 단호한" },
+  { word: "harsh", me: "가혹한" },
+  { word: "strict", me: "엄격한" },
+  { word: "lenient", me: "관대한" },
+  { word: "subtle", me: "미묘한, 미세한" },
+  { word: "delicate", me: "섬세한" },
+  { word: "slight", me: "약간의" },
+  { word: "obvious", me: "명백한" },
+  { word: "succinct", me: "간결한, 명료한" },
+  { word: "brief", me: "짧은" },
+  { word: "concise", me: "간결한" },
+  { word: "verbose", me: "장황한" },
+  { word: "superficial", me: "피상적인, 겉핥기의" },
+  { word: "cursory", me: "대충 하는" },
+  { word: "shallow", me: "얕은" },
+  { word: "profound", me: "깊은" },
+  { word: "suppress", me: "진압하다, 억제하다" },
+  { word: "quell", me: "진압하다" },
+  { word: "subdue", me: "정복하다, 억누르다" },
+  { word: "encourage", me: "격려하다" },
+  { word: "surpass", me: "능가하다, 뛰어넘다" },
+  { word: "exceed", me: "초과하다" },
+  { word: "outdo", me: "능가하다" },
+  { word: "fail", me: "실패하다" },
+  { word: "tactful", me: "요령 있는, 재치 있는" },
+  { word: "diplomatic", me: "외교적인, 요령 있는" },
+  { word: "discreet", me: "신중한" },
+  { word: "tactless", me: "요령 없는" },
+  { word: "tedious", me: "지루한, 따분한" },
+  { word: "boring", me: "지루한" },
+  { word: "monotonous", me: "단조로운" },
+  { word: "exciting", me: "흥미진진한" },
+  { word: "temperament", me: "기질, 성품" },
+  { word: "disposition", me: "성향" },
+  { word: "nature", me: "본성" },
+  { word: "action", me: "행동" },
+  { word: "tenacious", me: "완강한, 집요한" },
+  { word: "persistent", me: "집요한" },
+  { word: "resolute", me: "단호한" },
+  { word: "weak", me: "약한" },
+  { word: "thrive", me: "번창하다, 잘 자라다" },
+  { word: "flourish", me: "번성하다" },
+  { word: "prosper", me: "번창하다" },
+  { word: "decline", me: "쇠퇴하다" },
+  { word: "timid", me: "소심한, 용기가 없는" },
+  { word: "fearful", me: "두려워하는" },
+  { word: "shy", me: "수줍어하는" },
+  { word: "bold", me: "대담한" },
+  { word: "tranquil", me: "평온한, 고요한" },
+  { word: "calm", me: "침착한" },
+  { word: "peaceful", me: "평화로운" },
+  { word: "stormy", me: "폭풍우 치는" },
+  { word: "transient", me: "일시적인, 순간적인" },
+  { word: "fleeting", me: "찰나의" },
+  { word: "temporary", me: "일시적인" },
+  { word: "permanent", me: "영구적인" },
+  { word: "treacherous", me: "배신하는, 위험한" },
+  { word: "disloyal", me: "불충한" },
+  { word: "hazardous", me: "위험한" },
+  { word: "faithful", me: "충실한" },
+  { word: "trivial", me: "하찮은, 사소한" },
+  { word: "insignificant", me: "중요하지 않은" },
+  { word: "minor", me: "사소한" },
+  { word: "important", me: "중요한" },
+  { word: "unanimous", me: "만장일치의" },
+  { word: "agreed", me: "합의된" },
+  { word: "united", me: "통합된" },
+  { word: "divided", me: "분열된" },
+  { word: "unprecedented", me: "전례 없는" },
+  { word: "extraordinary", me: "비범한" },
+  { word: "unrivaled", me: "비할 데 없는" },
+  { word: "common", me: "흔한" },
+  { word: "valiant", me: "용맹한, 용감한" },
+  { word: "brave", me: "용감한" },
+  { word: "courageous", me: "용기 있는" },
+  { word: "cowardly", me: "겁 많은" },
+  { word: "valuable", me: "가치 있는, 귀중한" },
+  { word: "precious", me: "귀중한, 값진" },
+  { word: "priceless", me: "아주 귀중한, 매우 값진" }
+];
+
+var storeKey = "cutop_godeung_eng2_miraen_1_2";
+
+function getStore() {
+  try {
+    return JSON.parse(localStorage.getItem(storeKey)) || {};
+  } catch(e) { return {}; }
+}
+function setStore(s) {
+  try {
+    localStorage.setItem(storeKey, JSON.stringify(s));
+  } catch(e){}
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+function speakFc() {
+  speak(document.getElementById("fcword").textContent);
+}
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+var ranges = buildRanges(rawWords);
+
+var lri = 0, lfilter = "all";
+var fri = 0, fcList = [], fcIdx = 0;
+var qList = [], qIdx = 0, qScore = 0, qLocked = false;
+var tName = "", tri = 0, tList = [], tIdx = 0, tScore = 0, tAnswers = [];
+
+function switchTab(t) {
+  ["list","flash","quiz","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="quiz")  { initQuiz(); }
+  if (t==="test")  { renderSetup(); }
+}
+
+function renderRangeBar(elId, curIdx, fnName) {
+  var h = "";
+  ranges.forEach(function(r, i) {
+    var cls = (i === curIdx) ? "range-btn active" : "range-btn";
+    h += '<button class="' + cls + '" onclick="' + fnName + '(' + i + ')">' + r.label + '</button>';
+  });
+  document.getElementById(elId).innerHTML = h;
+}
+
+/* Tab 1: List */
+function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setLFilter(f) {
+  lfilter = f;
+  ["all","unk","fav"].forEach(function(n) {
+    document.getElementById("lf-"+n).classList.toggle("active", n===f);
+  });
+  renderList();
+}
+function renderList() {
+  var st = getStore();
+  var r = ranges[lri];
+  var sub = rawWords.slice(r.s, r.e);
+  var q = document.getElementById("lsearch").value.toLowerCase().trim();
+
+  var html = "";
+  sub.forEach(function(w) {
+    var k = w.word + "|" + w.meaning;
+    var item = st[k] || {};
+    var isKnown = item.status === "known";
+    var isFav = item.fav === true;
+
+    if (lfilter === "unk" && isKnown) return;
+    if (lfilter === "fav" && !isFav) return;
+    if (q) {
+      if (w.word.toLowerCase().indexOf(q) === -1 && w.meaning.toLowerCase().indexOf(q) === -1) return;
+    }
+
+    var cardCls = "word-card" + (isKnown ? " known" : "");
+    html += '<div class="' + cardCls + '">';
+    html += '  <div class="wc-left">';
+    html += '    <div class="chk-btn" data-k="' + esc(k) + '" onclick="toggleKnown(this)">' + (isKnown ? "✓" : "") + '</div>';
+    html += '    <div class="wc-info">';
+    html += '      <div class="wc-word en">' + esc(w.word) + '</div>';
+    html += '      <div class="wc-meaning">' + esc(w.meaning) + '</div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '  <div class="wc-right">';
+    html += '    <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '    <button class="ibtn" data-k="' + esc(k) + '" onclick="toggleFav(this)">' + (isFav ? "⭐" : "☆") + '</button>';
+    html += '  </div>';
+    html += '</div>';
+  });
+  document.getElementById("wlist").innerHTML = html;
+}
+
+function toggleKnown(el) {
+  var k = el.dataset.k;
+  var st = getStore();
+  st[k] = st[k] || {};
+  st[k].status = (st[k].status === "known") ? "" : "known";
+  setStore(st);
+  renderList();
+}
+function toggleFav(el) {
+  var k = el.dataset.k;
+  var st = getStore();
+  st[k] = st[k] || {};
+  st[k].fav = !st[k].fav;
+  setStore(st);
+  renderList();
+}
+
+/* Tab 2: Flashcard */
+function setFR(idx) { fri = idx; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+function initFC() {
+  var r = ranges[fri];
+  fcList = rawWords.slice(r.s, r.e);
+  fcIdx = 0;
+  showFC();
+}
+function showFC() {
+  if (!fcList.length) return;
+  var w = fcList[fcIdx];
+  var k = w.word + "|" + w.meaning;
+  var st = getStore();
+  var isFav = !!(st[k] && st[k].fav);
+
+  var card = document.getElementById("fccard");
+  card.classList.remove("flipped");
+  document.getElementById("fcword").textContent = w.word;
+  document.getElementById("fcmeaning").textContent = w.meaning;
+  document.getElementById("fcfav").textContent = isFav ? "⭐" : "☆";
+  document.getElementById("fcfav").dataset.k = k;
+}
+function fcFlip() {
+  document.getElementById("fccard").classList.toggle("flipped");
+  if (document.getElementById("fccard").classList.contains("flipped")) {
+    speakFc();
+  }
+}
+function toggleFcFav(e) {
+  e.stopPropagation();
+  var el = document.getElementById("fcfav");
+  var k = el.dataset.k;
+  var st = getStore();
+  st[k] = st[k] || {};
+  st[k].fav = !st[k].fav;
+  setStore(st);
+  el.textContent = st[k].fav ? "⭐" : "☆";
+}
+function fcNext() {
+  if (fcIdx < fcList.length - 1) { fcIdx++; showFC(); }
+}
+function fcPrev() {
+  if (fcIdx > 0) { fcIdx--; showFC(); }
+}
+
+var fcTX = 0;
+(function(){
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+})();
+
+/* Tab 3: Quiz */
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = a[i]; a[i] = a[j]; a[j] = temp;
+  }
+  return a;
+}
+
+function initQuiz() {
+  qScore = 0; qIdx = 0; qLocked = false;
+  var pool = shuffle(rawWords);
+  qList = pool.slice(0, Math.min(10, pool.length));
+  showQuiz();
+}
+function showQuiz() {
+  if (qIdx >= qList.length) { renderQuizResult(); return; }
+  var w = qList[qIdx];
+  
+  // Pick 3 wrong options
+  var wrong = rawWords.filter(function(x) { return x.word !== w.word; });
+  wrong = shuffle(wrong).slice(0, 3);
+  var opts = shuffle([w].concat(wrong));
+
+  var html = '<div class="q-card">';
+  html += '<div class="q-progress">문제 ' + (qIdx + 1) + ' / ' + qList.length + '</div>';
+  html += '<div class="q-word en">' + esc(w.word) + '</div>';
+  html += '<div class="q-options">';
+  opts.forEach(function(o) {
+    var isCor = (o.word === w.word) ? "1" : "0";
+    html += '<button class="q-opt" data-cor="' + isCor + '" onclick="qAns(this)">' + esc(o.meaning) + '</button>';
+  });
+  html += '</div></div>';
+  document.getElementById("qarea").innerHTML = html;
+  speak(w.word);
+}
+
+function qAns(el) {
+  if (qLocked) return;
+  qLocked = true;
+  var isCor = el.dataset.cor === "1";
+  if (isCor) {
+    el.classList.add("correct");
+    qScore++;
+  } else {
+    el.classList.add("wrong");
+    // highlight correct one
+    var btns = document.querySelectorAll(".q-opt");
+    for (var i=0; i<btns.length; i++) {
+      if (btns[i].dataset.cor === "1") btns[i].classList.add("correct");
+    }
+  }
+  setTimeout(function() {
+    qIdx++;
+    qLocked = false;
+    showQuiz();
+  }, 1000);
+}
+
+function renderQuizResult() {
+  var total = qList.length;
+  var pct = Math.round((qScore / total) * 100);
+  var emoji = pct === 100 ? "🏆" : (pct >= 80 ? "🎉" : (pct >= 60 ? "👍" : "💪"));
+
+  var html = '<div class="res-box">';
+  html += '<div class="res-emoji">' + emoji + '</div>';
+  html += '<div class="res-score">' + qScore + ' / ' + total + '</div>';
+  html += '<div class="res-pct">' + pct + '점</div>';
+  html += '<button class="btn-retry" onclick="initQuiz()">↩ 다시 풀기</button>';
+  html += '</div>';
+  document.getElementById("qarea").innerHTML = html;
+}
+
+/* Tab 4: Test */
+function setTR(idx) { tri = idx; renderRangeBar("trbar", tri, "setTR"); }
+function renderSetup() {
+  var html = '<div class="test-box">';
+  html += '<div class="input-label">응시자 이름</div>';
+  html += '<input type="text" class="t-input" id="tname" placeholder="이름을 입력하세요" value="' + esc(tName) + '">';
+  html += '<div class="input-label">테스트 범위</div>';
+  html += '<div class="range-bar" id="trbar"></div>';
+  html += '<button class="btn-primary" onclick="startTest()">테스트 시작 ▶</button>';
+  html += '</div>';
+  document.getElementById("tarea").innerHTML = html;
+  renderRangeBar("trbar", tri, "setTR");
+}
+
+function startTest() {
+  var nameEl = document.getElementById("tname");
+  tName = nameEl ? nameEl.value.trim() : "";
+  if (!tName) { alert("이름을 입력해주세요."); return; }
+
+  var r = ranges[tri];
+  var pool = rawWords.slice(r.s, r.e);
+  tList = shuffle(pool).slice(0, Math.min(50, pool.length));
+  tIdx = 0; tScore = 0; tAnswers = [];
+  showTestQ();
+}
+
+function showTestQ() {
+  if (tIdx >= tList.length) { renderTestResult(); return; }
+  var w = tList[tIdx];
+
+  var html = '<div class="t-status">';
+  html += '<span>현재: ' + (tIdx + 1) + ' / ' + tList.length + '</span>';
+  html += '<span>✅ 맞춤: ' + tScore + '</span>';
+  html += '</div>';
+  
+  var pct = (tIdx / tList.length) * 100;
+  html += '<div class="t-bar-bg"><div class="t-bar-fill" style="width:' + pct + '%"></div></div>';
+  html += '<div class="t-qword en">' + esc(w.word) + '</div>';
+  html += '<input type="text" class="t-input" id="tinput" autocomplete="off" placeholder="한글 뜻을 입력하세요" onkeydown="handleKey(event)">';
+  html += '<button class="btn-primary" style="margin-top:12px;" onclick="submitAns()">제출 / 다음 ▶</button>';
+
+  document.getElementById("tarea").innerHTML = html;
+  document.getElementById("tinput").focus();
+  speak(w.word);
+}
+
+function handleKey(e) {
+  if (e.key === "Enter") submitAns();
+}
+
+function isSim(input, correct) {
+  var norm = function(s) {
+    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+  };
+  var a = norm(input), c = norm(correct);
+  if (a === c) return true;
+  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+  return false;
+}
+
+function submitAns() {
+  var inp = document.getElementById("tinput").value.trim();
+  var w = tList[tIdx];
+  var cor = isSim(inp, w.meaning);
+
+  if (cor) tScore++;
+  tAnswers.push({ word: w.word, meaning: w.meaning, input: inp, correct: cor });
+
+  tIdx++;
+  showTestQ();
+}
+
+function renderTestResult() {
+  var total = tList.length;
+  var pct = Math.round((tScore / total) * 100);
+  var emoji = pct === 100 ? "🏆" : (pct >= 80 ? "🎉" : (pct >= 60 ? "👍" : "💪"));
+
+  var errs = tAnswers.filter(function(x) { return !x.correct; });
+
+  var html = '<div class="res-box">';
+  html += '<div class="res-emoji">' + emoji + '</div>';
+  html += '<div class="res-score">' + tScore + ' / ' + total + '</div>';
+  html += '<div class="res-pct">' + pct + '점</div>';
+
+  if (errs.length > 0) {
+    html += '<div class="err-list">';
+    errs.forEach(function(e) {
+      html += '<div class="err-item"><b>' + esc(e.word) + '</b> → 입력:' + esc(e.input||"미입력") + ' / 정답:' + esc(e.meaning) + '</div>';
+    });
+    html += '</div>';
+  }
+
+  html += '<button class="btn-copy" onclick="copyResult()">📋 카톡으로 결과 복사</button>';
+  html += '<button class="btn-retry" onclick="renderSetup()">↩ 다시 테스트</button>';
+  html += '</div>';
+
+  document.getElementById("tarea").innerHTML = html;
+}
+
+function copyResult() {
+  var today = new Date().toISOString().slice(0,10);
+  var errs = tAnswers.filter(function(x) { return !x.correct; });
+  var corrects = tAnswers.filter(function(x) { return x.correct; });
+
+  var txt = "[씨유에탑 고등영어2 미래엔 1과-2과 어휘] 테스트 결과\n";
+  txt += "날짜: " + today + "\n";
+  txt += "이름: " + tName + "\n";
+  txt += "점수: " + tScore + "/" + tList.length + " (" + Math.round((tScore/tList.length)*100) + "점)\n";
+  txt += "─────────────────\n";
+  
+  if (errs.length > 0) {
+    txt += "❌ 틀린 단어 (" + errs.length + "개)\n";
+    errs.forEach(function(e) {
+      txt += "  " + e.word + " → 입력:" + (e.input || "미입력") + " / 정답:" + e.meaning + "\n";
+    });
+    txt += "─────────────────\n";
+  }
+  
+  txt += "✅ 맞은 단어: " + corrects.map(function(x){ return x.word; }).join(", ");
+
+  navigator.clipboard.writeText(txt).then(function() {
+    alert("결과가 클립보드에 복사되었습니다!");
+  }).catch(function() {
+    alert("복사에 실패했습니다.");
+  });
+}
+
+// Initial render
+switchTab('list');
+</script>
+</body>
+</html>
