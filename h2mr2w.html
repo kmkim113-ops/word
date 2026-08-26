@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고등영어2 미래엔 2과 — 영작 연습</title>
+<style>
+  :root{
+    --navy:#182a4d;
+    --navy-2:#24365c;
+    --cream:#f6f2e8;
+    --paper:#fffdf8;
+    --ink:#242021;
+    --ink-soft:#5a5450;
+    --amber:#c98a3b;
+    --amber-2:#e0a458;
+    --line:#e4dcc9;
+    --ok:#3f7d5c;
+    --ok-bg:#e7f2eb;
+    --bad:#b5453a;
+    --bad-bg:#faeae8;
+    --lock:#bdb6a6;
+    --radius:14px;
+    --serif: "Noto Serif KR","Nanum Myeongjo","Apple SD Gothic Neo",serif;
+    --sans: "Pretendard","Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    min-height:100vh;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px;}
+
+  /* header */
+  .masthead{
+    border-bottom:3px solid var(--navy);
+    padding-bottom:18px;
+    margin-bottom:28px;
+  }
+  .masthead .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    color:var(--amber);
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .masthead h1{
+    font-family:var(--serif);
+    font-size:28px;
+    margin:6px 0 4px;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+  }
+  .masthead p{margin:0;color:var(--ink-soft);font-size:14px;}
+
+  .name-box{
+    margin-top:16px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .name-box label{font-size:13px;color:var(--ink-soft);}
+  .name-box input{
+    border:1px solid var(--line);
+    background:var(--paper);
+    border-radius:8px;
+    padding:7px 10px;
+    font-size:14px;
+    font-family:var(--sans);
+    color:var(--ink);
+    min-width:140px;
+  }
+  .name-box input:focus{outline:2px solid var(--amber-2);outline-offset:1px;}
+
+  /* stage map */
+  .map-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:10px;
+  }
+  @media (min-width:520px){
+    .map-grid{grid-template-columns:repeat(4,1fr);}
+  }
+  .unit-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 12px;
+    text-align:center;
+    cursor:pointer;
+    position:relative;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .unit-card:hover:not(.locked){
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(24,42,77,0.1);
+    border-color:var(--amber-2);
+  }
+  .unit-card .num{
+    font-family:var(--serif);
+    font-size:26px;
+    color:var(--navy);
+    font-weight:700;
+  }
+  .unit-card .lv{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .unit-card .status{
+    margin-top:8px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.03em;
+  }
+  .unit-card .status.done{color:var(--ok);}
+  .unit-card .status.ready{color:var(--amber);}
+  .unit-card .status.locked{color:var(--lock);}
+  .unit-card.locked{cursor:not-allowed;opacity:.55;}
+  .unit-card .lock-icon{position:absolute;top:8px;right:10px;font-size:13px;color:var(--lock);}
+  .unit-card .check-icon{position:absolute;top:8px;right:10px;font-size:13px;color:var(--ok);}
+
+  .map-note{font-size:12.5px;color:var(--ink-soft);margin-top:14px;margin-bottom:6px;}
+
+  /* unit view */
+  .unit-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+    gap:10px;
+  }
+  .back-btn{
+    background:none;border:none;color:var(--navy);font-size:14px;cursor:pointer;
+    font-weight:600;padding:6px 0;display:flex;align-items:center;gap:5px;
+  }
+  .back-btn:hover{color:var(--amber);}
+  .unit-title-block{text-align:right;}
+  .unit-title-block .tag{
+    font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.05em;
+  }
+  .unit-title-block h2{
+    font-family:var(--serif);font-size:20px;margin:2px 0 0;color:var(--navy);
+  }
+
+  .progress-strip{
+    display:flex;gap:6px;margin-bottom:22px;
+  }
+  .progress-strip .seg{
+    flex:1;height:5px;border-radius:3px;background:var(--line);
+  }
+  .progress-strip .seg.active{background:var(--amber-2);}
+  .progress-strip .seg.done{background:var(--navy);}
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 18px 20px;
+    margin-bottom:14px;
+  }
+  .card .idx{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    color:#fff;
+    background:var(--navy);
+    border-radius:5px;
+    padding:2px 7px;
+    margin-bottom:10px;
+  }
+  .card .ko-prompt{
+    font-size:16.5px;
+    line-height:1.65;
+    color:var(--ink);
+    margin-bottom:16px;
+    font-family:var(--serif);
+  }
+
+  .section-title{
+    font-size:11.5px;color:var(--ink-soft);font-weight:700;letter-spacing:.03em;margin-bottom:8px;
+  }
+
+  .assembled-row{
+    min-height:54px;
+    border:1.5px dashed var(--line);
+    border-radius:10px;
+    padding:10px;
+    display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+    background:var(--cream);
+    margin-bottom:18px;
+  }
+  .assembled-row.empty::before{
+    content:"단어를 탭해서 문장을 완성하세요";
+    color:var(--ink-soft);font-size:13px;padding:6px 2px;
+  }
+
+  .word-bank{
+    display:flex;flex-wrap:wrap;gap:8px;
+    min-height:40px;
+  }
+
+  .chip{
+    padding:8px 13px;
+    border-radius:8px;
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    cursor:pointer;
+    font-size:14.5px;
+    font-family:var(--sans);
+    color:var(--ink);
+    transition:border-color .1s ease, transform .08s ease;
+  }
+  .chip:hover{border-color:var(--amber-2);}
+  .chip:active{transform:scale(.96);}
+  .chip.built{background:#fff;border-color:var(--navy);}
+  .chip.correct{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);cursor:default;}
+  .chip.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);cursor:default;}
+  .chip.disabled{cursor:default;opacity:.5;}
+
+  .reveal-box{
+    margin-top:4px;
+    padding:12px 13px;
+    background:var(--cream);
+    border-left:3px solid var(--amber-2);
+    border-radius:6px;
+    font-size:14.5px;
+  }
+  .reveal-box .label{font-size:11px;color:var(--amber);font-weight:700;margin-bottom:4px;letter-spacing:.03em;}
+
+  .verdict{
+    font-weight:700;font-size:14px;margin:14px 0 4px;
+  }
+  .verdict.ok{color:var(--ok);}
+  .verdict.bad{color:var(--bad);}
+
+  .btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
+  .btn{
+    border:none;border-radius:8px;padding:9px 16px;font-size:13.5px;font-weight:700;
+    cursor:pointer;font-family:var(--sans);transition:opacity .12s ease, transform .1s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:hover{background:var(--navy-2);}
+  .btn-ghost{background:transparent;color:var(--navy);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--navy);}
+  .btn-amber{background:var(--amber-2);color:#2a2016;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  .bottom-bar{
+    position:sticky;bottom:0;
+    background:linear-gradient(to top, var(--cream) 70%, transparent);
+    padding-top:18px;margin-top:6px;
+  }
+  .bottom-bar .btn{width:100%;padding:13px;font-size:15px;}
+
+  /* result */
+  .score-panel{
+    display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px;
+  }
+  .score-box{
+    background:var(--navy);color:#fff;border-radius:var(--radius);
+    padding:18px 14px;text-align:center;
+  }
+  .score-box .n{font-family:var(--serif);font-size:30px;font-weight:700;}
+  .score-box .l{font-size:12px;opacity:.8;margin-top:2px;}
+
+  .section-label{
+    font-family:var(--serif);font-size:16px;color:var(--navy);
+    margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--line);
+  }
+  .wrong-item{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;margin-bottom:10px;
+  }
+  .wrong-item .ko{font-size:13.5px;color:var(--ink-soft);margin-bottom:8px;}
+  .wrong-item .compare{display:flex;flex-direction:column;gap:8px;}
+  .wrong-item .compare div{font-size:13.5px;padding:8px 10px;border-radius:6px;line-height:1.55;}
+  .wrong-item .mine{background:var(--bad-bg);color:#7a352c;}
+  .wrong-item .model{background:var(--ok-bg);color:#2e5c42;}
+  .wrong-item.allcorrect .mine{background:var(--ok-bg);color:#2e5c42;}
+  .wrong-item .compare .k{font-size:10.5px;font-weight:700;display:block;margin-bottom:3px;letter-spacing:.03em;}
+  .empty-note{font-size:13.5px;color:var(--ink-soft);padding:10px 2px;}
+
+  /* full passage with chunk marks */
+  .passage-card{
+    background:var(--navy);
+    color:#f3efe2;
+    border-radius:var(--radius);
+    padding:18px 18px 16px;
+    margin-bottom:20px;
+  }
+  .passage-card .plabel{
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--amber-2);font-weight:700;margin-bottom:12px;
+  }
+  .passage-item{margin-bottom:14px;}
+  .passage-item:last-child{margin-bottom:0;}
+  .passage-item .pen{font-size:14.5px;color:#f3efe2;line-height:1.6;margin-bottom:4px;}
+  .passage-item .pko{font-size:13px;color:#c9c2ad;line-height:1.5;}
+
+  .copy-area{margin-top:26px;}
+  .copy-status{font-size:12.5px;color:var(--ok);margin-top:8px;display:none;}
+  .copy-status.shown{display:inline-block;}
+
+  .round-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+  .round-pill{
+    font-size:11.5px;padding:4px 10px;border-radius:20px;background:var(--paper);
+    border:1px solid var(--line);color:var(--ink-soft);font-weight:700;
+  }
+  .round-pill.cur{background:var(--amber-2);color:#2a2016;border-color:var(--amber-2);}
+  .round-pill.done{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  footer{
+    text-align:center;color:var(--ink-soft);font-size:12px;margin-top:40px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ================= DATA ================= */
+const SET_TITLE = "고등영어2 미래엔(김성연) 2과";
+const SET_SUBTITLE = "영작 연습 · 단어 배열 자동 채점형";
+
+const UNITS = [
+{
+  id:1, level:"고2", source:"02과 · 1번",
+  chunks:[
+    {en:`Have you ever visited the Korean tidal flats / known as getbol?`, ko:`당신은 갯벌(getbol)로 알려진 한국의 조간대를 방문해 본 적이 있는가?`},
+    {en:`Getbol is a muddy and flat environment / that is exposed at low tide and is covered by water at high tide.`, ko:`갯벌은 썰물 때 드러나고 밀물 때 물에 잠기는 진흙투성이의 평평한 환경이다.`},
+    {en:`Soil on land has flowed into the sea and accumulated for more than 8,500 years, / creating one of the thickest tidal layers in the world.`, ko:`육지의 토양이 바다로 흘러들어 8,500년 넘게 쌓이면서, 세계에서 가장 두꺼운 조간대 퇴적층 중 하나를 만들어냈다.`},
+    {en:`Since the soil includes organic matter from land animals and plants, getbol is rich in nutrients and provides habitats for thousands of species.`, ko:`그 토양에는 육상 동식물에서 나온 유기물이 포함되어 있기 때문에, 갯벌은 영양분이 풍부하며 수천 종의 서식지를 제공한다.`},
+    {en:`In fact, getbol is home to approximately 2,150 species of plants and animals, / including 22 globally threatened or near-threatened species.`, ko:`실제로, 갯벌은 전 세계적으로 위협받거나 준위협 상태인 22종을 포함해 약 2,150종의 동식물의 서식지이다.`},
+    {en:`Thanks to its rich biodiversity, getbol is visited by about 118 species of migratory birds every year.`, ko:`풍부한 생물 다양성 덕분에, 갯벌은 매년 약 118종의 철새들이 찾는다.`},
+    {en:`For millions of migratory birds / that travel between Australia and the Russian Far East or Alaska, Korea's tidal flats are a vital stopover location.`, ko:`호주와 러시아 극동 지역 또는 알래스카 사이를 오가는 수백만 마리의 철새들에게, 한국의 갯벌은 필수적인 경유지이다.`},
+    {en:`Without getbol, they would not have a place / to rest / and / feed / themselves during their long journeys, and they would become extinct.`, ko:`갯벌이 없다면, 그들은 긴 여정 동안 쉬고 먹이를 먹을 장소가 없을 것이고, 결국 멸종하게 될 것이다.`},
+    {en:`Since getbol is not only a unique ecosystem / crowded with diverse species / but also a / resting / place for endangered birds, it was added to the UNESCO World Natural Heritage List in 2021.`, ko:`갯벌은 다양한 종으로 붐비는 독특한 생태계일 뿐만 아니라 멸종 위기종 새들의 휴식처이기도 하기 때문에, 2021년 유네스코 세계 자연 유산 목록에 등재되었다.`},
+    {en:`The list includes the four tidal flats on the western and southern coasts of Korea: Seocheon Getbol, Gochang Getbol, Shinan Getbol, and Boseong-Suncheon Getbol.`, ko:`그 목록에는 한국의 서해안과 남해안에 있는 네 개의 갯벌, 즉 서천 갯벌, 고창 갯벌, 신안 갯벌, 그리고 보성-순천 갯벌이 포함되어 있다.`},
+  ]
+},
+{
+  id:2, level:"고2", source:"02과 · 2번",
+  chunks:[
+    {en:`When people think of / a changing climate, images of / melting glaciers / and / polar bears losing their habitat / often come to mind.`, ko:`사람들이 변화하는 기후에 대해 생각할 때, 흔히 녹고 있는 빙하와 서식지를 잃어가는 북극곰의 이미지가 떠오른다.`},
+    {en:`But this is only one aspect of the problem.`, ko:`그러나 이것은 그 문제의 한 가지 측면일 뿐이다.`},
+    {en:`Climate change is causing extreme weather conditions, / which have become more frequent and intense worldwide.`, ko:`기후 변화는 전 세계적으로 더 잦고 더 강렬해진 극심한 기상 상태를 초래하고 있다.`},
+    {en:`Heatwaves, droughts, floods, and wildfires are affecting countries around the world.`, ko:`폭염, 가뭄, 홍수, 그리고 산불이 전 세계의 국가들에 영향을 미치고 있다.`},
+    {en:`In the autumn of 2019, for example, Australia was hit by one of the worst wildfires on record.`, ko:`예를 들어, 2019년 가을에 호주는 기록상 최악의 산불 중 하나를 겪었다.`},
+    {en:`Over six months, the wildfires burned about 10 million hectares of land, and killed hundreds of millions of animals.`, ko:`6개월에 걸쳐, 그 산불은 약 1,000만 헥타르의 땅을 태웠고, 수억 마리의 동물을 죽였다.`},
+    {en:`Approximately 30 percent of the koalas in the region are said / to have been killed / due to the fires.`, ko:`그 지역 코알라의 약 30퍼센트가 그 산불로 인해 죽은 것으로 전해진다.`},
+    {en:`This is / why the international community has been seeking solutions to the climate crisis.`, ko:`이것이 국제 사회가 기후 위기에 대한 해결책을 계속 모색해 온 이유이다.`},
+    {en:`In 2015, 195 countries signed the Paris Agreement / to limit the temperature increase to 1.5 °C above pre-industrial levels.`, ko:`2015년에 195개국이 산업화 이전 수준보다 기온 상승을 섭씨 1.5도로 제한하기 위한 파리 협정에 서명했다.`},
+    {en:`The countries agreed upon the fact / that the increase in atmospheric carbon is a major reason for climate change.`, ko:`그 국가들은 대기 중 탄소의 증가가 기후 변화의 주요 원인이라는 사실에 동의했다.`},
+    {en:`One key strategy / to combat it / is / to achieve "carbon neutrality", / which involves / maintaining a balance between the amount of carbon emitted and carbon absorbed.`, ko:`그것과 맞서기 위한 한 가지 핵심 전략은 '탄소 중립'을 달성하는 것인데, 이는 배출되는 탄소의 양과 흡수되는 탄소의 양 사이의 균형을 유지하는 것을 포함한다.`},
+  ]
+},
+{
+  id:3, level:"고2", source:"02과 · 3번",
+  chunks:[
+    {en:`Let's imagine / that the Earth's atmosphere is a large bathtub, and the greenhouse gases / emitted into the atmosphere / are like water / flowing from a tap into the bathtub.`, ko:`지구의 대기가 하나의 커다란 욕조이고, 대기 중으로 배출되는 온실가스는 수도꼭지에서 욕조로 흘러 들어가는 물과 같다고 상상해 보자.`},
+    {en:`At the bottom of the bathtub, there's a drain / that lets the water out.`, ko:`욕조 바닥에는 물을 밖으로 내보내는 배수구가 있다.`},
+    {en:`If we keep the tap / running, the water level in the bathtub will rise, just as / greenhouse gas emissions have led / to an increase in atmospheric carbon.`, ko:`만약 우리가 수도꼭지를 계속 틀어놓는다면, 욕조 안의 수위는 올라갈 것인데, 이는 마치 온실가스 배출이 대기 중 탄소의 증가로 이어져 온 것과 같다.`},
+    {en:`This rise in carbon levels has resulted already in negative environmental consequences, such as climate change.`, ko:`탄소 수준의 이러한 상승은 이미 기후 변화와 같은 부정적인 환경적 결과를 초래해 왔다.`},
+    {en:`To make matters worse, / if the water is not effectively / drained, the bathtub will overflow.`, ko:`설상가상으로, 만약 물이 효과적으로 배수되지 않는다면, 욕조는 넘칠 것이다.`},
+    {en:`In other words, / if we don't reduce carbon emissions sufficiently, atmospheric carbon will continue / to accumulate.`, ko:`다시 말해서, 만약 우리가 탄소 배출을 충분히 줄이지 않는다면, 대기 중 탄소는 계속 축적될 것이다.`},
+  ]
+},
+{
+  id:4, level:"고2", source:"02과 · 4번",
+  chunks:[
+    {en:`One of the most promising ways / to reduce carbon in the atmosphere / is / to use the "good" carbon on Earth.`, ko:`대기 중의 탄소를 줄이는 가장 유망한 방법 중 하나는 지구상의 '좋은' 탄소를 활용하는 것이다.`},
+    {en:`The Earth's carbon can be divided into three types: black carbon, green carbon, and blue carbon.`, ko:`지구의 탄소는 세 가지 유형, 즉 블랙 카본, 그린 카본, 블루 카본으로 나뉠 수 있다.`},
+    {en:`Black carbon is released / while burning fossil fuels, such as coal, oil, and gas.`, ko:`블랙 카본은 석탄, 석유, 가스와 같은 화석 연료를 태우는 동안 방출된다.`},
+    {en:`It causes the greenhouse effect, / leading to global warming and climate change.`, ko:`그것은 온실 효과를 일으키며, 지구 온난화와 기후 변화로 이어진다.`},
+    {en:`Green carbon, on the other hand, is carbon / absorbed by and stored in land ecosystems, such as rainforests like the Amazon in South America.`, ko:`반면에, 그린 카본은 남미의 아마존과 같은 열대우림 등 육상 생태계에 흡수되어 저장되는 탄소이다.`},
+    {en:`It plays a vital role / in maintaining the ecosystem / because it absorbs carbon dioxide through photosynthesis.`, ko:`그것은 광합성을 통해 이산화탄소를 흡수하기 때문에 생태계를 유지하는 데 필수적인 역할을 한다.`},
+    {en:`Finally, blue carbon is the carbon / stored in the ocean, including coastal and marine ecosystems such as mangrove wetlands, seagrass beds, and tidal marshes.`, ko:`마지막으로, 블루 카본은 맹그로브 습지, 해초 밭, 조간대 습지와 같은 해안 및 해양 생태계를 포함하여 바다에 저장되는 탄소이다.`},
+    {en:`The carbon absorption rate of marine ecosystems is about 50 times faster than that of land ecosystems.`, ko:`해양 생태계의 탄소 흡수 속도는 육상 생태계의 그것보다 약 50배 더 빠르다.`},
+    {en:`Blue carbon can store up to 10 times more carbon per unit area than forests on land, / making it highly cost-effective.`, ko:`블루 카본은 육지의 숲보다 단위 면적당 최대 10배 더 많은 탄소를 저장할 수 있어서, 이는 그것을 매우 비용 효율적으로 만든다.`},
+    {en:`A notable example of blue carbon can be found in tidal flats / located around the ocean.`, ko:`블루 카본의 주목할 만한 예는 바다 주변에 위치한 갯벌에서 찾아볼 수 있다.`},
+    {en:`Research / conducted in 2021 / has revealed / that getbol in Korea stores approximately 13 million tons of carbon and absorbs over 260,000 tons of carbon dioxide each year.`, ko:`2021년에 수행된 연구는 한국의 갯벌이 약 1,300만 톤의 탄소를 저장하고 매년 26만 톤 이상의 이산화탄소를 흡수한다는 것을 밝혀냈다.`},
+    {en:`This means / that getbol alone can offset the carbon dioxide emissions / produced by 110,000 cars in a year.`, ko:`이는 갯벌만으로도 매년 11만 대의 자동차가 배출하는 이산화탄소를 상쇄할 수 있다는 것을 의미한다.`},
+    {en:`Considering / that getbol contains numerous organisms and marine animals / that store carbon, the treasure house of blue carbon has become a promising and sustainable solution to the current environmental problem.`, ko:`갯벌이 탄소를 저장하는 수많은 유기체와 해양 동물을 포함하고 있다는 것을 고려하면, 블루 카본의 보고는 현재의 환경 문제에 대한 유망하고 지속 가능한 해결책이 되었다.`},
+    {en:`Scientists worldwide are continuing / to explore the capabilities of tidal flats / with the goal of / having them officially recognized as blue carbon.`, ko:`전 세계의 과학자들은 갯벌을 공식적으로 블루 카본으로 인정받게 하려는 목표를 가지고 갯벌의 잠재력을 계속 탐구하고 있다.`},
+  ]
+},
+{
+  id:5, level:"고2", source:"02과 · 5번",
+  chunks:[
+    {en:`Getbol in Korea was once considered useless muddy land, so much of it has been reclaimed for farming and urbanization.`, ko:`한국의 갯벌은 한때 쓸모없는 진흙땅으로 여겨져서, 그것의 상당 부분이 농업과 도시화를 위해 매립되어 왔다.`},
+    {en:`This has led to a decline in the area of tidal flats, / causing a loss of biodiversity.`, ko:`이는 갯벌 면적의 감소로 이어졌고, 생물 다양성의 손실을 초래했다.`},
+    {en:`To prevent further damage to the marine ecosystem, both the government and environmental organizations have been making efforts / to protect the tidal flats / by / regulating unnecessary development.`, ko:`해양 생태계에 대한 추가적인 피해를 막기 위해, 정부와 환경 단체들은 불필요한 개발을 규제함으로써 갯벌을 보호하기 위한 노력을 기울여 왔다.`},
+    {en:`Without further efforts / to restore getbol, we would fail / to preserve this valuable ecosystem / for future generations.`, ko:`갯벌을 복원하려는 추가적인 노력이 없다면, 우리는 미래 세대를 위해 이 귀중한 생태계를 보존하는 데 실패할 것이다.`},
+  ]
+},
+{
+  id:6, level:"고2", source:"02과 · 6번",
+  chunks:[
+    {en:`Email is one of the most widely / used / forms of communication today.`, ko:`이메일은 오늘날 가장 널리 사용되는 의사소통 형태 중 하나이다.`},
+    {en:`Did you know / that the seemingly innocent act of / looking through emails / or / checking your inbox / has an environmental impact?`, ko:`당신은 이메일을 훑어보거나 받은 편지함을 확인하는, 겉보기에 아무 잘못 없어 보이는 행위가 환경적 영향을 미친다는 것을 알고 있었는가?`},
+    {en:`In reality, email travels through an energy- / consuming / network, / contributing to climate change / on our planet.`, ko:`실제로, 이메일은 에너지를 소비하는 네트워크를 통해 이동하며, 우리 지구의 기후 변화에 원인이 된다.`},
+    {en:`Storing countless email messages / in data centers creates carbon emissions.`, ko:`데이터 센터에 무수히 많은 이메일 메시지를 저장하는 것은 탄소 배출을 만들어낸다.`},
+    {en:`These data centers rely on huge servers / to store / and / access / data at all times.`, ko:`이 데이터 센터들은 항상 데이터를 저장하고 접근하기 위해 거대한 서버에 의존한다.`},
+    {en:`Because the centers use electricity / to run the servers / and / to cool down the large amounts of heat / that they generate, they consume a significant amount of fossil fuels.`, ko:`그 센터들은 서버를 가동하고 그것들이 발생시키는 많은 양의 열을 식히기 위해 전기를 사용하기 때문에, 상당한 양의 화석 연료를 소비한다.`},
+    {en:`Mike Berners-Lee, the British researcher and author of How Bad Are Bananas?: The Carbon Footprint of Everything, looked at our average email traffic.`, ko:`《바나나는 얼마나 나쁠까?: 모든 것의 탄소 발자국》의 저자이자 영국인 연구원인 마이크 버너스리는 우리의 평균적인 이메일 통신량을 조사했다.`},
+    {en:`For example, a short phone-to-phone email has a carbon footprint of 0.2 g of CO2 emissions.`, ko:`예를 들어, 짧은 휴대폰 간 이메일 한 통은 0.2그램의 이산화탄소 배출에 해당하는 탄소 발자국을 가진다.`},
+    {en:`But, a long email, / which takes about ten minutes / to write / and three minutes / to read / on a computer, has a footprint of 17 g of CO2 emissions.`, ko:`그러나 컴퓨터로 작성하는 데 약 10분, 읽는 데 3분이 걸리는 긴 이메일은 17그램의 이산화탄소 배출에 해당하는 발자국을 가진다.`},
+    {en:`So, something as simple as / deleting unnecessary email messages / can help / to save the Earth.`, ko:`그러므로, 불필요한 이메일 메시지를 삭제하는 것처럼 간단한 일도 지구를 구하는 데 도움이 될 수 있다.`},
+  ]
+},
+];
+
+
+/* ================= HELPERS ================= */
+function tokenize(en){
+  return en.split('/').join(' ').split(/\s+/).filter(Boolean);
+}
+function shuffledIndices(n){
+  const arr = Array.from({length:n}, (_,i)=>i);
+  if(n<2) return arr;
+  let tries=0;
+  do{
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    tries++;
+  } while(arr.every((v,i)=>v===i) && tries<10);
+  return arr;
+}
+// splits n sentences into rounds of size 3~5
+function splitRounds(n){
+  if(n<=5) return [n];
+  let rounds = Math.max(2, Math.round(n/4));
+  let sizesOf = (r)=>{
+    const base=Math.floor(n/r), rem=n%r;
+    return Array.from({length:r}, (_,i)=> base + (i<rem?1:0));
+  };
+  let sizes = sizesOf(rounds), guard=0;
+  while(sizes.some(s=>s>5) && guard<10){ rounds++; sizes=sizesOf(rounds); guard++; }
+  guard=0;
+  while(sizes.some(s=>s<3) && rounds>1 && guard<10){ rounds--; sizes=sizesOf(rounds); guard++; }
+  return sizes;
+}
+function makeRoundGroups(n){
+  const sizes = splitRounds(n);
+  const groups=[]; let cursor=0;
+  sizes.forEach(sz=>{ groups.push(Array.from({length:sz},(_,i)=>cursor+i)); cursor+=sz; });
+  return groups;
+}
+
+/* ================= STATE (in-memory only, no localStorage) ================= */
+const state = {
+  userName:"",
+  unitProgress: UNITS.map(()=>null), // lazily initialized per unit
+  currentUnit:-1,     // -1 = map view
+  currentStage:"study" // 'study' | 'build' | 'roundResult' | 'result'
+};
+
+function initProgress(i){
+  const u = UNITS[i];
+  const roundGroups = makeRoundGroups(u.chunks.length);
+  const sentenceState = u.chunks.map(c=>{
+    const words = tokenize(c.en);
+    return {
+      words,
+      shuffled: shuffledIndices(words.length),
+      selected: [],
+      checked:false,
+      allCorrect:false,
+      finalSelected:null
+    };
+  });
+  return {
+    completed:false,
+    roundGroups,
+    currentRoundIdx:0,
+    currentPosInRound:0,
+    sentenceState,
+    roundScores: roundGroups.map(()=>0)
+  };
+}
+
+const app = document.getElementById('app');
+
+function isUnlocked(i){
+  if(i===0) return true;
+  return state.unitProgress[i-1] && state.unitProgress[i-1].completed;
+}
+
+/* ================= RENDER: MAP ================= */
+function renderMap(){
+  state.currentUnit=-1;
+  let cardsHtml = UNITS.map((u,i)=>{
+    const unlocked = isUnlocked(i);
+    const p = state.unitProgress[i];
+    const done = p && p.completed;
+    let statusHtml, icon="";
+    if(done){ statusHtml = `<div class="status done">완료</div>`; icon=`<span class="check-icon">✓</span>`; }
+    else if(unlocked){ statusHtml = `<div class="status ready">도전 가능</div>`; }
+    else { statusHtml = `<div class="status locked">잠김</div>`; icon=`<span class="lock-icon">🔒</span>`; }
+    return `
+      <div class="unit-card ${unlocked?'':'locked'}" data-unit="${i}">
+        ${icon}
+        <div class="num">${u.id}</div>
+        <div class="lv">${u.level}</div>
+        ${statusHtml}
+      </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="masthead">
+      <div class="eyebrow">Sentence Builder Lab</div>
+      <h1>${SET_TITLE}</h1>
+      <p>${SET_SUBTITLE}</p>
+      <div class="name-box">
+        <label for="nameInput">이름(선택):</label>
+        <input type="text" id="nameInput" placeholder="예: 홍길동" value="${state.userName}">
+      </div>
+    </div>
+    <div class="map-grid">${cardsHtml}</div>
+    <div class="map-note">한글 해석을 보고 흩어진 영단어를 순서대로 배열해 문장을 완성하세요. 지문 길이에 따라 3~5문장씩 라운드로 나뉘며, 정답은 자동으로 채점됩니다.</div>
+    <footer>총 ${UNITS.length}개 지문 · 단어 배열 자동 채점형 영작 연습</footer>
+  `;
+
+  document.getElementById('nameInput').addEventListener('input', e=>{
+    state.userName = e.target.value;
+  });
+
+  document.querySelectorAll('.unit-card').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const i = parseInt(el.dataset.unit,10);
+      if(!isUnlocked(i)) return;
+      openUnit(i);
+    });
+  });
+}
+
+/* ================= OPEN UNIT ================= */
+function openUnit(i){
+  state.currentUnit = i;
+  if(!state.unitProgress[i]){
+    state.unitProgress[i] = initProgress(i);
+  }
+  const p = state.unitProgress[i];
+  state.currentStage = p.completed ? "result" : "study";
+  renderUnit();
+}
+
+function unitHeaderHtml(u){
+  return `
+    <div class="unit-header">
+      <button class="back-btn" id="toMapBtn">← 목록으로</button>
+      <div class="unit-title-block">
+        <div class="tag">${u.source}</div>
+        <h2>${u.id}번 지문 · ${u.level}</h2>
+      </div>
+    </div>`;
+}
+function attachBackBtn(){
+  document.getElementById('toMapBtn').addEventListener('click', renderMap);
+}
+
+function overallProgressHtml(i){
+  const p = state.unitProgress[i];
+  const total = p.roundGroups.length;
+  const cur = state.currentStage==='result' ? total : p.currentRoundIdx;
+  const pills = p.roundGroups.map((g,idx)=>{
+    let cls='round-pill';
+    if(idx<cur || state.currentStage==='result') cls+=' done';
+    else if(idx===cur && state.currentStage!=='study') cls+=' cur';
+    return `<span class="${cls}">R${idx+1}·${g.length}문장</span>`;
+  }).join('');
+  return `<div class="round-list">${pills}</div>`;
+}
+
+/* ================= RENDER: DISPATCH ================= */
+function renderUnit(){
+  if(state.currentStage==='study') renderStudy();
+  else if(state.currentStage==='build') renderBuild();
+  else if(state.currentStage==='roundResult') renderRoundResult();
+  else renderResult();
+}
+
+/* -------- Stage: 지문 학습 -------- */
+function renderStudy(){
+  const i = state.currentUnit;
+  const u = UNITS[i];
+
+  const passageHtml = u.chunks.map((c,idx)=>`
+    <div class="passage-item">
+      <div class="pen"><b>${idx+1}.</b> ${c.en.split('/').join(' / ')}</div>
+      <div class="pko">${c.ko}</div>
+    </div>`).join('');
+
+  app.innerHTML = `
+    ${unitHeaderHtml(u)}
+    <h3 style="font-family:var(--serif);color:var(--navy);margin:0 0 4px;">1단계 · 지문 학습</h3>
+    <p style="color:var(--ink-soft);font-size:13.5px;margin-top:0;margin-bottom:18px;">먼저 지문 전체와 해석을 읽어보세요. 이후 이 문장들을 단어부터 다시 조립하게 됩니다.</p>
+    <div class="passage-card">
+      <div class="plabel">지문 전체 · 해석 포함</div>
+      ${passageHtml}
+    </div>
+    <div class="bottom-bar">
+      <button class="btn btn-amber" id="startBuildBtn">영작 연습 시작하기 →</button>
+    </div>
+  `;
+  attachBackBtn();
+  document.getElementById('startBuildBtn').addEventListener('click', ()=>{
+    state.currentStage='build';
+    renderUnit();
+  });
+}
+
+/* -------- Stage: 영작(단어 배열) -------- */
+function renderBuild(){
+  const i = state.currentUnit;
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+  const roundIdx = p.currentRoundIdx;
+  const group = p.roundGroups[roundIdx];
+  const posInRound = p.currentPosInRound;
+  const chunkIdx = group[posInRound];
+  const c = u.chunks[chunkIdx];
+  const s = p.sentenceState[chunkIdx];
+
+  const bankIndices = s.shuffled.filter(origIdx=> !s.selected.includes(origIdx));
+  const bankHtml = bankIndices.length
+    ? bankIndices.map(origIdx=>`<button class="chip" data-bank-idx="${origIdx}">${s.words[origIdx]}</button>`).join('')
+    : `<span style="color:var(--ink-soft);font-size:13px;">모든 단어를 사용했습니다</span>`;
+
+  const assembledHtml = s.selected.map((origIdx,pos)=>{
+    let cls='chip built';
+    if(s.checked){
+      cls += (origIdx===pos) ? ' correct' : ' wrong';
+    }
+    const clickable = s.checked ? '' : `data-assembled-pos="${pos}"`;
+    return `<button class="${cls}" ${clickable} ${s.checked?'disabled':''}>${s.words[origIdx]}</button>`;
+  }).join('');
+
+  const allPlaced = s.selected.length === s.words.length;
+  const isLastInRound = posInRound === group.length - 1;
+  const isLastRound = roundIdx === p.roundGroups.length - 1;
+
+  let nextLabel = "다음 문장 →";
+  if(isLastInRound) nextLabel = isLastRound ? "라운드 결과 보기 →" : "라운드 결과 보기 →";
+
+  app.innerHTML = `
+    ${unitHeaderHtml(u)}
+    <h3 style="font-family:var(--serif);color:var(--navy);margin:0 0 4px;">2단계 · 영작 연습</h3>
+    <p style="color:var(--ink-soft);font-size:13.5px;margin-top:0;margin-bottom:14px;">라운드 ${roundIdx+1}/${p.roundGroups.length} · 문장 ${posInRound+1}/${group.length}</p>
+    ${overallProgressHtml(i)}
+
+    <div class="card">
+      <span class="idx">${chunkIdx+1}</span>
+      <div class="ko-prompt">${c.ko}</div>
+
+      <div class="section-title">조립한 문장</div>
+      <div class="assembled-row ${s.selected.length===0?'empty':''}">${assembledHtml}</div>
+
+      ${!s.checked ? `
+        <div class="section-title">단어 보관함 (탭해서 순서대로 배치)</div>
+        <div class="word-bank">${bankHtml}</div>
+      ` : ``}
+
+      ${s.checked ? `
+        <div class="verdict ${s.allCorrect?'ok':'bad'}">${s.allCorrect ? '✓ 정답입니다!' : '✗ 순서가 정확하지 않아요. 빨간 단어의 위치를 다시 확인하세요.'}</div>
+        <div class="reveal-box">
+          <div class="label">정답 문장</div>
+          ${s.words.join(' ')}
+        </div>
+      ` : ``}
+
+      <div class="btn-row">
+        ${!s.checked ? `
+          <button class="btn btn-ghost" id="resetBtn" ${s.selected.length===0?'disabled':''}>초기화</button>
+          <button class="btn btn-primary" id="checkBtn" ${allPlaced?'':'disabled'}>정답 확인</button>
+        ` : `
+          ${!s.allCorrect ? `<button class="btn btn-ghost" id="retryBtn">다시 풀기</button>` : ``}
+          <button class="btn btn-amber" id="nextBtn">${nextLabel}</button>
+        `}
+      </div>
+    </div>
+  `;
+  attachBackBtn();
+
+  document.querySelectorAll('[data-bank-idx]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const origIdx = parseInt(e.currentTarget.dataset.bankIdx,10);
+      s.selected.push(origIdx);
+      renderBuild();
+    });
+  });
+  document.querySelectorAll('[data-assembled-pos]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const pos = parseInt(e.currentTarget.dataset.assembledPos,10);
+      s.selected.splice(pos,1);
+      renderBuild();
+    });
+  });
+
+  const resetBtn = document.getElementById('resetBtn');
+  if(resetBtn) resetBtn.addEventListener('click', ()=>{ s.selected=[]; renderBuild(); });
+
+  const checkBtn = document.getElementById('checkBtn');
+  if(checkBtn) checkBtn.addEventListener('click', ()=>{
+    s.checked = true;
+    s.allCorrect = s.selected.every((origIdx,pos)=>origIdx===pos);
+    s.finalSelected = [...s.selected];
+    if(s.allCorrect){ p.roundScores[roundIdx] += 1; }
+    renderBuild();
+  });
+
+  const retryBtn = document.getElementById('retryBtn');
+  if(retryBtn) retryBtn.addEventListener('click', ()=>{
+    s.checked=false; s.selected=[]; renderBuild();
+  });
+
+  const nextBtn = document.getElementById('nextBtn');
+  if(nextBtn) nextBtn.addEventListener('click', ()=>{
+    if(isLastInRound){
+      state.currentStage='roundResult';
+    } else {
+      p.currentPosInRound += 1;
+    }
+    renderUnit();
+  });
+}
+
+/* -------- Stage: 라운드 결과 -------- */
+function renderRoundResult(){
+  const i = state.currentUnit;
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+  const roundIdx = p.currentRoundIdx;
+  const group = p.roundGroups[roundIdx];
+  const score = p.roundScores[roundIdx];
+  const isLastRound = roundIdx === p.roundGroups.length - 1;
+
+  const itemsHtml = group.map(chunkIdx=>{
+    const c = u.chunks[chunkIdx];
+    const s = p.sentenceState[chunkIdx];
+    const myWords = s.finalSelected ? s.finalSelected.map(idx=>s.words[idx]).join(' ') : '(미입력)';
+    return `
+    <div class="wrong-item ${s.allCorrect?'allcorrect':''}">
+      <div class="ko"><b>${chunkIdx+1}.</b> ${c.ko}</div>
+      <div class="compare">
+        <div class="mine"><span class="k">${s.allCorrect ? '학생 답 (정답)' : '학생 답'}</span>${myWords}</div>
+        ${!s.allCorrect ? `<div class="model"><span class="k">정답</span>${s.words.join(' ')}</div>` : ``}
+      </div>
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    ${unitHeaderHtml(u)}
+    <h3 style="font-family:var(--serif);color:var(--navy);margin:0 0 16px;">라운드 ${roundIdx+1} 결과</h3>
+    ${overallProgressHtml(i)}
+    <div class="score-panel">
+      <div class="score-box">
+        <div class="n">${score} / ${group.length}</div>
+        <div class="l">이번 라운드 점수</div>
+      </div>
+    </div>
+    <div class="section-label">라운드 문장 비교</div>
+    ${itemsHtml}
+    <div class="bottom-bar" style="margin-top:26px;">
+      ${!isLastRound
+        ? `<button class="btn btn-amber" id="nextRoundBtn">다음 라운드 시작 →</button>`
+        : `<button class="btn btn-amber" id="finalResultBtn">전체 지문 결과 보기 →</button>`
+      }
+    </div>
+  `;
+  attachBackBtn();
+
+  const nextRoundBtn = document.getElementById('nextRoundBtn');
+  if(nextRoundBtn) nextRoundBtn.addEventListener('click', ()=>{
+    p.currentRoundIdx += 1;
+    p.currentPosInRound = 0;
+    state.currentStage='build';
+    renderUnit();
+  });
+  const finalResultBtn = document.getElementById('finalResultBtn');
+  if(finalResultBtn) finalResultBtn.addEventListener('click', ()=>{
+    p.completed = true;
+    state.currentStage='result';
+    renderUnit();
+  });
+}
+
+/* -------- Stage: 지문 전체 결과(제출) -------- */
+function renderResult(){
+  const i = state.currentUnit;
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+
+  const totalScore = p.roundScores.reduce((a,b)=>a+b,0);
+  const totalCount = u.chunks.length;
+
+  const allHtml = u.chunks.map((c,idx)=>{
+    const s = p.sentenceState[idx];
+    const myWords = s.finalSelected ? s.finalSelected.map(w=>s.words[w]).join(' ') : '(미입력)';
+    return `
+    <div class="wrong-item ${s.allCorrect?'allcorrect':''}">
+      <div class="ko"><b>${idx+1}.</b> ${s.allCorrect?'<span style="color:var(--ok);font-weight:800;">O</span>':'<span style="color:var(--bad);font-weight:800;">X</span>'} ${c.ko}</div>
+      <div class="compare">
+        <div class="mine"><span class="k">학생이 조립한 문장</span>${myWords}</div>
+        ${!s.allCorrect ? `<div class="model"><span class="k">정답 문장</span>${s.words.join(' ')}</div>` : ``}
+      </div>
+    </div>`;
+  }).join('');
+
+  const nextIdx = i+1;
+  const hasNext = nextIdx < UNITS.length;
+
+  app.innerHTML = `
+    ${unitHeaderHtml(u)}
+    <h3 style="font-family:var(--serif);color:var(--navy);margin:0 0 16px;">최종 결과 · 지문 제출</h3>
+    ${overallProgressHtml(i)}
+
+    <div class="score-panel">
+      <div class="score-box">
+        <div class="n">${totalScore} / ${totalCount}</div>
+        <div class="l">영작 점수 (전체 라운드 합산)</div>
+      </div>
+    </div>
+
+    <div class="section-label">전체 영작 결과 (학생 답 ↔ 정답, 총 ${totalCount}개)</div>
+    ${allHtml}
+
+    <div class="copy-area">
+      <button class="btn btn-primary" id="copyBtn">결과 복사하기</button>
+      <span class="copy-status" id="copyStatus">복사되었습니다 ✓</span>
+      <button class="btn btn-amber" id="kakaoBtn" style="margin-top:8px;">카카오톡으로 결과 보내기</button>
+      <span class="copy-status" id="kakaoStatus">공유 준비 완료 ✓ (공유 대상에서 카카오톡을 선택하세요)</span>
+    </div>
+
+    <div class="bottom-bar" style="margin-top:26px;">
+      ${hasNext
+        ? `<button class="btn btn-amber" id="nextUnitBtn">다음 지문(${UNITS[nextIdx].id}번)으로 →</button>`
+        : `<button class="btn btn-amber" id="finishAllBtn">전체 목록으로 돌아가기</button>`
+      }
+    </div>
+  `;
+  attachBackBtn();
+
+  document.getElementById('copyBtn').addEventListener('click', ()=>{
+    const text = buildCopyText(i);
+    copyToClipboard(text, ()=>{
+      const s = document.getElementById('copyStatus');
+      s.classList.add('shown');
+      setTimeout(()=>s.classList.remove('shown'), 2500);
+    });
+  });
+
+  document.getElementById('kakaoBtn').addEventListener('click', ()=>{
+    const text = buildCopyText(i);
+    shareResult(text, u.id, ()=>{
+      const s = document.getElementById('kakaoStatus');
+      s.classList.add('shown');
+      setTimeout(()=>s.classList.remove('shown'), 3000);
+    });
+  });
+
+  const nextUnitBtn = document.getElementById('nextUnitBtn');
+  if(nextUnitBtn) nextUnitBtn.addEventListener('click', ()=> openUnit(nextIdx));
+  const finishAllBtn = document.getElementById('finishAllBtn');
+  if(finishAllBtn) finishAllBtn.addEventListener('click', renderMap);
+}
+
+function buildCopyText(i){
+  const u = UNITS[i];
+  const p = state.unitProgress[i];
+  const totalScore = p.roundScores.reduce((a,b)=>a+b,0);
+  const name = state.userName ? state.userName : "(이름 미입력)";
+
+  let lines = [];
+  lines.push(`[${SET_TITLE}] ${u.id}번 지문 영작 결과`);
+  lines.push(`이름: ${name}`);
+  lines.push(`영작 점수: ${totalScore} / ${u.chunks.length}`);
+  lines.push('');
+
+  lines.push(`- 문장별 결과 (전체 ${u.chunks.length}개) -`);
+  u.chunks.forEach((c,idx)=>{
+    const s = p.sentenceState[idx];
+    const mark = s.allCorrect ? 'O' : 'X';
+    const myWords = s.finalSelected ? s.finalSelected.map(w=>s.words[w]).join(' ') : '(미입력)';
+    lines.push(`${idx+1}. (${mark}) ${c.ko}`);
+    lines.push(`   학생 답: ${myWords}`);
+    if(!s.allCorrect) lines.push(`   정답: ${s.words.join(' ')}`);
+  });
+
+  return lines.join('\n');
+}
+
+function shareResult(text, unitId, onFallbackCopy){
+  const shareTitle = `${SET_TITLE} ${unitId}번 영작 결과`;
+  if(navigator.share){
+    navigator.share({ title: shareTitle, text: text }).catch(()=>{
+      // 사용자가 공유를 취소한 경우 등은 무시
+    });
+  } else {
+    copyToClipboard(text, onFallbackCopy);
+  }
+}
+
+function copyToClipboard(text, onSuccess){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(onSuccess).catch(()=>fallbackCopy(text, onSuccess));
+  } else {
+    fallbackCopy(text, onSuccess);
+  }
+}
+function fallbackCopy(text, onSuccess){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position='fixed';
+  ta.style.left='-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{ document.execCommand('copy'); onSuccess(); }catch(e){ /* ignore */ }
+  document.body.removeChild(ta);
+}
+
+/* ================= INIT ================= */
+renderMap();
+</script>
+</body>
+</html>
