@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>위클리 학습 달성표</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --desk:#DDE1D6;
+    --page:#FBFAF7;
+    --ink:#1E2433;
+    --ink-soft:#6B7180;
+    --line:#E1E2D8;
+    --line-strong:#C7C9BC;
+    --navy:#223055;
+    --navy-soft:#3B4A73;
+    --teal:#3E7C6B;
+    --amber:#DB9A34;
+    --plum:#6B4E71;
+    --brick:#B8564A;
+    --neutral-cat:#8B8F82;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--desk);
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(0,0,0,0.03), transparent 45%);
+    font-family:'Noto Sans KR', sans-serif;
+    color:var(--ink);
+    padding:36px 16px 80px;
+    min-height:100vh;
+  }
+  .page{
+    max-width:840px;
+    margin:0 auto;
+    background:var(--page);
+    border-radius:6px;
+    box-shadow:0 18px 44px rgba(30,36,51,0.16), 0 2px 6px rgba(30,36,51,0.08);
+    position:relative;
+    padding:44px 40px 44px 68px;
+    overflow:hidden;
+  }
+  .spiral{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:40px;
+    background:repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 20px,
+      var(--desk) 20px, var(--desk) 21px
+    );
+  }
+  .spiral::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0; right:0;
+    background-image: repeating-radial-gradient(circle at 20px 30px, var(--desk) 0 5px, var(--page) 5px 6px, transparent 6px);
+    background-size: 40px 40px;
+    background-position: 0 12px;
+  }
+
+  header{margin-bottom:28px; padding-bottom:20px; border-bottom:2px solid var(--ink);}
+  h1{
+    font-family:'Gowun Batang', serif;
+    font-weight:700;
+    font-size:30px;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .sub{color:var(--ink-soft); font-size:13.5px; margin:0 0 20px;}
+
+  .idrow{display:flex; gap:16px; flex-wrap:wrap; align-items:flex-end;}
+  .field{display:flex; flex-direction:column; gap:5px;}
+  .field label{font-size:12px; color:var(--ink-soft); font-weight:500;}
+  .field input[type=text], .field input[type=date]{
+    border:none; border-bottom:1.5px solid var(--line-strong);
+    background:transparent; font-family:inherit; font-size:15px; color:var(--ink);
+    padding:4px 2px; outline:none; min-width:150px;
+  }
+  .field input:focus{border-bottom-color:var(--navy);}
+  #weekRangeText{font-size:13px; color:var(--ink-soft); margin-left:auto; align-self:center; white-space:nowrap;}
+
+  .tabs{display:flex; gap:6px; margin:24px 0 6px; flex-wrap:wrap;}
+  .tab{
+    border:1.5px solid var(--line-strong); background:transparent; color:var(--ink-soft);
+    font-family:inherit; font-size:13.5px; font-weight:600;
+    padding:8px 14px; border-radius:999px; cursor:pointer; transition:all .15s;
+  }
+  .tab .d{font-size:10.5px; font-weight:400; display:block; margin-top:1px;}
+  .tab.active{background:var(--navy); border-color:var(--navy); color:#fff;}
+  .tab.hasdata:not(.active)::after{content:"•"; color:var(--amber); margin-left:4px;}
+
+  section.panel{margin-top:18px;}
+
+  .timeline-wrap{margin:18px 0 22px;}
+  .timeline-labels{display:flex; justify-content:space-between; font-size:10.5px; color:var(--ink-soft); margin-bottom:4px;}
+  .timeline{
+    position:relative; height:34px; background:repeating-linear-gradient(
+      to right, var(--line) 0, var(--line) 1px, transparent 1px, transparent calc(100%/10)
+    );
+    background-color:#F3F3EE; border:1px solid var(--line-strong); border-radius:4px; overflow:hidden;
+  }
+  .seg{
+    position:absolute; top:3px; bottom:3px; border-radius:3px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:10px; color:#fff; overflow:hidden; white-space:nowrap; padding:0 4px;
+    min-width:3px;
+  }
+
+  table.entries{width:100%; border-collapse:collapse; margin-top:6px; font-size:13.5px;}
+  table.entries th{
+    text-align:left; font-weight:600; color:var(--ink-soft); font-size:11.5px;
+    border-bottom:1.5px solid var(--ink); padding:6px 6px;
+  }
+  table.entries td{padding:9px 6px; border-bottom:1px solid var(--line); vertical-align:middle;}
+  table.entries tr:hover td{background:#F5F4EE;}
+  .catchip{
+    display:inline-block; font-size:11px; font-weight:600; color:#fff;
+    padding:2px 8px; border-radius:999px; white-space:nowrap;
+  }
+  .stars{color:var(--amber); letter-spacing:1px; font-size:13px;}
+  .rowbtns button{
+    border:none; background:none; cursor:pointer; font-size:14px; padding:2px 5px;
+    color:var(--ink-soft);
+  }
+  .rowbtns button:hover{color:var(--navy);}
+  .rowbtns button.del:hover{color:var(--brick);}
+  .empty-row td{text-align:center; color:var(--ink-soft); font-style:italic; padding:18px 0;}
+
+  .daysum{display:flex; gap:22px; margin-top:10px; font-size:13px; color:var(--ink-soft);}
+  .daysum b{color:var(--ink); font-weight:700;}
+
+  .addbox{
+    margin-top:20px; padding:16px; background:#F3F3EE; border:1px dashed var(--line-strong); border-radius:8px;
+  }
+  .addbox h3{margin:0 0 12px; font-size:13.5px; font-weight:700; color:var(--navy);}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:12px 14px;}
+  .grid .field input, .grid .field select{
+    width:100%; border:1.5px solid var(--line-strong); border-radius:5px; padding:7px 8px;
+    font-family:inherit; font-size:13.5px; background:#fff; outline:none;
+  }
+  .grid .field input:focus, .grid .field select:focus{border-color:var(--navy);}
+  .chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;}
+  .chip{
+    font-size:11.5px; border:1px solid var(--line-strong); background:#fff; border-radius:999px;
+    padding:3px 10px; cursor:pointer; color:var(--ink-soft);
+  }
+  .chip:hover{border-color:var(--navy); color:var(--navy);}
+  .starpicker{display:flex; gap:3px; font-size:20px; cursor:pointer; margin-top:4px;}
+  .starpicker span{color:#D8D9CE;}
+  .starpicker span.on{color:var(--amber);}
+
+  .addbtnrow{display:flex; gap:10px; margin-top:14px; align-items:center;}
+  button.primary{
+    background:var(--navy); color:#fff; border:none; border-radius:6px;
+    padding:9px 18px; font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;
+  }
+  button.primary:hover{background:var(--navy-soft);}
+  button.ghost{
+    background:transparent; color:var(--ink-soft); border:1.5px solid var(--line-strong);
+    border-radius:6px; padding:8px 16px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  button.ghost:hover{border-color:var(--ink-soft); color:var(--ink);}
+  .cancel-edit{font-size:12px; color:var(--brick); background:none; border:none; cursor:pointer; text-decoration:underline;}
+
+  .divider{border:none; border-top:2px solid var(--ink); margin:34px 0 22px;}
+
+  .kakao-box{background:#F3F3EE; border-radius:10px; padding:20px;}
+  .kakao-box h2{font-family:'Gowun Batang',serif; font-size:19px; margin:0 0 4px;}
+  .kakao-box p.hint{font-size:12.5px; color:var(--ink-soft); margin:0 0 14px;}
+  .range-toggle{display:flex; gap:8px; margin-bottom:12px;}
+  .range-toggle label{
+    font-size:13px; border:1.5px solid var(--line-strong); border-radius:999px; padding:6px 14px;
+    cursor:pointer; display:flex; align-items:center; gap:6px; background:#fff;
+  }
+  .range-toggle input{accent-color:var(--navy);}
+  textarea#kakaoOut{
+    width:100%; min-height:220px; font-family:'Noto Sans KR', monospace; font-size:13px;
+    border:1.5px solid var(--line-strong); border-radius:6px; padding:14px; resize:vertical;
+    background:#fff; color:var(--ink); line-height:1.55; white-space:pre-wrap;
+  }
+  .copybar{display:flex; gap:10px; margin-top:10px; align-items:center;}
+  #copyStatus{font-size:12.5px; color:var(--teal); font-weight:600;}
+
+  .footer-tools{margin-top:22px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .footer-tools .note{font-size:11.5px; color:var(--ink-soft); flex-basis:100%;}
+  input[type=file]{display:none;}
+
+  @media (max-width:600px){
+    .page{padding:32px 16px 32px 42px;}
+    .spiral{width:26px;}
+    .spiral::before{background-position:-2px 12px; background-size:26px 26px;}
+    h1{font-size:24px;}
+    table.entries{font-size:12px;}
+    table.entries th:nth-child(4), table.entries td:nth-child(4){display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="spiral"></div>
+
+  <header>
+    <h1>📘 위클리 학습 달성표</h1>
+    <p class="sub">오후 4시 ~ 새벽 2시, 학원·자습·인강 등 하루 학습 기록을 남기고 주간 단위로 정리해 선생님께 카카오톡으로 전달하세요.</p>
+    <div class="idrow">
+      <div class="field"><label>이름</label><input type="text" id="studentName" placeholder="홍길동"></div>
+      <div class="field"><label>학교/학년</label><input type="text" id="studentGrade" placeholder="○○중 2학년"></div>
+      <div class="field"><label>주 시작일 (월요일)</label><input type="date" id="weekStart"></div>
+      <span id="weekRangeText"></span>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+
+  <section class="panel">
+    <div class="timeline-wrap">
+      <div class="timeline-labels">
+        <span>16:00</span><span>18:00</span><span>20:00</span><span>22:00</span><span>00:00</span><span>02:00</span>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+
+    <table class="entries">
+      <thead>
+        <tr><th style="width:110px;">시간</th><th style="width:80px;">구분</th><th>과목 / 내용</th><th style="width:110px;">장소</th><th style="width:100px;">집중도</th><th style="width:60px;"></th></tr>
+      </thead>
+      <tbody id="entryRows"></tbody>
+    </table>
+
+    <div class="daysum" id="daySummary"></div>
+
+    <div class="addbox">
+      <h3 id="addboxTitle">+ 일정 추가</h3>
+      <div class="grid">
+        <div class="field"><label>시작 시간</label><input type="time" id="fStart"></div>
+        <div class="field"><label>종료 시간</label><input type="time" id="fEnd"></div>
+        <div class="field">
+          <label>구분</label>
+          <select id="fCat">
+            <option value="학원 수업">학원 수업</option>
+            <option value="자습">자습</option>
+            <option value="인강">인강</option>
+            <option value="과외">과외</option>
+            <option value="독서실">독서실</option>
+            <option value="수면">수면</option>
+            <option value="휴식">휴식</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+        <div class="field"><label>과목</label><input type="text" id="fSubject" placeholder="수학"></div>
+        <div class="field" style="grid-column:span 2;"><label>학습 내용</label><input type="text" id="fContent" placeholder="이차함수 심화 문제풀이"></div>
+        <div class="field">
+          <label>장소</label>
+          <input type="text" id="fLocation" placeholder="○○학원">
+        </div>
+      </div>
+      <div class="chips" id="locChips"></div>
+      <div class="field" style="margin-top:12px;">
+        <label id="focusLabel">집중도</label>
+        <div class="starpicker" id="starPicker">
+          <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+        </div>
+      </div>
+      <div class="addbtnrow">
+        <button class="primary" id="addEntryBtn">일정 추가</button>
+        <button class="cancel-edit" id="cancelEditBtn" style="display:none;">수정 취소</button>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <div class="kakao-box">
+    <h2>💬 카카오톡 전달용 텍스트</h2>
+    <p class="hint">아래에서 범위를 선택하고 [텍스트 만들기]를 누른 뒤, 복사해서 선생님 카톡방에 붙여넣으세요.</p>
+    <div class="field" style="margin-bottom:14px;">
+      <label for="parentMessage">💌 부모님께 하고 싶은 말 (선택)</label>
+      <textarea id="parentMessage" placeholder="예) 이번 주는 수학 진도를 못 따라가서 힘들었지만, 영어는 목표한 만큼 다 했어요. 응원해주세요!" style="width:100%; min-height:60px; font-family:inherit; font-size:13.5px; border:1.5px solid var(--line-strong); border-radius:6px; padding:9px 10px; margin-top:5px; resize:vertical; background:#fff;"></textarea>
+    </div>
+    <div class="range-toggle">
+      <label><input type="radio" name="range" value="today" checked> 오늘 (선택한 요일)만</label>
+      <label><input type="radio" name="range" value="week"> 이번 주 전체</label>
+    </div>
+    <button class="primary" id="genBtn">텍스트 만들기</button>
+    <div style="margin-top:12px;">
+      <textarea id="kakaoOut" placeholder="여기에 카카오톡용 텍스트가 생성됩니다."></textarea>
+    </div>
+    <div class="copybar">
+      <button class="ghost" id="copyBtn">📋 복사하기</button>
+      <button class="ghost" id="resetWeekBtn" style="border-color:var(--brick); color:var(--brick);">🗑 이번 주 마감하고 초기화</button>
+      <span id="copyStatus"></span>
+    </div>
+  </div>
+
+  <div class="footer-tools">
+    <button class="ghost" id="saveBtn">⬇ 진행상황 저장 (파일로 다운로드)</button>
+    <button class="ghost" id="loadBtn">⬆ 저장 파일 불러오기</button>
+    <input type="file" id="loadInput" accept="application/json">
+    <span class="note">※ 이 페이지는 새로고침하면 입력값이 사라집니다. 하루치 입력을 마치면 "진행상황 저장"으로 파일을 받아두고, 다음 날 그 파일을 "불러오기"로 이어서 작성하세요.</span>
+  </div>
+</div>
+
+<script>
+const DAY_KEYS = ['mon','tue','wed','thu','fri','sat','sun'];
+const DAY_LABEL = ['월','화','수','목','금','토','일'];
+const DAY_LABEL_FULL = ['월요일','화요일','수요일','목요일','금요일','토요일','일요일'];
+const CAT_COLOR = {
+  '학원 수업':'#223055', '자습':'#3E7C6B', '인강':'#DB9A34',
+  '과외':'#6B4E71', '독서실':'#5B7A8C', '수면':'#2E3454', '휴식':'#7FA07E', '기타':'#8B8F82'
+};
+const CONDITION_CATS = ['수면','휴식'];
+const LOC_CHIPS = ['학원','독서실','스터디카페','집','학교','도서관'];
+
+let weekData = {}; DAY_KEYS.forEach(k => weekData[k] = []);
+let activeDay = 'mon';
+let editingIndex = null;
+let currentFocus = 3;
+
+// ---------- init UI ----------
+const tabsEl = document.getElementById('tabs');
+function renderTabs(){
+  tabsEl.innerHTML = '';
+  DAY_KEYS.forEach((k, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (k===activeDay?' active':'') + (weekData[k].length?' hasdata':'');
+    btn.innerHTML = DAY_LABEL[i] + '<span class="d">' + dateForDay(i) + '</span>';
+    btn.onclick = () => { activeDay = k; resetForm(); renderAll(); };
+    tabsEl.appendChild(btn);
+  });
+}
+
+function dateForDay(i){
+  const startVal = document.getElementById('weekStart').value;
+  if(!startVal) return '';
+  const d = new Date(startVal + 'T00:00:00');
+  d.setDate(d.getDate() + i);
+  return (d.getMonth()+1) + '/' + d.getDate();
+}
+
+function updateWeekRangeText(){
+  const startVal = document.getElementById('weekStart').value;
+  const el = document.getElementById('weekRangeText');
+  if(!startVal){ el.textContent=''; renderTabs(); return; }
+  const d0 = new Date(startVal + 'T00:00:00');
+  const d6 = new Date(d0); d6.setDate(d0.getDate()+6);
+  const fmt = d => (d.getMonth()+1)+'/'+d.getDate();
+  el.textContent = '기간: ' + fmt(d0) + ' ~ ' + fmt(d6);
+  renderTabs();
+}
+document.getElementById('weekStart').addEventListener('change', updateWeekRangeText);
+
+// location chips
+const locChipsEl = document.getElementById('locChips');
+LOC_CHIPS.forEach(l => {
+  const c = document.createElement('button');
+  c.type='button'; c.className='chip'; c.textContent=l;
+  c.onclick = () => { document.getElementById('fLocation').value = l; };
+  locChipsEl.appendChild(c);
+});
+
+// star picker
+const starEl = document.getElementById('starPicker');
+function paintStars(v){
+  [...starEl.children].forEach(s => {
+    s.classList.toggle('on', parseInt(s.dataset.v) <= v);
+  });
+}
+starEl.addEventListener('click', e => {
+  if(e.target.dataset.v){ currentFocus = parseInt(e.target.dataset.v); paintStars(currentFocus); }
+});
+paintStars(currentFocus);
+
+function updateFocusLabel(){
+  const cat = document.getElementById('fCat').value;
+  document.getElementById('focusLabel').textContent = CONDITION_CATS.includes(cat) ? '컨디션/회복도' : '집중도';
+}
+document.getElementById('fCat').addEventListener('change', updateFocusLabel);
+updateFocusLabel();
+
+// ---------- time helpers ----------
+function toMin(t){
+  if(!t) return null;
+  let [h,m] = t.split(':').map(Number);
+  if(h < 4) h += 24; // 00~03시대는 익일 새벽으로 취급
+  return h*60+m;
+}
+function durMin(startT, endT){
+  const s = toMin(startT), e = toMin(endT);
+  if(s===null||e===null) return 0;
+  return Math.max(0, e - s);
+}
+function fmtDur(min){
+  const h = Math.floor(min/60), m = min%60;
+  if(h<=0) return m+'분';
+  return h+'시간' + (m? ' '+m+'분' : '');
+}
+function starsStr(v){ return '★'.repeat(v) + '☆'.repeat(5-v); }
+
+// ---------- entry CRUD ----------
+document.getElementById('addEntryBtn').onclick = () => {
+  const s = document.getElementById('fStart').value;
+  const e = document.getElementById('fEnd').value;
+  const cat = document.getElementById('fCat').value;
+  const subject = document.getElementById('fSubject').value.trim();
+  const content = document.getElementById('fContent').value.trim();
+  const location = document.getElementById('fLocation').value.trim();
+  if(!s || !e){ alert('시작/종료 시간을 입력해주세요.'); return; }
+  if(!subject){ alert('과목을 입력해주세요.'); return; }
+  const entry = {start:s, end:e, cat, subject, content, location, focus: currentFocus};
+  if(editingIndex !== null){
+    weekData[activeDay][editingIndex] = entry;
+  } else {
+    weekData[activeDay].push(entry);
+  }
+  weekData[activeDay].sort((a,b) => toMin(a.start) - toMin(b.start));
+  resetForm();
+  renderAll();
+};
+
+document.getElementById('cancelEditBtn').onclick = resetForm;
+
+function resetForm(){
+  editingIndex = null;
+  document.getElementById('fStart').value = '';
+  document.getElementById('fEnd').value = '';
+  document.getElementById('fCat').value = '학원 수업';
+  document.getElementById('fSubject').value = '';
+  document.getElementById('fContent').value = '';
+  document.getElementById('fLocation').value = '';
+  currentFocus = 3; paintStars(3);
+  updateFocusLabel();
+  document.getElementById('addboxTitle').textContent = '+ 일정 추가';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+}
+
+function editEntry(i){
+  const entry = weekData[activeDay][i];
+  editingIndex = i;
+  document.getElementById('fStart').value = entry.start;
+  document.getElementById('fEnd').value = entry.end;
+  document.getElementById('fCat').value = entry.cat;
+  document.getElementById('fSubject').value = entry.subject;
+  document.getElementById('fContent').value = entry.content;
+  document.getElementById('fLocation').value = entry.location;
+  currentFocus = entry.focus; paintStars(currentFocus);
+  updateFocusLabel();
+  document.getElementById('addboxTitle').textContent = '✏ 일정 수정';
+  document.getElementById('cancelEditBtn').style.display = 'inline';
+  document.querySelector('.addbox').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function deleteEntry(i){
+  weekData[activeDay].splice(i,1);
+  if(editingIndex === i) resetForm();
+  renderAll();
+}
+
+// ---------- render entries table + timeline ----------
+function renderEntries(){
+  const tbody = document.getElementById('entryRows');
+  const list = weekData[activeDay];
+  tbody.innerHTML = '';
+  if(list.length === 0){
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">아직 등록된 일정이 없습니다. 아래에서 추가해보세요.</td></tr>';
+  } else {
+    list.forEach((e, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${e.start} - ${e.end}</td>
+        <td><span class="catchip" style="background:${CAT_COLOR[e.cat]||'#8B8F82'}">${e.cat}</span></td>
+        <td><b>${escapeHtml(e.subject)}</b>${e.content? ' · '+escapeHtml(e.content) : ''}</td>
+        <td>${escapeHtml(e.location||'-')}</td>
+        <td class="stars">${starsStr(e.focus)}</td>
+        <td class="rowbtns"><button onclick="editEntry(${i})" title="수정">✎</button><button class="del" onclick="deleteEntry(${i})" title="삭제">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  const totalMin = list.reduce((sum,e) => sum + durMin(e.start,e.end), 0);
+  const avgFocus = list.length? (list.reduce((s,e)=>s+e.focus,0)/list.length).toFixed(1) : '-';
+  document.getElementById('daySummary').innerHTML =
+    `<span>오늘 총 학습시간 <b>${fmtDur(totalMin)}</b></span><span>평균 집중도 <b>${avgFocus}${list.length?'/5':''}</b></span><span>일정 수 <b>${list.length}건</b></span>`;
+}
+
+function renderTimeline(){
+  const el = document.getElementById('timeline');
+  el.innerHTML = '';
+  const RANGE_START = 16*60, RANGE_END = 26*60, SPAN = RANGE_END-RANGE_START;
+  weekData[activeDay].forEach(e => {
+    let s = toMin(e.start), en = toMin(e.end);
+    s = Math.max(s, RANGE_START); en = Math.min(en, RANGE_END);
+    if(en <= s) return;
+    const leftPct = (s-RANGE_START)/SPAN*100;
+    const widthPct = (en-s)/SPAN*100;
+    const div = document.createElement('div');
+    div.className = 'seg';
+    div.style.left = leftPct+'%';
+    div.style.width = widthPct+'%';
+    div.style.background = CAT_COLOR[e.cat] || '#8B8F82';
+    div.style.opacity = 0.45 + (e.focus/5)*0.55;
+    div.title = `${e.start}-${e.end} ${e.subject}`;
+    div.textContent = widthPct > 8 ? e.subject : '';
+    el.appendChild(div);
+  });
+}
+
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderAll(){
+  renderTabs();
+  renderEntries();
+  renderTimeline();
+}
+
+// ---------- KakaoTalk text generation ----------
+document.getElementById('genBtn').onclick = () => {
+  const range = document.querySelector('input[name=range]:checked').value;
+  const name = document.getElementById('studentName').value.trim() || '(이름 미입력)';
+  const grade = document.getElementById('studentGrade').value.trim();
+  const startVal = document.getElementById('weekStart').value;
+  let out = `📘 위클리 학습 달성표 - ${name}${grade? ' ('+grade+')':''}\n`;
+
+  if(startVal){
+    const d0 = new Date(startVal+'T00:00:00');
+    const d6 = new Date(d0); d6.setDate(d0.getDate()+6);
+    const fmt = d => `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    out += `기간: ${fmt(d0)} ~ ${fmt(d6)}\n`;
+  }
+  out += '\n';
+
+  const parentMsg = document.getElementById('parentMessage').value.trim();
+  if(parentMsg){
+    out += `💌 부모님께 하고 싶은 말\n${parentMsg}\n\n`;
+  }
+
+  const daysToPrint = range === 'today' ? [DAY_KEYS.indexOf(activeDay)] : [0,1,2,3,4,5,6];
+  let weekTotalMin = 0, weekFocusSum = 0, weekFocusCount = 0;
+
+  daysToPrint.forEach(i => {
+    const k = DAY_KEYS[i];
+    const list = weekData[k];
+    const dateStr = startVal ? dateForDay(i) : '';
+    out += `[${DAY_LABEL_FULL[i]}${dateStr? ' '+dateStr:''}]\n`;
+    if(list.length === 0){
+      out += '(기록 없음)\n\n';
+      return;
+    }
+    let dayMin = 0;
+    list.forEach(e => {
+      const d = durMin(e.start,e.end);
+      dayMin += d;
+      weekFocusSum += e.focus; weekFocusCount++;
+      const focusWord = CONDITION_CATS.includes(e.cat) ? '컨디션' : '집중도';
+      out += `${e.start}-${e.end} | ${e.cat} | ${e.subject}${e.content? ' - '+e.content:''} | ${e.location||'-'} | ${focusWord} ${starsStr(e.focus)}\n`;
+    });
+    weekTotalMin += dayMin;
+    const avg = (list.reduce((s,e)=>s+e.focus,0)/list.length).toFixed(1);
+    out += `▶ 총 학습시간 ${fmtDur(dayMin)} · 평균 집중도 ${avg}/5\n\n`;
+  });
+
+  if(range === 'week'){
+    out += `📊 주간 총 학습시간: ${fmtDur(weekTotalMin)}\n`;
+    out += `📊 주간 평균 집중도: ${weekFocusCount? (weekFocusSum/weekFocusCount).toFixed(1):'-'}/5\n`;
+  }
+
+  document.getElementById('kakaoOut').value = out.trim();
+  document.getElementById('copyStatus').textContent = '';
+};
+
+document.getElementById('copyBtn').onclick = async () => {
+  const ta = document.getElementById('kakaoOut');
+  if(!ta.value.trim()){ document.getElementById('copyStatus').textContent = '먼저 텍스트를 만들어주세요.'; return; }
+  try{
+    await navigator.clipboard.writeText(ta.value);
+    document.getElementById('copyStatus').textContent = '✔ 복사되었습니다. 카카오톡에 붙여넣으세요.';
+  } catch(err){
+    ta.select(); document.execCommand('copy');
+    document.getElementById('copyStatus').textContent = '✔ 복사되었습니다. 카카오톡에 붙여넣으세요.';
+  }
+  setTimeout(()=>{ document.getElementById('copyStatus').textContent=''; }, 4000);
+};
+
+document.getElementById('resetWeekBtn').onclick = () => {
+  const ok = confirm('카카오톡으로 이번 주 텍스트를 이미 전달하셨나요?\n초기화하면 월~일 모든 기록이 삭제되고 새로운 한 주를 시작합니다.\n(필요하면 취소 후 "진행상황 저장"으로 먼저 백업하세요.)');
+  if(!ok) return;
+  DAY_KEYS.forEach(k => weekData[k] = []);
+  activeDay = 'mon';
+  resetForm();
+  document.getElementById('kakaoOut').value = '';
+  document.getElementById('parentMessage').value = '';
+  document.getElementById('copyStatus').textContent = '';
+  // 다음 주 시작일로 자동 이동 (+7일)
+  const startInput = document.getElementById('weekStart');
+  if(startInput.value){
+    const d = new Date(startInput.value + 'T00:00:00');
+    d.setDate(d.getDate() + 7);
+    startInput.value = d.toISOString().slice(0,10);
+    updateWeekRangeText();
+  }
+  renderAll();
+  alert('초기화되었습니다. 새로운 한 주를 시작하세요!');
+};
+
+// ---------- save / load progress as JSON file ----------
+document.getElementById('saveBtn').onclick = () => {
+  const payload = {
+    studentName: document.getElementById('studentName').value,
+    studentGrade: document.getElementById('studentGrade').value,
+    weekStart: document.getElementById('weekStart').value,
+    parentMessage: document.getElementById('parentMessage').value,
+    weekData
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const nameForFile = (payload.studentName || '학습달성표').trim();
+  a.href = url;
+  a.download = `${nameForFile}_주간학습달성표.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+document.getElementById('loadBtn').onclick = () => document.getElementById('loadInput').click();
+document.getElementById('loadInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    try{
+      const payload = JSON.parse(evt.target.result);
+      document.getElementById('studentName').value = payload.studentName || '';
+      document.getElementById('studentGrade').value = payload.studentGrade || '';
+      document.getElementById('weekStart').value = payload.weekStart || '';
+      document.getElementById('parentMessage').value = payload.parentMessage || '';
+      DAY_KEYS.forEach(k => weekData[k] = (payload.weekData && payload.weekData[k]) || []);
+      updateWeekRangeText();
+      resetForm();
+      renderAll();
+      alert('불러오기가 완료되었습니다.');
+    } catch(err){
+      alert('파일을 읽을 수 없습니다. 올바른 저장 파일인지 확인해주세요.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// ---------- initial default: set weekStart to this week's Monday ----------
+(function initDefaultWeek(){
+  const today = new Date();
+  const day = today.getDay(); // 0=Sun
+  const diffToMon = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(today);
+  monday.setDate(today.getDate() + diffToMon);
+  const iso = monday.toISOString().slice(0,10);
+  document.getElementById('weekStart').value = iso;
+  updateWeekRangeText();
+})();
+
+renderAll();
+</script>
+</body>
+</html>
