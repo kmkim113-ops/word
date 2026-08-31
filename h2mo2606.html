@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>씨유에탑 ✦ 영어단어장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --primary-light: #EFF6FF;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warn: #F59E0B;
+  --gray: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F9FAFB;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; -webkit-tap-highlight-color: transparent; }
+.en { font-family: 'Nunito', sans-serif; }
+body { background: #111827; display: flex; justify-content: center; min-height: 100vh; }
+.app { width: 100%; max-width: 420px; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+
+.header { background: #fff; padding: 16px 20px; border-bottom: 1px solid var(--border); text-align: center; position: sticky; top: 0; z-index: 10; }
+.header-brand { font-size: 18px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+.header-sub { font-size: 13px; color: var(--gray); margin-top: 2px; }
+
+.nav-tabs { display: flex; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 61px; z-index: 9; }
+.tab-btn { flex: 1; padding: 12px 0; text-align: center; font-size: 13px; font-weight: 700; color: var(--gray); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.tab-content { display: none; padding: 16px; flex: 1; padding-bottom: 40px; }
+.tab-content.active { display: block; }
+
+.rbar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: none; }
+.rbar::-webkit-scrollbar { display: none; }
+.rbtn { padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: 16px; border: 1px solid var(--border); background: #fff; color: var(--gray); white-space: nowrap; cursor: pointer; }
+.rbtn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.search-box { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; margin-bottom: 10px; outline: none; background: #fff; }
+.search-box:focus { border-color: var(--primary); }
+
+.filter-group { display: flex; gap: 6px; margin-bottom: 14px; }
+.fbtn { flex: 1; padding: 8px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: #fff; border-radius: 6px; color: var(--gray); cursor: pointer; }
+.fbtn.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
+.word-list { display: flex; flex-direction: column; gap: 10px; }
+.word-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 12px; transition: opacity 0.2s; }
+.word-card.known { opacity: 0.35; }
+.chk-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; flex-shrink: 0; }
+.word-card.known .chk-btn { background: var(--success); border-color: var(--success); }
+.w-info { flex: 1; min-width: 0; }
+.w-word { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 2px; word-break: break-word; }
+.w-mean { font-size: 14px; color: var(--gray); word-break: break-word; }
+.w-actions { display: flex; gap: 6px; align-items: center; }
+.ibtn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px; line-height: 1; color: var(--gray); }
+.ibtn.fav { color: var(--warn); }
+
+.fc-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 360px; }
+.fc-card { width: 100%; height: 240px; background: #fff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; cursor: pointer; text-align: center; user-select: none; }
+.fc-fav { position: absolute; top: 16px; right: 16px; font-size: 22px; background: none; border: none; cursor: pointer; color: #D1D5DB; }
+.fc-fav.active { color: var(--warn); }
+.fc-word { font-size: 24px; font-weight: 800; color: #111827; margin-bottom: 12px; word-break: break-word; }
+.fc-mean { font-size: 18px; font-weight: 600; color: var(--primary); word-break: break-word; display: none; }
+.fc-card.flipped .fc-mean { display: block; }
+.fc-hint { position: absolute; bottom: 16px; font-size: 12px; color: #9CA3AF; }
+.fc-nav { display: flex; gap: 10px; width: 100%; margin-top: 20px; }
+.fc-nav-btn { flex: 1; padding: 14px 0; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
+.fc-nav-btn.sec { background: #6B7280; }
+
+.q-box { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-top: 10px; }
+.q-head { font-size: 13px; color: var(--gray); margin-bottom: 8px; font-weight: 600; }
+.q-word { font-size: 22px; font-weight: 800; color: #111827; margin-bottom: 20px; text-align: center; }
+.q-opts { display: flex; flex-direction: column; gap: 10px; }
+.q-opt { width: 100%; padding: 14px; text-align: left; background: #F3F4F6; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; color: #374151; word-break: break-word; }
+.q-opt.correct { background: #D1FAE5; border-color: var(--success); color: #065F46; font-weight: 700; }
+.q-opt.wrong { background: #FEE2E2; border-color: var(--danger); color: #991B1B; }
+
+.t-setup { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.t-label { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 8px; display: block; }
+.t-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; margin-bottom: 20px; outline: none; }
+.t-input:focus { border-color: var(--primary); }
+.btn-primary { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; }
+
+.t-prog { display: flex; justify-content: space-between; font-size: 13px; color: var(--gray); font-weight: 600; margin-bottom: 6px; }
+.p-bar-bg { width: 100%; height: 8px; background: #E5E7EB; border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
+.p-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
+
+.res-box { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+.res-emoji { font-size: 48px; margin-bottom: 8px; }
+.res-score { font-size: 24px; font-weight: 800; color: #111827; margin-bottom: 4px; }
+.res-pct { font-size: 16px; color: var(--gray); margin-bottom: 20px; font-weight: 600; }
+.err-list { text-align: left; background: #F9FAFB; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 20px; max-height: 200px; overflow-y: auto; font-size: 13px; }
+.err-item { padding: 6px 0; border-bottom: 1px solid #E5E7EB; }
+.err-item:last-child { border-bottom: none; }
+.err-w { font-weight: 700; color: var(--danger); }
+.btn-copy { width: 100%; padding: 14px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">고2 26년 6월 모고 · 총 594단어</div>
+  </div>
+
+  <div class="nav-tabs">
+    <button id="tb-list" class="tab-btn active" onclick="switchTab('list')">단어목록</button>
+    <button id="tb-flash" class="tab-btn" onclick="switchTab('flash')">플래시카드</button>
+    <button id="tb-quiz" class="tab-btn" onclick="switchTab('quiz')">퀴즈모드</button>
+    <button id="tb-test" class="tab-btn" onclick="switchTab('test')">📝 테스트</button>
+  </div>
+
+  <!-- TAB 1: LIST -->
+  <div id="tab-list" class="tab-content active">
+    <div id="lrbar" class="rbar"></div>
+    <input type="text" id="lsearch" class="search-box" placeholder="단어 또는 뜻 검색..." oninput="renderList()">
+    <div class="filter-group">
+      <button id="fb-all" class="fbtn active" onclick="setFilter('all')">전체</button>
+      <button id="fb-unk" class="fbtn" onclick="setFilter('unk')">모름</button>
+      <button id="fb-fav" class="fbtn" onclick="setFilter('fav')">⭐ 즐겨찾기</button>
+    </div>
+    <div id="wlist" class="word-list"></div>
+  </div>
+
+  <!-- TAB 2: FLASHCARD -->
+  <div id="tab-flash" class="tab-content">
+    <div id="fcrbar" class="rbar"></div>
+    <div class="fc-container">
+      <div id="fccard" class="fc-card">
+        <button id="fcfav" class="fc-fav" onclick="toggleFcFav(event)">★</button>
+        <div id="fcword" class="fc-word en">word</div>
+        <div id="fcmean" class="fc-mean">meaning</div>
+        <div id="fchint" class="fc-hint">터치하여 뜻 확인</div>
+      </div>
+      <div class="fc-nav">
+        <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+        <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+        <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: QUIZ -->
+  <div id="tab-quiz" class="tab-content">
+    <div id="qbox"></div>
+  </div>
+
+  <!-- TAB 4: TEST -->
+  <div id="tab-test" class="tab-content">
+    <div id="tbox"></div>
+  </div>
+</div>
+
+<script>
+var rawWords = [
+  { word: "in common", meaning: "공통적으로" },
+  { word: "fictional", meaning: "소설의, 가상의" },
+  { word: "a range of", meaning: "다양한" },
+  { word: "be composed of", meaning: "~로 구성되다" },
+  { word: "fundamental", meaning: "기본적인, 근본적인" },
+  { word: "particle", meaning: "입자" },
+  { word: "break down", meaning: "~을 분해하다" },
+  { word: "substance", meaning: "물질" },
+  { word: "chemically", meaning: "화학적으로" },
+  { word: "simpler", meaning: "더 단순한" },
+  { word: "pure", meaning: "순수한" },
+  { word: "organism", meaning: "유기체, 생물" },
+  { word: "vast", meaning: "광대한, 엄청난" },
+  { word: "variety", meaning: "다양성" },
+  { word: "feature", meaning: "특징, 특색" },
+  { word: "identical", meaning: "동일한" },
+  { word: "individual", meaning: "개별의, 개인의" },
+  { word: "arrangement", meaning: "배열, 배치" },
+  { word: "give rise to", meaning: "~을 일으키다, 생기게 하다" },
+  { word: "diverse", meaning: "다양한" },
+  { word: "form", meaning: "형태, 형상" },
+  { word: "matter", meaning: "물질" },
+  { word: "essential", meaning: "필수적인" },
+  { word: "structure", meaning: "구조" },
+  { word: "function", meaning: "기능" },
+  { word: "living", meaning: "살아있는" },
+  { word: "non-living", meaning: "비생물의, 무생물의" },
+  { word: "combine", meaning: "결합하다" },
+  { word: "countless", meaning: "무수한" },
+  { word: "possibility", meaning: "가능성" },
+  { word: "creation", meaning: "창조, 창작물" },
+  { word: "unique", meaning: "독특한, 유일한" },
+  { word: "property", meaning: "속성, 특성" },
+  { word: "behavior", meaning: "행동, 특성" },
+  { word: "underlying", meaning: "근본적인, 기초가 되는" },
+  { word: "principle", meaning: "원리, 원칙" },
+  { word: "governing", meaning: "지배하는, 관할하는" },
+  { word: "universe", meaning: "우주" },
+  { word: "microscopic", meaning: "미세한, 현미경으로 보는" },
+  { word: "scale", meaning: "규모, 스케일" },
+  { word: "interact", meaning: "상호작용하다" },
+  { word: "formulate", meaning: "형성하다, 만들어내다" },
+  { word: "bond", meaning: "결합" },
+  { word: "molecule", meaning: "분자" },
+  { word: "foundation", meaning: "기초, 토대" },
+  { word: "complexity", meaning: "복잡성" },
+  { word: "observe", meaning: "관찰하다" },
+  { word: "nature", meaning: "자연, 본성" },
+  { word: "everyday", meaning: "일상의" },
+  { word: "life", meaning: "생활, 생명" },
+  { word: "in science", meaning: "과학에서" },
+  { word: "core", meaning: "핵심" },
+  { word: "concept", meaning: "개념" },
+  { word: "understanding", meaning: "이해" },
+  { word: "physical", meaning: "물리적인" },
+  { word: "world", meaning: "세계" },
+  { word: "element", meaning: "원소" },
+  { word: "building block", meaning: "구성 요소" },
+  { word: "matter", meaning: "물질" },
+  { word: "chemical", meaning: "화학의" },
+  { word: "reaction", meaning: "반응" },
+  { word: "transform", meaning: "변형시키다" },
+  { word: "substance", meaning: "물질" },
+  { word: "property", meaning: "특성" },
+  { word: "state", meaning: "상태" },
+  { word: "solid", meaning: "고체" },
+  { word: "liquid", meaning: "액체" },
+  { word: "gas", meaning: "기체" },
+  { word: "phase", meaning: "단계, 상" },
+  { word: "change", meaning: "변화" },
+  { word: "temperature", meaning: "온도" },
+  { word: "pressure", meaning: "압력" },
+  { word: "effect", meaning: "영향, 효과" },
+  { word: "influence", meaning: "영향을 미치다" },
+  { word: "behavior", meaning: "행동" },
+  { word: "particle", meaning: "입자" },
+  { word: "movement", meaning: "이동, 운동" },
+  { word: "energy", meaning: "에너지" },
+  { word: "transfer", meaning: "전달" },
+  { word: "heat", meaning: "열" },
+  { word: "light", meaning: "빛" },
+  { word: "radiation", meaning: "방사, 복사" },
+  { word: "absorption", meaning: "흡수" },
+  { word: "emission", meaning: "방출" },
+  { word: "spectrum", meaning: "스펙트럼" },
+  { word: "wavelength", meaning: "파장" },
+  { word: "frequency", meaning: "주파수, 진동수" },
+  { word: "amplitude", meaning: "진폭" },
+  { word: "wave", meaning: "파동" },
+  { word: "motion", meaning: "운동" },
+  { word: "force", meaning: "힘" },
+  { word: "gravity", meaning: "중력" },
+  { word: "friction", meaning: "마찰" },
+  { word: "velocity", meaning: "속도" },
+  { word: "acceleration", meaning: "가속도" },
+  { word: "mass", meaning: "질량" },
+  { word: "weight", meaning: "무게" },
+  { word: "density", meaning: "밀도" },
+  { word: "volume", meaning: "부피" },
+  { word: "area", meaning: "면적" },
+  { word: "distance", meaning: "거리" },
+  { word: "displacement", meaning: "변위" },
+  { word: "time", meaning: "시간" },
+  { word: "interval", meaning: "간격" },
+  { word: "rate", meaning: "율, 속도" },
+  { word: "constant", meaning: "상수, 일정한" },
+  { word: "variable", meaning: "변수, 변하는" },
+  { word: "equation", meaning: "방정식" },
+  { word: "formula", meaning: "공식" },
+  { word: "calculate", meaning: "계산하다" },
+  { word: "measure", meaning: "측정하다" },
+  { word: "unit", meaning: "단위" },
+  { word: "dimension", meaning: "차원" },
+  { word: "scale", meaning: "규모" },
+  { word: "ratio", meaning: "비율" },
+  { word: "proportion", meaning: "비례" },
+  { word: "relationship", meaning: "관계" },
+  { word: "dependence", meaning: "의존성" },
+  { word: "independence", meaning: "독립성" },
+  { word: "factor", meaning: "요인" },
+  { word: "cause", meaning: "원인" },
+  { word: "effect", meaning: "결과" },
+  { word: "result", meaning: "결과" },
+  { word: "consequence", meaning: "결과" },
+  { word: "impact", meaning: "영향" },
+  { word: "outcome", meaning: "결과" },
+  { word: "finding", meaning: "결과, 발견" },
+  { word: "evidence", meaning: "증거" },
+  { word: "proof", meaning: "증명" },
+  { word: "data", meaning: "데이터" },
+  { word: "analysis", meaning: "분석" },
+  { word: "graph", meaning: "그래프" },
+  { word: "chart", meaning: "차트" },
+  { word: "table", meaning: "표" },
+  { word: "trend", meaning: "추세" },
+  { word: "pattern", meaning: "패턴" },
+  { word: "anomaly", meaning: "변칙, 이상" },
+  { word: "exception", meaning: "예외" },
+  { word: "rule", meaning: "규칙" },
+  { word: "law", meaning: "법칙" },
+  { word: "theory", meaning: "이론" },
+  { word: "hypothesis", meaning: "가설" },
+  { word: "model", meaning: "모델" },
+  { word: "simulation", meaning: "시뮬레이션" },
+  { word: "experiment", meaning: "실험" },
+  { word: "trial", meaning: "시도, 시험" },
+  { word: "control", meaning: "통제" },
+  { word: "group", meaning: "집단" },
+  { word: "sample", meaning: "표본" },
+  { word: "population", meaning: "모집단, 인구" },
+  { word: "random", meaning: "무작위의" },
+  { word: "selection", meaning: "선택" },
+  { word: "bias", meaning: "편향" },
+  { word: "accuracy", meaning: "정확도" },
+  { word: "precision", meaning: "정밀도" },
+  { word: "error", meaning: "오차" },
+  { word: "uncertainty", meaning: "불확실성" },
+  { word: "margin", meaning: "마진, 여유" },
+  { word: "confidence", meaning: "신뢰도" },
+  { word: "level", meaning: "수준" },
+  { word: "significance", meaning: "유의성, 중요성" },
+  { word: "statistical", meaning: "통계적인" },
+  { word: "method", meaning: "방법" },
+  { word: "technique", meaning: "기법" },
+  { word: "approach", meaning: "접근법" },
+  { word: "procedure", meaning: "절차" },
+  { word: "protocol", meaning: "프로토콜, 규약" },
+  { word: "step", meaning: "단계" },
+  { word: "stage", meaning: "단계" },
+  { word: "phase", meaning: "국면, 국상" },
+  { word: "process", meaning: "과정" },
+  { word: "operation", meaning: "작동, 작업" },
+  { word: "system", meaning: "시스템" },
+  { word: "structure", meaning: "구조" },
+  { word: "network", meaning: "네트워크" },
+  { word: "component", meaning: "구성 요소" },
+  { word: "part", meaning: "부분" },
+  { word: "whole", meaning: "전체" },
+  { word: "total", meaning: "합계" },
+  { word: "sum", meaning: "총합" },
+  { word: "average", meaning: "평균" },
+  { word: "mean", meaning: "평균" },
+  { word: "median", meaning: "중앙값" },
+  { word: "mode", meaning: "최빈값" },
+  { word: "range", meaning: "범위" },
+  { word: "deviation", meaning: "편차" },
+  { word: "variance", meaning: "분산" },
+  { word: "standard", meaning: "표준" },
+  { word: "distribution", meaning: "분포" },
+  { word: "probability", meaning: "확률" },
+  { word: "chance", meaning: "기회, 확률" },
+  { word: "risk", meaning: "위험" },
+  { word: "hazard", meaning: "위험 요소" },
+  { word: "safety", meaning: "안전" },
+  { word: "precaution", meaning: "예방 조치" },
+  { word: "protection", meaning: "보호" },
+  { word: "device", meaning: "장치" },
+  { word: "instrument", meaning: "악기, 도구" },
+  { word: "tool", meaning: "도구" },
+  { word: "equipment", meaning: "장비" },
+  { word: "apparatus", meaning: "기구" },
+  { word: "machine", meaning: "기계" },
+  { word: "engine", meaning: "엔진" },
+  { word: "motor", meaning: "모터" },
+  { word: "circuit", meaning: "회로" },
+  { word: "current", meaning: "전류, 현재의" },
+  { word: "voltage", meaning: "전압" },
+  { word: "resistance", meaning: "저항" },
+  { word: "power", meaning: "전력, 힘" },
+  { word: "energy", meaning: "에너지" },
+  { word: "source", meaning: "원천" },
+  { word: "resource", meaning: "자원" },
+  { word: "fuel", meaning: "연료" },
+  { word: "consumption", meaning: "소비" },
+  { word: "efficiency", meaning: "효율성" },
+  { word: "waste", meaning: "낭비, 쓰레기" },
+  { word: "emission", meaning: "배출" },
+  { word: "pollution", meaning: "오염" },
+  { word: "environment", meaning: "환경" },
+  { word: "ecosystem", meaning: "생태계" },
+  { word: "habitat", meaning: "서식지" },
+  { word: "species", meaning: "종" },
+  { word: "biodiversity", meaning: "생물다양성" },
+  { word: "conservation", meaning: "보존" },
+  { word: "preservation", meaning: "보호, 보존" },
+  { word: "sustainability", meaning: "지속가능성" },
+  { word: "impact", meaning: "영향" },
+  { word: "climate", meaning: "기후" },
+  { word: "weather", meaning: "날씨" },
+  { word: "atmosphere", meaning: "대기, 분위기" },
+  { word: "carbon", meaning: "탄소" },
+  { word: "footprint", meaning: "발자국" },
+  { word: "reduction", meaning: "감소" },
+  { word: "increase", meaning: "증가" },
+  { word: "growth", meaning: "성장" },
+  { word: "decline", meaning: "감소, 하락" },
+  { word: "change", meaning: "변화" },
+  { word: "shift", meaning: "전환, 이동" },
+  { word: "adaptation", meaning: "적응" },
+  { word: "evolution", meaning: "진화" },
+  { word: "extinction", meaning: "멸종" },
+  { word: "threat", meaning: "위협" },
+  { word: "survival", meaning: "생존" },
+  { word: "reproduction", meaning: "번식, 재생산" },
+  { word: "gene", meaning: "유전자" },
+  { word: "dna", meaning: "DNA" },
+  { word: "chromosome", meaning: "염색체" },
+  { word: "trait", meaning: "특성" },
+  { word: "inheritance", meaning: "유전, 상속" },
+  { word: "mutation", meaning: "돌연변이" },
+  { word: "selection", meaning: "선택" },
+  { word: "organ", meaning: "기관, 장기" },
+  { word: "tissue", meaning: "조직" },
+  { word: "cell", meaning: "세포" },
+  { word: "membrane", meaning: "막" },
+  { word: "nucleus", meaning: "핵" },
+  { word: "protein", meaning: "단백질" },
+  { word: "enzyme", meaning: "효소" },
+  { word: "metabolism", meaning: "신진대사" },
+  { word: "respiration", meaning: "호흡" },
+  { word: "photosynthesis", meaning: "광합성" },
+  { word: "nutrient", meaning: "영양소" },
+  { word: "digestion", meaning: "소화" },
+  { word: "circulation", meaning: "순환" },
+  { word: "blood", meaning: "혈액" },
+  { word: "vessel", meaning: "혈관, 선박" },
+  { word: "heart", meaning: "심장" },
+  { word: "brain", meaning: "뇌" },
+  { word: "nerve", meaning: "신경" },
+  { word: "system", meaning: "계통, 시스템" },
+  { word: "signal", meaning: "신호" },
+  { word: "impulse", meaning: "충동, 자극" },
+  { word: "response", meaning: "반응" },
+  { word: "stimulus", meaning: "자극" },
+  { word: "sensory", meaning: "감각의" },
+  { word: "motor", meaning: "운동의" },
+  { word: "reflex", meaning: "반사" },
+  { word: "perception", meaning: "지각, 인지" },
+  { word: "sensation", meaning: "감각" },
+  { word: "vision", meaning: "시각, 비전" },
+  { word: "hearing", meaning: "청각" },
+  { word: "touch", meaning: "촉각, 접촉" },
+  { word: "taste", meaning: "미각, 맛" },
+  { word: "smell", meaning: "후각, 냄새" },
+  { word: "cognition", meaning: "인지" },
+  { word: "memory", meaning: "기억" },
+  { word: "learning", meaning: "학습" },
+  { word: "thought", meaning: "생각" },
+  { word: "emotion", meaning: "감정" },
+  { word: "feeling", meaning: "느낌" },
+  { word: "attitude", meaning: "태도" },
+  { word: "behavior", meaning: "행동" },
+  { word: "action", meaning: "행동, 조치" },
+  { word: "reaction", meaning: "반응" },
+  { word: "interaction", meaning: "상호작용" },
+  { word: "communication", meaning: "의사소통" },
+  { word: "language", meaning: "언어" },
+  { word: "speech", meaning: "말하기, 연설" },
+  { word: "expression", meaning: "표현" },
+  { word: "meaning", meaning: "의미" },
+  { word: "symbol", meaning: "상징" },
+  { word: "sign", meaning: "신호, 표지판" },
+  { word: "gesture", meaning: "몸짓" },
+  { word: "culture", meaning: "문화" },
+  { word: "society", meaning: "사회" },
+  { word: "community", meaning: "공동체" },
+  { word: "group", meaning: "집단" },
+  { word: "individual", meaning: "개인" },
+  { word: "role", meaning: "역할" },
+  { word: "norm", meaning: "규범" },
+  { word: "value", meaning: "가치" },
+  { word: "belief", meaning: "믿음" },
+  { word: "tradition", meaning: "전통" },
+  { word: "custom", meaning: "관습" },
+  { word: "institution", meaning: "제도, 기관" },
+  { word: "organization", meaning: "조직" },
+  { word: "structure", meaning: "구조" },
+  { word: "authority", meaning: "권위, 당국" },
+  { word: "power", meaning: "권력, 힘" },
+  { word: "influence", meaning: "영향력" },
+  { word: "status", meaning: "지위" },
+  { word: "class", meaning: "계층, 수업" },
+  { word: "equality", meaning: "평등" },
+  { word: "inequality", meaning: "불평등" },
+  { word: "justice", meaning: "정의" },
+  { word: "fairness", meaning: "공정성" },
+  { word: "law", meaning: "법" },
+  { word: "rule", meaning: "규칙" },
+  { word: "regulation", meaning: "규제" },
+  { word: "policy", meaning: "정책" },
+  { word: "government", meaning: "정부" },
+  { word: "state", meaning: "국가, 상태" },
+  { word: "nation", meaning: "국가, 민족" },
+  { word: "country", meaning: "나라" },
+  { word: "citizenship", meaning: "시민권" },
+  { word: "rights", meaning: "권리" },
+  { word: "duty", meaning: "의무" },
+  { word: "responsibility", meaning: "책임" },
+  { word: "conflict", meaning: "갈등, 충돌" },
+  { word: "cooperation", meaning: "협력" },
+  { word: "collaboration", meaning: "협동" },
+  { word: "competition", meaning: "경쟁" },
+  { word: "economy", meaning: "경제" },
+  { word: "market", meaning: "시작" },
+  { word: "trade", meaning: "무역, 거래" },
+  { word: "commerce", meaning: "상업" },
+  { word: "industry", meaning: "산업" },
+  { word: "business", meaning: "사업, 비즈니스" },
+  { word: "company", meaning: "회사" },
+  { word: "firm", meaning: "회사" },
+  { word: "corporation", meaning: "기업" },
+  { word: "enterprise", meaning: "기업" },
+  { word: "consumer", meaning: "소비자" },
+  { word: "producer", meaning: "생산자" },
+  { word: "supplier", meaning: "공급자" },
+  { word: "demand", meaning: "수요" },
+  { word: "supply", meaning: "공급" },
+  { word: "price", meaning: "가격" },
+  { word: "cost", meaning: "비용" },
+  { word: "value", meaning: "가치" },
+  { word: "profit", meaning: "이익" },
+  { word: "loss", meaning: "손실" },
+  { word: "revenue", meaning: "수익" },
+  { word: "income", meaning: "소득" },
+  { word: "wealth", meaning: "부, 재산" },
+  { word: "capital", meaning: "자본, 수도" },
+  { word: "investment", meaning: "투자" },
+  { word: "finance", meaning: "금융, 재정" },
+  { word: "banking", meaning: "은행 업무" },
+  { word: "currency", meaning: "통화" },
+  { word: "money", meaning: "돈" },
+  { word: "credit", meaning: "신용, 신용카드" },
+  { word: "debt", meaning: "채무, 빚" },
+  { word: "loan", meaning: "대출" },
+  { word: "interest", meaning: "이자, 관심" },
+  { word: "tax", meaning: "세금" },
+  { word: "budget", meaning: "예산" },
+  { word: "expenditure", meaning: "지출" },
+  { word: "saving", meaning: "저축" },
+  { word: "employment", meaning: "고용" },
+  { word: "unemployment", meaning: "실업" },
+  { word: "job", meaning: "직업" },
+  { word: "career", meaning: "경력, 커리어" },
+  { word: "work", meaning: "일, 작업" },
+  { word: "labor", meaning: "노동" },
+  { word: "worker", meaning: "노동자" },
+  { word: "employer", meaning: "고용주" },
+  { word: "employee", meaning: "직원" },
+  { word: "wage", meaning: "임금" },
+  { word: "salary", meaning: "급여" },
+  { word: "productivity", meaning: "생산성" },
+  { word: "efficiency", meaning: "효율성" },
+  { word: "technology", meaning: "기술" },
+  { word: "innovation", meaning: "혁신" },
+  { word: "invention", meaning: "발명" },
+  { word: "discovery", meaning: "발견" },
+  { word: "research", meaning: "연구" },
+  { word: "development", meaning: "개발, 발전" },
+  { word: "science", meaning: "과학" },
+  { word: "engineering", meaning: "공학" },
+  { word: "software", meaning: "소프트웨어" },
+  { word: "hardware", meaning: "하드웨어" },
+  { word: "internet", meaning: "인터넷" },
+  { word: "data", meaning: "데이터" },
+  { word: "information", meaning: "정보" },
+  { word: "digital", meaning: "디지털" },
+  { word: "virtual", meaning: "가상의" },
+  { word: "artificial", meaning: "인공의" },
+  { word: "intelligence", meaning: "지능" },
+  { word: "automation", meaning: "자동화" },
+  { word: "robotics", meaning: "로봇 공학" },
+  { word: "media", meaning: "미디어" },
+  { word: "network", meaning: "네트워크" },
+  { word: "platform", meaning: "플랫폼" },
+  { word: "content", meaning: "콘텐츠, 내용" },
+  { word: "access", meaning: "접근" },
+  { word: "security", meaning: "보안" },
+  { word: "privacy", meaning: "개인정보 보호" },
+  { word: "risk", meaning: "위험" },
+  { word: "protection", meaning: "보호" },
+  { word: "challenge", meaning: "도전, 과제" },
+  { word: "solution", meaning: "해결책" },
+  { word: "opportunity", meaning: "기회" },
+  { word: "future", meaning: "미래" },
+  { word: "trend", meaning: "동향, 추세" },
+  { word: "impact", meaning: "영향" },
+  { word: "transformation", meaning: "변화, 변형" },
+  { word: "globalization", meaning: "세계화" },
+  { word: "international", meaning: "국제적인" },
+  { word: "foreign", meaning: "외국의" },
+  { word: "domestic", meaning: "국내의, 가정의" },
+  { word: "local", meaning: "지역의" },
+  { word: "regional", meaning: "지역적인" },
+  { word: "urban", meaning: "도시의" },
+  { word: "rural", meaning: "시골의" },
+  { word: "population", meaning: "인구" },
+  { word: "migration", meaning: "이주" },
+  { word: "growth", meaning: "성장" },
+  { word: "decline", meaning: "감소" },
+  { word: "aging", meaning: "고령화" },
+  { word: "health", meaning: "건강" },
+  { word: "medicine", meaning: "의학, 약" },
+  { word: "disease", meaning: "질병" },
+  { word: "illness", meaning: "병" },
+  { word: "treatment", meaning: "치료" },
+  { word: "prevention", meaning: "예방" },
+  { word: "care", meaning: "돌봄, 케어" },
+  { word: "hospital", meaning: "병원" },
+  { word: "patient", meaning: "환자" },
+  { word: "doctor", meaning: "의사" },
+  { word: "nurse", meaning: "간호사" },
+  { word: "medical", meaning: "의료의" },
+  { word: "clinical", meaning: "임상의" },
+  { word: "symptom", meaning: "증상" },
+  { word: "diagnosis", meaning: "진단" },
+  { word: "therapy", meaning: "치료법" },
+  { word: "drug", meaning: "약물" },
+  { word: "vaccine", meaning: "백신" },
+  { word: "infection", meaning: "감염" },
+  { word: "virus", meaning: "바이러스" },
+  { word: "bacteria", meaning: "세균, 박테리아" },
+  { word: "immune", meaning: "면역의" },
+  { word: "system", meaning: "체계" },
+  { word: "well-being", meaning: "웰빙, 안녕" },
+  { word: "quality", meaning: "질, 품질" },
+  { word: "life", meaning: "삶" },
+  { word: "education", meaning: "교육" },
+  { word: "school", meaning: "학교" },
+  { word: "student", meaning: "학생" },
+  { word: "teacher", meaning: "교사" },
+  { word: "learning", meaning: "학습" },
+  { word: "teaching", meaning: "가르침" },
+  { word: "curriculum", meaning: "교육과정" },
+  { word: "knowledge", meaning: "지식" },
+  { word: "skill", meaning: "기술, 능력" },
+  { word: "ability", meaning: "능력" },
+  { word: "literacy", meaning: "문해력" },
+  { word: "achievement", meaning: "성취" },
+  { word: "performance", meaning: "성과, 수행" },
+  { word: "assessment", meaning: "평가" },
+  { word: "evaluation", meaning: "평가" },
+  { word: "grade", meaning: "성적, 학년" },
+  { word: "degree", meaning: "학위, 도" },
+  { word: "university", meaning: "대학교" },
+  { word: "college", meaning: "단과대학, 대학" },
+  { word: "academic", meaning: "학술적인" },
+  { word: "scholarship", meaning: "장학금, 학문" },
+  { word: "art", meaning: "예술" },
+  { word: "culture", meaning: "문화" },
+  { word: "music", meaning: "음악" },
+  { word: "literature", meaning: "문학" },
+  { word: "painting", meaning: "회화, 그림" },
+  { word: "sculpture", meaning: "조각" },
+  { word: "architecture", meaning: "건축" },
+  { word: "design", meaning: "디자인" },
+  { word: "creativity", meaning: "창의성" },
+  { word: "imagination", meaning: "상상력" },
+  { word: "expression", meaning: "표현" },
+  { word: "aesthetics", meaning: "미학" },
+  { word: "style", meaning: "양식, 스타일" },
+  { word: "genre", meaning: "장르" },
+  { word: "narrative", meaning: "서사, 이야기" },
+  { word: "story", meaning: "이야기" },
+  { word: "character", meaning: "인물, 성격" },
+  { word: "plot", meaning: "줄거리" },
+  { word: "theme", meaning: "주제" },
+  { word: "symbolism", meaning: "상징주의" },
+  { word: "metaphor", meaning: "은유" },
+  { word: "perspective", meaning: "시각, 관점" },
+  { word: "interpretation", meaning: "해석" },
+  { word: "criticism", meaning: "비평, 비판" },
+  { word: "history", meaning: "역사" },
+  { word: "past", meaning: "과거" },
+  { word: "event", meaning: "사건" },
+  { word: "period", meaning: "시기, 기간" },
+  { word: "era", meaning: "시대" },
+  { word: "century", meaning: "세기" },
+  { word: "decade", meaning: "10년" },
+  { word: "revolution", meaning: "혁명" },
+  { word: "change", meaning: "변화" },
+  { word: "continuity", meaning: "연속성" },
+  { word: "heritage", meaning: "유산" },
+  { word: "memory", meaning: "기억" },
+  { word: "document", meaning: "문서" },
+  { word: "record", meaning: "기록" },
+  { word: "source", meaning: "출처, 사료" },
+  { word: "evidence", meaning: "증거" },
+  { word: "analysis", meaning: "분석" },
+  { word: "narrative", meaning: "이야기, 기술" },
+  { word: "cause", meaning: "원인" },
+  { word: "effect", meaning: "결과" },
+  { word: "consequence", meaning: "결과" },
+  { word: "significance", meaning: "의의, 중요성" },
+  { word: "philosophy", meaning: "철학" },
+  { word: "ethics", meaning: "윤리학, 윤리" },
+  { word: "morality", meaning: "도덕성" },
+  { word: "value", meaning: "가치" },
+  { word: "truth", meaning: "진리, 진실" },
+  { word: "knowledge", meaning: "지식" },
+  { word: "reason", meaning: "이성, 이유" },
+  { word: "logic", meaning: "논리" },
+  { word: "argument", meaning: "주장, 논쟁" },
+  { word: "premise", meaning: "전제" },
+  { word: "conclusion", meaning: "결론" },
+  { word: "existence", meaning: "존재" },
+  { word: "reality", meaning: "실제, 현실" },
+  { word: "mind", meaning: "마음, 정신" },
+  { word: "body", meaning: "신체" },
+  { word: "consciousness", meaning: "의식" },
+  { word: "free will", meaning: "자유 의지" },
+  { word: "determinism", meaning: "결정론" },
+  { word: "duty", meaning: "의무" },
+  { word: "right", meaning: "권리" },
+  { word: "good", meaning: "선, 좋은" },
+  { word: "bad", meaning: "악, 나쁜" },
+  { word: "virtue", meaning: "덕, 미덕" },
+  { word: "vice", meaning: "악덕" },
+  { word: "justice", meaning: "정의" },
+  { word: "fairness", meaning: "공정함" },
+  { word: "responsibility", meaning: "책임" },
+  { word: "choice", meaning: "선택" },
+  { word: "decision", meaning: "결정" },
+  { word: "action", meaning: "행위" },
+  { word: "intention", meaning: "의도" },
+  { word: "motive", meaning: "동기" },
+  { word: "consequence", meaning: "결과" },
+  { word: "dilemma", meaning: "딜레마" },
+  { word: "principle", meaning: "원칙" },
+  { word: "rule", meaning: "규칙" },
+  { word: "standard", meaning: "기준" },
+  { word: "judgment", meaning: "판단" },
+  { word: "reasoning", meaning: "추론" },
+  { word: "belief", meaning: "신념" },
+  { word: "faith", meaning: "믿음, 신앙" },
+  { word: "doubt", meaning: "의심" },
+  { word: "skepticism", meaning: "회의론" },
+  { word: "certainty", meaning: "확신" },
+  { word: "illusion", meaning: "환상, 착각" },
+  { word: "perception", meaning: "지각" },
+  { word: "experience", meaning: "경험" },
+  { word: "intuition", meaning: "직관" },
+  { word: "insight", meaning: "통찰력" },
+  { word: "wisdom", meaning: "지혜" },
+  { word: "understanding", meaning: "이해" },
+  { word: "explanation", meaning: "설명" },
+  { word: "meaning", meaning: "의미" },
+  { word: "purpose", meaning: "목적" },
+  { word: "goal", meaning: "목표" },
+  { word: "aim", meaning: "목표" },
+  { word: "objective", meaning: "목적, 객관적인" },
+  { word: "subjective", meaning: "주관적인" },
+  { word: "bias", meaning: "편견" },
+  { word: "perspective", meaning: "관점" },
+  { word: "viewpoint", meaning: "견해" },
+  { word: "standpoint", meaning: "입장" },
+  { word: "attitude", meaning: "태도" },
+  { word: "approach", meaning: "접근방식" },
+  { word: "method", meaning: "방법" },
+  { word: "system", meaning: "체계" },
+  { word: "structure", meaning: "구조" },
+  { word: "pattern", meaning: "패턴" },
+  { word: "order", meaning: "질서, 순서" },
+  { word: "chaos", meaning: "혼란" },
+  { word: "harmony", meaning: "조화" },
+  { word: "balance", meaning: "균형" },
+  { word: "stability", meaning: "안정성" },
+  { word: "change", meaning: "변화" },
+  { word: "process", meaning: "과정" },
+  { word: "development", meaning: "발전" },
+  { word: "growth", meaning: "성장" },
+  { word: "progress", meaning: "진보" },
+  { word: "decline", meaning: "쇠퇴" },
+  { word: "decay", meaning: "부패, 쇠퇴" },
+  { word: "end", meaning: "끝, 목적" },
+  { word: "beginning", meaning: "시작" },
+  { word: "origin", meaning: "기원" },
+  { word: "cause", meaning: "원인" },
+  { word: "effect", meaning: "영향, 효과" },
+  { word: "result", meaning: "결과" },
+  { word: "outcome", meaning: "결과" },
+  { word: "impact", meaning: "충격, 영향" },
+  { word: "influence", meaning: "영향" },
+  { word: "power", meaning: "힘, 능력" },
+  { word: "force", meaning: "힘, 세력" },
+  { word: "control", meaning: "지배, 통제" },
+  { word: "freedom", meaning: "자유" },
+  { word: "liberty", meaning: "자유" },
+  { word: "autonomy", meaning: "자율성" },
+  { word: "independence", meaning: "독립" },
+  { word: "dependence", meaning: "의존" },
+  { word: "interdependence", meaning: "상호의존" },
+  { word: "connection", meaning: "연결" },
+  { word: "relation", meaning: "관계" },
+  { word: "relationship", meaning: "관계" },
+  { word: "interaction", meaning: "상호작용" },
+  { word: "communication", meaning: "소통" },
+  { word: "dialogue", meaning: "대화" },
+  { word: "discourse", meaning: "담론" },
+  { word: "language", meaning: "언어" },
+  { word: "word", meaning: "단어" },
+  { word: "symbol", meaning: "상징" },
+  { word: "sign", meaning: "기호" },
+  { word: "meaning", meaning: "의미" },
+  { word: "interpretation", meaning: "해석" },
+  { word: "understanding", meaning: "이해" },
+  { word: "misunderstanding", meaning: "오해" },
+  { word: "agreement", meaning: "합의, 동의" },
+  { word: "disagreement", meaning: "불일치" },
+  { word: "conflict", meaning: "갈등" },
+  { word: "resolution", meaning: "해결, 결심" },
+  { word: "compromise", meaning: "타협" },
+  { word: "cooperation", meaning: "협력" },
+  { word: "collaboration", meaning: "협동" },
+  { word: "community", meaning: "공동체" },
+  { word: "society", meaning: "사회" },
+  { word: "culture", meaning: "문화" },
+  { word: "civilization", meaning: "문명" },
+  { word: "humanity", meaning: "인류, 인간성" },
+  { word: "person", meaning: "사람" },
+  { word: "individual", meaning: "개인" },
+  { word: "self", meaning: "자아" },
+  { word: "identity", meaning: "정체성" },
+  { word: "character", meaning: "성격, 인격" },
+  { word: "personality", meaning: "개성, 성격" },
+  { word: "nature", meaning: "본성" },
+  { word: "nurture", meaning: "양육, 양육하다" },
+  { word: "environment", meaning: "환경" },
+  { word: "heredity", meaning: "유전" },
+  { word: "genetics", meaning: "유전학" },
+  { word: "evolution", meaning: "진화" },
+  { word: "adaptation", meaning: "적응" },
+  { word: "survival", meaning: "생존" },
+  { word: "extinction", meaning: "멸종" },
+  { word: "life", meaning: "생명" },
+  { word: "death", meaning: "죽음" },
+  { word: "mortal", meaning: "필멸의" },
+  { word: "immortal", meaning: "불멸의" },
+  { word: "time", meaning: "시간" },
+  { word: "space", meaning: "공간" },
+  { word: "matter", meaning: "물질" },
+  { word: "energy", meaning: "에너지" },
+  { word: "universe", meaning: "우주" },
+  { word: "cosmos", meaning: "우주" },
+  { word: "nature", meaning: "자연" },
+  { word: "world", meaning: "세상" },
+  { word: "earth", meaning: "지구" },
+  { word: "planet", meaning: "행성" },
+  { word: "system", meaning: "계, 시스템" },
+  { word: "structure", meaning: "구조" },
+  { word: "function", meaning: "기능" },
+  { word: "form", meaning: "형태" },
+  { word: "substance", meaning: "물질, 본질" },
+  { word: "essence", meaning: "본질" },
+  { word: "attribute", meaning: "속성" },
+  { word: "property", meaning: "특성" },
+  { word: "quality", meaning: "자질, 특성" },
+  { word: "quantity", meaning: "수량" },
+  { word: "degree", meaning: "정도" },
+  { word: "extent", meaning: "범위, 정도" },
+  { word: "limit", meaning: "한계" },
+  { word: "boundary", meaning: "경계" },
+  { word: "condition", meaning: "조건, 상태" },
+  { word: "state", meaning: "상태" },
+  { word: "situation", meaning: "상황" },
+  { word: "context", meaning: "맥락" },
+  { word: "circumstance", meaning: "환경, 정황" },
+  { word: "factor", meaning: "요인" },
+  { word: "element", meaning: "요소" },
+  { word: "component", meaning: "구성요소" },
+  { word: "part", meaning: "부분" },
+  { word: "whole", meaning: "전체" },
+  { word: "unit", meaning: "단위" },
+  { word: "system", meaning: "체계" },
+  { word: "structure", meaning: "구조" },
+  { word: "organization", meaning: "조직" },
+  { word: "order", meaning: "순서, 질서" },
+  { word: "hierarchy", meaning: "계층" },
+  { word: "network", meaning: "네트워크" },
+  { word: "web", meaning: "망" },
+  { word: "chain", meaning: "사슬" },
+  { word: "cycle", meaning: "순환" },
+  { word: "loop", meaning: "루프, 고리" },
+  { word: "pattern", meaning: "패턴" },
+  { word: "trend", meaning: "경향" },
+  { word: "flow", meaning: "흐름" },
+  { word: "stream", meaning: "줄기, 흐름" },
+  { word: "current", meaning: "해류, 기류" },
+  { word: "direction", meaning: "방향" },
+  { word: "vector", meaning: "벡터" },
+  { word: "path", meaning: "경로" },
+  { word: "track", meaning: "트랙, 자국" },
+  { word: "route", meaning: "경로" },
+  { word: "way", meaning: "방식, 길" },
+  { word: "method", meaning: "방법" },
+  { word: "mode", meaning: "양식" },
+  { word: "manner", meaning: "방식" },
+  { word: "style", meaning: "스타일" },
+  { word: "type", meaning: "유형" },
+  { word: "kind", meaning: "종류" },
+  { word: "sort", meaning: "종류" },
+  { word: "category", meaning: "범주" },
+  { word: "class", meaning: "부류" },
+  { word: "group", meaning: "그룹" },
+  { word: "set", meaning: "집합" },
+  { word: "series", meaning: "시리즈, 연속" },
+  { word: "sequence", meaning: "순서, 배열" },
+  { word: "order", meaning: "순서" },
+  { word: "rank", meaning: "계급, 순위" },
+  { word: "level", meaning: "수준" },
+  { word: "grade", meaning: "등급" },
+  { word: "stage", meaning: "단계" },
+  { word: "step", meaning: "단계" },
+  { word: "phase", meaning: "국면" },
+  { word: "period", meaning: "기간" },
+  { word: "span", meaning: "기간, 한계" },
+  { word: "duration", meaning: "지속 시간" },
+  { word: "interval", meaning: "간격" },
+  { word: "gap", meaning: "격차, 틈" },
+  { word: "space", meaning: "공간" },
+  { word: "distance", meaning: "거리" },
+  { word: "range", meaning: "범위" },
+  { word: "reach", meaning: "도달 범위" },
+  { word: "scope", meaning: "범위, 영역" },
+  { word: "domain", meaning: "영역" },
+  { word: "field", meaning: "분야" },
+  { word: "area", meaning: "지역, 분야" },
+  { word: "zone", meaning: "지대" },
+  { word: "region", meaning: "지방" },
+  { word: "territory", meaning: "영토" },
+  { word: "boundary", meaning: "경계" },
+  { word: "border", meaning: "국경, 경계" },
+  { word: "limit", meaning: "한계" },
+  { word: "margin", meaning: "가장자리" },
+  { word: "edge", meaning: "모서리" },
+  { word: "center", meaning: "중심" },
+  { word: "core", meaning: "핵심" },
+  { word: "focus", meaning: "초점" },
+  { word: "point", meaning: "점, 요점" },
+  { word: "spot", meaning: "장소" },
+  { word: "place", meaning: "장소" },
+  { word: "position", meaning: "위치" },
+  { word: "location", meaning: "위치" },
+  { word: "site", meaning: "현장, 위치" },
+  { word: "situation", meaning: "위치, 상황" },
+  { word: "context", meaning: "맥락" },
+  { word: "background", meaning: "배경" },
+  { word: "environment", meaning: "환경" },
+  { word: "surroundings", meaning: "환경" },
+  { word: "atmosphere", meaning: "분위기" },
+  { word: "climate", meaning: "기후, 풍토" },
+  { word: "condition", meaning: "조건" },
+  { word: "state", meaning: "상태" },
+  { word: "status", meaning: "신분, 상태" },
+  { word: "aspect", meaning: "측면" },
+  { word: "feature", meaning: "특징" },
+  { word: "characteristic", meaning: "특성" },
+  { word: "trait", meaning: "특성" },
+  { word: "attribute", meaning: "속성" },
+  { word: "property", meaning: "성질" },
+  { word: "quality", meaning: "품질, 특성" },
+  { word: "value", meaning: "가치" },
+  { word: "worth", meaning: "가치" },
+  { word: "merit", meaning: "장점" },
+  { word: "advantage", meaning: "이점" },
+  { word: "benefit", meaning: "혜택" },
+  { word: "utility", meaning: "유용성" },
+  { word: "importance", meaning: "중요성" },
+  { word: "significance", meaning: "의의" },
+  { word: "relevance", meaning: "타당성, 관련성" },
+  { word: "priority", meaning: "우선순위" },
+  { word: "weight", meaning: "비중, 무게" },
+  { word: "emphasis", meaning: "강조" },
+  { word: "focus", meaning: "중점" },
+  { word: "attention", meaning: "주의" },
+  { word: "interest", meaning: "관심" },
+  { word: "concern", meaning: "우려, 관심사" },
+  { word: "issue", meaning: "쟁점" },
+  { word: "problem", meaning: "문제" },
+  { word: "question", meaning: "질문, 의문" },
+  { word: "puzzle", meaning: "수수께끼" },
+  { word: "mystery", meaning: "신비" },
+  { word: "secret", meaning: "비밀" },
+  { word: "truth", meaning: "진실" },
+  { word: "fact", meaning: "사실" },
+  { word: "reality", meaning: "현실" },
+  { word: "evidence", meaning: "증거" },
+  { word: "proof", meaning: "증명" },
+  { word: "data", meaning: "자료" },
+  { word: "info", meaning: "정보" },
+  { word: "knowledge", meaning: "지식" },
+  { word: "insight", meaning: "통찰" },
+  { word: "understanding", meaning: "이해" },
+  { word: "awareness", meaning: "인식" },
+  { word: "consciousness", meaning: "의식" },
+  { word: "perception", meaning: "지각" },
+  { word: "impression", meaning: "인상" },
+  { word: "view", meaning: "견해" },
+  { word: "opinion", meaning: "의견" },
+  { word: "thought", meaning: "생각" },
+  { word: "idea", meaning: "아이디어" },
+  { word: "concept", meaning: "개념" },
+  { word: "notion", meaning: "개념, 생각" },
+  { word: "theory", meaning: "이론" },
+  { word: "model", meaning: "모델" },
+  { word: "framework", meaning: "틀, 체계" },
+  { word: "structure", meaning: "구조" },
+  { word: "system", meaning: "시스템" },
+  { word: "logic", meaning: "논리" },
+  { word: "reason", meaning: "이유, 이성" },
+  { word: "cause", meaning: "원인" },
+  { word: "motive", meaning: "동기" },
+  { word: "purpose", meaning: "목적" },
+  { word: "goal", meaning: "목표" },
+  { word: "aim", meaning: "겨냥, 목표" },
+  { word: "target", meaning: "표적, 대상" },
+  { word: "object", meaning: "물체, 목적" },
+  { word: "end", meaning: "결말, 목적" },
+  { word: "result", meaning: "결과" },
+  { word: "effect", meaning: "효과" },
+  { word: "outcome", meaning: "성과" },
+  { word: "consequence", meaning: "귀결, 결과" },
+  { word: "product", meaning: "생산물" },
+  { word: "output", meaning: "출력, 생산량" },
+  { word: "yield", meaning: "수확량" },
+  { word: "return", meaning: "수익" },
+  { word: "gain", meaning: "이득" },
+  { word: "profit", meaning: "이윤" },
+  { word: "benefit", meaning: "이익" },
+  { word: "advantage", meaning: "우위" },
+  { word: "success", meaning: "성공" },
+  { word: "achievement", meaning: "달성" },
+  { word: "accomplishment", meaning: "업적" },
+  { word: "victory", meaning: "승리" },
+  { word: "triumph", meaning: "승리" },
+  { word: "failure", meaning: "실패" },
+  { word: "defeat", meaning: "패배" },
+  { word: "loss", meaning: "손실" },
+  { word: "cost", meaning: "비용" },
+  { word: "expense", meaning: "지출" },
+  { word: "damage", meaning: "손상" },
+  { word: "harm", meaning: "해" },
+  { word: "injury", meaning: "부상" },
+  { word: "danger", meaning: "위험" },
+  { word: "risk", meaning: "위험성" },
+  { word: "threat", meaning: "위협" },
+  { word: "crisis", meaning: "위기" },
+  { word: "emergency", meaning: "비상사태" },
+  { word: "disaster", meaning: "재앙" },
+  { word: "catastrophe", meaning: "참사" },
+  { word: "tragedy", meaning: "비극" },
+  { word: "problem", meaning: "문제점" },
+  { word: "issue", meaning: "사안" },
+  { word: "trouble", meaning: "곤란" },
+  { word: "difficulty", meaning: "어려움" },
+  { word: "hardship", meaning: "고난" },
+  { word: "obstacle", meaning: "장애물" },
+  { word: "barrier", meaning: "장벽" },
+  { word: "challenge", meaning: "난제" },
+  { word: "conflict", meaning: "충돌" },
+  { word: "struggle", meaning: "투쟁" },
+  { word: "fight", meaning: "싸움" },
+  { word: "battle", meaning: "전투" },
+  { word: "war", meaning: "전쟁" },
+  { word: "peace", meaning: "평화" },
+  { word: "harmony", meaning: "조화" },
+  { word: "order", meaning: "질서" },
+  { word: "stability", meaning: "안정" },
+  { word: "security", meaning: "안보, 안전" },
+  { word: "safety", meaning: "안전" },
+  { word: "protection", meaning: "보호" },
+  { word: "defense", meaning: "방어" },
+  { word: "support", meaning: "지지" },
+  { word: "help", meaning: "도움" },
+  { word: "assistance", meaning: "조력" },
+  { word: "aid", meaning: "원조" },
+  { word: "relief", meaning: "구호, 안도" },
+  { word: "rescue", meaning: "구조" },
+  { word: "recovery", meaning: "회복" },
+  { word: "restoration", meaning: "복원" },
+  { word: "reform", meaning: "개혁" },
+  { word: "change", meaning: "변화" },
+  { word: "shift", meaning: "전환" },
+  { word: "transition", meaning: "이행" },
+  { word: "movement", meaning: "운동" },
+  { word: "trend", meaning: "경향" },
+  { word: "flow", meaning: "흐름" },
+  { word: "wave", meaning: "파도, 물결" },
+  { word: "impact", meaning: "영향력" },
+  { word: "effect", meaning: "효과" },
+  { word: "influence", meaning: "작용" }
+];
+
+var STORE_KEY = "cutop_26_6_mogo";
+var lfilter = "all";
+var lri = 0, fri = 0, tri = 0;
+var fcIdx = 0, fcList = [], fcTX = 0;
+var qList = [], qIdx = 0, qScore = 0, qLocked = false;
+var tList = [], tIdx = 0, tScore = 0, tErr = [], tCorr = [], tName = "";
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function getStore() {
+  try {
+    return JSON.parse(localStorage.getItem(STORE_KEY)) || {};
+  } catch(e) { return {}; }
+}
+
+function setStore(st) {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(st));
+  } catch(e) {}
+}
+
+function getKey(w) {
+  return w.word + "|" + w.meaning;
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+function speakFc() {
+  var w = fcList[fcIdx];
+  if (w) speak(w.word);
+}
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+var ranges = buildRanges(rawWords);
+
+function renderRangeBar(elId, curIdx, fnName) {
+  var html = "";
+  ranges.forEach(function(r, idx) {
+    var cls = idx === curIdx ? "rbtn active" : "rbtn";
+    html += '<button class="' + cls + '" onclick="' + fnName + '(' + idx + ')">' + r.label + '</button>';
+  });
+  document.getElementById(elId).innerHTML = html;
+}
+
+function switchTab(t) {
+  ["list","flash","quiz","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="quiz")  { initQuiz(); }
+  if (t==="test")  { renderSetup(); }
+}
+
+/* LIST LOGIC */
+function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setFilter(f) {
+  lfilter = f;
+  ["all","unk","fav"].forEach(function(n) {
+    document.getElementById("fb-"+n).classList.toggle("active", n===f);
+  });
+  renderList();
+}
+
+function toggleKnown(k) {
+  var st = getStore();
+  st[k] = st[k] || {};
+  st[k].status = (st[k].status === "known") ? "" : "known";
+  setStore(st);
+  renderList();
+}
+
+function toggleFav(k) {
+  var st = getStore();
+  st[k] = st[k] || {};
+  st[k].fav = !st[k].fav;
+  setStore(st);
+  renderList();
+}
+
+function renderList() {
+  var st = getStore();
+  var r = ranges[lri];
+  var sub = rawWords.slice(r.s, r.e);
+  var q = document.getElementById("lsearch").value.toLowerCase();
+
+  var html = "";
+  sub.forEach(function(w) {
+    var k = getKey(w);
+    var item = st[k] || {};
+    var isK = item.status === "known";
+    var isF = !!item.fav;
+
+    if (lfilter === "unk" && isK) return;
+    if (lfilter === "fav" && !isF) return;
+
+    if (q) {
+      var matchW = w.word.toLowerCase().indexOf(q) >= 0;
+      var matchM = w.meaning.toLowerCase().indexOf(q) >= 0;
+      if (!matchW && !matchM) return;
+    }
+
+    var cardCls = isK ? "word-card known" : "word-card";
+    var favCls = isF ? "ibtn fav" : "ibtn";
+    var escK = esc(k);
+
+    html += '<div class="' + cardCls + '">';
+    html += '  <div class="chk-btn" data-k="' + escK + '" onclick="toggleKnown(this.dataset.k)">✓</div>';
+    html += '  <div class="w-info">';
+    html += '    <div class="w-word en">' + esc(w.word) + '</div>';
+    html += '    <div class="w-mean">' + esc(w.meaning) + '</div>';
+    html += '  </div>';
+    html += '  <div class="w-actions">';
+    html += '    <button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '    <button class="' + favCls + '" data-k="' + escK + '" onclick="toggleFav(this.dataset.k)">★</button>';
+    html += '  </div>';
+    html += '</div>';
+  });
+
+  document.getElementById("wlist").innerHTML = html || '<div style="text-align:center; color:var(--gray); padding:30px;">단어가 없습니다.</div>';
+}
+
+/* FLASHCARD LOGIC */
+function setFR(idx) { fri = idx; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+function initFC() {
+  var r = ranges[fri];
+  fcList = rawWords.slice(r.s, r.e);
+  fcIdx = 0;
+  renderFC();
+}
+
+function renderFC() {
+  if (!fcList.length) return;
+  var w = fcList[fcIdx];
+  var card = document.getElementById("fccard");
+  card.classList.remove("flipped");
+  document.getElementById("fcword").textContent = w.word;
+  document.getElementById("fcmean").textContent = w.meaning;
+
+  var st = getStore();
+  var k = getKey(w);
+  var isF = st[k] && st[k].fav;
+  var favBtn = document.getElementById("fcfav");
+  favBtn.classList.toggle("active", !!isF);
+}
+
+function fcFlip() {
+  document.getElementById("fccard").classList.toggle("flipped");
+  if (document.getElementById("fccard").classList.contains("flipped")) {
+    speakFc();
+  }
+}
+
+function toggleFcFav(e) {
+  e.stopPropagation();
+  var w = fcList[fcIdx];
+  if (!w) return;
+  var k = getKey(w);
+  var st = getStore();
+  st[k] = st[k] || {};
+  st[k].fav = !st[k].fav;
+  setStore(st);
+  renderFC();
+}
+
+function fcNext() {
+  if (fcIdx < fcList.length - 1) { fcIdx++; renderFC(); }
+}
+function fcPrev() {
+  if (fcIdx > 0) { fcIdx--; renderFC(); }
+}
+
+/* QUIZ LOGIC */
+function shuffle(a) {
+  var arr = a.slice();
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+function initQuiz() {
+  var pool = shuffle(rawWords);
+  qList = pool.slice(0, Math.min(10, pool.length));
+  qIdx = 0;
+  qScore = 0;
+  qLocked = false;
+  renderQuiz();
+}
+
+function renderQuiz() {
+  if (qIdx >= qList.length) {
+    var pct = Math.round((qScore / qList.length) * 100);
+    var emo = pct === 100 ? "🏆" : pct >= 80 ? "🎉" : pct >= 60 ? "👍" : "💪";
+    var html = '<div class="res-box">';
+    html += '<div class="res-emoji">' + emo + '</div>';
+    html += '<div class="res-score">' + qScore + ' / ' + qList.length + '</div>';
+    html += '<div class="res-pct">' + pct + '점</div>';
+    html += '<button class="btn-primary" onclick="initQuiz()">↩ 다시 풀기</button>';
+    html += '</div>';
+    document.getElementById("qbox").innerHTML = html;
+    return;
+  }
+
+  qLocked = false;
+  var cur = qList[qIdx];
+  var opts = [cur.meaning];
+  var others = shuffle(rawWords.filter(function(x){ return x.word !== cur.word; }));
+  for (var i = 0; i < Math.min(3, others.length); i++) {
+    opts.push(others[i].meaning);
+  }
+  opts = shuffle(opts);
+
+  var html = '<div class="q-box">';
+  html += '<div class="q-head">문제 ' + (qIdx + 1) + ' / ' + qList.length + '</div>';
+  html += '<div class="q-word en">' + esc(cur.word) + '</div>';
+  html += '<div class="q-opts">';
+  opts.forEach(function(opt) {
+    var isC = (opt === cur.meaning) ? "1" : "0";
+    html += '<button class="q-opt" data-cor="' + isC + '" onclick="qAns(this)">' + esc(opt) + '</button>';
+  });
+  html += '</div></div>';
+  document.getElementById("qbox").innerHTML = html;
+}
+
+function qAns(btn) {
+  if (qLocked) return;
+  qLocked = true;
+  var isC = btn.dataset.cor === "1";
+  if (isC) {
+    btn.classList.add("correct");
+    qScore++;
+    speak(qList[qIdx].word);
+  } else {
+    btn.classList.add("wrong");
+    var btns = document.querySelectorAll(".q-opt");
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].dataset.cor === "1") btns[i].classList.add("correct");
+    }
+  }
+  setTimeout(function() {
+    qIdx++;
+    renderQuiz();
+  }, 1000);
+}
+
+/* TEST LOGIC */
+function isSim(input, correct) {
+  var norm = function(s) {
+    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
+  };
+  var a = norm(input), c = norm(correct);
+  if (a === c) return true;
+  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
+  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
+  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
+  return false;
+}
+
+function renderSetup() {
+  var html = '<div class="t-setup">';
+  html += '<label class="t-label">학생 이름</label>';
+  html += '<input type="text" id="tname" class="t-input" placeholder="이름을 입력하세요" value="' + esc(tName) + '">';
+  html += '<label class="t-label">테스트 범위</label>';
+  html += '<div id="trbar" class="rbar"></div>';
+  html += '<button class="btn-primary" style="margin-top:10px;" onclick="startTest()">테스트 시작 ▶</button>';
+  html += '</div>';
+  document.getElementById("tbox").innerHTML = html;
+  renderRangeBar("trbar", tri, "setTR");
+}
+
+function setTR(idx) { tri = idx; renderRangeBar("trbar", tri, "setTR"); }
+
+function startTest() {
+  var nameEl = document.getElementById("tname");
+  var val = nameEl ? nameEl.value.trim() : "";
+  if (!val) { alert("이름을 입력해주세요."); return; }
+  tName = val;
+
+  var r = ranges[tri];
+  var pool = rawWords.slice(r.s, r.e);
+  tList = shuffle(pool).slice(0, Math.min(50, pool.length));
+  tIdx = 0;
+  tScore = 0;
+  tErr = [];
+  tCorr = [];
+  renderTestCard();
+}
+
+function renderTestCard() {
+  if (tIdx >= tList.length) { renderTestResult(); return; }
+
+  var cur = tList[tIdx];
+  var pct = Math.round((tIdx / tList.length) * 100);
+
+  var html = '<div>';
+  html += '<div class="t-prog">';
+  html += '<span>문제 ' + (tIdx + 1) + ' / ' + tList.length + '</span>';
+  html += '<span>✅ 맞춤: ' + tScore + '</span>';
+  html += '</div>';
+  html += '<div class="p-bar-bg"><div class="p-bar-fill" style="width:' + pct + '%"></div></div>';
+  html += '<div class="q-box" style="text-align:center;">';
+  html += '<div class="q-word en" style="font-size:26px; margin-bottom:24px;">' + esc(cur.word) + '</div>';
+  html += '<input type="text" id="tinput" class="t-input" placeholder="한글 뜻 입력 후 Enter" autocomplete="off" onkeydown="chkTestKey(event)">';
+  html += '<button class="btn-primary" onclick="submitTest()">다음 문제 ▶</button>';
+  html += '</div></div>';
+
+  document.getElementById("tbox").innerHTML = html;
+  setTimeout(function() {
+    var inp = document.getElementById("tinput");
+    if (inp) inp.focus();
+    speak(cur.word);
+  }, 50);
+}
+
+function chkTestKey(e) {
+  if (e.key === "Enter") submitTest();
+}
+
+function submitTest() {
+  var inp = document.getElementById("tinput");
+  var val = inp ? inp.value.trim() : "";
+  var cur = tList[tIdx];
+
+  if (isSim(val, cur.meaning)) {
+    tScore++;
+    tCorr.push(cur.word);
+  } else {
+    tErr.push({ word: cur.word, input: val || "(미입력)", correct: cur.meaning });
+  }
+
+  tIdx++;
+  renderTestCard();
+}
+
+function renderTestResult() {
+  var total = tList.length;
+  var pct = Math.round((tScore / total) * 100);
+  var emo = pct === 100 ? "🏆" : pct >= 80 ? "🎉" : pct >= 60 ? "👍" : "💪";
+
+  var html = '<div class="res-box">';
+  html += '<div class="res-emoji">' + emo + '</div>';
+  html += '<div class="res-score">' + tScore + ' / ' + total + '</div>';
+  html += '<div class="res-pct">' + pct + '점</div>';
+
+  if (tErr.length > 0) {
+    html += '<div class="err-list">';
+    tErr.forEach(function(item) {
+      html += '<div class="err-item">';
+      html += '<div class="err-w en">' + esc(item.word) + '</div>';
+      html += '<div>입력: ' + esc(item.input) + ' / 정답: ' + esc(item.correct) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  html += '<button class="btn-copy" onclick="copyResult()">📋 카톡으로 결과 복사</button>';
+  html += '<button class="btn-primary" onclick="renderSetup()">↩ 다시 테스트</button>';
+  html += '</div>';
+
+  document.getElementById("tbox").innerHTML = html;
+}
+
+function copyResult() {
+  var total = tList.length;
+  var pct = Math.round((tScore / total) * 100);
+  var d = new Date();
+  var dateStr = d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+
+  var txt = "[씨유에탑 고2 26년 6월 모고] 테스트 결과\n";
+  txt += "날짜: " + dateStr + "\n";
+  txt += "이름: " + tName + "\n";
+  txt += "점수: " + tScore + "/" + total + " (" + pct + "점)\n";
+  txt += "─────────────────\n";
+  txt += "❌ 틀린 단어 (" + tErr.length + "개)\n";
+  tErr.forEach(function(item) {
+    txt += "  " + item.word + " → 입력:" + item.input + " / 정답:" + item.correct + "\n";
+  });
+  txt += "─────────────────\n";
+  txt += "✅ 맞은 단어: " + tCorr.join(", ");
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function() {
+      alert("결과가 클립보드에 복사되었습니다.");
+    });
+  } else {
+    var ta = document.createElement("textarea");
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    alert("결과가 클립보드에 복사되었습니다.");
+  }
+}
+
+function pad(n) { return n < 10 ? "0" + n : n; }
+
+window.onload = function() {
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+
+  renderRangeBar("lrbar", lri, "setLR");
+  renderList();
+};
+</script>
+</body>
+</html>
