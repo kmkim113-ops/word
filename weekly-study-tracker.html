@@ -213,6 +213,7 @@
       <div class="field"><label>주 시작일 (월요일)</label><input type="date" id="weekStart"></div>
       <span id="weekRangeText"></span>
     </div>
+    <p id="autosaveStatus" style="font-size:11.5px; color:var(--ink-soft); margin:10px 0 0;"></p>
   </header>
 
   <nav class="tabs" id="tabs"></nav>
@@ -298,10 +299,12 @@
   </div>
 
   <div class="footer-tools">
+    <button class="ghost" id="copyDataBtn">📋 선생님 전달용 데이터 복사</button>
     <button class="ghost" id="saveBtn">⬇ 진행상황 저장 (파일로 다운로드)</button>
     <button class="ghost" id="loadBtn">⬆ 저장 파일 불러오기</button>
     <input type="file" id="loadInput" accept="application/json">
-    <span class="note">※ 이 페이지는 새로고침하면 입력값이 사라집니다. 하루치 입력을 마치면 "진행상황 저장"으로 파일을 받아두고, 다음 날 그 파일을 "불러오기"로 이어서 작성하세요.</span>
+    <span class="note">📋 <b>선생님께 보낼 때</b>: "선생님 전달용 데이터 복사"를 누르고 카톡방에 그대로 붙여넣어 보내세요. (선생님이 그 텍스트를 발송카드 생성기에 붙여넣으면 자동으로 통계가 채워져요)</span>
+    <span class="note">💾 이 기기(브라우저)에는 자동 저장되지만, <b>다른 기기로 옮기거나 백업</b>해두고 싶을 때는 "진행상황 저장"으로 파일을 받아 보관하세요.</span>
   </div>
 </div>
 
@@ -320,6 +323,42 @@ let weekData = {}; DAY_KEYS.forEach(k => weekData[k] = []);
 let activeDay = 'mon';
 let editingIndex = null;
 let currentFocus = 3;
+
+// ---------- 이 기기에 자동 저장 (localStorage) ----------
+const AUTOSAVE_KEY = 'weeklyStudyTracker_v1';
+function autosave(){
+  try{
+    const payload = {
+      studentName: document.getElementById('studentName').value,
+      studentGrade: document.getElementById('studentGrade').value,
+      weekStart: document.getElementById('weekStart').value,
+      parentMessage: document.getElementById('parentMessage').value,
+      weekData
+    };
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(payload));
+    const st = document.getElementById('autosaveStatus');
+    if(st){
+      const now = new Date();
+      st.textContent = `✅ 이 기기에 자동 저장됨 (${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')})`;
+    }
+  } catch(e){ /* 저장 실패 시 조용히 무시 (수동 저장/불러오기로 대체 가능) */ }
+}
+function loadAutosave(){
+  try{
+    const raw = localStorage.getItem(AUTOSAVE_KEY);
+    if(!raw) return false;
+    const payload = JSON.parse(raw);
+    document.getElementById('studentName').value = payload.studentName || '';
+    document.getElementById('studentGrade').value = payload.studentGrade || '';
+    if(payload.weekStart) document.getElementById('weekStart').value = payload.weekStart;
+    document.getElementById('parentMessage').value = payload.parentMessage || '';
+    DAY_KEYS.forEach(k => weekData[k] = (payload.weekData && payload.weekData[k]) || []);
+    return true;
+  } catch(e){ return false; }
+}
+['studentName','studentGrade','parentMessage'].forEach(id => {
+  document.getElementById(id).addEventListener('input', autosave);
+});
 
 // ---------- init UI ----------
 const tabsEl = document.getElementById('tabs');
@@ -351,6 +390,7 @@ function updateWeekRangeText(){
   const fmt = d => (d.getMonth()+1)+'/'+d.getDate();
   el.textContent = '기간: ' + fmt(d0) + ' ~ ' + fmt(d6);
   renderTabs();
+  autosave();
 }
 document.getElementById('weekStart').addEventListener('change', updateWeekRangeText);
 
@@ -518,6 +558,7 @@ function renderAll(){
   renderTabs();
   renderEntries();
   renderTimeline();
+  autosave();
 }
 
 // ---------- KakaoTalk text generation ----------
@@ -609,6 +650,28 @@ document.getElementById('resetWeekBtn').onclick = () => {
   alert('초기화되었습니다. 새로운 한 주를 시작하세요!');
 };
 
+document.getElementById('copyDataBtn').onclick = async () => {
+  const payload = {
+    studentName: document.getElementById('studentName').value,
+    studentGrade: document.getElementById('studentGrade').value,
+    weekStart: document.getElementById('weekStart').value,
+    parentMessage: document.getElementById('parentMessage').value,
+    weekData
+  };
+  const text = JSON.stringify(payload);
+  try{
+    await navigator.clipboard.writeText(text);
+  } catch(err){
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  }
+  const btn = document.getElementById('copyDataBtn');
+  const original = btn.textContent;
+  btn.textContent = '✔ 복사됨! 카톡에 붙여넣으세요';
+  setTimeout(()=>{ btn.textContent = original; }, 3000);
+};
+
 // ---------- save / load progress as JSON file ----------
 document.getElementById('saveBtn').onclick = () => {
   const payload = {
@@ -653,15 +716,18 @@ document.getElementById('loadInput').addEventListener('change', e => {
   e.target.value = '';
 });
 
-// ---------- initial default: set weekStart to this week's Monday ----------
+// ---------- initial load: 자동저장된 데이터 우선 복원, 없으면 이번 주 월요일 기본값 ----------
 (function initDefaultWeek(){
-  const today = new Date();
-  const day = today.getDay(); // 0=Sun
-  const diffToMon = (day === 0 ? -6 : 1 - day);
-  const monday = new Date(today);
-  monday.setDate(today.getDate() + diffToMon);
-  const iso = monday.toISOString().slice(0,10);
-  document.getElementById('weekStart').value = iso;
+  const restored = loadAutosave();
+  if(!document.getElementById('weekStart').value){
+    const today = new Date();
+    const day = today.getDay(); // 0=Sun
+    const diffToMon = (day === 0 ? -6 : 1 - day);
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + diffToMon);
+    const iso = monday.toISOString().slice(0,10);
+    document.getElementById('weekStart').value = iso;
+  }
   updateWeekRangeText();
 })();
 
