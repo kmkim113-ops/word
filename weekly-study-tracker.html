@@ -131,7 +131,18 @@
   .rowbtns button.del:hover{color:var(--brick);}
   .empty-row td{text-align:center; color:var(--ink-soft); font-style:italic; padding:18px 0;}
 
-  .daysum{display:flex; gap:22px; margin-top:10px; font-size:13px; color:var(--ink-soft);}
+  .daysum{display:flex; gap:16px; flex-wrap:wrap; margin-top:10px; font-size:13px; color:var(--ink-soft);}
+
+  .reflect-box{
+    margin-top:16px; padding:14px 16px; background:#EFF3ED; border:1px solid #CFDCC9; border-radius:8px;
+  }
+  .reflect-box .gap-text{margin:0 0 10px; font-size:13px; color:var(--teal); font-weight:600;}
+  .reflect-box label{display:block; font-size:12px; color:var(--ink-soft); font-weight:600; margin-bottom:6px;}
+  .reflect-box textarea{
+    width:100%; min-height:44px; border:1.5px solid var(--line-strong); border-radius:6px;
+    padding:8px 10px; font-family:inherit; font-size:13px; resize:vertical; background:#fff; outline:none;
+  }
+  .reflect-box textarea:focus{border-color:var(--teal);}
   .daysum b{color:var(--ink); font-weight:700;}
 
   .addbox{
@@ -206,7 +217,7 @@
 
   <header>
     <h1>📘 위클리 학습 달성표</h1>
-    <p class="sub">오후 4시 ~ 새벽 2시, 학원·자습·인강 등 하루 학습 기록을 남기고 주간 단위로 정리해 선생님께 카카오톡으로 전달하세요.</p>
+    <p class="sub">평일은 오후 5시~새벽 2시, 주말은 오전 10시~밤 12시 사이 학원·자습·인강 등 하루 학습 기록을 남기고 주간 단위로 정리해 선생님께 카카오톡으로 전달하세요.</p>
     <div class="idrow">
       <div class="field"><label>이름</label><input type="text" id="studentName" placeholder="홍길동"></div>
       <div class="field"><label>학교/학년</label><input type="text" id="studentGrade" placeholder="○○중 2학년"></div>
@@ -220,9 +231,7 @@
 
   <section class="panel">
     <div class="timeline-wrap">
-      <div class="timeline-labels">
-        <span>16:00</span><span>18:00</span><span>20:00</span><span>22:00</span><span>00:00</span><span>02:00</span>
-      </div>
+      <div class="timeline-labels" id="timelineLabels"></div>
       <div class="timeline" id="timeline"></div>
     </div>
 
@@ -234,6 +243,12 @@
     </table>
 
     <div class="daysum" id="daySummary"></div>
+
+    <div class="reflect-box" id="reflectBox">
+      <p id="gapText" class="gap-text"></p>
+      <label for="dayReflection">🎯 다음엔 이 시간, 어떻게 써볼까요? <span style="font-weight:400;">(선택)</span></label>
+      <textarea id="dayReflection" placeholder="예) 저녁 먹고 쉬는 1시간 중 30분은 영어 단어 외우기로 써보기"></textarea>
+    </div>
 
     <div class="addbox">
       <h3 id="addboxTitle">+ 일정 추가</h3>
@@ -317,9 +332,12 @@ const CAT_COLOR = {
   '과외':'#6B4E71', '독서실':'#5B7A8C', '수면':'#2E3454', '휴식':'#7FA07E', '기타':'#8B8F82'
 };
 const CONDITION_CATS = ['수면','휴식'];
+const SELF_STUDY_CATS = ['자습','인강','과외','독서실'];
+const ACADEMY_CAT = '학원 수업';
 const LOC_CHIPS = ['학원','독서실','스터디카페','집','학교','도서관'];
 
 let weekData = {}; DAY_KEYS.forEach(k => weekData[k] = []);
+let dayNotes = {}; DAY_KEYS.forEach(k => dayNotes[k] = '');
 let activeDay = 'mon';
 let editingIndex = null;
 let currentFocus = 3;
@@ -333,7 +351,8 @@ function autosave(){
       studentGrade: document.getElementById('studentGrade').value,
       weekStart: document.getElementById('weekStart').value,
       parentMessage: document.getElementById('parentMessage').value,
-      weekData
+      weekData,
+      dayNotes
     };
     localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(payload));
     const st = document.getElementById('autosaveStatus');
@@ -353,6 +372,7 @@ function loadAutosave(){
     if(payload.weekStart) document.getElementById('weekStart').value = payload.weekStart;
     document.getElementById('parentMessage').value = payload.parentMessage || '';
     DAY_KEYS.forEach(k => weekData[k] = (payload.weekData && payload.weekData[k]) || []);
+    DAY_KEYS.forEach(k => dayNotes[k] = (payload.dayNotes && payload.dayNotes[k]) || '');
     return true;
   } catch(e){ return false; }
 }
@@ -368,7 +388,7 @@ function renderTabs(){
     const btn = document.createElement('button');
     btn.className = 'tab' + (k===activeDay?' active':'') + (weekData[k].length?' hasdata':'');
     btn.innerHTML = DAY_LABEL[i] + '<span class="d">' + dateForDay(i) + '</span>';
-    btn.onclick = () => { activeDay = k; resetForm(); renderAll(); };
+    btn.onclick = () => { saveReflection(); activeDay = k; resetForm(); renderAll(); loadReflection(); };
     tabsEl.appendChild(btn);
   });
 }
@@ -440,6 +460,21 @@ function fmtDur(min){
   return h+'시간' + (m? ' '+m+'분' : '');
 }
 function starsStr(v){ return '★'.repeat(v) + '☆'.repeat(5-v); }
+
+const WEEKDAY_RANGE = [17*60, 26*60];   // 평일: 17:00 ~ 익일 02:00
+const WEEKEND_RANGE = [10*60, 24*60];   // 주말: 10:00 ~ 24:00(자정)
+function isWeekendDay(k){ return k === 'sat' || k === 'sun'; }
+function getRange(k){ return isWeekendDay(k) ? WEEKEND_RANGE : WEEKDAY_RANGE; }
+function formatClock(min){
+  const h = Math.floor(min/60) % 24, m = min % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+function buildRangeLabels(start, end){
+  const labels = [];
+  for(let m = start; m <= end; m += 120) labels.push(m);
+  if(labels[labels.length-1] !== end) labels.push(end);
+  return labels.map(formatClock);
+}
 
 // ---------- entry CRUD ----------
 document.getElementById('addEntryBtn').onclick = () => {
@@ -522,16 +557,65 @@ function renderEntries(){
     });
   }
 
-  const totalMin = list.reduce((sum,e) => sum + durMin(e.start,e.end), 0);
-  const avgFocus = list.length? (list.reduce((s,e)=>s+e.focus,0)/list.length).toFixed(1) : '-';
+  const academyMin = list.filter(e => e.cat === ACADEMY_CAT).reduce((s,e)=>s+durMin(e.start,e.end),0);
+  const selfMin = list.filter(e => SELF_STUDY_CATS.includes(e.cat)).reduce((s,e)=>s+durMin(e.start,e.end),0);
+  const studyList = list.filter(e => e.cat === ACADEMY_CAT || SELF_STUDY_CATS.includes(e.cat));
+  const totalMin = academyMin + selfMin;
+  const avgFocus = studyList.length? (studyList.reduce((s,e)=>s+e.focus,0)/studyList.length).toFixed(1) : '-';
   document.getElementById('daySummary').innerHTML =
-    `<span>오늘 총 학습시간 <b>${fmtDur(totalMin)}</b></span><span>평균 집중도 <b>${avgFocus}${list.length?'/5':''}</b></span><span>일정 수 <b>${list.length}건</b></span>`;
+    `<span>학원 수업 <b>${fmtDur(academyMin)}</b></span>` +
+    `<span>자기주도 학습시간 <b>${fmtDur(selfMin)}</b></span>` +
+    `<span>평균 집중도 <b>${avgFocus}${studyList.length?'/5':''}</b></span>` +
+    `<span>일정 수 <b>${list.length}건</b></span>`;
+}
+
+function computeGapMin(list, dayKey){
+  const [RANGE_START, RANGE_END] = getRange(dayKey || activeDay);
+  const intervals = list.map(e => {
+    let s = toMin(e.start), en = toMin(e.end);
+    if(s===null||en===null) return null;
+    s = Math.max(s, RANGE_START); en = Math.min(en, RANGE_END);
+    return en > s ? [s,en] : null;
+  }).filter(Boolean).sort((a,b)=>a[0]-b[0]);
+  let covered = 0, cursor = RANGE_START;
+  intervals.forEach(([s,en]) => {
+    if(s > cursor) cursor = s;
+    if(en > cursor){ covered += en - cursor; cursor = en; }
+  });
+  return Math.max(0, (RANGE_END-RANGE_START) - covered);
+}
+
+function saveReflection(){
+  dayNotes[activeDay] = document.getElementById('dayReflection').value;
+}
+function loadReflection(){
+  document.getElementById('dayReflection').value = dayNotes[activeDay] || '';
+}
+document.getElementById('dayReflection').addEventListener('input', () => { saveReflection(); autosave(); });
+
+function renderReflection(){
+  const gap = computeGapMin(weekData[activeDay]);
+  const [rs, re] = getRange(activeDay);
+  const rangeLabel = `${formatClock(rs)}~${formatClock(re)}`;
+  const gapEl = document.getElementById('gapText');
+  if(gap <= 0){
+    gapEl.textContent = `👍 ${rangeLabel} 시간이 알차게 채워져 있어요.`;
+  } else {
+    gapEl.textContent = `⏳ 아직 비어있는 시간 ${fmtDur(gap)} — 다음엔 이 시간을 조금 써보는 건 어떨까요?`;
+  }
 }
 
 function renderTimeline(){
   const el = document.getElementById('timeline');
   el.innerHTML = '';
-  const RANGE_START = 16*60, RANGE_END = 26*60, SPAN = RANGE_END-RANGE_START;
+  const [RANGE_START, RANGE_END] = getRange(activeDay);
+  const SPAN = RANGE_END - RANGE_START;
+  const hours = Math.round(SPAN/60);
+  el.style.backgroundImage = `repeating-linear-gradient(to right, var(--line) 0, var(--line) 1px, transparent 1px, transparent calc(100%/${hours}))`;
+
+  document.getElementById('timelineLabels').innerHTML =
+    buildRangeLabels(RANGE_START, RANGE_END).map(t => `<span>${t}</span>`).join('');
+
   weekData[activeDay].forEach(e => {
     let s = toMin(e.start), en = toMin(e.end);
     s = Math.max(s, RANGE_START); en = Math.min(en, RANGE_END);
@@ -558,11 +642,13 @@ function renderAll(){
   renderTabs();
   renderEntries();
   renderTimeline();
+  renderReflection();
   autosave();
 }
 
 // ---------- KakaoTalk text generation ----------
 document.getElementById('genBtn').onclick = () => {
+  saveReflection();
   const range = document.querySelector('input[name=range]:checked').value;
   const name = document.getElementById('studentName').value.trim() || '(이름 미입력)';
   const grade = document.getElementById('studentGrade').value.trim();
@@ -583,7 +669,7 @@ document.getElementById('genBtn').onclick = () => {
   }
 
   const daysToPrint = range === 'today' ? [DAY_KEYS.indexOf(activeDay)] : [0,1,2,3,4,5,6];
-  let weekTotalMin = 0, weekFocusSum = 0, weekFocusCount = 0;
+  let weekAcademyMin = 0, weekSelfMin = 0, weekFocusSum = 0, weekFocusCount = 0;
 
   daysToPrint.forEach(i => {
     const k = DAY_KEYS[i];
@@ -594,21 +680,31 @@ document.getElementById('genBtn').onclick = () => {
       out += '(기록 없음)\n\n';
       return;
     }
-    let dayMin = 0;
+    let dayAcademyMin = 0, daySelfMin = 0;
+    const studyList = [];
     list.forEach(e => {
       const d = durMin(e.start,e.end);
-      dayMin += d;
-      weekFocusSum += e.focus; weekFocusCount++;
+      if(e.cat === ACADEMY_CAT) dayAcademyMin += d;
+      else if(SELF_STUDY_CATS.includes(e.cat)) daySelfMin += d;
+      if(e.cat === ACADEMY_CAT || SELF_STUDY_CATS.includes(e.cat)){
+        studyList.push(e);
+      }
       const focusWord = CONDITION_CATS.includes(e.cat) ? '컨디션' : '집중도';
       out += `${e.start}-${e.end} | ${e.cat} | ${e.subject}${e.content? ' - '+e.content:''} | ${e.location||'-'} | ${focusWord} ${starsStr(e.focus)}\n`;
     });
-    weekTotalMin += dayMin;
-    const avg = (list.reduce((s,e)=>s+e.focus,0)/list.length).toFixed(1);
-    out += `▶ 총 학습시간 ${fmtDur(dayMin)} · 평균 집중도 ${avg}/5\n\n`;
+    weekAcademyMin += dayAcademyMin; weekSelfMin += daySelfMin;
+    weekFocusSum += studyList.reduce((s,e)=>s+e.focus,0); weekFocusCount += studyList.length;
+    const avg = studyList.length? (studyList.reduce((s,e)=>s+e.focus,0)/studyList.length).toFixed(1) : '-';
+    out += `▶ 학원 ${fmtDur(dayAcademyMin)} · 자기주도 학습시간 ${fmtDur(daySelfMin)} · 평균 집중도 ${avg}${studyList.length?'/5':''}\n`;
+    const gap = computeGapMin(list);
+    if(gap > 0) out += `⏳ 비어있는 시간 ${fmtDur(gap)}\n`;
+    if(dayNotes[k] && dayNotes[k].trim()) out += `🎯 다짐: ${dayNotes[k].trim()}\n`;
+    out += '\n';
   });
 
   if(range === 'week'){
-    out += `📊 주간 총 학습시간: ${fmtDur(weekTotalMin)}\n`;
+    out += `📊 주간 자기주도 학습시간: ${fmtDur(weekSelfMin)}\n`;
+    out += `📊 주간 학원 수업 시간: ${fmtDur(weekAcademyMin)}\n`;
     out += `📊 주간 평균 집중도: ${weekFocusCount? (weekFocusSum/weekFocusCount).toFixed(1):'-'}/5\n`;
   }
 
@@ -633,6 +729,7 @@ document.getElementById('resetWeekBtn').onclick = () => {
   const ok = confirm('카카오톡으로 이번 주 텍스트를 이미 전달하셨나요?\n초기화하면 월~일 모든 기록이 삭제되고 새로운 한 주를 시작합니다.\n(필요하면 취소 후 "진행상황 저장"으로 먼저 백업하세요.)');
   if(!ok) return;
   DAY_KEYS.forEach(k => weekData[k] = []);
+  DAY_KEYS.forEach(k => dayNotes[k] = '');
   activeDay = 'mon';
   resetForm();
   document.getElementById('kakaoOut').value = '';
@@ -647,16 +744,19 @@ document.getElementById('resetWeekBtn').onclick = () => {
     updateWeekRangeText();
   }
   renderAll();
+  loadReflection();
   alert('초기화되었습니다. 새로운 한 주를 시작하세요!');
 };
 
 document.getElementById('copyDataBtn').onclick = async () => {
+  saveReflection();
   const payload = {
     studentName: document.getElementById('studentName').value,
     studentGrade: document.getElementById('studentGrade').value,
     weekStart: document.getElementById('weekStart').value,
     parentMessage: document.getElementById('parentMessage').value,
-    weekData
+    weekData,
+    dayNotes
   };
   const text = JSON.stringify(payload);
   try{
@@ -674,12 +774,14 @@ document.getElementById('copyDataBtn').onclick = async () => {
 
 // ---------- save / load progress as JSON file ----------
 document.getElementById('saveBtn').onclick = () => {
+  saveReflection();
   const payload = {
     studentName: document.getElementById('studentName').value,
     studentGrade: document.getElementById('studentGrade').value,
     weekStart: document.getElementById('weekStart').value,
     parentMessage: document.getElementById('parentMessage').value,
-    weekData
+    weekData,
+    dayNotes
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -704,9 +806,11 @@ document.getElementById('loadInput').addEventListener('change', e => {
       document.getElementById('weekStart').value = payload.weekStart || '';
       document.getElementById('parentMessage').value = payload.parentMessage || '';
       DAY_KEYS.forEach(k => weekData[k] = (payload.weekData && payload.weekData[k]) || []);
+      DAY_KEYS.forEach(k => dayNotes[k] = (payload.dayNotes && payload.dayNotes[k]) || '');
       updateWeekRangeText();
       resetForm();
       renderAll();
+      loadReflection();
       alert('불러오기가 완료되었습니다.');
     } catch(err){
       alert('파일을 읽을 수 없습니다. 올바른 저장 파일인지 확인해주세요.');
@@ -732,6 +836,7 @@ document.getElementById('loadInput').addEventListener('change', e => {
 })();
 
 renderAll();
+loadReflection();
 </script>
 </body>
 </html>
