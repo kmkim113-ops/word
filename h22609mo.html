@@ -89,7 +89,6 @@ body { background: #333; display: flex; justify-content: center; min-height: 100
   <div class="tabs">
     <button id="tb-list" class="tab-btn active" onclick="switchTab('list')">단어목록</button>
     <button id="tb-flash" class="tab-btn" onclick="switchTab('flash')">플래시카드</button>
-    <button id="tb-quiz" class="tab-btn" onclick="switchTab('quiz')">퀴즈모드</button>
     <button id="tb-test" class="tab-btn" onclick="switchTab('test')">📝 테스트</button>
   </div>
 
@@ -119,10 +118,6 @@ body { background: #333; display: flex; justify-content: center; min-height: 100
         <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
       </div>
     </div>
-  </div>
-
-  <div id="tab-quiz" class="tab-content">
-    <div id="qarea"></div>
   </div>
 
   <div id="tab-test" class="tab-content">
@@ -771,13 +766,48 @@ function renderRangeBar(id, curIdx, fnName) {
 }
 
 function switchTab(t) {
-      ["list","flash","test"].forEach(function(n) {
-        document.getElementById("tb-"+n).classList.toggle("active", n===t);
-        document.getElementById("tab-"+n).classList.toggle("active", n===t);
-      });
-      if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
-      if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-      if (t==="test")  { renderSetup(); }
+  ["list","flash","test"].forEach(function(n) {
+    var btn = document.getElementById("tb-" + n);
+    var tab = document.getElementById("tab-" + n);
+    if (btn) btn.classList.toggle("active", n === t);
+    if (tab) tab.classList.toggle("active", n === t);
+  });
+  if (t === "list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t === "flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t === "test")  { renderSetup(); }
+}
+
+function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setFR(idx) { fri = idx; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+
+function setFilter(f) {
+  lFilter = f;
+  ["all","unk","fav"].forEach(function(n) {
+    var btn = document.getElementById("fb-" + n);
+    if (btn) btn.classList.toggle("active", n === f);
+  });
+  renderList();
+}
+
+function renderList() {
+  var container = document.getElementById("lcontainer");
+  var q = document.getElementById("lsearch").value.toLowerCase().trim();
+  var range = ranges[lri];
+  var sub = rawWords.slice(range.s, range.e);
+
+  var html = "";
+  sub.forEach(function(w) {
+    var st = getStore(w);
+    var isKnown = st.status === "known";
+    var isFav = !!st.fav;
+
+    if (lFilter === "unk" && isKnown) return;
+    if (lFilter === "fav" && !isFav) return;
+
+    if (q) {
+      var matchW = w.word.toLowerCase().indexOf(q) >= 0;
+      var matchM = w.meaning.toLowerCase().indexOf(q) >= 0;
+      if (!matchW && !matchM) return;
     }
 
     var cardCls = isKnown ? "word-card known" : "word-card";
@@ -870,8 +900,6 @@ function fcPrev() {
   }, {passive:true});
 })();
 
-var qList = [], qIdx = 0, qScore = 0, qLocked = false;
-
 function shuffle(arr) {
   var a = arr.slice();
   for (var i = a.length - 1; i > 0; i--) {
@@ -881,70 +909,7 @@ function shuffle(arr) {
   return a;
 }
 
-function initQuiz() {
-  var pool = shuffle(rawWords);
-  qList = pool.slice(0, Math.min(10, pool.length));
-  qIdx = 0;
-  qScore = 0;
-  qLocked = false;
-  showQuiz();
-}
-
-function showQuiz() {
-  var container = document.getElementById("qarea");
-  if (qIdx >= qList.length) {
-    var pct = Math.round((qScore / qList.length) * 100);
-    var emo = pct === 100 ? "🏆" : pct >= 80 ? "🎉" : pct >= 60 ? "👍" : "💪";
-    var html = '<div class="res-card">';
-    html += '<div class="res-emoji">' + emo + '</div>';
-    html += '<div class="res-score">' + qScore + ' / ' + qList.length + '</div>';
-    html += '<div class="res-pct">' + pct + '점</div>';
-    html += '<button class="btn-main" onclick="initQuiz()">↩ 다시 풀기</button>';
-    html += '</div>';
-    container.innerHTML = html;
-    return;
-  }
-
-  qLocked = false;
-  var cur = qList[qIdx];
-  var opts = [cur.meaning];
-  var others = rawWords.filter(function(x){ return x.meaning !== cur.meaning; });
-  others = shuffle(others).slice(0, 3);
-  others.forEach(function(x){ opts.push(x.meaning); });
-  opts = shuffle(opts);
-
-  var html = '<div class="q-box"><div class="q-word en">' + esc(cur.word) + '</div></div>';
-  html += '<div class="q-options">';
-  opts.forEach(function(o) {
-    var isCor = (o === cur.meaning) ? "1" : "0";
-    html += '<button class="q-opt" data-cor="' + isCor + '" data-w="' + esc(cur.word) + '" onclick="qAns(this)">' + esc(o) + '</button>';
-  });
-  html += '</div>';
-  container.innerHTML = html;
-}
-
-function qAns(btn) {
-  if (qLocked) return;
-  qLocked = true;
-  var isCor = btn.dataset.cor === "1";
-  if (isCor) {
-    btn.classList.add("cor");
-    qScore++;
-    speak(btn.dataset.w);
-  } else {
-    btn.classList.add("wrg");
-    var opts = document.querySelectorAll(".q-opt");
-    for (var i=0; i<opts.length; i++) {
-      if (opts[i].dataset.cor === "1") opts[i].classList.add("cor");
-    }
-  }
-  setTimeout(function(){
-    qIdx++;
-    showQuiz();
-  }, 1000);
-}
-
-var tName = "", tri = 0, tList = [], tIdx = 0, tCorCount = 0, tAnswers = [];
+var tName = "", tri = 0, tList = [], tIdx = 0, tCorCount = 0, tAnswers = [], tLocked = false;
 
 function renderSetup() {
   var container = document.getElementById("tarea");
@@ -989,7 +954,14 @@ function showTest() {
   }
 
   var cur = tList[tIdx];
+  tLocked = false;
   speak(cur.word);
+
+  var opts = [cur.meaning];
+  var others = rawWords.filter(function(x){ return x.meaning !== cur.meaning; });
+  others = shuffle(others).slice(0, 3);
+  others.forEach(function(x){ opts.push(x.meaning); });
+  opts = shuffle(opts);
 
   var pct = Math.round((tIdx / tList.length) * 100);
   var html = '<div class="t-stat">';
@@ -1000,45 +972,41 @@ function showTest() {
   html += '<div class="q-box" style="margin-bottom:16px;">';
   html += '<div class="q-word en">' + esc(cur.word) + '</div>';
   html += '</div>';
-  html += '<input type="text" id="tinput" class="input-field" placeholder="한글 뜻 입력 후 Enter" autocomplete="off" onkeypress="handleTKp(event)">';
-  html += '<button class="btn-main" onclick="submitTestAns()">다음</button>';
+  html += '<div class="q-options">';
+  opts.forEach(function(o) {
+    var isCor = (o === cur.meaning) ? "1" : "0";
+    html += '<button class="q-opt" data-cor="' + isCor + '" onclick="submitTestAns(this)">' + esc(o) + '</button>';
+  });
+  html += '</div>';
 
   container.innerHTML = html;
-  setTimeout(function(){
-    var inp = document.getElementById("tinput");
-    if (inp) inp.focus();
-  }, 50);
 }
 
-function handleTKp(e) {
-  if (e.key === "Enter") submitTestAns();
-}
+function submitTestAns(btn) {
+  if (tLocked) return;
+  tLocked = true;
 
-function isSim(input, correct) {
-  var norm = function(s) {
-    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
-  };
-  var a = norm(input), c = norm(correct);
-  if (!a) return false;
-  if (a === c) return true;
-  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
-  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
-  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
-  return false;
-}
-
-function submitTestAns() {
-  var inp = document.getElementById("tinput");
-  if (!inp) return;
-  var val = inp.value.trim();
   var cur = tList[tIdx];
-  var cor = isSim(val, cur.meaning);
+  var cor = btn.dataset.cor === "1";
+  var chosenText = btn.textContent;
 
-  if (cor) tCorCount++;
-  tAnswers.push({ word: cur.word, meaning: cur.meaning, input: val, isCor: cor });
+  if (cor) {
+    btn.classList.add("cor");
+    tCorCount++;
+    speak(cur.word);
+  } else {
+    btn.classList.add("wrg");
+    var opts = document.querySelectorAll(".q-opt");
+    for (var i = 0; i < opts.length; i++) {
+      if (opts[i].dataset.cor === "1") opts[i].classList.add("cor");
+    }
+  }
+  tAnswers.push({ word: cur.word, meaning: cur.meaning, input: chosenText, isCor: cor });
 
-  tIdx++;
-  showTest();
+  setTimeout(function(){
+    tIdx++;
+    showTest();
+  }, 1000);
 }
 
 function showTestResult() {
