@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>씨유에탑 ✦ 수능완성 실전모의고사 1회 어휘</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --primary-light: #EFF6FF;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warn: #F59E0B;
+  --gray: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F9FAFB;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; -webkit-tap-highlight-color: transparent; }
+body { background: #F3F4F6; display: flex; justify-content: center; min-height: 100vh; }
+.en { font-family: 'Nunito', sans-serif; }
+#app { width: 100%; max-width: 420px; background: #FFFFFF; min-height: 100vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+
+/* Header */
+.header { background: #FFFFFF; padding: 16px 20px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.header-brand { font-size: 18px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+.header-sub { font-size: 13px; color: var(--gray); margin-top: 2px; font-weight: 500; }
+
+/* Navigation Tabs */
+.nav-tabs { display: flex; background: #FFFFFF; border-bottom: 1px solid var(--border); position: sticky; top: 57px; z-index: 99; }
+.tab-btn { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; font-weight: 700; color: var(--gray); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* Main Content Area */
+.content { flex: 1; padding: 16px; display: flex; flex-direction: column; }
+.tab-pane { display: none; flex-direction: column; flex: 1; }
+.tab-pane.active { display: flex; }
+
+/* Range Bar */
+.range-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; scrollbar-width: none; }
+.range-bar::-webkit-scrollbar { display: none; }
+.r-btn { flex: 0 0 auto; padding: 6px 12px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; }
+.r-btn.active { background: var(--primary); color: #FFF; border-color: var(--primary); }
+
+/* Tab 1: List */
+.search-box { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; margin-bottom: 10px; outline: none; background: var(--bg); }
+.search-box:focus { border-color: var(--primary); background: #FFF; }
+.filter-bar { display: flex; gap: 6px; margin-bottom: 14px; }
+.f-btn { flex: 1; padding: 8px 0; border-radius: 8px; border: 1px solid var(--border); background: #FFF; font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; }
+.f-btn.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
+.word-list { display: flex; flex-direction: column; gap: 8px; }
+.w-card { background: #FFF; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; transition: opacity 0.2s; }
+.w-card.known { opacity: 0.35; }
+.chk-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); background: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #FFF; flex-shrink: 0; }
+.w-card.known .chk-btn { background: var(--success); border-color: var(--success); }
+.w-info { flex: 1; overflow: hidden; }
+.w-word { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+.w-mean { font-size: 13px; color: #4B5563; }
+.w-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.ibtn { background: none; border: none; font-size: 18px; padding: 4px; cursor: pointer; opacity: 0.7; }
+.ibtn:active { transform: scale(0.9); }
+.ibtn.fav { opacity: 1; }
+
+/* Tab 2: Flashcard */
+.fc-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 320px; }
+.fc-card { width: 100%; height: 260px; background: #FFF; border: 2px solid var(--border); border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); cursor: pointer; user-select: none; }
+.fc-fav { position: absolute; top: 16px; right: 16px; font-size: 22px; background: none; border: none; cursor: pointer; }
+.fc-word { font-size: 26px; font-weight: 800; color: #111827; word-break: break-word; }
+.fc-mean { font-size: 18px; font-weight: 600; color: var(--primary); margin-top: 16px; display: none; word-break: break-word; }
+.fc-card.flipped .fc-mean { display: block; }
+.fc-hint { font-size: 12px; color: var(--gray); position: absolute; bottom: 16px; }
+
+.fc-nav { display: flex; gap: 10px; width: 100%; margin-top: 20px; }
+.fc-nav-btn { flex: 1; padding: 14px 0; border: none; border-radius: 12px; background: var(--primary); color: #FFF; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+.fc-nav-btn.sec { background: #E5E7EB; color: #374151; box-shadow: none; }
+
+/* Tab 3: Test */
+.test-setup { background: #FFF; border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px; display: block; }
+.t-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; outline: none; }
+.t-input:focus { border-color: var(--primary); }
+.start-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: #FFF; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+
+.test-run { display: flex; flex-direction: column; flex: 1; }
+.t-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; font-weight: 700; color: var(--gray); }
+.t-progress-bg { height: 6px; background: #E5E7EB; border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+.t-progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+.t-qcard { background: #FFF; border: 1px solid var(--border); border-radius: 16px; padding: 24px 16px; text-align: center; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+.t-qword { font-size: 24px; font-weight: 800; color: #111827; word-break: break-word; }
+
+.t-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.topt { width: 100%; padding: 14px 16px; text-align: left; border-radius: 12px; border: 1px solid var(--border); background: #FFF; font-size: 14px; font-weight: 600; color: #374151; cursor: pointer; transition: all 0.2s; }
+.topt.correct { background: #D1FAE5; border-color: var(--success); color: #065F46; font-weight: 700; }
+.topt.wrong { background: #FEE2E2; border-color: var(--danger); color: #991B1B; font-weight: 700; }
+
+.t-next-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: #FFF; font-size: 15px; font-weight: 700; cursor: pointer; display: none; }
+
+/* Test Result */
+.t-result { background: #FFF; border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; }
+.r-emoji { font-size: 48px; margin-bottom: 8px; }
+.r-score { font-size: 24px; font-weight: 800; color: #111827; margin-bottom: 4px; }
+.r-pct { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 20px; }
+
+.r-wrong-list { text-align: left; margin-top: 16px; margin-bottom: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+.r-wrong-title { font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 10px; }
+.r-wrong-item { font-size: 13px; color: #374151; margin-bottom: 8px; background: var(--bg); padding: 8px 12px; border-radius: 8px; }
+
+.r-actions { display: flex; flex-direction: column; gap: 8px; }
+.r-btn-copy { width: 100%; padding: 14px; border: none; border-radius: 12px; background: #25D366; color: #FFF; font-size: 15px; font-weight: 700; cursor: pointer; }
+.r-btn-retry { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: #FFF; color: #374151; font-size: 15px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">수능완성_실전모의고사_1회_어휘 · 총 361단어</div>
+  </div>
+
+  <div class="nav-tabs">
+    <button id="tb-list" class="tab-btn active" onclick="switchTab('list')">단어목록</button>
+    <button id="tb-flash" class="tab-btn" onclick="switchTab('flash')">플래시카드</button>
+    <button id="tb-test" class="tab-btn" onclick="switchTab('test')">📝 테스트</button>
+  </div>
+
+  <div class="content">
+    <!-- Tab 1: List -->
+    <div id="tab-list" class="tab-pane active">
+      <div id="lrbar" class="range-bar"></div>
+      <input type="text" id="lsearch" class="search-box" placeholder="단어 또는 뜻 검색..." oninput="renderList()">
+      <div class="filter-bar">
+        <button id="f-all" class="f-btn active" onclick="setFilter('all')">전체</button>
+        <button id="f-unknown" class="f-btn" onclick="setFilter('unknown')">모름</button>
+        <button id="f-fav" class="f-btn" onclick="setFilter('fav')">⭐ 즐겨찾기</button>
+      </div>
+      <div id="wlist" class="word-list"></div>
+    </div>
+
+    <!-- Tab 2: Flashcard -->
+    <div id="tab-flash" class="tab-pane">
+      <div id="fcrbar" class="range-bar"></div>
+      <div class="fc-container">
+        <div id="fccard" class="fc-card">
+          <button id="fcfav" class="fc-fav" onclick="toggleFcFav(event)">☆</button>
+          <div id="fcword" class="fc-word en"></div>
+          <div id="fcmean" class="fc-mean"></div>
+          <div class="fc-hint">터치하여 뜻 확인</div>
+        </div>
+        <div class="fc-nav">
+          <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+          <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+          <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Test -->
+    <div id="tab-test" class="tab-pane">
+      <div id="t-setup-view" class="test-setup">
+        <div class="form-group">
+          <label class="form-label">학생 이름</label>
+          <input type="text" id="t-name" class="t-input" placeholder="이름을 입력하세요">
+        </div>
+        <div class="form-group">
+          <label class="form-label">테스트 범위</label>
+          <div id="trbar" class="range-bar"></div>
+        </div>
+        <button class="start-btn" onclick="startTest()">테스트 시작 ▶</button>
+      </div>
+
+      <div id="t-run-view" class="test-run" style="display:none;">
+        <div class="t-header">
+          <span id="t-count">1/50</span>
+          <span id="t-score-live">✅ 맞춤: 0</span>
+        </div>
+        <div class="t-progress-bg">
+          <div id="t-pbar" class="t-progress-fill"></div>
+        </div>
+        <div class="t-qcard">
+          <div id="t-qword" class="t-qword en"></div>
+        </div>
+        <div id="toptions" class="t-options"></div>
+        <button id="t-next-btn" class="t-next-btn" onclick="nextQuestion()">다음 →</button>
+      </div>
+
+      <div id="t-result-view" class="t-result" style="display:none;">
+        <div id="r-emoji" class="r-emoji">🏆</div>
+        <div id="r-score" class="r-score">50/50</div>
+        <div id="r-pct" class="r-pct">(100점)</div>
+        <div id="r-wrong-wrap" class="r-wrong-list" style="display:none;">
+          <div class="r-wrong-title">❌ 틀린 단어</div>
+          <div id="r-wrong-items"></div>
+        </div>
+        <div class="r-actions">
+          <button class="r-btn-copy" onclick="copyResult()">📋 카톡으로 결과 복사</button>
+          <button class="r-btn-retry" onclick="resetTest()">↩ 다시 테스트</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var rawWords = [{"word": "adverse", "meaning": "불리한, 부작용의"}, {"word": "alteration", "meaning": "변경, 변형"}, {"word": "apparent", "meaning": "분명한, 명백한"}, {"word": "appreciate", "meaning": "감상하다, 이해하다"}, {"word": "archeologist", "meaning": "고고학자"}, {"word": "article", "meaning": "물품, 기사"}, {"word": "aspect", "meaning": "측면, 양상"}, {"word": "assumption", "meaning": "가정, 추정"}, {"word": "attribute to", "meaning": "~의 탓으로 돌리다"}, {"word": "barrier", "meaning": "장벽, 장애물"}, {"word": "bound to", "meaning": "~할 수밖에 없는"}, {"word": "capability", "meaning": "능력, 역량"}, {"word": "certainty", "meaning": "확신, 확실성"}, {"word": "cognitive", "meaning": "인지적인"}, {"word": "collapse", "meaning": "붕괴하다, 무너지다"}, {"word": "commercial", "meaning": "상업적인"}, {"word": "commitment", "meaning": "헌신, 약속"}, {"word": "compatible", "meaning": "호환 가능한, 양립할 수 있는"}, {"word": "complexity", "meaning": "복잡성"}, {"word": "comprise", "meaning": "~로 구성되다"}, {"word": "concept", "meaning": "개념"}, {"word": "conflict", "meaning": "갈등, 충돌"}, {"word": "consequence", "meaning": "결과, 중요성"}, {"word": "considerable", "meaning": "상당한, 중요한"}, {"word": "consistent", "meaning": "일관된, 지속적인"}, {"word": "constraint", "meaning": "제약, 억제"}, {"word": "consumption", "meaning": "소비, 소모"}, {"word": "contradict", "meaning": "반박하다, 모순되다"}, {"word": "contribution", "meaning": "기여, 기부"}, {"word": "conventional", "meaning": "관습적인, 전통적인"}, {"word": "convey", "meaning": "전달하다, 나르다"}, {"word": "crucial", "meaning": "중대한, 결정적인"}, {"word": "decline", "meaning": "감소하다, 거절하다"}, {"word": "demonstrate", "meaning": "증명하다, 시위하다"}, {"word": "depict", "meaning": "묘사하다, 그리다"}, {"word": "derive from", "meaning": "~에서 유래하다"}, {"word": "determine", "meaning": "결정하다, 밝혀내다"}, {"word": "diminish", "meaning": "줄이다, 약화시키다"}, {"word": "distinction", "meaning": "구별, 차이"}, {"word": "dominate", "meaning": "지배하다, 우세를 점하다"}, {"word": "drastic", "meaning": "격렬한, 과감한"}, {"word": "efficient", "meaning": "효율적인"}, {"word": "eliminate", "meaning": "제거하다, 없애다"}, {"word": "emerge", "meaning": "나타나다, 부상하다"}, {"word": "emphasis", "meaning": "강조, 주안점"}, {"word": "empirical", "meaning": "실증적인, 경험에 의거한"}, {"word": "enable", "meaning": "가능하게 하다"}, {"word": "encounter", "meaning": "부딪히다, 마주치다"}, {"word": "enhance", "meaning": "향상시키다, 높이다"}, {"word": "essential", "meaning": "필수적인, 본질적인"}, {"word": "establish", "meaning": "설립하다, 확립하다"}, {"word": "estimate", "meaning": "추정하다, 견적하다"}, {"word": "evaluate", "meaning": "평가하다"}, {"word": "evident", "meaning": "명백한, 분명한"}, {"word": "evolution", "meaning": "진화, 발전"}, {"word": "exaggerate", "meaning": "과장하다"}, {"word": "exceed", "meaning": "초과하다, 넘어서다"}, {"word": "exclusive", "meaning": "독점적인, 배타적인"}, {"word": "exert", "meaning": "(힘·권력 등을) 행사하다, 가하다"}, {"word": "expansion", "meaning": "확장, 팽창"}, {"word": "explicit", "meaning": "명시적인, 분명한"}, {"word": "exploit", "meaning": "착취하다, 활용하다"}, {"word": "exposure", "meaning": "노출, 폭로"}, {"word": "extensive", "meaning": "광범위한, 대규모의"}, {"word": "facilitate", "meaning": "용이하게 하다, 촉진하다"}, {"word": "fluctuation", "meaning": "변동, 오르내림"}, {"word": "fundamental", "meaning": "근본적인, 핵심적인"}, {"word": "generate", "meaning": "생성하다, 발생시키다"}, {"word": "guarantee", "meaning": "보장하다, 보증"}, {"word": "hypothesis", "meaning": "가설"}, {"word": "identical", "meaning": "동일한, 똑같은"}, {"word": "illusion", "meaning": "환상, 착각"}, {"word": "impact", "meaning": "영향, 충격"}, {"word": "implication", "meaning": "함의, 암시, 영향"}, {"word": "impose", "meaning": "부과하다, 강요하다"}, {"word": "incentive", "meaning": "동기, 장려책"}, {"word": "incorporate", "meaning": "포함하다, 통합하다"}, {"word": "indicate", "meaning": "나타내다, 가리키다"}, {"word": "inevitable", "meaning": "피할 수 없는, 불가피한"}, {"word": "inherent", "meaning": "내재된, 본질적인"}, {"word": "initiate", "meaning": "시작하다, 착수하다"}, {"word": "innovation", "meaning": "혁신, 새 물건"}, {"word": "insight", "meaning": "통찰력"}, {"word": "inspection", "meaning": "점검, 검사"}, {"word": "integrate", "meaning": "통합하다"}, {"word": "intensity", "meaning": "강도, 세기"}, {"word": "interact", "meaning": "상호작용하다"}, {"word": "interpret", "meaning": "해석하다, 통역하다"}, {"word": "intervention", "meaning": "개입, 간섭"}, {"word": "intricate", "meaning": "복잡한, 얽힌"}, {"word": "invaluable", "meaning": "귀중한, 매우 가치 있는"}, {"word": "investigation", "meaning": "조사, 연구"}, {"word": "isolate", "meaning": "격리하다, 고립시키다"}, {"word": "justification", "meaning": "정당화, 명분"}, {"word": "legitimate", "meaning": "합법적인, 정당한"}, {"word": "limitation", "meaning": "한계, 제약"}, {"word": "maintenance", "meaning": "유지, 보수"}, {"word": "manifestation", "meaning": "징후, 명시"}, {"word": "manipulate", "meaning": "조종하다, 조작하다"}, {"word": "marginal", "meaning": "미미한, 주변부의"}, {"word": "mechanism", "meaning": "메커니즘, 구조"}, {"word": "minimal", "meaning": "최소한의"}, {"word": "modest", "meaning": "겸손한, 적당한"}, {"word": "modification", "meaning": "수정, 변경"}, {"word": "monitor", "meaning": "감시하다, 관찰하다"}, {"word": "mutual", "meaning": "상호 간의, 공통의"}, {"word": "neglect", "meaning": "방치하다, 소홀히 하다"}, {"word": "notion", "meaning": "개념, 생각"}, {"word": "objective", "meaning": "객관적인 / 목표"}, {"word": "obstacle", "meaning": "장애물"}, {"word": "obtain", "meaning": "획득하다, 얻다"}, {"word": "obvious", "meaning": "분명한, 명백한"}, {"word": "occupy", "meaning": "점유하다, 차지하다"}, {"word": "occurrence", "meaning": "발생, 사건"}, {"word": "optimal", "meaning": "최선의, 최적의"}, {"word": "outcome", "meaning": "결과"}, {"word": "overall", "meaning": "전반적인, 전체의"}, {"word": "paradox", "meaning": "역설, 모순"}, {"word": "perceive", "meaning": "인식하다, 감지하다"}, {"word": "permanent", "meaning": "영구적인"}, {"word": "persistent", "meaning": "끈질긴, 지속적인"}, {"word": "perspective", "meaning": "시각, 관점"}, {"word": "phenomenon", "meaning": "현상"}, {"word": "plausible", "meaning": "타당한 것 같은, 그럴듯한"}, {"word": "potential", "meaning": "잠재적인 / 잠재력"}, {"word": "pragmatic", "meaning": "실용적인"}, {"word": "precede", "meaning": "~에 앞서다"}, {"word": "precise", "meaning": "정확한, 정밀한"}, {"word": "predict", "meaning": "예측하다"}, {"word": "predominant", "meaning": "두드러진, 우세한"}, {"word": "prejudice", "meaning": "편견, 선입견"}, {"word": "presume", "meaning": "추정하다, 상정하다"}, {"word": "prevalent", "meaning": "일반적인, 널리 퍼진"}, {"word": "prior to", "meaning": "~에 앞서, 사전에"}, {"word": "probability", "meaning": "확률, 개연성"}, {"word": "profound", "meaning": "심오한, 깊은"}, {"word": "prominent", "meaning": "두드러진, 유명한"}, {"word": "proportioned", "meaning": "비례하는, 균형 잡힌"}, {"word": "prospective", "meaning": "장래의, 유망한"}, {"word": "psychological", "meaning": "심리적인"}, {"word": "radical", "meaning": "근본적인, 급진적인"}, {"word": "rational", "meaning": "이성적인, 합리적인"}, {"word": "reconcile", "meaning": "화해시키다, 조화시키다"}, {"word": "reduction", "meaning": "감소, 축소"}, {"word": "redundant", "meaning": "불필요한, 불필요하게 잉여적인"}, {"word": "reinforce", "meaning": "강화하다"}, {"word": "reluctant", "meaning": "꺼리는, 마지못해 하는"}, {"word": "remarkable", "meaning": "놀라운, 주목할 만한"}, {"word": "represent", "meaning": "대표하다, 나타내다"}, {"word": "requirement", "meaning": "요구 조건, 필요 조건"}, {"word": "resistance", "meaning": "저항, 반대"}, {"word": "resolution", "meaning": "결심, 해결, 해상도"}, {"word": "resource", "meaning": "자원, 수단"}, {"word": "restoration", "meaning": "복원, 회복"}, {"word": "restriction", "meaning": "제한, 규제"}, {"word": "retain", "meaning": "유지하다, 보유하다"}, {"word": "reveal", "meaning": "드러내다, 밝히다"}, {"word": "revolution", "meaning": "혁명, 회전"}, {"word": "rigorous", "meaning": "철저한, 엄격한"}, {"word": "sacrificed", "meaning": "희생된"}, {"word": "scarcity", "meaning": "부족, 희소성"}, {"word": "scope", "meaning": "범위, 영역"}, {"word": "scrutiny", "meaning": "정밀 조사"}, {"word": "selective", "meaning": "선택적인"}, {"word": "shift", "meaning": "변화, 이동 / 옮기다"}, {"word": "significance", "meaning": "의미, 중요성"}, {"word": "simultaneous", "meaning": "동시의"}, {"word": "skeptical", "meaning": "회의적인, 의심 많은"}, {"word": "solitary", "meaning": "고독한, 혼자의"}, {"word": "sophisticated", "meaning": "정교한, 세련된"}, {"word": "specific", "meaning": "구체적인, 특정한"}, {"word": "speculate", "meaning": "추측하다, 투기하다"}, {"word": "spontaneous", "meaning": "자발적인, 즉흥적인"}, {"word": "stability", "meaning": "안정성"}, {"word": "stimulus", "meaning": "자극(제)"}, {"word": "subsequent", "meaning": "그 다음의, 차후의"}, {"word": "substantial", "meaning": "상당한, 실질적인"}, {"word": "subtle", "meaning": "미묘한, 감지하기 힘든"}, {"word": "sufficient", "meaning": "충분한"}, {"word": "superior", "meaning": "우월한, 우수한"}, {"word": "supplement", "meaning": "보충하다 / 보충제"}, {"word": "suppress", "meaning": "진압하다, 억제하다"}, {"word": "surpass", "meaning": "능가하다, 뛰어넘다"}, {"word": "susceptible", "meaning": "민감한, 영향받기 쉬운"}, {"word": "sustain", "meaning": "지속시키다, 견디다"}, {"word": "symbolic", "meaning": "상징적인"}, {"word": "temporary", "meaning": "일시적인, 임시의"}, {"word": "tendency", "meaning": "경향, 성향"}, {"word": "theoretical", "meaning": "이론적인"}, {"word": "threshold", "meaning": "문턱, 기준점"}, {"word": "transformation", "meaning": "변화, 변형"}, {"word": "transition", "meaning": "이행, 과도기"}, {"word": "transparent", "meaning": "투명한, 명백한"}, {"word": "tremendous", "meaning": "엄청난, 거대한"}, {"word": "trigger", "meaning": "유발하다 / 방아쇠"}, {"word": "ultimate", "meaning": "궁극적인, 최후의"}, {"word": "underlying", "meaning": "근본적인, 밑에 있는"}, {"word": "undermine", "meaning": "약화시키다"}, {"word": "undertake", "meaning": "(떠)맡다, 착수하다"}, {"word": "uniform", "meaning": "균일한, 한결같은"}, {"word": "unique", "meaning": "유일무이한, 독특한"}, {"word": "precedented", "meaning": "전례가 있는"}, {"word": "unpredictable", "meaning": "예측할 수 없는"}, {"word": "validity", "meaning": "타당성, 유효성"}, {"word": "variation", "meaning": "변화, 변형"}, {"word": "vast", "meaning": "막대한, 광대한"}, {"word": "verify", "meaning": "입증하다, 확인하다"}, {"word": "versatile", "meaning": "다재다능한, 다용도의"}, {"word": "viable", "meaning": "실행 가능한, 생존 가능한"}, {"word": "vulnerable", "meaning": "취약한, 상처받기 쉬운"}, {"word": "yield", "meaning": "산출하다, 양보하다"}, {"word": "abandon", "meaning": "버리다, 포기하다"}, {"word": "abundant", "meaning": "풍부한"}, {"word": "accumulate", "meaning": "축적하다, 모으다"}, {"word": "accurate", "meaning": "정확한"}, {"word": "accustomed to", "meaning": "~에 익숙한"}, {"word": "acquire", "meaning": "습득하다, 얻다"}, {"word": "adaptation", "meaning": "적응, 각색"}, {"word": "adequate", "meaning": "적절한, 충분한"}, {"word": "advocate", "meaning": "옹호하다 / 옹호자"}, {"word": "aesthetic", "meaning": "미학적인, 미적인"}, {"word": "affect", "meaning": "영향을 미치다"}, {"word": "affiliation", "meaning": "소속, 제휴"}, {"word": "affirm", "meaning": "단언하다, 확인하다"}, {"word": "aggression", "meaning": "공격성, 침략"}, {"word": "alienation", "meaning": "소외"}, {"word": "allocation", "meaning": "할당, 배분"}, {"word": "alter", "meaning": "바꾸다, 변경하다"}, {"word": "alternative", "meaning": "대안 / 대안의"}, {"word": "ambiguity", "meaning": "모호함"}, {"word": "ambivalent", "meaning": "양가적인, 반대 감정이 공존하는"}, {"word": "ample", "meaning": "충분한, 풍부한"}, {"word": "analogy", "meaning": "유추, 비유"}, {"word": "anticipate", "meaning": "예상하다, 기대하다"}, {"word": "anxiety", "meaning": "불안, 염려"}, {"word": "artificial", "meaning": "인공적인, 인위적인"}, {"word": "assertion", "meaning": "주장, 단언"}, {"word": "assessment", "meaning": "평가"}, {"word": "assign", "meaning": "할당하다, 부여하다"}, {"word": "assimilate", "meaning": "동화되다, 흡수하다"}, {"word": "association", "meaning": "협회, 연관성"}, {"word": "attain", "meaning": "달성하다, 도달하다"}, {"word": "authentic", "meaning": "진짜의, 신뢰할 만한"}, {"word": "authoritative", "meaning": "권위 있는"}, {"word": "autonomous", "meaning": "자율적인, 자치적인"}, {"word": "bias", "meaning": "편향, 편견"}, {"word": "boundary", "meaning": "경계(선)"}, {"word": "capacity", "meaning": "수용력, 용량, 능력"}, {"word": "causal", "meaning": "인과 관계의"}, {"word": "chronological", "meaning": "연대기순의"}, {"word": "circulate", "meaning": "순환하다, 유포되다"}, {"word": "coincide", "meaning": "동시에 일어나다, 일치하다"}, {"word": "collaboration", "meaning": "협력, 공동 작업"}, {"word": "collective", "meaning": "집단적인, 공동의"}, {"word": "comparable", "meaning": "비교할 만한, 유사한"}, {"word": "compelling", "meaning": "설득력 있는, 강렬한"}, {"word": "compensate for", "meaning": "~을 보상하다, 보완하다"}, {"word": "competence", "meaning": "역량, 능력"}, {"word": "compulsory", "meaning": "의무적인, 강제적인"}, {"word": "concede", "meaning": "인정하다, 양보하다"}, {"word": "conceive", "meaning": "상상하다, 마음속으로 품다"}, {"word": "conclusive", "meaning": "결정적인, 확실한"}, {"word": "conduct", "meaning": "수행하다 / 행위"}, {"word": "confine", "meaning": "제한하다, 가두다"}, {"word": "conform", "meaning": "따르다, 순응하다"}, {"word": "consensus", "meaning": "합의, 공감대"}, {"word": "conservation", "meaning": "보존, 보호"}, {"word": "consolidate", "meaning": "통합하다, 공고히 하다"}, {"word": "conspicuous", "meaning": "눈에 띄는, 두드러진"}, {"word": "constitute", "meaning": "구성하다, 설립하다"}, {"word": "contemplation", "meaning": "사색, 응시"}, {"word": "contemporary", "meaning": "동시대의, 현대의"}, {"word": "contend", "meaning": "주장하다, 다투다"}, {"word": "context", "meaning": "맥락, 문맥"}, {"word": "contradiction", "meaning": "모순, 반박"}, {"word": "controversy", "meaning": "논란, 논쟁"}, {"word": "convert", "meaning": "전환하다, 개조하다"}, {"word": "cooperative", "meaning": "협력적인"}, {"word": "correlate", "meaning": "상관관계를 갖다"}, {"word": "correspond", "meaning": "부합하다, 상응하다"}, {"word": "cultivate", "meaning": "경작하다, 함양하다"}, {"word": "cumulative", "meaning": "누적되는"}, {"word": "deficit", "meaning": "적자, 부족액"}, {"word": "definitive", "meaning": "최종적인, 확정적인"}, {"word": "deliberate", "meaning": "의도적인, 신중한"}, {"word": "denote", "meaning": "나타내다, 의미하다"}, {"word": "deprive A of B", "meaning": "A에게서 B를 빼앗다"}, {"word": "deteriorate", "meaning": "악화되다"}, {"word": "deviation", "meaning": "일탈, 편차"}, {"word": "differentiation", "meaning": "차별화, 구별"}, {"word": "diffusion", "meaning": "확산, 유포"}, {"word": "dilemma", "meaning": "딜레마, 곤경"}, {"word": "dimension", "meaning": "치수, 차원, 측면"}, {"word": "discern", "meaning": "식별하다, 알아차리다"}, {"word": "discipline", "meaning": "규율, 학문 분야"}, {"word": "discrepancy", "meaning": "불일치, 차이"}, {"word": "discretion", "meaning": "재량(권), 신중함"}, {"word": "discrimination", "meaning": "차별, 식별력"}, {"word": "displace", "meaning": "대체하다, 쫓아내다"}, {"word": "disposition", "meaning": "성향, 기질"}, {"word": "disrupt", "meaning": "방해하다, 지장을 주다"}, {"word": "disseminate", "meaning": "유포하다, 퍼뜨리다"}, {"word": "distinctive", "meaning": "독특한, 구별되는"}, {"word": "distortion", "meaning": "왜곡, 비틀림"}, {"word": "divergent", "meaning": "갈라지는, 발산하는"}, {"word": "diversity", "meaning": "다양성"}, {"word": "dominant", "meaning": "지배적인, 우세한"}, {"word": "dual", "meaning": "이중의, 두 가지의"}, {"word": "duration", "meaning": "지속 기간"}, {"word": "elaborate", "meaning": "정교한 / 상세히 설명하다"}, {"word": "elemental", "meaning": "기본적인, 근본적인"}, {"word": "elicit", "meaning": "끌어내다"}, {"word": "eloquent", "meaning": "웅변의, 설득력 있는"}, {"word": "embody", "meaning": "구현하다, 상징하다"}, {"word": "endorse", "meaning": "지지하다, 보증하다"}, {"word": "endure", "meaning": "견디다, 지속되다"}, {"word": "enforce", "meaning": "집행하다, 강요하다"}, {"word": "engagement", "meaning": "참여, 약속"}, {"word": "enlighten", "meaning": "계모하다, 일깨우다"}, {"word": "enormous", "meaning": "거대한, 막대한"}, {"word": "enterprise", "meaning": "기업, 사업"}, {"word": "entity", "meaning": "실체, 독립체"}, {"word": "equation", "meaning": "방정식, 동일시"}, {"word": "equitable", "meaning": "공정한, 공평한"}, {"word": "equivalent", "meaning": "동등한, 상당하는"}, {"word": "eradicate", "meaning": "근절하다, 뿌리뽑다"}, {"word": "erroneous", "meaning": "잘못된, 틀린"}, {"word": "essence", "meaning": "본질, 정수"}, {"word": "ethical", "meaning": "윤리적인, 도덕적인"}, {"word": "evress", "meaning": "탈출, 밖으로 나감"}, {"word": "exacerbate", "meaning": "악화시키다"}, {"word": "exceptional", "meaning": "예외적인, 우수한"}, {"word": "excessive", "meaning": "지나친, 과도한"}, {"word": "exclusion", "meaning": "배제, 제외"}, {"word": "exemplify", "meaning": "전형적인 예가 되다"}, {"word": "exhaustion", "meaning": "고갈, 소진"}, {"word": "expand", "meaning": "확장하다, 넓히다"}, {"word": "expenditure", "meaning": "지출, 소비"}, {"word": "expertise", "meaning": "전문 지식"}, {"word": "explicate", "meaning": "설명하다, 해석하다"}, {"word": "exposure", "meaning": "노출, 밝혀짐"}, {"word": "expressive", "meaning": "표현력이 있는"}, {"word": "extension", "meaning": "연장, 확장"}, {"word": "external", "meaning": "외부의, 외적인"}, {"word": "extinguish", "meaning": "끄다, 소멸시키다"}, {"word": "extract", "meaning": "추출하다, 발췌하다"}, {"word": "extraneous", "meaning": "관련 없는, 외래의"}, {"word": "extravagant", "meaning": "낭비하는, 사치스러운"}, {"word": "fabricate", "meaning": "제작하다, 날조하다"}, {"word": "factual", "meaning": "사실에 기반한"}, {"word": "faculty", "meaning": "능력, 교수진"}, {"word": "fallacy", "meaning": "오류, 틀린 생각"}, {"word": "feasible", "meaning": "실행 가능한"}, {"word": "feature", "meaning": "특징 / 특징으로 삼다"}, {"word": "finite", "meaning": "유한한, 한정된"}, {"word": "flawless", "meaning": "흠 없는, 완벽한"}, {"word": "flexible", "meaning": "유연한, 융통성 있는"}, {"word": "flourish", "meaning": "번창하다, 잘 자라다"}, {"word": "fluidity", "meaning": "유동성, 가변성"}, {"word": "foster", "meaning": "육성하다, 조장하다"}, {"word": "fraction", "meaning": "부분, 파편, 분수"}, {"word": "fragile", "meaning": "부서지기 쉬운, 취약한"}, {"word": "fragmentation", "meaning": "분열, 파편화"}, {"word": "framework", "meaning": "틀, 체계"}, {"word": "friction", "meaning": "마찰, 갈등"}, {"word": "fulfillment", "meaning": "성취, 이행"}, {"word": "futility", "meaning": "헛됨, 무용지물"}, {"word": "generalize", "meaning": "일반화하다"}, {"word": "generic", "meaning": "포괄적인, 일반적인"}, {"word": "genuine", "meaning": "진짜의, 순수한"}, {"word": "governance", "meaning": "통치, 국정 운영"}, {"word": "gradual", "meaning": "점진적인"}, {"word": "grasp", "meaning": "붙잡다, 이해하다"}, {"word": "gravitate", "meaning": "끌리다"}, {"word": "gripping", "meaning": "주로 주의를 끄는, 흥미진진한"}, {"word": "guideline", "meaning": "지침, 가이드라인"}, {"word": "habitat", "meaning": "서식지"}, {"word": "hallmark", "meaning": "특징, 품질 보증 마크"}, {"word": "hinder", "meaning": "방해하다, 저지하다"}, {"word": "homogeneity", "meaning": "동질성"}, {"word": "hostility", "meaning": "적대감, 적의"}, {"word": "humanitarian", "meaning": "인도주의적인"}, {"word": "idealistic", "meaning": "이상주의적인"}, {"word": "ideology", "meaning": "이념, 이데올로기"}, {"word": "idiosyncrasy", "meaning": "특이성, 기이한 점"}, {"word": "ignorant", "meaning": "무지한, 알지 못하는"}, {"word": "illuminate", "meaning": "밝히다, 계몽하다"}, {"word": "imbalance", "meaning": "불균형"}, {"word": "immense", "meaning": "거대한, 엄청난"}, {"word": "immersion", "meaning": "몰입, 몰두"}, {"word": "immutable", "meaning": "불변의, 변경할 수 없는"}, {"word": "impart", "meaning": "전하다, 부여하다"}, {"word": "impartial", "meaning": "공정한, 치우치지 않은"}, {"word": "impediment", "meaning": "장애(물)"}, {"word": "imperative", "meaning": "반드시 해야 하는, 긴급한"}, {"word": "imperfection", "meaning": "결함, 결점"}, {"word": "implicit", "meaning": "암묵적인, 내재된"}, {"word": "impulse", "meaning": "충동, 자극"}, {"word": "inaccessible", "meaning": "접근할 수 없는"}, {"word": "inadequacy", "meaning": "부적절, 불충분"}, {"word": "inadvertent", "meaning": "무심코 한, 우연의"}, {"word": "incentive", "meaning": "자극, 유인책"}, {"word": "incidence", "meaning": "발생률"}, {"word": "inclination", "meaning": "성향, 의향"}, {"word": "inclusive", "meaning": "포괄적인, 모두 포함한"}, {"word": "incompatible", "meaning": "양립할 수 없는"}, {"word": "inconsistent", "meaning": "일관성 없는, 불일치하는"}, {"word": "indifference", "meaning": "무관심"}, {"word": "indispensable", "meaning": "없어서는 안 될, 필수적인"}, {"word": "induce", "meaning": "유도하다, 설득하다"}, {"word": "inequality", "meaning": "불평등"}, {"word": "infer", "meaning": "추론하다"}, {"word": "infinite", "meaning": "무한한"}, {"word": "influential", "meaning": "영향력 있는"}, {"word": "infrastructure", "meaning": "사회 기반 시설"}, {"word": "inhibitious", "meaning": "억제, 주저함"}, {"word": "initiative", "meaning": "주도권, 솔선"}, {"word": "injustice", "meaning": "부당함, 불의"}, {"word": "innate", "meaning": "타고난, 선천적인"}, {"word": "innovation", "meaning": "혁신"}, {"word": "inquiry", "meaning": "질문, 조사"}, {"word": "instability", "meaning": "불안정성"}, {"word": "instinctive", "meaning": "본능적인"}, {"word": "institutional", "meaning": "제도의, 기관의"}, {"word": "instrumental", "meaning": "중요한 역할을 하는"}, {"word": "insufficient", "meaning": "불충분한"}, {"word": "tactile", "meaning": "촉각의"}, {"word": "integral", "meaning": "필수적인, 완전한"}, {"word": "intellectual", "meaning": "지적인"}, {"word": "intensify", "meaning": "강화하다, 심화되다"}, {"word": "intensive", "meaning": "집중적인"}, {"word": "intentional", "meaning": "의도적인"}, {"word": "interconnected", "meaning": "상호 연결된"}, {"word": "interdisciplinary", "meaning": "학제 간의(여러 학문 분야에 걸친)"}, {"word": "intermediate", "meaning": "중간의"}, {"word": "intermittent", "meaning": "간헐적인"}, {"word": "internalize", "meaning": "내면화하다"}, {"word": "interpersonal", "meaning": "대인 관계의"}, {"word": "intervene", "meaning": "개입하다, 중재하다"}, {"word": "intimate", "meaning": "친밀한, 개인적인"}, {"word": "intolerance", "meaning": "편협, 불용인"}, {"word": "intrinsic", "meaning": "고유한, 본질적인"}, {"word": "intuitive", "meaning": "직관적인"}, {"word": "invariable", "meaning": "변함없는"}, {"word": "invasion", "meaning": "침략, 침해"}, {"word": "inventory", "meaning": "재고, 목록"}, {"word": "irreversible", "meaning": "돌이킬 수 없는"}, {"word": "isolation", "meaning": "고립, 격리"}, {"word": "jargon", "meaning": "전문 용어"}, {"word": "jurisdiction", "meaning": "관할권, 사법권"}, {"word": "kinship", "meaning": "친족 관계, 연대감"}, {"word": "landmark", "meaning": "주요 지형물, 획기적 사건"}, {"word": "latitude", "meaning": "위도, 자유"}, {"word": "legacy", "meaning": "유산"}, {"word": "legislation", "meaning": "법률 제정, 법규"}, {"word": "liable", "meaning": "법적 책임이 있는, ~하기 쉬운"}, {"word": "liberalization", "meaning": "자유화"}, {"word": "lifespan", "meaning": "수명"}, {"word": "likeliness", "meaning": "가능성"}, {"word": "linear", "meaning": "직선의, 선형의"}, {"word": "literacy", "meaning": "읽고 쓰는 능력, 교양"}, {"word": "literary", "meaning": "문학의"}, {"word": "livelihood", "meaning": "생계"}, {"word": "logic", "meaning": "논리, 타당성"}, {"word": "longevity", "meaning": "장수, 오랜 지속"}, {"word": "lucid", "meaning": "명쾌한, 명두한"}, {"word": "lucrative", "meaning": "수익성이 좋은"}, {"word": "magnitude", "meaning": "규모, 중요성"}, {"word": "mainstream", "meaning": "주류 / 주류의"}, {"word": "mandatory", "meaning": "의무적인, 법에 의해 정해진"}, {"word": "manifest", "meaning": "명백한 / 드러내다"}, {"word": "manipulation", "meaning": "조작, 조종"}, {"word": "manuscript", "meaning": "원고"}, {"word": "marginalized", "meaning": "소외된"}, {"word": "materialism", "meaning": "물질주의"}, {"word": "matrix", "meaning": "행렬, 모체, 기반"}];
+
+var storeKey = "cutop_suwansung_siljeon1";
+var storeData = {};
+
+try {
+  var saved = localStorage.getItem(storeKey);
+  if (saved) storeData = JSON.parse(saved);
+} catch(e) {}
+
+function saveStore() {
+  try {
+    localStorage.setItem(storeKey, JSON.stringify(storeData));
+  } catch(e) {}
+}
+
+function getItemState(w) {
+  var k = w.word + "|" + w.meaning;
+  return storeData[k] || { status: "unknown", fav: false };
+}
+
+function setItemState(w, key, val) {
+  var k = w.word + "|" + w.meaning;
+  if (!storeData[k]) storeData[k] = { status: "unknown", fav: false };
+  storeData[k][key] = val;
+  saveStore();
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+function speakFc() {
+  speak(document.getElementById("fcword").textContent);
+}
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+
+var ranges = buildRanges(rawWords);
+var lri = 0, fri = 0, tri = 0;
+var curFilter = "all";
+
+function renderRangeBar(elId, activeIdx, clickFnName) {
+  var el = document.getElementById(elId);
+  var html = "";
+  for (var i = 0; i < ranges.length; i++) {
+    var cls = i === activeIdx ? "r-btn active" : "r-btn";
+    html += '<button class="' + cls + '" onclick="' + clickFnName + '(' + i + ')">' + ranges[i].label + '</button>';
+  }
+  el.innerHTML = html;
+}
+
+function setLR(i) { lri = i; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setFR(i) { fri = i; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+function setTR(i) { tri = i; renderRangeBar("trbar", tri, "setTR"); }
+
+function setFilter(f) {
+  curFilter = f;
+  ["all","unknown","fav"].forEach(function(n){
+    document.getElementById("f-"+n).classList.toggle("active", n===f);
+  });
+  renderList();
+}
+
+function renderList() {
+  var r = ranges[lri];
+  var sub = rawWords.slice(r.s, r.e);
+  var q = document.getElementById("lsearch").value.toLowerCase().trim();
+  var el = document.getElementById("wlist");
+  var html = "";
+
+  for (var i = 0; i < sub.length; i++) {
+    var w = sub[i];
+    var st = getItemState(w);
+
+    if (curFilter === "unknown" && st.status === "known") continue;
+    if (curFilter === "fav" && !st.fav) continue;
+
+    if (q) {
+      var matchW = w.word.toLowerCase().indexOf(q) !== -1;
+      var matchM = w.meaning.toLowerCase().indexOf(q) !== -1;
+      if (!matchW && !matchM) continue;
+    }
+
+    var isKnown = st.status === "known";
+    var cardCls = isKnown ? "w-card known" : "w-card";
+    var chkTxt = isKnown ? "✓" : "";
+    var favTxt = st.fav ? "★" : "☆";
+    var favCls = st.fav ? "ibtn fav" : "ibtn";
+    var globalIdx = r.s + i;
+
+    html += '<div class="' + cardCls + '">';
+    html += '<button class="chk-btn" onclick="toggleKnown(' + globalIdx + ')">' + chkTxt + '</button>';
+    html += '<div class="w-info">';
+    html += '<div class="w-word en">' + esc(w.word) + '</div>';
+    html += '<div class="w-mean">' + esc(w.meaning) + '</div>';
+    html += '</div>';
+    html += '<div class="w-actions">';
+    html += '<button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '<button class="' + favCls + '" onclick="toggleListFav(' + globalIdx + ')">' + favTxt + '</button>';
+    html += '</div></div>';
+  }
+  el.innerHTML = html || '<div style="text-align:center; padding:30px; color:var(--gray); font-size:14px;">검색 결과가 없습니다.</div>';
+}
+
+function toggleKnown(idx) {
+  var w = rawWords[idx];
+  var st = getItemState(w);
+  setItemState(w, "status", st.status === "known" ? "unknown" : "known");
+  renderList();
+}
+
+function toggleListFav(idx) {
+  var w = rawWords[idx];
+  var st = getItemState(w);
+  setItemState(w, "fav", !st.fav);
+  renderList();
+}
+
+/* Flashcard Logic */
+var fcPool = [];
+var fcIdx = 0;
+var fcFlipped = false;
+var fcTX = 0;
+
+function initFC() {
+  var r = ranges[fri];
+  fcPool = rawWords.slice(r.s, r.e);
+  fcIdx = 0;
+  showFC();
+}
+
+function showFC() {
+  if (!fcPool.length) return;
+  var w = fcPool[fcIdx];
+  var st = getItemState(w);
+  var card = document.getElementById("fccard");
+  fcFlipped = false;
+  card.className = "fc-card";
+  document.getElementById("fcword").textContent = w.word;
+  document.getElementById("fcmean").textContent = w.meaning;
+  document.getElementById("fcfav").textContent = st.fav ? "★" : "☆";
+}
+
+function fcFlip() {
+  if (fcFlipped) return;
+  fcFlipped = true;
+  document.getElementById("fccard").className = "fc-card flipped";
+  speakFc();
+}
+
+function fcNext() {
+  if (fcIdx < fcPool.length - 1) { fcIdx++; showFC(); }
+}
+
+function fcPrev() {
+  if (fcIdx > 0) { fcIdx--; showFC(); }
+}
+
+function toggleFcFav(e) {
+  e.stopPropagation();
+  var w = fcPool[fcIdx];
+  var st = getItemState(w);
+  setItemState(w, "fav", !st.fav);
+  showFC();
+}
+
+/* Test Logic */
+var tPool = [];
+var tCurIdx = 0;
+var tCorrect = 0;
+var tLocked = false;
+var tCurWord = null;
+var tWrongList = [];
+var tUserName = "";
+
+function renderSetup() {
+  document.getElementById("t-setup-view").style.display = "block";
+  document.getElementById("t-run-view").style.display = "none";
+  document.getElementById("t-result-view").style.display = "none";
+  renderRangeBar("trbar", tri, "setTR");
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = a[i]; a[i] = a[j]; a[j] = temp;
+  }
+  return a;
+}
+
+function startTest() {
+  var nameInp = document.getElementById("t-name").value.trim();
+  if (!nameInp) {
+    alert("이름을 입력해주세요.");
+    return;
+  }
+  tUserName = nameInp;
+  var r = ranges[tri];
+  var pool = rawWords.slice(r.s, r.e);
+  var maxQ = Math.min(50, pool.length);
+  tPool = shuffle(pool).slice(0, maxQ);
+  tCurIdx = 0;
+  tCorrect = 0;
+  tWrongList = [];
+
+  document.getElementById("t-setup-view").style.display = "none";
+  document.getElementById("t-run-view").style.display = "flex";
+  document.getElementById("t-result-view").style.display = "none";
+  showQuestion();
+}
+
+function showQuestion() {
+  tLocked = false;
+  tCurWord = tPool[tCurIdx];
+  document.getElementById("t-count").textContent = (tCurIdx + 1) + "/" + tPool.length;
+  document.getElementById("t-score-live").textContent = "✅ 맞춤: " + tCorrect;
+  document.getElementById("t-pbar").style.width = ((tCurIdx / tPool.length) * 100) + "%";
+  document.getElementById("t-qword").textContent = tCurWord.word;
+  document.getElementById("t-next-btn").style.display = "none";
+
+  var wrongs = [];
+  var otherWords = rawWords.filter(function(w){ return w.meaning !== tCurWord.meaning; });
+  otherWords = shuffle(otherWords);
+
+  for (var i = 0; i < otherWords.length && wrongs.length < 3; i++) {
+    var m = otherWords[i].meaning;
+    var exists = false;
+    for (var j = 0; j < wrongs.length; j++) {
+      if (wrongs[j] === m) { exists = true; break; }
+    }
+    if (!exists) wrongs.push(m);
+  }
+
+  var options = [{ meaning: tCurWord.meaning, isCor: "1" }];
+  for (var k = 0; k < wrongs.length; k++) {
+    options.push({ meaning: wrongs[k], isCor: "0" });
+  }
+  options = shuffle(options);
+
+  var optsContainer = document.getElementById("toptions");
+  var html = "";
+  for (var idx = 0; idx < options.length; idx++) {
+    var opt = options[idx];
+    html += '<button class="topt" data-cor="' + opt.isCor + '" onclick="tAns(this)">' + esc(opt.meaning) + '</button>';
+  }
+  optsContainer.innerHTML = html;
+  speak(tCurWord.word);
+}
+
+function tAns(el) {
+  if (tLocked) return;
+  tLocked = true;
+  var opts = document.querySelectorAll("#toptions .topt");
+  var userAns = el.textContent;
+  var isCorrect = el.getAttribute("data-cor") === "1";
+
+  for (var i = 0; i < opts.length; i++) {
+    var b = opts[i];
+    if (b.getAttribute("data-cor") === "1") b.className += " correct";
+    else if (b === el) b.className += " wrong";
+    b.style.pointerEvents = "none";
+  }
+
+  if (isCorrect) {
+    tCorrect++;
+    speak(tCurWord.word);
+  } else {
+    tWrongList.push({ word: tCurWord.word, userAns: userAns, corAns: tCurWord.meaning });
+  }
+
+  document.getElementById("t-score-live").textContent = "✅ 맞춤: " + tCorrect;
+
+  var nextBtn = document.getElementById("t-next-btn");
+  if (tCurIdx === tPool.length - 1) {
+    nextBtn.textContent = "결과 보기 →";
+  } else {
+    nextBtn.textContent = "다음 →";
+  }
+  nextBtn.style.display = "block";
+}
+
+function nextQuestion() {
+  if (tCurIdx < tPool.length - 1) {
+    tCurIdx++;
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("t-run-view").style.display = "none";
+  document.getElementById("t-result-view").style.display = "block";
+
+  var total = tPool.length;
+  var pct = Math.round((tCorrect / total) * 100);
+
+  var emoji = "💪";
+  if (pct === 100) emoji = "🏆";
+  else if (pct >= 80) emoji = "🎉";
+  else if (pct >= 60) emoji = "👍";
+
+  document.getElementById("r-emoji").textContent = emoji;
+  document.getElementById("r-score").textContent = tCorrect + "/" + total;
+  document.getElementById("r-pct").textContent = "(" + pct + "점)";
+
+  var wrongWrap = document.getElementById("r-wrong-wrap");
+  var wrongItems = document.getElementById("r-wrong-items");
+
+  if (tWrongList.length > 0) {
+    wrongWrap.style.display = "block";
+    var html = "";
+    for (var i = 0; i < tWrongList.length; i++) {
+      var item = tWrongList[i];
+      html += '<div class="r-wrong-item"><b>' + esc(item.word) + '</b> → 입력:' + esc(item.userAns) + ' / 정답:' + esc(item.corAns) + '</div>';
+    }
+    wrongItems.innerHTML = html;
+  } else {
+    wrongWrap.style.display = "none";
+  }
+}
+
+function resetTest() {
+  renderSetup();
+}
+
+function copyResult() {
+  var today = new Date();
+  var dateStr = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0');
+  var total = tPool.length;
+  var pct = Math.round((tCorrect / total) * 100);
+
+  var txt = "[씨유에탑 수능완성_실전모의고사_1회_어휘] 테스트 결과\n";
+  txt += "날짜: " + dateStr + "\n";
+  txt += "이름: " + tUserName + "\n";
+  txt += "점수: " + tCorrect + "/" + total + " (" + pct + "점)\n";
+  txt += "─────────────────\n";
+
+  if (tWrongList.length > 0) {
+    txt += "❌ 틀린 단어 (" + tWrongList.length + "개)\n";
+    for (var i = 0; i < tWrongList.length; i++) {
+      var w = tWrongList[i];
+      txt += "  " + w.word + " → 입력:" + w.userAns + " / 정답:" + w.corAns + "\n";
+    }
+  } else {
+    txt += "❌ 틀린 단어 (0개)\n";
+  }
+
+  txt += "─────────────────\n";
+  var correctWords = [];
+  for (var j = 0; j < tPool.length; j++) {
+    var item = tPool[j];
+    var isWrong = false;
+    for (var k = 0; k < tWrongList.length; k++) {
+      if (tWrongList[k].word === item.word) { isWrong = true; break; }
+    }
+    if (!isWrong) correctWords.push(item.word);
+  }
+  txt += "✅ 맞은 단어: " + correctWords.join(", ");
+
+  navigator.clipboard.writeText(txt).then(function() {
+    alert("결과가 클립보드에 복사되었습니다. 카카오톡에 붙여넣으세요.");
+  }).catch(function() {
+    alert("복사 실패. 권한을 확인해 주세요.");
+  });
+}
+
+function switchTab(t) {
+  ["list","flash","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list") { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="test") { renderSetup(); }
+}
+
+/* Flashcard Touch & Click Event Registration */
+(function(){
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+})();
+
+// Initial Render
+renderRangeBar("lrbar", lri, "setLR");
+renderList();
+</script>
+</body>
+</html>
