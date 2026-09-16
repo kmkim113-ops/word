@@ -2978,65 +2978,13 @@ function speakFc() {
 }
 
 function switchTab(t) {
-  ["list","flash","quiz","test"].forEach(function(n) {
-    document.getElementById("tb-"+n).classList.toggle("active", n===t);
-    document.getElementById("tab-"+n).classList.toggle("active", n===t);
-  });
-  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
-  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-  if (t==="quiz")  { initQuiz(); }
-  if (t==="test")  { renderSetup(); }
-}
-
-function renderRangeBar(elId, activeIdx, fnName) {
-  var el = document.getElementById(elId);
-  var html = "";
-  ranges.forEach(function(r, idx) {
-    var cls = "rbtn" + (idx === activeIdx ? " active" : "");
-    html += '<button class="' + cls + '" onclick="' + fnName + '(' + idx + ')">' + r.label + '</button>';
-  });
-  el.innerHTML = html;
-}
-
-function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
-function setFR(idx) { fri = idx; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-function setTR(idx) { tri = idx; renderRangeBar("trbar", tri, "setTR"); }
-
-function setFilter(f) {
-  listFilter = f;
-  ["all","unknown","fav"].forEach(function(n) {
-    document.getElementById("fb-"+n).classList.toggle("active", n===f);
-  });
-  renderList();
-}
-
-function toggleKnown(idx) {
-  var w = rawWords[idx];
-  var st = getItemState(w);
-  updateItemState(w, "status", st.status === "known" ? "" : "known");
-  renderList();
-}
-
-function toggleFav(idx) {
-  var w = rawWords[idx];
-  var st = getItemState(w);
-  updateItemState(w, "fav", !st.fav);
-  renderList();
-}
-
-function renderList() {
-  var r = ranges[lri];
-  var sub = rawWords.slice(r.s, r.e);
-  var q = document.getElementById("lsearch").value.trim().toLowerCase();
-  var container = document.getElementById("wlist");
-  var html = "";
-
-  sub.forEach(function(w, realIdx) {
-    var idx = r.s + realIdx;
-    var st = getItemState(w);
-
-    if (q) {
-      if (w.word.toLowerCase().indexOf(q) === -1 && w.meaning.toLowerCase().indexOf(q) === -1) return;
+      ["list","flash","test"].forEach(function(n) {
+        document.getElementById("tb-"+n).classList.toggle("active", n===t);
+        document.getElementById("tab-"+n).classList.toggle("active", n===t);
+      });
+      if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+      if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+      if (t==="test")  { renderSetup(); }
     }
     if (listFilter === "unknown" && st.status === "known") return;
     if (listFilter === "fav" && !st.fav) return;
