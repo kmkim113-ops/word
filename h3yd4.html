@@ -128,7 +128,6 @@
     <div class="nav">
       <button class="nav-btn active" id="tb-list" onclick="switchTab('list')">단어목록</button>
       <button class="nav-btn" id="tb-flash" onclick="switchTab('flash')">플래시카드</button>
-      <button class="nav-btn" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</button>
       <button class="nav-btn" id="tb-test" onclick="switchTab('test')">📝 테스트</button>
     </div>
 
@@ -165,12 +164,7 @@
         </div>
       </div>
 
-      <!-- 탭 3: 퀴즈모드 -->
-      <div class="tab-pane" id="tab-quiz">
-        <div class="quiz-container" id="qcontainer"></div>
-      </div>
-
-      <!-- 탭 4: 테스트 -->
+      <!-- 탭 3: 테스트 (4지선다 객관식) -->
       <div class="tab-pane" id="tab-test">
         <div class="test-container" id="tcontainer"></div>
       </div>
@@ -248,13 +242,12 @@
 
     /* Tab Switch */
     function switchTab(t) {
-      ["list","flash","quiz","test"].forEach(function(n) {
+      ["list","flash","test"].forEach(function(n) {
         document.getElementById("tb-"+n).classList.toggle("active", n===t);
         document.getElementById("tab-"+n).classList.toggle("active", n===t);
       });
       if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
       if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-      if (t==="quiz")  { initQuiz(); }
       if (t==="test")  { renderSetup(); }
     }
 
@@ -366,87 +359,7 @@
       showFC();
     }
 
-    /* Tab 3: Quiz */
-    var qQuestions = [];
-    var qIdx = 0;
-    var qScore = 0;
-    var qLocked = false;
-
-    function initQuiz() {
-      var pool = rawWords.slice();
-      pool.sort(function() { return 0.5 - Math.random(); });
-      var count = Math.min(10, pool.length);
-      qQuestions = pool.slice(0, count);
-      qIdx = 0;
-      qScore = 0;
-      qLocked = false;
-      renderQuiz();
-    }
-
-    function renderQuiz() {
-      var container = document.getElementById("qcontainer");
-      if (qIdx >= qQuestions.length) {
-        var pct = Math.round((qScore / qQuestions.length) * 100);
-        var emoji = pct === 100 ? '🏆' : pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '💪';
-        container.innerHTML = 
-          '<div class="res-card">' +
-          '  <div class="res-emoji">' + emoji + '</div>' +
-          '  <div class="res-score">' + qScore + ' / ' + qQuestions.length + '</div>' +
-          '  <div class="res-pct">' + pct + '%</div>' +
-          '  <button class="btn-main" style="margin-top:20px;" onclick="initQuiz()">↩ 다시 풀기</button>' +
-          '</div>';
-        return;
-      }
-
-      var curr = qQuestions[qIdx];
-      var options = [curr];
-      var otherPool = rawWords.filter(function(x) { return x.word !== curr.word; });
-      otherPool.sort(function() { return 0.5 - Math.random(); });
-      for (var i = 0; i < Math.min(3, otherPool.length); i++) {
-        options.push(otherPool[i]);
-      }
-      options.sort(function() { return 0.5 - Math.random(); });
-
-      var html = '';
-      html += '<div class="q-progress">문제 ' + (qIdx + 1) + ' / ' + qQuestions.length + '</div>';
-      html += '<div class="q-card"><div class="q-word en">' + esc(curr.word) + '</div></div>';
-      html += '<div class="q-options">';
-      options.forEach(function(opt) {
-        var isCor = opt.word === curr.word ? "1" : "0";
-        html += '<button class="q-opt" data-cor="' + isCor + '" onclick="qAns(this)">' + esc(opt.meaning) + '</button>';
-      });
-      html += '</div>';
-      container.innerHTML = html;
-    }
-
-    function qAns(btn) {
-      if (qLocked) return;
-      qLocked = true;
-      var isCor = btn.getAttribute("data-cor") === "1";
-      var curr = qQuestions[qIdx];
-
-      if (isCor) {
-        btn.classList.add("correct");
-        qScore++;
-        speak(curr.word);
-      } else {
-        btn.classList.add("wrong");
-        var opts = document.querySelectorAll(".q-opt");
-        for (var i = 0; i < opts.length; i++) {
-          if (opts[i].getAttribute("data-cor") === "1") {
-            opts[i].classList.add("correct");
-          }
-        }
-      }
-
-      setTimeout(function() {
-        qIdx++;
-        qLocked = false;
-        renderQuiz();
-      }, 1000);
-    }
-
-    /* Tab 4: Test */
+    /* Tab 3: Test (4-choice) */
     var tName = "";
     var tRangeIdx = 0;
     var tPool = [];
@@ -454,6 +367,7 @@
     var tCorrectCount = 0;
     var tWrongList = [];
     var tCorrectList = [];
+    var tLocked = false;
 
     function renderSetup() {
       var container = document.getElementById("tcontainer");
@@ -492,6 +406,7 @@
       tCorrectCount = 0;
       tWrongList = [];
       tCorrectList = [];
+      tLocked = false;
       renderTestQuestion();
     }
 
@@ -504,6 +419,15 @@
 
       var curr = tPool[tIdx];
       var pct = Math.round((tIdx / tPool.length) * 100);
+      tLocked = false;
+
+      var options = [curr];
+      var otherPool = rawWords.filter(function(x) { return x.meaning !== curr.meaning; });
+      otherPool.sort(function() { return 0.5 - Math.random(); });
+      for (var i = 0; i < Math.min(3, otherPool.length); i++) {
+        options.push(otherPool[i]);
+      }
+      options.sort(function() { return 0.5 - Math.random(); });
 
       var html = '';
       html += '<div class="test-active">';
@@ -515,45 +439,45 @@
       html += '  <div class="t-card">';
       html += '    <div class="t-word en">' + esc(curr.word) + '</div>';
       html += '  </div>';
-      html += '  <input type="text" class="t-input" id="tAnswerInput" placeholder="한글 뜻 입력" autocomplete="off">';
-      html += '  <button class="btn-main" onclick="submitTestAns()">다음</button>';
+      html += '  <div class="q-options">';
+      options.forEach(function(opt) {
+        var isCor = opt.meaning === curr.meaning ? "1" : "0";
+        html += '<button class="q-opt" data-cor="' + isCor + '" onclick="tAns(this)">' + esc(opt.meaning) + '</button>';
+      });
+      html += '  </div>';
       html += '</div>';
       container.innerHTML = html;
 
       speak(curr.word);
-      var inp = document.getElementById("tAnswerInput");
-      inp.focus();
-      inp.addEventListener("keypress", function(e) {
-        if (e.key === "Enter") submitTestAns();
-      });
     }
 
-    function isSim(input, correct) {
-      var norm = function(s) {
-        return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
-      };
-      var a = norm(input), c = norm(correct);
-      if (a === c) return true;
-      if (a.length >= 2 && c.indexOf(a) >= 0) return true;
-      var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
-      if (core.length >= 2 && a.indexOf(core) >= 0) return true;
-      return false;
-    }
-
-    function submitTestAns() {
-      var inp = document.getElementById("tAnswerInput");
-      var val = inp.value.trim();
+    function tAns(btn) {
+      if (tLocked) return;
+      tLocked = true;
+      var isCor = btn.getAttribute("data-cor") === "1";
       var curr = tPool[tIdx];
+      var chosenText = btn.textContent;
 
-      if (isSim(val, curr.meaning)) {
+      if (isCor) {
+        btn.classList.add("correct");
         tCorrectCount++;
         tCorrectList.push(curr.word);
+        speak(curr.word);
       } else {
-        tWrongList.push({ word: curr.word, input: val || "(미입력)", correct: curr.meaning });
+        btn.classList.add("wrong");
+        var opts = document.querySelectorAll(".q-opt");
+        for (var i = 0; i < opts.length; i++) {
+          if (opts[i].getAttribute("data-cor") === "1") {
+            opts[i].classList.add("correct");
+          }
+        }
+        tWrongList.push({ word: curr.word, input: chosenText, correct: curr.meaning });
       }
 
-      tIdx++;
-      renderTestQuestion();
+      setTimeout(function() {
+        tIdx++;
+        renderTestQuestion();
+      }, 1000);
     }
 
     function renderTestResult() {
