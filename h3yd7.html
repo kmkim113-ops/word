@@ -1328,13 +1328,12 @@
     }
 
     function switchTab(t) {
-      ["list","flash","quiz","test"].forEach(function(n) {
+      ["list","flash","test"].forEach(function(n) {
         document.getElementById("tb-"+n).classList.toggle("active", n===t);
         document.getElementById("tab-"+n).classList.toggle("active", n===t);
       });
       if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
       if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-      if (t==="quiz")  { initQuiz(); }
       if (t==="test")  { renderSetup(); }
     }
 
