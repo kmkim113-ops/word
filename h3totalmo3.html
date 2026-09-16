@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>씨유에탑 ✦ 수능완성 실전모의고사 3회 어휘</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --primary-light: #EFF6FF;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warn: #F59E0B;
+  --gray: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F9FAFB;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; -webkit-tap-highlight-color: transparent; }
+body { background: #F3F4F6; display: flex; justify-content: center; min-height: 100vh; }
+.en { font-family: 'Nunito', sans-serif; }
+#app { width: 100%; max-width: 420px; background: #FFFFFF; min-height: 100vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+
+/* Header */
+.header { background: #FFFFFF; padding: 16px 20px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.header-brand { font-size: 18px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+.header-sub { font-size: 13px; color: var(--gray); margin-top: 2px; font-weight: 500; }
+
+/* Navigation Tabs */
+.nav-tabs { display: flex; background: #FFFFFF; border-bottom: 1px solid var(--border); position: sticky; top: 57px; z-index: 99; }
+.tab-btn { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; font-weight: 700; color: var(--gray); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* Main Content Area */
+.content { flex: 1; padding: 16px; display: flex; flex-direction: column; }
+.tab-pane { display: none; flex-direction: column; flex: 1; }
+.tab-pane.active { display: flex; }
+
+/* Range Bar */
+.range-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; scrollbar-width: none; }
+.range-bar::-webkit-scrollbar { display: none; }
+.r-btn { flex: 0 0 auto; padding: 6px 12px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; }
+.r-btn.active { background: var(--primary); color: #FFF; border-color: var(--primary); }
+
+/* Tab 1: List */
+.search-box { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; margin-bottom: 10px; outline: none; background: var(--bg); }
+.search-box:focus { border-color: var(--primary); background: #FFF; }
+.filter-bar { display: flex; gap: 6px; margin-bottom: 14px; }
+.f-btn { flex: 1; padding: 8px 0; border-radius: 8px; border: 1px solid var(--border); background: #FFF; font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; }
+.f-btn.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
+.word-list { display: flex; flex-direction: column; gap: 8px; }
+.w-card { background: #FFF; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; transition: opacity 0.2s; }
+.w-card.known { opacity: 0.35; }
+.chk-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); background: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #FFF; flex-shrink: 0; }
+.w-card.known .chk-btn { background: var(--success); border-color: var(--success); }
+.w-info { flex: 1; overflow: hidden; }
+.w-word { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+.w-mean { font-size: 13px; color: #4B5563; }
+.w-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.ibtn { background: none; border: none; font-size: 18px; padding: 4px; cursor: pointer; opacity: 0.7; }
+.ibtn:active { transform: scale(0.9); }
+.ibtn.fav { opacity: 1; }
+
+/* Tab 2: Flashcard */
+.fc-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 320px; }
+.fc-card { width: 100%; height: 260px; background: #FFF; border: 2px solid var(--border); border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); cursor: pointer; user-select: none; }
+.fc-fav { position: absolute; top: 16px; right: 16px; font-size: 22px; background: none; border: none; cursor: pointer; }
+.fc-word { font-size: 26px; font-weight: 800; color: #111827; word-break: break-word; }
+.fc-mean { font-size: 18px; font-weight: 600; color: var(--primary); margin-top: 16px; display: none; word-break: break-word; }
+.fc-card.flipped .fc-mean { display: block; }
+.fc-hint { font-size: 12px; color: var(--gray); position: absolute; bottom: 16px; }
+
+.fc-nav { display: flex; gap: 10px; width: 100%; margin-top: 20px; }
+.fc-nav-btn { flex: 1; padding: 14px 0; border: none; border-radius: 12px; background: var(--primary); color: #FFF; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+.fc-nav-btn.sec { background: #E5E7EB; color: #374151; box-shadow: none; }
+
+/* Tab 3: Test */
+.test-setup { background: #FFF; border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px; display: block; }
+.t-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; outline: none; }
+.t-input:focus { border-color: var(--primary); }
+.start-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: #FFF; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+
+.test-run { display: flex; flex-direction: column; flex: 1; }
+.t-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; font-weight: 700; color: var(--gray); }
+.t-progress-bg { height: 6px; background: #E5E7EB; border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+.t-progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+.t-qcard { background: #FFF; border: 1px solid var(--border); border-radius: 16px; padding: 24px 16px; text-align: center; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+.t-qword { font-size: 24px; font-weight: 800; color: #111827; word-break: break-word; }
+
+.t-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.topt { width: 100%; padding: 14px 16px; text-align: left; border-radius: 12px; border: 1px solid var(--border); background: #FFF; font-size: 14px; font-weight: 600; color: #374151; cursor: pointer; transition: all 0.2s; }
+.topt.correct { background: #D1FAE5; border-color: var(--success); color: #065F46; font-weight: 700; }
+.topt.wrong { background: #FEE2E2; border-color: var(--danger); color: #991B1B; font-weight: 700; }
+
+.t-next-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: #FFF; font-size: 15px; font-weight: 700; cursor: pointer; display: none; }
+
+/* Test Result */
+.t-result { background: #FFF; border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; }
+.r-emoji { font-size: 48px; margin-bottom: 8px; }
+.r-score { font-size: 24px; font-weight: 800; color: #111827; margin-bottom: 4px; }
+.r-pct { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 20px; }
+
+.r-wrong-list { text-align: left; margin-top: 16px; margin-bottom: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+.r-wrong-title { font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 10px; }
+.r-wrong-item { font-size: 13px; color: #374151; margin-bottom: 8px; background: var(--bg); padding: 8px 12px; border-radius: 8px; }
+
+.r-actions { display: flex; flex-direction: column; gap: 8px; }
+.r-btn-copy { width: 100%; padding: 14px; border: none; border-radius: 12px; background: #25D366; color: #FFF; font-size: 15px; font-weight: 700; cursor: pointer; }
+.r-btn-retry { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: #FFF; color: #374151; font-size: 15px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-brand en">씨유에탑 ✦ 영어단어장</div>
+    <div class="header-sub">수능완성_실전모의고사_3회_어휘 · 총 344단어</div>
+  </div>
+
+  <div class="nav-tabs">
+    <button id="tb-list" class="tab-btn active" onclick="switchTab('list')">단어목록</button>
+    <button id="tb-flash" class="tab-btn" onclick="switchTab('flash')">플래시카드</button>
+    <button id="tb-test" class="tab-btn" onclick="switchTab('test')">📝 테스트</button>
+  </div>
+
+  <div class="content">
+    <!-- Tab 1: List -->
+    <div id="tab-list" class="tab-pane active">
+      <div id="lrbar" class="range-bar"></div>
+      <input type="text" id="lsearch" class="search-box" placeholder="단어 또는 뜻 검색..." oninput="renderList()">
+      <div class="filter-bar">
+        <button id="f-all" class="f-btn active" onclick="setFilter('all')">전체</button>
+        <button id="f-unknown" class="f-btn" onclick="setFilter('unknown')">모름</button>
+        <button id="f-fav" class="f-btn" onclick="setFilter('fav')">⭐ 즐겨찾기</button>
+      </div>
+      <div id="wlist" class="word-list"></div>
+    </div>
+
+    <!-- Tab 2: Flashcard -->
+    <div id="tab-flash" class="tab-pane">
+      <div id="fcrbar" class="range-bar"></div>
+      <div class="fc-container">
+        <div id="fccard" class="fc-card">
+          <button id="fcfav" class="fc-fav" onclick="toggleFcFav(event)">☆</button>
+          <div id="fcword" class="fc-word en"></div>
+          <div id="fcmean" class="fc-mean"></div>
+          <div class="fc-hint">터치하여 뜻 확인</div>
+        </div>
+        <div class="fc-nav">
+          <button class="fc-nav-btn sec" onclick="fcPrev()">◀ 이전</button>
+          <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
+          <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Test -->
+    <div id="tab-test" class="tab-pane">
+      <div id="t-setup-view" class="test-setup">
+        <div class="form-group">
+          <label class="form-label">학생 이름</label>
+          <input type="text" id="t-name" class="t-input" placeholder="이름을 입력하세요">
+        </div>
+        <div class="form-group">
+          <label class="form-label">테스트 범위</label>
+          <div id="trbar" class="range-bar"></div>
+        </div>
+        <button class="start-btn" onclick="startTest()">테스트 시작 ▶</button>
+      </div>
+
+      <div id="t-run-view" class="test-run" style="display:none;">
+        <div class="t-header">
+          <span id="t-count">1/50</span>
+          <span id="t-score-live">✅ 맞춤: 0</span>
+        </div>
+        <div class="t-progress-bg">
+          <div id="t-pbar" class="t-progress-fill"></div>
+        </div>
+        <div class="t-qcard">
+          <div id="t-qword" class="t-qword en"></div>
+        </div>
+        <div id="toptions" class="t-options"></div>
+        <button id="t-next-btn" class="t-next-btn" onclick="nextQuestion()">다음 →</button>
+      </div>
+
+      <div id="t-result-view" class="t-result" style="display:none;">
+        <div id="r-emoji" class="r-emoji">🏆</div>
+        <div id="r-score" class="r-score">50/50</div>
+        <div id="r-pct" class="r-pct">(100점)</div>
+        <div id="r-wrong-wrap" class="r-wrong-list" style="display:none;">
+          <div class="r-wrong-title">❌ 틀린 단어</div>
+          <div id="r-wrong-items"></div>
+        </div>
+        <div class="r-actions">
+          <button class="r-btn-copy" onclick="copyResult()">📋 카톡으로 결과 복사</button>
+          <button class="r-btn-retry" onclick="resetTest()">↩ 다시 테스트</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var rawWords = [{"word": "host", "meaning": "진행자"}, {"word": "incredible", "meaning": "놀라운"}, {"word": "journey", "meaning": "여정"}, {"word": "mention", "meaning": "언급하다"}, {"word": "phrase", "meaning": "문구"}, {"word": "resume", "meaning": "다시 시작하다"}, {"word": "shortly", "meaning": "곧"}, {"word": "review", "meaning": "시험공부를 하다, 복습하다"}, {"word": "favorite", "meaning": "가장 좋아하는"}, {"word": "forget", "meaning": "잊다"}, {"word": "lend", "meaning": "빌려주다"}, {"word": "check", "meaning": "확인하다"}, {"word": "locker", "meaning": "사물함"}, {"word": "take", "meaning": "(시간이) 걸리다"}, {"word": "enough", "meaning": "충분한"}, {"word": "run", "meaning": "달리다"}, {"word": "exhibition", "meaning": "전시(회)"}, {"word": "traditional", "meaning": "전통적인"}, {"word": "costume", "meaning": "의상"}, {"word": "display", "meaning": "전시하다"}, {"word": "curator", "meaning": "큐레이터, 큐레이터로 일하다"}, {"word": "guide", "meaning": "안내(서); 안내하다"}, {"word": "detail", "meaning": "세부 사항"}, {"word": "historical", "meaning": "역사적인"}, {"word": "context", "meaning": "맥락, 배경"}, {"word": "photograph", "meaning": "사진을 찍다"}, {"word": "flash", "meaning": "플래시"}, {"word": "damage", "meaning": "손상을 입히다"}, {"word": "artifact", "meaning": "유물"}, {"word": "souvenir", "meaning": "기념품"}, {"word": "post-card", "meaning": "엽서"}, {"word": "poster", "meaning": "포스터"}, {"word": "admission", "meaning": "입장(료)"}, {"word": "discount", "meaning": "할인"}, {"word": "student", "meaning": "학생"}, {"word": "ID", "meaning": "신분증"}, {"word": "valid", "meaning": "유효한"}, {"word": "schedule", "meaning": "일정표"}, {"word": "open", "meaning": "(문이) 열려 있는"}, {"word": "closed", "meaning": "닫힌, 휴관인"}, {"word": "holiday", "meaning": "공휴일"}, {"word": "direction", "meaning": "방향, 길 안내"}, {"word": "map", "meaning": "지도"}, {"word": "entrance", "meaning": "입구"}, {"word": "exit", "meaning": "출구"}, {"word": "restroom", "meaning": "화장실"}, {"word": "cafeteria", "meaning": "구내식당"}, {"word": "beverage", "meaning": "음료"}, {"word": "snack", "meaning": "간식"}, {"word": "prohibit", "meaning": "금지하다"}, {"word": "allowed", "meaning": "허용된"}, {"word": "rule", "meaning": "규칙"}, {"word": "respect", "meaning": "존중하다, 준수하다"}, {"word": "staff", "meaning": "직원"}, {"word": "assistance", "meaning": "도움"}, {"word": "inquire", "meaning": "문의하다"}, {"word": "desk", "meaning": "안내대, 데스크"}, {"word": "brochure", "meaning": "안내 책자"}, {"word": "available", "meaning": "이용 가능한"}, {"word": "language", "meaning": "언어"}, {"word": "translation", "meaning": "번역"}, {"word": "audio", "meaning": "오디오의"}, {"word": "headphone", "meaning": "헤드폰"}, {"word": "rent", "meaning": "대여하다"}, {"word": "deposit", "meaning": "보증금"}, {"word": "return", "meaning": "반납하다"}, {"word": "charge", "meaning": "충전하다; 요금"}, {"word": "battery", "meaning": "배터리"}, {"word": "device", "meaning": "기기, 장치"}, {"word": "wifi", "meaning": "와이파이"}, {"word": "connect", "meaning": "연결하다"}, {"word": "password", "meaning": "비밀번호"}, {"word": "access", "meaning": "접근, 이용"}, {"word": "free", "meaning": "무료의"}, {"word": "network", "meaning": "네트워크"}, {"word": "signal", "meaning": "신호"}, {"word": "strong", "meaning": "(신호가) 강한"}, {"word": "weak", "meaning": "(신호가) 약한"}, {"word": "speed", "meaning": "속도"}, {"word": "fast", "meaning": "빠른"}, {"word": "slow", "meaning": "느린"}, {"word": "reboot", "meaning": "재부팅하다"}, {"word": "screen", "meaning": "화면"}, {"word": "brightness", "meaning": "밝기"}, {"word": "adjust", "meaning": "조절하다"}, {"word": "volume", "meaning": "음량"}, {"word": "mute", "meaning": "음소거하다"}, {"word": "speaker", "meaning": "스피커"}, {"word": "microphone", "meaning": "마이크"}, {"word": "cable", "meaning": "케이블"}, {"word": "adapter", "meaning": "어댑터"}, {"word": "plug", "meaning": "플러그"}, {"word": "socket", "meaning": "소켓, 콘센트"}, {"word": "power", "meaning": "전원, 전력"}, {"word": "switch", "meaning": "스위치"}, {"word": "press", "meaning": "누르다"}, {"word": "hold", "meaning": "길게 누르다, 유지하다"}, {"word": "button", "meaning": "버튼"}, {"word": "light", "meaning": "불빛, 조명"}, {"word": "indicator", "meaning": "표시등"}, {"word": "green", "meaning": "초록색의"}, {"word": "red", "meaning": "빨간색의"}, {"word": "blink", "meaning": "깜빡이다"}, {"word": "solid", "meaning": "(빛이) 지속적인, 켜진"}, {"word": "error", "meaning": "오류"}, {"word": "warning", "meaning": "경고"}, {"word": "message", "meaning": "메시지"}, {"word": "system", "meaning": "시스템"}, {"word": "update", "meaning": "업데이트하다"}, {"word": "version", "meaning": "버전"}, {"word": "latest", "meaning": "최신의"}, {"word": "download", "meaning": "다운로드하다"}, {"word": "install", "meaning": "설치하다"}, {"word": "complete", "meaning": "완료된; 완료하다"}, {"word": "process", "meaning": "과정, 프로세스"}, {"word": "restart", "meaning": "재시작하다"}, {"word": "settings", "meaning": "설정"}, {"word": "option", "meaning": "옵션, 선택"}, {"word": "default", "meaning": "기본값"}, {"word": "reset", "meaning": "초기화하다"}, {"word": "confirm", "meaning": "확인하다"}, {"word": "cancel", "meaning": "취소하다"}, {"word": "save", "meaning": "저장하다"}, {"word": "delete", "meaning": "삭제하다"}, {"word": "file", "meaning": "파일"}, {"word": "folder", "meaning": "폴더"}, {"word": "storage", "meaning": "저장 공간"}, {"word": "full", "meaning": "가득 찬"}, {"word": "memory", "meaning": "메모리"}, {"word": "space", "meaning": "공간"}, {"word": "clear", "meaning": "지우다, 비우다"}, {"word": "cache", "meaning": "캐시"}, {"word": "data", "meaning": "데이터"}, {"word": "backup", "meaning": "백업하다"}, {"word": "restore", "meaning": "복원하다"}, {"word": "cloud", "meaning": "클라우드"}, {"word": "sync", "meaning": "동기화하다"}, {"word": "account", "meaning": "계정"}, {"word": "login", "meaning": "로그인하다"}, {"word": "logout", "meaning": "로그아웃하다"}, {"word": "username", "meaning": "사용자 이름"}, {"word": "security", "meaning": "보안"}, {"word": "verification", "meaning": "인증"}, {"word": "code", "meaning": "코드"}, {"word": "send", "meaning": "보내다"}, {"word": "receive", "meaning": "받다"}, {"word": "email", "meaning": "이메일"}, {"word": "inbox", "meaning": "수신함"}, {"word": "spam", "meaning": "스팸"}, {"word": "junk", "meaning": "정크, 정크 메일"}, {"word": "attachment", "meaning": "첨부 파일"}, {"word": "link", "meaning": "링크"}, {"word": "click", "meaning": "클릭하다"}, {"word": "open", "meaning": "열다"}, {"word": "browser", "meaning": "브라우저"}, {"word": "website", "meaning": "웹사이트"}, {"word": "page", "meaning": "페이지"}, {"word": "load", "meaning": "불러오다, 로딩하다"}, {"word": "refresh", "meaning": "새로고침하다"}, {"word": "bookmark", "meaning": "북마크, 즐겨찾기"}, {"word": "history", "meaning": "기록, 방문 기록"}, {"word": "search", "meaning": "검색하다"}, {"word": "query", "meaning": "검색어, 질의"}, {"word": "result", "meaning": "결과"}, {"word": "find", "meaning": "찾다"}, {"word": "locate", "meaning": "위치를 찾다"}, {"word": "site", "meaning": "사이트, 장소"}, {"word": "url", "meaning": "웹주소"}, {"word": "domain", "meaning": "도메인"}, {"word": "server", "meaning": "서버"}, {"word": "client", "meaning": "클라이언트"}, {"word": "connection", "meaning": "연결"}, {"word": "timeout", "meaning": "시간 초과"}, {"word": "offline", "meaning": "오프라인의"}, {"word": "online", "meaning": "온라인의"}, {"word": "status", "meaning": "상태"}, {"word": "active", "meaning": "활성화된"}, {"word": "inactive", "meaning": "비활성화된"}, {"word": "enable", "meaning": "활성화하다"}, {"word": "disable", "meaning": "비활성화하다"}, {"word": "mode", "meaning": "모드"}, {"word": "night", "meaning": "야간"}, {"word": "dark", "meaning": "다크, 어두운"}, {"word": "theme", "meaning": "테마"}, {"word": "color", "meaning": "색상"}, {"word": "font", "meaning": "글꼴"}, {"word": "size", "meaning": "크기"}, {"word": "text", "meaning": "텍스트, 글자"}, {"word": "style", "meaning": "스타일"}, {"word": "bold", "meaning": "굵은"}, {"word": "italic", "meaning": "기울임꼴의"}, {"word": "underline", "meaning": "밑줄"}, {"word": "align", "meaning": "정렬하다"}, {"word": "left", "meaning": "왼쪽"}, {"word": "right", "meaning": "오른쪽"}, {"word": "center", "meaning": "중앙"}, {"word": "justify", "meaning": "양쪽 정렬하다"}, {"word": "copy", "meaning": "복사하다"}, {"word": "paste", "meaning": "붙여넣다"}, {"word": "cut", "meaning": "잘라내다"}, {"word": "undo", "meaning": "실행 취소하다"}, {"word": "redo", "meaning": "다시 실행하다"}, {"word": "select", "meaning": "선택하다"}, {"word": "all", "meaning": "전체"}, {"word": "highlight", "meaning": "강조하다, 하이라이트"}, {"word": "comment", "meaning": "주석, 댓글"}, {"word": "note", "meaning": "메모"}, {"word": "edit", "meaning": "편집하다"}, {"word": "share", "meaning": "공유하다"}, {"word": "export", "meaning": "내보내기하다"}, {"word": "import", "meaning": "가져오기하다"}, {"word": "print", "meaning": "인쇄하다"}, {"word": "pdf", "meaning": "pdf 파일"}, {"word": "image", "meaning": "이미지"}, {"word": "photo", "meaning": "사진"}, {"word": "picture", "meaning": "그림, 사진"}, {"word": "graphic", "meaning": "그래픽"}, {"word": "icon", "meaning": "아이콘"}, {"word": "logo", "meaning": "로고"}, {"word": "banner", "meaning": "배너"}, {"word": "card", "meaning": "카드"}, {"word": "layout", "meaning": "레이아웃, 배치"}, {"word": "grid", "meaning": "격자, 그리드"}, {"word": "column", "meaning": "열, 컬럼"}, {"word": "row", "meaning": "행, 로우"}, {"word": "table", "meaning": "표, 테이블"}, {"word": "header", "meaning": "헤더, 머리말"}, {"word": "footer", "meaning": "푸터, 꼬리말"}, {"word": "margin", "meaning": "여백"}, {"word": "padding", "meaning": "안쪽 여백"}, {"word": "border", "meaning": "테두리"}, {"word": "shadow", "meaning": "그림자"}, {"word": "radius", "meaning": "반경, 모서리 둥글기"}, {"word": "width", "meaning": "너비"}, {"word": "height", "meaning": "높이"}, {"word": "auto", "meaning": "자동"}, {"word": "fixed", "meaning": "고정된"}, {"word": "responsive", "meaning": "반응형의"}, {"word": "mobile", "meaning": "모바일의"}, {"word": "desktop", "meaning": "데스크톱의"}, {"word": "tablet", "meaning": "태블릿의"}, {"word": "screen", "meaning": "화면"}, {"word": "view", "meaning": "보기, 뷰"}, {"word": "window", "meaning": "창"}, {"word": "tab", "meaning": "탭"}, {"word": "bar", "meaning": "바, 막대"}, {"word": "menu", "meaning": "메뉴"}, {"word": "navigation", "meaning": "탐색, 네비게이션"}, {"word": "item", "meaning": "항목"}, {"word": "list", "meaning": "목록"}, {"word": "array", "meaning": "배열"}, {"word": "object", "meaning": "객체"}, {"word": "string", "meaning": "문자열"}, {"word": "number", "meaning": "숫자"}, {"word": "boolean", "meaning": "불리언, 참거짓"}, {"word": "null", "meaning": "널, 빈값"}, {"word": "undefined", "meaning": "정의되지 않음"}, {"word": "variable", "meaning": "변수"}, {"word": "constant", "meaning": "상수"}, {"word": "function", "meaning": "함수"}, {"word": "method", "meaning": "메서드"}, {"word": "parameter", "meaning": "매개변수"}, {"word": "argument", "meaning": "인자"}, {"word": "return", "meaning": "반환하다"}, {"word": "value", "meaning": "값"}, {"word": "type", "meaning": "타입, 유형"}, {"word": "class", "meaning": "클래스"}, {"word": "instance", "meaning": "인스턴스"}, {"word": "property", "meaning": "속성"}, {"word": "attribute", "meaning": "어트리뷰트, 속성"}, {"word": "event", "meaning": "이벤트"}, {"word": "handler", "meaning": "핸들러"}, {"word": "listener", "meaning": "리스너"}, {"word": "trigger", "meaning": "트리거, 발생시키다"}, {"word": "loop", "meaning": "반복문"}, {"word": "condition", "meaning": "조건"}, {"word": "statement", "meaning": "구문, 문장"}, {"word": "operator", "meaning": "연산자"}, {"word": "expression", "meaning": "표현식"}, {"word": "scope", "meaning": "스코프, 범위"}, {"word": "closure", "meaning": "클로저"}, {"word": "promise", "meaning": "프로미스"}, {"word": "async", "meaning": "비동기"}, {"word": "await", "meaning": "대기하다"}, {"word": "fetch", "meaning": "가져오다"}, {"word": "api", "meaning": "api"}, {"word": "json", "meaning": "json"}, {"word": "parse", "meaning": "파싱하다"}, {"word": "stringify", "meaning": "문자열화하다"}, {"word": "storage", "meaning": "스토리지"}, {"word": "local", "meaning": "로컬, 지역의"}, {"word": "session", "meaning": "세션"}, {"word": "cookie", "meaning": "쿠키"}, {"word": "token", "meaning": "토큰"}, {"word": "auth", "meaning": "인증"}, {"word": "key", "meaning": "키, 열쇠"}, {"word": "secret", "meaning": "비밀"}, {"word": "encrypt", "meaning": "암호화하다"}, {"word": "decrypt", "meaning": "복호화하다"}, {"word": "hash", "meaning": "해시"}, {"word": "salt", "meaning": "솔트"}, {"word": "algorithm", "meaning": "알고리즘"}, {"word": "structure", "meaning": "구조"}, {"word": "tree", "meaning": "트리"}, {"word": "graph", "meaning": "그래프"}, {"word": "stack", "meaning": "스택"}, {"word": "queue", "meaning": "큐"}, {"word": "heap", "meaning": "힙"}, {"word": "node", "meaning": "노드"}, {"word": "edge", "meaning": "간선, 에지"}, {"word": "root", "meaning": "루트, 뿌리"}, {"word": "leaf", "meaning": "리프, 잎"}, {"word": "parent", "meaning": "부모"}, {"word": "child", "meaning": "자식"}, {"word": "sibling", "meaning": "형제"}, {"word": "depth", "meaning": "깊이"}, {"word": "height", "meaning": "높이"}, {"word": "weight", "meaning": "가중치"}, {"word": "path", "meaning": "경로"}, {"word": "cycle", "meaning": "사이클, 순환"}, {"word": "sort", "meaning": "정렬하다"}, {"word": "search", "meaning": "탐색하다, 검색하다"}, {"word": "binary", "meaning": "이진의"}, {"word": "linear", "meaning": "선형의"}, {"word": "time", "meaning": "시간"}, {"word": "space", "meaning": "공간"}, {"word": "complexity", "meaning": "복잡도"}, {"word": "big-o", "meaning": "빅오 표기법"}, {"word": "best", "meaning": "최선"}, {"word": "worst", "meaning": "최악"}, {"word": "average", "meaning": "평균"}, {"word": "case", "meaning": "경우, 케이스"}, {"word": "efficiency", "meaning": "효율성"}, {"word": "performance", "meaning": "성능"}, {"word": "optimization", "meaning": "최적화"}, {"word": "benchmark", "meaning": "벤치마크"}, {"word": "profile", "meaning": "프로파일링하다"}, {"word": "debug", "meaning": "디버깅하다"}, {"word": "test", "meaning": "테스트하다"}, {"word": "unit", "meaning": "단위"}, {"word": "integration", "meaning": "통합"}, {"word": "mock", "meaning": "모의, 모의 객체"}, {"word": "stub", "meaning": "스텁"}, {"word": "assert", "meaning": "단언하다"}, {"word": "expect", "meaning": "기대하다"}, {"word": "coverage", "meaning": "커버리지"}, {"word": "bug", "meaning": "버그"}, {"word": "issue", "meaning": "이슈, 문제"}, {"word": "fix", "meaning": "수정하다"}, {"word": "patch", "meaning": "패치"}, {"word": "release", "meaning": "릴리스, 배포"}, {"word": "deploy", "meaning": "배포하다"}, {"word": "pipeline", "meaning": "파이프라인"}, {"word": "build", "meaning": "빌드하다"}, {"word": "compile", "meaning": "컴파일하다"}, {"word": "source", "meaning": "소스, 원본"}, {"word": "target", "meaning": "타겟, 대상"}, {"word": "output", "meaning": "출력"}, {"word": "input", "meaning": "입력"}, {"word": "stream", "meaning": "스트림"}, {"word": "buffer", "meaning": "버퍼"}, {"word": "pipe", "meaning": "파이프"}, {"word": "socket", "meaning": "소켓"}, {"word": "protocol", "meaning": "프로토콜"}, {"word": "http", "meaning": "http"}, {"word": "https", "meaning": "https"}, {"word": "request", "meaning": "요청"}, {"word": "response", "meaning": "응답"}, {"word": "header", "meaning": "헤더"}, {"word": "body", "meaning": "바디, 본문"}, {"word": "status", "meaning": "상태 코드"}, {"word": "ok", "meaning": "성공, ok"}, {"word": "error", "meaning": "에러, 오류"}];
+
+var storeKey = "cutop_suwansung_siljeon3";
+var storeData = {};
+
+try {
+  var saved = localStorage.getItem(storeKey);
+  if (saved) storeData = JSON.parse(saved);
+} catch(e) {}
+
+function saveStore() {
+  try {
+    localStorage.setItem(storeKey, JSON.stringify(storeData));
+  } catch(e) {}
+}
+
+function getItemState(w) {
+  var k = w.word + "|" + w.meaning;
+  return storeData[k] || { status: "unknown", fav: false };
+}
+
+function setItemState(w, key, val) {
+  var k = w.word + "|" + w.meaning;
+  if (!storeData[k]) storeData[k] = { status: "unknown", fav: false };
+  storeData[k][key] = val;
+  saveStore();
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function speak(t) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.lang = "en-US";
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+function speakFc() {
+  speak(document.getElementById("fcword").textContent);
+}
+
+function buildRanges(ws) {
+  var r = [{ label: "전체", s: 0, e: ws.length }];
+  for (var i = 0; i < ws.length; i += 50) {
+    r.push({ label: (i+1) + "-" + Math.min(i+50, ws.length), s: i, e: Math.min(i+50, ws.length) });
+  }
+  return r;
+}
+
+var ranges = buildRanges(rawWords);
+var lri = 0, fri = 0, tri = 0;
+var curFilter = "all";
+
+function renderRangeBar(elId, activeIdx, clickFnName) {
+  var el = document.getElementById(elId);
+  var html = "";
+  for (var i = 0; i < ranges.length; i++) {
+    var cls = i === activeIdx ? "r-btn active" : "r-btn";
+    html += '<button class="' + cls + '" onclick="' + clickFnName + '(' + i + ')">' + ranges[i].label + '</button>';
+  }
+  el.innerHTML = html;
+}
+
+function setLR(i) { lri = i; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+function setFR(i) { fri = i; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+function setTR(i) { tri = i; renderRangeBar("trbar", tri, "setTR"); }
+
+function setFilter(f) {
+  curFilter = f;
+  ["all","unknown","fav"].forEach(function(n){
+    document.getElementById("f-"+n).classList.toggle("active", n===f);
+  });
+  renderList();
+}
+
+function renderList() {
+  var r = ranges[lri];
+  var sub = rawWords.slice(r.s, r.e);
+  var q = document.getElementById("lsearch").value.toLowerCase().trim();
+  var el = document.getElementById("wlist");
+  var html = "";
+
+  for (var i = 0; i < sub.length; i++) {
+    var w = sub[i];
+    var st = getItemState(w);
+
+    if (curFilter === "unknown" && st.status === "known") continue;
+    if (curFilter === "fav" && !st.fav) continue;
+
+    if (q) {
+      var matchW = w.word.toLowerCase().indexOf(q) !== -1;
+      var matchM = w.meaning.toLowerCase().indexOf(q) !== -1;
+      if (!matchW && !matchM) continue;
+    }
+
+    var isKnown = st.status === "known";
+    var cardCls = isKnown ? "w-card known" : "w-card";
+    var chkTxt = isKnown ? "✓" : "";
+    var favTxt = st.fav ? "★" : "☆";
+    var favCls = st.fav ? "ibtn fav" : "ibtn";
+    var globalIdx = r.s + i;
+
+    html += '<div class="' + cardCls + '">';
+    html += '<button class="chk-btn" onclick="toggleKnown(' + globalIdx + ')">' + chkTxt + '</button>';
+    html += '<div class="w-info">';
+    html += '<div class="w-word en">' + esc(w.word) + '</div>';
+    html += '<div class="w-mean">' + esc(w.meaning) + '</div>';
+    html += '</div>';
+    html += '<div class="w-actions">';
+    html += '<button class="ibtn" data-w="' + esc(w.word) + '" onclick="speak(this.dataset.w)">🔊</button>';
+    html += '<button class="' + favCls + '" onclick="toggleListFav(' + globalIdx + ')">' + favTxt + '</button>';
+    html += '</div></div>';
+  }
+  el.innerHTML = html || '<div style="text-align:center; padding:30px; color:var(--gray); font-size:14px;">검색 결과가 없습니다.</div>';
+}
+
+function toggleKnown(idx) {
+  var w = rawWords[idx];
+  var st = getItemState(w);
+  setItemState(w, "status", st.status === "known" ? "unknown" : "known");
+  renderList();
+}
+
+function toggleListFav(idx) {
+  var w = rawWords[idx];
+  var st = getItemState(w);
+  setItemState(w, "fav", !st.fav);
+  renderList();
+}
+
+/* Flashcard Logic */
+var fcPool = [];
+var fcIdx = 0;
+var fcFlipped = false;
+var fcTX = 0;
+
+function initFC() {
+  var r = ranges[fri];
+  fcPool = rawWords.slice(r.s, r.e);
+  fcIdx = 0;
+  showFC();
+}
+
+function showFC() {
+  if (!fcPool.length) return;
+  var w = fcPool[fcIdx];
+  var st = getItemState(w);
+  var card = document.getElementById("fccard");
+  fcFlipped = false;
+  card.className = "fc-card";
+  document.getElementById("fcword").textContent = w.word;
+  document.getElementById("fcmean").textContent = w.meaning;
+  document.getElementById("fcfav").textContent = st.fav ? "★" : "☆";
+}
+
+function fcFlip() {
+  if (fcFlipped) return;
+  fcFlipped = true;
+  document.getElementById("fccard").className = "fc-card flipped";
+  speakFc();
+}
+
+function fcNext() {
+  if (fcIdx < fcPool.length - 1) { fcIdx++; showFC(); }
+}
+
+function fcPrev() {
+  if (fcIdx > 0) { fcIdx--; showFC(); }
+}
+
+function toggleFcFav(e) {
+  e.stopPropagation();
+  var w = fcPool[fcIdx];
+  var st = getItemState(w);
+  setItemState(w, "fav", !st.fav);
+  showFC();
+}
+
+/* Test Logic */
+var tPool = [];
+var tCurIdx = 0;
+var tCorrect = 0;
+var tLocked = false;
+var tCurWord = null;
+var tWrongList = [];
+var tUserName = "";
+
+function renderSetup() {
+  document.getElementById("t-setup-view").style.display = "block";
+  document.getElementById("t-run-view").style.display = "none";
+  document.getElementById("t-result-view").style.display = "none";
+  renderRangeBar("trbar", tri, "setTR");
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = a[i]; a[i] = a[j]; a[j] = temp;
+  }
+  return a;
+}
+
+function startTest() {
+  var nameInp = document.getElementById("t-name").value.trim();
+  if (!nameInp) {
+    alert("이름을 입력해주세요.");
+    return;
+  }
+  tUserName = nameInp;
+  var r = ranges[tri];
+  var pool = rawWords.slice(r.s, r.e);
+  var maxQ = Math.min(50, pool.length);
+  tPool = shuffle(pool).slice(0, maxQ);
+  tCurIdx = 0;
+  tCorrect = 0;
+  tWrongList = [];
+
+  document.getElementById("t-setup-view").style.display = "none";
+  document.getElementById("t-run-view").style.display = "flex";
+  document.getElementById("t-result-view").style.display = "none";
+  showQuestion();
+}
+
+function showQuestion() {
+  tLocked = false;
+  tCurWord = tPool[tCurIdx];
+  document.getElementById("t-count").textContent = (tCurIdx + 1) + "/" + tPool.length;
+  document.getElementById("t-score-live").textContent = "✅ 맞춤: " + tCorrect;
+  document.getElementById("t-pbar").style.width = ((tCurIdx / tPool.length) * 100) + "%";
+  document.getElementById("t-qword").textContent = tCurWord.word;
+  document.getElementById("t-next-btn").style.display = "none";
+
+  var wrongs = [];
+  var otherWords = rawWords.filter(function(w){ return w.meaning !== tCurWord.meaning; });
+  otherWords = shuffle(otherWords);
+
+  for (var i = 0; i < otherWords.length && wrongs.length < 3; i++) {
+    var m = otherWords[i].meaning;
+    var exists = false;
+    for (var j = 0; j < wrongs.length; j++) {
+      if (wrongs[j] === m) { exists = true; break; }
+    }
+    if (!exists) wrongs.push(m);
+  }
+
+  var options = [{ meaning: tCurWord.meaning, isCor: "1" }];
+  for (var k = 0; k < wrongs.length; k++) {
+    options.push({ meaning: wrongs[k], isCor: "0" });
+  }
+  options = shuffle(options);
+
+  var optsContainer = document.getElementById("toptions");
+  var html = "";
+  for (var idx = 0; idx < options.length; idx++) {
+    var opt = options[idx];
+    html += '<button class="topt" data-cor="' + opt.isCor + '" onclick="tAns(this)">' + esc(opt.meaning) + '</button>';
+  }
+  optsContainer.innerHTML = html;
+  speak(tCurWord.word);
+}
+
+function tAns(el) {
+  if (tLocked) return;
+  tLocked = true;
+  var opts = document.querySelectorAll("#toptions .topt");
+  var userAns = el.textContent;
+  var isCorrect = el.getAttribute("data-cor") === "1";
+
+  for (var i = 0; i < opts.length; i++) {
+    var b = opts[i];
+    if (b.getAttribute("data-cor") === "1") b.className += " correct";
+    else if (b === el) b.className += " wrong";
+    b.style.pointerEvents = "none";
+  }
+
+  if (isCorrect) {
+    tCorrect++;
+    speak(tCurWord.word);
+  } else {
+    tWrongList.push({ word: tCurWord.word, userAns: userAns, corAns: tCurWord.meaning });
+  }
+
+  document.getElementById("t-score-live").textContent = "✅ 맞춤: " + tCorrect;
+
+  var nextBtn = document.getElementById("t-next-btn");
+  if (tCurIdx === tPool.length - 1) {
+    nextBtn.textContent = "결과 보기 →";
+  } else {
+    nextBtn.textContent = "다음 →";
+  }
+  nextBtn.style.display = "block";
+}
+
+function nextQuestion() {
+  if (tCurIdx < tPool.length - 1) {
+    tCurIdx++;
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("t-run-view").style.display = "none";
+  document.getElementById("t-result-view").style.display = "block";
+
+  var total = tPool.length;
+  var pct = Math.round((tCorrect / total) * 100);
+
+  var emoji = "💪";
+  if (pct === 100) emoji = "🏆";
+  else if (pct >= 80) emoji = "🎉";
+  else if (pct >= 60) emoji = "👍";
+
+  document.getElementById("r-emoji").textContent = emoji;
+  document.getElementById("r-score").textContent = tCorrect + "/" + total;
+  document.getElementById("r-pct").textContent = "(" + pct + "점)";
+
+  var wrongWrap = document.getElementById("r-wrong-wrap");
+  var wrongItems = document.getElementById("r-wrong-items");
+
+  if (tWrongList.length > 0) {
+    wrongWrap.style.display = "block";
+    var html = "";
+    for (var i = 0; i < tWrongList.length; i++) {
+      var item = tWrongList[i];
+      html += '<div class="r-wrong-item"><b>' + esc(item.word) + '</b> → 입력:' + esc(item.userAns) + ' / 정답:' + esc(item.corAns) + '</div>';
+    }
+    wrongItems.innerHTML = html;
+  } else {
+    wrongWrap.style.display = "none";
+  }
+}
+
+function resetTest() {
+  renderSetup();
+}
+
+function copyResult() {
+  var today = new Date();
+  var dateStr = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0');
+  var total = tPool.length;
+  var pct = Math.round((tCorrect / total) * 100);
+
+  var txt = "[씨유에탑 수능완성_실전모의고사_3회_어휘] 테스트 결과\n";
+  txt += "날짜: " + dateStr + "\n";
+  txt += "이름: " + tUserName + "\n";
+  txt += "점수: " + tCorrect + "/" + total + " (" + pct + "점)\n";
+  txt += "─────────────────\n";
+
+  if (tWrongList.length > 0) {
+    txt += "❌ 틀린 단어 (" + tWrongList.length + "개)\n";
+    for (var i = 0; i < tWrongList.length; i++) {
+      var w = tWrongList[i];
+      txt += "  " + w.word + " → 입력:" + w.userAns + " / 정답:" + w.corAns + "\n";
+    }
+  } else {
+    txt += "❌ 틀린 단어 (0개)\n";
+  }
+
+  txt += "─────────────────\n";
+  var correctWords = [];
+  for (var j = 0; j < tPool.length; j++) {
+    var item = tPool[j];
+    var isWrong = false;
+    for (var k = 0; k < tWrongList.length; k++) {
+      if (tWrongList[k].word === item.word) { isWrong = true; break; }
+    }
+    if (!isWrong) correctWords.push(item.word);
+  }
+  txt += "✅ 맞은 단어: " + correctWords.join(", ");
+
+  navigator.clipboard.writeText(txt).then(function() {
+    alert("결과가 클립보드에 복사되었습니다. 카카오톡에 붙여넣으세요.");
+  }).catch(function() {
+    alert("복사 실패. 권한을 확인해 주세요.");
+  });
+}
+
+function switchTab(t) {
+  ["list","flash","test"].forEach(function(n) {
+    document.getElementById("tb-"+n).classList.toggle("active", n===t);
+    document.getElementById("tab-"+n).classList.toggle("active", n===t);
+  });
+  if (t==="list") { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+  if (t==="test") { renderSetup(); }
+}
+
+/* Flashcard Touch & Click Event Registration */
+(function(){
+  var card = document.getElementById("fccard");
+  card.addEventListener("click", function(e) {
+    if (e.target.id === "fcfav") return;
+    fcFlip();
+  });
+  card.addEventListener("touchstart", function(e) {
+    fcTX = e.touches[0].clientX;
+  }, {passive:true});
+  card.addEventListener("touchend", function(e) {
+    var dx = e.changedTouches[0].clientX - fcTX;
+    if (Math.abs(dx) > 50) { if (dx < 0) fcNext(); else fcPrev(); }
+  }, {passive:true});
+})();
+
+// Initial Render
+renderRangeBar("lrbar", lri, "setLR");
+renderList();
+</script>
+</body>
+</html>
