@@ -111,7 +111,6 @@ body { background: #111827; display: flex; justify-content: center; min-height: 
   <div class="nav-tabs">
     <button id="tb-list" class="tab-btn active" onclick="switchTab('list')">단어목록</button>
     <button id="tb-flash" class="tab-btn" onclick="switchTab('flash')">플래시카드</button>
-    <button id="tb-quiz" class="tab-btn" onclick="switchTab('quiz')">퀴즈모드</button>
     <button id="tb-test" class="tab-btn" onclick="switchTab('test')">📝 테스트</button>
   </div>
 
@@ -145,12 +144,7 @@ body { background: #111827; display: flex; justify-content: center; min-height: 
     </div>
   </div>
 
-  <!-- TAB 3: QUIZ -->
-  <div id="tab-quiz" class="tab-content">
-    <div id="qbox"></div>
-  </div>
-
-  <!-- TAB 4: TEST -->
+  <!-- TAB 3: TEST -->
   <div id="tab-test" class="tab-content">
     <div id="tbox"></div>
   </div>
@@ -1094,8 +1088,7 @@ var STORE_KEY = "cutop_26_6_mogo";
 var lfilter = "all";
 var lri = 0, fri = 0, tri = 0;
 var fcIdx = 0, fcList = [], fcTX = 0;
-var qList = [], qIdx = 0, qScore = 0, qLocked = false;
-var tList = [], tIdx = 0, tScore = 0, tErr = [], tCorr = [], tName = "";
+var tList = [], tIdx = 0, tScore = 0, tErr = [], tCorr = [], tName = "", tLocked = false;
 
 function esc(s) {
   return String(s)
@@ -1154,18 +1147,17 @@ function renderRangeBar(elId, curIdx, fnName) {
 }
 
 function switchTab(t) {
-  ["list","flash","quiz","test"].forEach(function(n) {
-    document.getElementById("tb-"+n).classList.toggle("active", n===t);
-    document.getElementById("tab-"+n).classList.toggle("active", n===t);
-  });
-  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
-  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-  if (t==="quiz")  { initQuiz(); }
-  if (t==="test")  { renderSetup(); }
-}
+      ["list","flash","test"].forEach(function(n) {
+        document.getElementById("tb-"+n).classList.toggle("active", n===t);
+        document.getElementById("tab-"+n).classList.toggle("active", n===t);
+      });
+      if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+      if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+      if (t==="test")  { renderSetup(); }
+    }
 
-/* LIST LOGIC */
 function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+
 function setFilter(f) {
   lfilter = f;
   ["all","unk","fav"].forEach(function(n) {
@@ -1177,7 +1169,7 @@ function setFilter(f) {
 function toggleKnown(k) {
   var st = getStore();
   st[k] = st[k] || {};
-  st[k].status = (st[k].status === "known") ? "" : "known";
+  st[k].known = !st[k].known;
   setStore(st);
   renderList();
 }
@@ -1191,25 +1183,24 @@ function toggleFav(k) {
 }
 
 function renderList() {
-  var st = getStore();
   var r = ranges[lri];
   var sub = rawWords.slice(r.s, r.e);
-  var q = document.getElementById("lsearch").value.toLowerCase();
-
+  var qEl = document.getElementById("lsearch");
+  var q = qEl ? qEl.value.trim().toLowerCase() : "";
+  var st = getStore();
   var html = "";
+
   sub.forEach(function(w) {
     var k = getKey(w);
-    var item = st[k] || {};
-    var isK = item.status === "known";
-    var isF = !!item.fav;
+    var isK = st[k] && st[k].known;
+    var isF = st[k] && st[k].fav;
 
     if (lfilter === "unk" && isK) return;
     if (lfilter === "fav" && !isF) return;
-
     if (q) {
-      var matchW = w.word.toLowerCase().indexOf(q) >= 0;
-      var matchM = w.meaning.toLowerCase().indexOf(q) >= 0;
-      if (!matchW && !matchM) return;
+      var mw = w.word.toLowerCase().indexOf(q) >= 0;
+      var mm = w.meaning.toLowerCase().indexOf(q) >= 0;
+      if (!mw && !mm) return;
     }
 
     var cardCls = isK ? "word-card known" : "word-card";
@@ -1292,84 +1283,7 @@ function shuffle(a) {
   return arr;
 }
 
-function initQuiz() {
-  var pool = shuffle(rawWords);
-  qList = pool.slice(0, Math.min(10, pool.length));
-  qIdx = 0;
-  qScore = 0;
-  qLocked = false;
-  renderQuiz();
-}
-
-function renderQuiz() {
-  if (qIdx >= qList.length) {
-    var pct = Math.round((qScore / qList.length) * 100);
-    var emo = pct === 100 ? "🏆" : pct >= 80 ? "🎉" : pct >= 60 ? "👍" : "💪";
-    var html = '<div class="res-box">';
-    html += '<div class="res-emoji">' + emo + '</div>';
-    html += '<div class="res-score">' + qScore + ' / ' + qList.length + '</div>';
-    html += '<div class="res-pct">' + pct + '점</div>';
-    html += '<button class="btn-primary" onclick="initQuiz()">↩ 다시 풀기</button>';
-    html += '</div>';
-    document.getElementById("qbox").innerHTML = html;
-    return;
-  }
-
-  qLocked = false;
-  var cur = qList[qIdx];
-  var opts = [cur.meaning];
-  var others = shuffle(rawWords.filter(function(x){ return x.word !== cur.word; }));
-  for (var i = 0; i < Math.min(3, others.length); i++) {
-    opts.push(others[i].meaning);
-  }
-  opts = shuffle(opts);
-
-  var html = '<div class="q-box">';
-  html += '<div class="q-head">문제 ' + (qIdx + 1) + ' / ' + qList.length + '</div>';
-  html += '<div class="q-word en">' + esc(cur.word) + '</div>';
-  html += '<div class="q-opts">';
-  opts.forEach(function(opt) {
-    var isC = (opt === cur.meaning) ? "1" : "0";
-    html += '<button class="q-opt" data-cor="' + isC + '" onclick="qAns(this)">' + esc(opt) + '</button>';
-  });
-  html += '</div></div>';
-  document.getElementById("qbox").innerHTML = html;
-}
-
-function qAns(btn) {
-  if (qLocked) return;
-  qLocked = true;
-  var isC = btn.dataset.cor === "1";
-  if (isC) {
-    btn.classList.add("correct");
-    qScore++;
-    speak(qList[qIdx].word);
-  } else {
-    btn.classList.add("wrong");
-    var btns = document.querySelectorAll(".q-opt");
-    for (var i = 0; i < btns.length; i++) {
-      if (btns[i].dataset.cor === "1") btns[i].classList.add("correct");
-    }
-  }
-  setTimeout(function() {
-    qIdx++;
-    renderQuiz();
-  }, 1000);
-}
-
 /* TEST LOGIC */
-function isSim(input, correct) {
-  var norm = function(s) {
-    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
-  };
-  var a = norm(input), c = norm(correct);
-  if (a === c) return true;
-  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
-  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
-  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
-  return false;
-}
-
 function renderSetup() {
   var html = '<div class="t-setup">';
   html += '<label class="t-label">학생 이름</label>';
@@ -1405,6 +1319,14 @@ function renderTestCard() {
 
   var cur = tList[tIdx];
   var pct = Math.round((tIdx / tList.length) * 100);
+  tLocked = false;
+
+  var opts = [cur.meaning];
+  var others = shuffle(rawWords.filter(function(x){ return x.meaning !== cur.meaning; }));
+  for (var i = 0; i < Math.min(3, others.length); i++) {
+    opts.push(others[i].meaning);
+  }
+  opts = shuffle(opts);
 
   var html = '<div>';
   html += '<div class="t-prog">';
@@ -1414,36 +1336,44 @@ function renderTestCard() {
   html += '<div class="p-bar-bg"><div class="p-bar-fill" style="width:' + pct + '%"></div></div>';
   html += '<div class="q-box" style="text-align:center;">';
   html += '<div class="q-word en" style="font-size:26px; margin-bottom:24px;">' + esc(cur.word) + '</div>';
-  html += '<input type="text" id="tinput" class="t-input" placeholder="한글 뜻 입력 후 Enter" autocomplete="off" onkeydown="chkTestKey(event)">';
-  html += '<button class="btn-primary" onclick="submitTest()">다음 문제 ▶</button>';
+  html += '<div class="q-opts">';
+  opts.forEach(function(opt) {
+    var isC = (opt === cur.meaning) ? "1" : "0";
+    html += '<button class="q-opt" data-cor="' + isC + '" onclick="submitTest(this)">' + esc(opt) + '</button>';
+  });
+  html += '</div>';
   html += '</div></div>';
 
   document.getElementById("tbox").innerHTML = html;
-  setTimeout(function() {
-    var inp = document.getElementById("tinput");
-    if (inp) inp.focus();
-    speak(cur.word);
-  }, 50);
+  speak(cur.word);
 }
 
-function chkTestKey(e) {
-  if (e.key === "Enter") submitTest();
-}
+function submitTest(btn) {
+  if (tLocked) return;
+  tLocked = true;
 
-function submitTest() {
-  var inp = document.getElementById("tinput");
-  var val = inp ? inp.value.trim() : "";
   var cur = tList[tIdx];
+  var isC = btn.dataset.cor === "1";
+  var chosenText = btn.textContent;
 
-  if (isSim(val, cur.meaning)) {
+  if (isC) {
+    btn.classList.add("correct");
     tScore++;
     tCorr.push(cur.word);
+    speak(cur.word);
   } else {
-    tErr.push({ word: cur.word, input: val || "(미입력)", correct: cur.meaning });
+    btn.classList.add("wrong");
+    var btns = document.querySelectorAll(".q-opt");
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].dataset.cor === "1") btns[i].classList.add("correct");
+    }
+    tErr.push({ word: cur.word, input: chosenText, correct: cur.meaning });
   }
 
-  tIdx++;
-  renderTestCard();
+  setTimeout(function() {
+    tIdx++;
+    renderTestCard();
+  }, 1000);
 }
 
 function renderTestResult() {
