@@ -771,49 +771,13 @@ function renderRangeBar(id, curIdx, fnName) {
 }
 
 function switchTab(t) {
-  ["list","flash","quiz","test"].forEach(function(n) {
-    var btn = document.getElementById("tb-" + n);
-    var tab = document.getElementById("tab-" + n);
-    if (btn) btn.classList.toggle("active", n === t);
-    if (tab) tab.classList.toggle("active", n === t);
-  });
-  if (t === "list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
-  if (t === "flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-  if (t === "quiz")  { initQuiz(); }
-  if (t === "test")  { renderSetup(); }
-}
-
-function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
-function setFR(idx) { fri = idx; renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-
-function setFilter(f) {
-  lFilter = f;
-  ["all","unk","fav"].forEach(function(n) {
-    var btn = document.getElementById("fb-" + n);
-    if (btn) btn.classList.toggle("active", n === f);
-  });
-  renderList();
-}
-
-function renderList() {
-  var container = document.getElementById("lcontainer");
-  var q = document.getElementById("lsearch").value.toLowerCase().trim();
-  var range = ranges[lri];
-  var sub = rawWords.slice(range.s, range.e);
-
-  var html = "";
-  sub.forEach(function(w) {
-    var st = getStore(w);
-    var isKnown = st.status === "known";
-    var isFav = !!st.fav;
-
-    if (lFilter === "unk" && isKnown) return;
-    if (lFilter === "fav" && !isFav) return;
-
-    if (q) {
-      var matchW = w.word.toLowerCase().indexOf(q) >= 0;
-      var matchM = w.meaning.toLowerCase().indexOf(q) >= 0;
-      if (!matchW && !matchM) return;
+      ["list","flash","test"].forEach(function(n) {
+        document.getElementById("tb-"+n).classList.toggle("active", n===t);
+        document.getElementById("tab-"+n).classList.toggle("active", n===t);
+      });
+      if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+      if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+      if (t==="test")  { renderSetup(); }
     }
 
     var cardCls = isKnown ? "word-card known" : "word-card";
