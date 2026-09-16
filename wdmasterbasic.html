@@ -126,7 +126,6 @@ body {
   <div class="nav-tabs">
     <button class="tab-btn active" id="tb-list" onclick="switchTab('list')">단어목록</button>
     <button class="tab-btn" id="tb-flash" onclick="switchTab('flash')">플래시카드</button>
-    <button class="tab-btn" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</button>
     <button class="tab-btn" id="tb-test" onclick="switchTab('test')">📝 테스트</button>
   </div>
   <div class="tab-content active" id="tab-list">
@@ -151,9 +150,6 @@ body {
       <button class="fc-nav-btn" style="background:var(--warn);" onclick="speakFc()">🔊</button>
       <button class="fc-nav-btn" onclick="fcNext()">다음 ▶</button>
     </div>
-  </div>
-  <div class="tab-content" id="tab-quiz">
-    <div id="qarea"></div>
   </div>
   <div class="tab-content" id="tab-test">
     <div id="tarea"></div>
@@ -1550,8 +1546,6 @@ function fcPrev() {
   showFC();
 }
 
-var qList = [], qIdx = 0, qScore = 0, qLocked = false;
-
 function shuffle(arr) {
   var a = arr.slice();
   for (var i = a.length - 1; i > 0; i--) {
@@ -1561,74 +1555,7 @@ function shuffle(arr) {
   return a;
 }
 
-function initQuiz() {
-  if (rawWords.length === 0) return;
-  var count = Math.min(10, rawWords.length);
-  qList = shuffle(rawWords).slice(0, count);
-  qIdx = 0; qScore = 0; qLocked = false;
-  showQuiz();
-}
-
-function showQuiz() {
-  qLocked = false;
-  var area = document.getElementById("qarea");
-  if (qIdx >= qList.length) {
-    var pct = Math.round((qScore / qList.length) * 100);
-    var emo = pct === 100 ? "🏆" : (pct >= 80 ? "🎉" : (pct >= 60 ? "👍" : "💪"));
-    var html = '<div class="res-box">';
-    html += '  <div style="font-size:40px;">' + emo + '</div>';
-    html += '  <div class="res-score">' + qScore + ' / ' + qList.length + '</div>';
-    html += '  <div style="color:var(--gray); margin-bottom:20px;">' + pct + '점</div>';
-    html += '  <button class="btn-m" onclick="initQuiz()">↩ 다시 풀기</button>';
-    html += '</div>';
-    area.innerHTML = html;
-    return;
-  }
-
-  var cur = qList[qIdx];
-  var choices = [cur.meaning];
-  var others = shuffle(rawWords.filter(function(x){ return x.meaning !== cur.meaning; }));
-  for (var i = 0; i < Math.min(3, others.length); i++) {
-    choices.push(others[i].meaning);
-  }
-  choices = shuffle(choices);
-
-  var html = '<div class="tstatus"><span>문제 ' + (qIdx+1) + '/' + qList.length + '</span><span>맞춤: ' + qScore + '</span></div>';
-  html += '<div class="qbox"><div class="qword en">' + esc(cur.word) + '</div></div>';
-  html += '<div class="opts">';
-  choices.forEach(function(c) {
-    var isCor = (c === cur.meaning) ? "1" : "0";
-    html += '<button class="obtn" data-cor="' + isCor + '" onclick="qAns(this)">' + esc(c) + '</button>';
-  });
-  html += '</div>';
-  area.innerHTML = html;
-}
-
-function qAns(btn) {
-  if (qLocked) return;
-  qLocked = true;
-  var isCor = btn.getAttribute("data-cor") === "1";
-  var cur = qList[qIdx];
-
-  if (isCor) {
-    btn.classList.add("cor");
-    qScore++;
-    speak(cur.word);
-  } else {
-    btn.classList.add("wrg");
-    var all = document.querySelectorAll(".obtn");
-    for (var i = 0; i < all.length; i++) {
-      if (all[i].getAttribute("data-cor") === "1") all[i].classList.add("cor");
-    }
-  }
-
-  setTimeout(function() {
-    qIdx++;
-    showQuiz();
-  }, 1000);
-}
-
-var tName = "", tPool = [], tIdx = 0, tScore = 0, tAnsList = [];
+var tName = "", tPool = [], tIdx = 0, tScore = 0, tAnsList = [], tLocked = false;
 
 function renderSetup() {
   var area = document.getElementById("tarea");
@@ -1656,18 +1583,6 @@ function startTest() {
   showTest();
 }
 
-function isSim(input, correct) {
-  var norm = function(s) {
-    return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase();
-  };
-  var a = norm(input), c = norm(correct);
-  if (a === c) return true;
-  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
-  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
-  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
-  return false;
-}
-
 function showTest() {
   var area = document.getElementById("tarea");
   if (tIdx >= tPool.length) {
@@ -1677,36 +1592,54 @@ function showTest() {
 
   var cur = tPool[tIdx];
   var pct = Math.round((tIdx / tPool.length) * 100);
+  tLocked = false;
+
+  var choices = [cur.meaning];
+  var others = shuffle(rawWords.filter(function(x){ return x.meaning !== cur.meaning; }));
+  for (var i = 0; i < Math.min(3, others.length); i++) {
+    choices.push(others[i].meaning);
+  }
+  choices = shuffle(choices);
 
   var html = '<div class="pbar-bg"><div class="pbar-fill" style="width:' + pct + '%;"></div></div>';
   html += '<div class="tstatus"><span>문제 ' + (tIdx+1) + '/' + tPool.length + '</span><span>✅ 맞춤: ' + tScore + '</span></div>';
   html += '<div class="qbox"><div class="qword en">' + esc(cur.word) + '</div></div>';
-  html += '<input type="text" id="tinput" class="tfield" autocomplete="off" placeholder="한글 뜻 입력" onkeypress="onTestKP(event)">';
-  html += '<button class="btn-m" onclick="submitTestAns()">다음</button>';
-  
+  html += '<div class="opts">';
+  choices.forEach(function(c) {
+    var isCor = (c === cur.meaning) ? "1" : "0";
+    html += '<button class="obtn" data-cor="' + isCor + '" onclick="submitTestAns(this)">' + esc(c) + '</button>';
+  });
+  html += '</div>';
+
   area.innerHTML = html;
   speak(cur.word);
-  setTimeout(function(){
-    var inp = document.getElementById("tinput");
-    if (inp) inp.focus();
-  }, 50);
 }
 
-function onTestKP(e) {
-  if (e.key === "Enter") submitTestAns();
-}
+function submitTestAns(btn) {
+  if (tLocked) return;
+  tLocked = true;
 
-function submitTestAns() {
-  var inp = document.getElementById("tinput");
-  var userVal = inp ? inp.value.trim() : "";
   var cur = tPool[tIdx];
-  var ok = isSim(userVal, cur.meaning);
+  var ok = btn.getAttribute("data-cor") === "1";
+  var chosenText = btn.textContent;
 
-  if (ok) tScore++;
-  tAnsList.push({ word: cur.word, correct: cur.meaning, user: userVal, ok: ok });
+  if (ok) {
+    btn.classList.add("cor");
+    tScore++;
+    speak(cur.word);
+  } else {
+    btn.classList.add("wrg");
+    var all = document.querySelectorAll(".obtn");
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].getAttribute("data-cor") === "1") all[i].classList.add("cor");
+    }
+  }
+  tAnsList.push({ word: cur.word, correct: cur.meaning, user: chosenText, ok: ok });
 
-  tIdx++;
-  showTest();
+  setTimeout(function() {
+    tIdx++;
+    showTest();
+  }, 1000);
 }
 
 function showTestResult() {
@@ -1768,13 +1701,12 @@ function copyResult() {
 }
 
 function switchTab(t) {
-  ["list","flash","quiz","test"].forEach(function(n) {
+  ["list","flash","test"].forEach(function(n) {
     document.getElementById("tb-"+n).classList.toggle("active", n===t);
     document.getElementById("tab-"+n).classList.toggle("active", n===t);
   });
   if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
   if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-  if (t==="quiz")  { initQuiz(); }
   if (t==="test")  { renderSetup(); }
 }
 
