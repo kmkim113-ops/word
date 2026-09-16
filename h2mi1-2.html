@@ -1439,51 +1439,13 @@ var qList = [], qIdx = 0, qScore = 0, qLocked = false;
 var tName = "", tri = 0, tList = [], tIdx = 0, tScore = 0, tAnswers = [];
 
 function switchTab(t) {
-  ["list","flash","quiz","test"].forEach(function(n) {
-    document.getElementById("tb-"+n).classList.toggle("active", n===t);
-    document.getElementById("tab-"+n).classList.toggle("active", n===t);
-  });
-  if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
-  if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-  if (t==="quiz")  { initQuiz(); }
-  if (t==="test")  { renderSetup(); }
-}
-
-function renderRangeBar(elId, curIdx, fnName) {
-  var h = "";
-  ranges.forEach(function(r, i) {
-    var cls = (i === curIdx) ? "range-btn active" : "range-btn";
-    h += '<button class="' + cls + '" onclick="' + fnName + '(' + i + ')">' + r.label + '</button>';
-  });
-  document.getElementById(elId).innerHTML = h;
-}
-
-/* Tab 1: List */
-function setLR(idx) { lri = idx; renderRangeBar("lrbar", lri, "setLR"); renderList(); }
-function setLFilter(f) {
-  lfilter = f;
-  ["all","unk","fav"].forEach(function(n) {
-    document.getElementById("lf-"+n).classList.toggle("active", n===f);
-  });
-  renderList();
-}
-function renderList() {
-  var st = getStore();
-  var r = ranges[lri];
-  var sub = rawWords.slice(r.s, r.e);
-  var q = document.getElementById("lsearch").value.toLowerCase().trim();
-
-  var html = "";
-  sub.forEach(function(w) {
-    var k = w.word + "|" + w.meaning;
-    var item = st[k] || {};
-    var isKnown = item.status === "known";
-    var isFav = item.fav === true;
-
-    if (lfilter === "unk" && isKnown) return;
-    if (lfilter === "fav" && !isFav) return;
-    if (q) {
-      if (w.word.toLowerCase().indexOf(q) === -1 && w.meaning.toLowerCase().indexOf(q) === -1) return;
+      ["list","flash","test"].forEach(function(n) {
+        document.getElementById("tb-"+n).classList.toggle("active", n===t);
+        document.getElementById("tab-"+n).classList.toggle("active", n===t);
+      });
+      if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
+      if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
+      if (t==="test")  { renderSetup(); }
     }
 
     var cardCls = "word-card" + (isKnown ? " known" : "");
