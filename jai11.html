@@ -62,19 +62,11 @@ header .hsub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
 .fcnav { display: flex; gap: 8px; flex-shrink: 0; }
 .fcbtn { flex: 1; padding: 12px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
 .fcbtn.sec { background: var(--border); color: #374151; }
-/* Tab 3 */
-#qbox { display: flex; flex-direction: column; gap: 10px; }
-.qcard { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-.qnum { font-size: 11px; color: var(--gray); font-family: 'Nunito', sans-serif; font-weight: 700; margin-bottom: 6px; }
-.qword { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; color: #111; margin-bottom: 12px; }
+/* Test options (4지선다) */
 .qopts { display: flex; flex-direction: column; gap: 8px; }
 .qopt { padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; font-size: 13px; cursor: pointer; text-align: left; font-family: 'Noto Sans KR', sans-serif; }
 .qopt.correct { background: #dcfce7; border-color: var(--success); color: #065f46; }
 .qopt.wrong { background: #fee2e2; border-color: var(--danger); color: #991b1b; }
-#qresult { display: none; background: #fff; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-.qscore-big { font-family: 'Nunito', sans-serif; font-size: 48px; font-weight: 800; color: var(--primary); }
-.qscore-sub { font-size: 14px; color: var(--gray); margin-top: 4px; }
-.qbtn { margin-top: 14px; padding: 12px 24px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
 /* Tab 4 */
 #tsetup, #trun, #tres { display: none; flex-direction: column; gap: 10px; }
 #tsetup.on, #trun.on, #tres.on { display: flex; }
@@ -106,7 +98,6 @@ header .hsub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
 <div class="tabs">
   <button class="tab on" id="tb-w" onclick="showTab('w')">📚 단어</button>
   <button class="tab" id="tb-fc" onclick="showTab('fc')">🃏 플래시</button>
-  <button class="tab" id="tb-q" onclick="showTab('q')">❓ 퀴즈</button>
   <button class="tab" id="tb-t" onclick="showTab('t')">📝 테스트</button>
 </div>
 <!-- Tab 1 -->
@@ -140,16 +131,6 @@ header .hsub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
     </div>
   </div>
 </div>
-<!-- Tab 3 -->
-<div class="pane" id="pane-q">
-  <div id="qbox"></div>
-  <div id="qresult">
-    <div id="qemoji" style="font-size:48px;"></div>
-    <div class="qscore-big" id="qscorebig"></div>
-    <div class="qscore-sub" id="qscoresub"></div>
-    <button class="qbtn" onclick="qInit()">🔄 다시 풀기</button>
-  </div>
-</div>
 <!-- Tab 4 -->
 <div class="pane" id="pane-t">
   <div id="tsetup" class="on">
@@ -172,8 +153,8 @@ header .hsub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
     <div class="tprog-info"><span id="tpnum"></span><span id="tpcor"></span></div>
     <div class="tcard" style="text-align:center;">
       <div class="tword-disp" id="tworddisp"></div>
-      <input class="tinput" type="text" id="tans" placeholder="한글 뜻을 입력하세요" autocomplete="off">
-      <button class="tansbtn" onclick="tSubmit()" style="width:100%;">확인</button>
+      <div class="qopts" id="topts"></div>
+      <button class="tansbtn" id="tnext" onclick="tNext()" style="width:100%; display:none;">다음 →</button>
     </div>
   </div>
   <div id="tres">
@@ -787,11 +768,7 @@ function fcToggleFav() {
   fb.className = s.fav ? 'on' : '';
 }
 
-// ===== Tab 3 =====
-var qItems = [];
-var qScore = 0;
-var qLocked = false;
-
+// ===== Utils =====
 function shuffle(arr) {
   var a = arr.slice();
   for (var i = a.length - 1; i > 0; i--) {
@@ -799,64 +776,6 @@ function shuffle(arr) {
     var t = a[i]; a[i] = a[j]; a[j] = t;
   }
   return a;
-}
-
-function qInit() {
-  qLocked = false;
-  qScore = 0;
-  document.getElementById('qresult').style.display = 'none';
-  var pool = shuffle(rawWords).slice(0, 10);
-  qItems = pool;
-  var h = [];
-  for (var i = 0; i < pool.length; i++) {
-    var w = pool[i];
-    var opts = [w.meaning];
-    var others = shuffle(rawWords.filter(function(x){ return x.meaning !== w.meaning; })).slice(0,3);
-    for (var j = 0; j < others.length; j++) opts.push(others[j].meaning);
-    opts = shuffle(opts);
-    h.push('<div class="qcard" id="qcard' + i + '">');
-    h.push('<div class="qnum">Q' + (i+1) + ' / 10</div>');
-    h.push('<div class="qword">' + esc(w.word) + '</div>');
-    h.push('<div class="qopts" id="qopts' + i + '">');
-    for (var k = 0; k < opts.length; k++) {
-      var isC = opts[k] === w.meaning ? '1' : '0';
-      h.push('<button class="qopt" data-cor="' + isC + '" data-qi="' + i + '" onclick="qAnswer(this)">' + esc(opts[k]) + '</button>');
-    }
-    h.push('</div></div>');
-  }
-  document.getElementById('qbox').innerHTML = h.join('');
-}
-
-function qAnswer(btn) {
-  if (qLocked) return;
-  var qi = parseInt(btn.dataset.qi);
-  var cor = btn.dataset.cor === '1';
-  var opts = document.getElementById('qopts' + qi).querySelectorAll('.qopt');
-  for (var i = 0; i < opts.length; i++) {
-    opts[i].onclick = null;
-    if (opts[i].dataset.cor === '1') opts[i].className = 'qopt correct';
-  }
-  if (!cor) btn.className = 'qopt wrong';
-  else { qScore++; speak(qItems[qi].word); }
-  // check done
-  var answered = document.querySelectorAll('.qopt.correct, .qopt.wrong').length;
-  // count questions answered
-  var cards = document.querySelectorAll('.qcard');
-  var done = true;
-  for (var i = 0; i < cards.length; i++) {
-    var hasCor = cards[i].querySelectorAll('.qopt.correct').length > 0;
-    if (!hasCor) { done = false; break; }
-  }
-  if (done) {
-    setTimeout(function() {
-      var pct = Math.round(qScore / 10 * 100);
-      document.getElementById('qemoji').textContent = pct === 100 ? '🏆' : pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '💪';
-      document.getElementById('qscorebig').textContent = qScore + ' / 10';
-      document.getElementById('qscoresub').textContent = pct + '점';
-      document.getElementById('qresult').style.display = 'block';
-      document.getElementById('qresult').scrollIntoView({behavior:'smooth'});
-    }, 800);
-  }
 }
 
 // ===== Tab 4 =====
@@ -867,6 +786,7 @@ var tCorCount = 0;
 var tResults = [];
 var tName = '';
 var tTotal = 0;
+var tLocked = false;
 
 function setTR(btn) { tri = parseInt(btn.dataset.i); renderRangeBar('trbar', tri, 'setTR'); }
 
@@ -883,6 +803,7 @@ function tStart() {
   var cnt = parseInt(document.getElementById('tcount').value) || 20;
   if (cnt < 1) cnt = 1;
   if (cnt > 50) cnt = 50;
+  if (rawWords.length < 4) { alert('4지선다 테스트는 최소 4단어가 필요합니다.'); return; }
   tName = name;
   var base = wordsForRange(tri);
   tPool = shuffle(base).slice(0, cnt);
@@ -899,40 +820,51 @@ function tStart() {
 function tShowQ() {
   if (tIdx >= tPool.length) { tShowResult(); return; }
   var w = tPool[tIdx];
+  tLocked = false;
   var pct = Math.round(tIdx / tTotal * 100);
   document.getElementById('tpfill').style.width = pct + '%';
   document.getElementById('tpnum').textContent = (tIdx+1) + ' / ' + tTotal;
   document.getElementById('tpcor').textContent = '✅ ' + tCorCount;
   document.getElementById('tworddisp').textContent = w.word;
-  document.getElementById('tans').value = '';
-  document.getElementById('tans').focus();
+  var opts = [w.meaning];
+  var others = shuffle(rawWords.filter(function(x){ return x.meaning !== w.meaning; }));
+  for (var j = 0; j < others.length && opts.length < 4; j++) {
+    if (opts.indexOf(others[j].meaning) < 0) opts.push(others[j].meaning);
+  }
+  opts = shuffle(opts);
+  var h = [];
+  for (var k = 0; k < opts.length; k++) {
+    var isC = opts[k] === w.meaning ? '1' : '0';
+    h.push('<button class="qopt" data-cor="' + isC + '" onclick="tPick(this)">' + esc(opts[k]) + '</button>');
+  }
+  document.getElementById('topts').innerHTML = h.join('');
+  document.getElementById('tnext').style.display = 'none';
   speak(w.word);
 }
 
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    var trun = document.getElementById('trun');
-    if (trun && trun.className === 'on') tSubmit();
+function tPick(btn) {
+  if (tLocked) return;
+  tLocked = true;
+  var w = tPool[tIdx];
+  var cor = btn.dataset.cor === '1';
+  var opts = document.getElementById('topts').querySelectorAll('.qopt');
+  for (var i = 0; i < opts.length; i++) {
+    opts[i].style.pointerEvents = 'none';
+    if (opts[i].dataset.cor === '1') opts[i].className = 'qopt correct';
   }
-});
-
-function isSim(input, correct) {
-  var norm = function(s) { return s.replace(/\s/g,'').replace(/[~\-·,]/g,'').toLowerCase(); };
-  var a = norm(input), c = norm(correct);
-  if (a === c) return true;
-  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
-  var core = c.replace(/하다|되다|시키다|이다/g,'').trim();
-  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
-  return false;
+  if (!cor) btn.className = 'qopt wrong';
+  else tCorCount++;
+  document.getElementById('tpcor').textContent = '✅ ' + tCorCount;
+  tResults.push({word: w.word, meaning: w.meaning, ans: btn.textContent, ok: cor});
+  var nb = document.getElementById('tnext');
+  nb.textContent = (tIdx + 1 >= tTotal) ? '결과 보기 →' : '다음 →';
+  nb.style.display = 'block';
 }
 
-function tSubmit() {
-  var input = document.getElementById('tans').value.trim();
-  var w = tPool[tIdx];
-  var ok = isSim(input, w.meaning);
-  if (ok) tCorCount++;
-  tResults.push({word: w.word, meaning: w.meaning, input: input, ok: ok});
+function tNext() {
+  if (!tLocked) return;
   tIdx++;
+  if (tIdx >= tPool.length) { document.getElementById('tpfill').style.width = '100%'; }
   tShowQ();
 }
 
@@ -955,7 +887,7 @@ function tShowResult() {
       var r = wrong[i];
       h.push('<div class="twrong-item">');
       h.push('<span class="twrong-word">' + esc(r.word) + '</span>');
-      h.push(' → 입력:<b>' + esc(r.input || '(없음)') + '</b> / 정답:<b>' + esc(r.meaning) + '</b>');
+      h.push(' → 입력:<b>' + esc(r.ans || '(없음)') + '</b> / 정답:<b>' + esc(r.meaning) + '</b>');
       h.push('</div>');
     }
     document.getElementById('twronglist').innerHTML = h.join('');
@@ -986,7 +918,7 @@ function tCopy() {
   lines.push('❌ 틀린 단어 (' + wrong.length + '개)');
   for (var i = 0; i < wrong.length; i++) {
     var r = wrong[i];
-    lines.push('  ' + r.word + ' → 입력:' + (r.input || '(없음)') + ' / 정답:' + r.meaning);
+    lines.push('  ' + r.word + ' → 입력:' + (r.ans || '(없음)') + ' / 정답:' + r.meaning);
   }
   lines.push('─────────────────');
   lines.push('✅ 맞은 단어: ' + corr.map(function(r){ return r.word; }).join(', '));
@@ -1012,7 +944,7 @@ function tRetry() {
 }
 
 // ===== Tab switching =====
-var TABS = ['w','fc','q','t'];
+var TABS = ['w','fc','t'];
 function showTab(id) {
   for (var i = 0; i < TABS.length; i++) {
     var t = TABS[i];
@@ -1021,7 +953,6 @@ function showTab(id) {
   }
   if (id === 'w')  { renderRangeBar('wrbar', wri, 'setWR'); renderList(); }
   if (id === 'fc') { fcInit(); }
-  if (id === 'q')  { qInit(); }
   if (id === 't')  { tSetup(); }
 }
 
