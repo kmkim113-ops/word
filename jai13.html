@@ -286,8 +286,6 @@
     .t-pbar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
     .t-stats { display: flex; justify-content: space-between; font-size: 13px; color: var(--gray); margin-bottom: 24px; font-weight: 500; }
     .t-word { font-size: 26px; font-weight: 700; text-align: center; margin: 30px 0; color: #111827; word-break: break-all; }
-    .t-input { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; text-align: center; outline: none; margin-bottom: 16px; }
-    .t-input:focus { border-color: var(--primary); }
 
     /* Result Screen */
     .res-box { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; }
@@ -316,7 +314,6 @@
   <div class="nav-tabs">
     <div class="nav-tab active" id="tb-list" onclick="switchTab('list')">단어목록</div>
     <div class="nav-tab" id="tb-flash" onclick="switchTab('flash')">플래시카드</div>
-    <div class="nav-tab" id="tb-quiz" onclick="switchTab('quiz')">퀴즈모드</div>
     <div class="nav-tab" id="tb-test" onclick="switchTab('test')">📝 테스트</div>
   </div>
 
@@ -357,10 +354,6 @@
       <div id="fccnt" class="fc-counter en">0 / 0</div>
     </div>
 
-    <!-- Tab 3: Quiz -->
-    <div id="tab-quiz" class="tab-panel">
-      <div id="qbox" class="qz-box"></div>
-    </div>
 
     <!-- Tab 4: Test -->
     <div id="tab-test" class="tab-panel">
@@ -904,81 +897,11 @@ function toggleFavFc(idx, e) {
   document.getElementById("fcfav").classList.toggle("active", sData.fav);
 }
 
-// Quiz State
-var qList = [], qci = 0, qScore = 0;
-function initQuiz() {
-  var pool = [];
-  for(var i=0; i<rawWords.length; i++) pool.push(i);
-  pool.sort(function(){ return 0.5 - Math.random(); });
-  qList = pool.slice(0, Math.min(10, pool.length));
-  qci = 0; qScore = 0;
-  showQuiz();
-}
-function showQuiz() {
-  window.qLocked = false;
-  if(qci >= qList.length) { showQuizResult(); return; }
-  var idx = qList[qci];
-  var w = rawWords[idx];
-  
-  var opts = [w.meaning];
-  var pool = [];
-  for(var i=0; i<rawWords.length; i++) { if(i !== idx) pool.push(rawWords[i].meaning); }
-  pool.sort(function(){ return 0.5 - Math.random(); });
-  var uniq = [];
-  for(var j=0; j<pool.length; j++) {
-    if(uniq.indexOf(pool[j]) === -1 && pool[j] !== w.meaning) {
-      uniq.push(pool[j]);
-      if(uniq.length === 3) break;
-    }
-  }
-  opts = opts.concat(uniq);
-  while(opts.length < 4) opts.push("-");
-  opts.sort(function(){ return 0.5 - Math.random(); });
-  
-  var html = '<div class="qz-header"><span class="en">QUIZ</span><span class="en">' + (qci+1) + ' / ' + qList.length + '</span></div>' +
-             '<div class="qz-word en">' + esc(w.word) + '</div>' +
-             '<div class="qz-options">';
-  opts.forEach(function(o) {
-    var cor = (o === w.meaning) ? "1" : "0";
-    html += '<button class="qz-opt" data-cor="' + cor + '" onclick="qAns(this)">' + esc(o) + '</button>';
-  });
-  html += '</div>';
-  document.getElementById("qbox").innerHTML = html;
-}
-function qAns(btn) {
-  if(window.qLocked) return;
-  window.qLocked = true;
-  var isCor = btn.dataset.cor === "1";
-  if(isCor) {
-    btn.classList.add("correct");
-    qScore++;
-    var idx = qList[qci];
-    speak(rawWords[idx].word);
-  } else {
-    btn.classList.add("wrong");
-    var opts = document.getElementsByClassName("qz-opt");
-    for(var i=0; i<opts.length; i++) {
-      if(opts[i].dataset.cor === "1") opts[i].classList.add("correct");
-    }
-  }
-  setTimeout(function(){ qci++; showQuiz(); }, 1000);
-}
-function showQuizResult() {
-  var pct = Math.round((qScore / qList.length) * 100);
-  var emo = pct === 100 ? "🏆" : (pct >= 80 ? "🎉" : (pct >= 60 ? "👍" : "💪"));
-  document.getElementById("qbox").innerHTML = '<div class="res-box">' +
-    '<div class="res-emoji">' + emo + '</div>' +
-    '<div class="res-score en">' + qScore + ' / ' + qList.length + '</div>' +
-    '<div class="res-pct">' + pct + '점</div>' +
-    '<button class="res-btn retry" onclick="initQuiz()">↩ 다시 풀기</button>' +
-  '</div>';
-}
-
 // Test State
-var tName = "", tList = [], tci = 0, tScore = 0, tWrongs = [], tRights = [];
+var tName = "", tList = [], tci = 0, tScore = 0, tWrongs = [], tRights = [], tLocked = false;
 function renderSetup() {
   var html = '<div class="ts-box">' +
-    '<div class="ts-title">주관식 테스트 설정</div>' +
+    '<div class="ts-title">4지선다 테스트 설정</div>' +
     '<input type="text" id="tname" class="ts-field" placeholder="이름을 입력하세요 (필수)" value="' + esc(tName) + '">' +
     '<div id="trbar" class="range-bar" style="margin-bottom:16px;"></div>' +
     '<button class="ts-btn" onclick="startTest()">테스트 시작 ▶</button>' +
@@ -1001,39 +924,57 @@ function startTest() {
 function showTest() {
   if(tList.length === 0) { alert("범위 내에 단어가 없습니다."); renderSetup(); return; }
   if(tci >= tList.length) { showTestResult(); return; }
-  var w = rawWords[tList[tci]];
+  tLocked = false;
+  var idx = tList[tci];
+  var w = rawWords[idx];
   var pct = (tci / tList.length) * 100;
-  
+
+  var opts = [w.meaning];
+  var pool = [];
+  for(var i=0; i<rawWords.length; i++) { if(i !== idx) pool.push(rawWords[i].meaning); }
+  pool.sort(function(){ return 0.5 - Math.random(); });
+  for(var j=0; j<pool.length && opts.length < 4; j++) {
+    if(opts.indexOf(pool[j]) === -1) opts.push(pool[j]);
+  }
+  while(opts.length < 4) opts.push("-");
+  opts.sort(function(){ return 0.5 - Math.random(); });
+
   var html = '<div class="t-box">' +
     '<div class="t-pbar-bg"><div class="t-pbar-fill" style="width:' + pct + '%;"></div></div>' +
     '<div class="t-stats"><span class="en">진행: ' + (tci+1) + '/' + tList.length + '</span><span>✅ 맞춤수: ' + tScore + '</span></div>' +
     '<div class="t-word en">' + esc(w.word) + '</div>' +
-    '<input type="text" id="tinput" class="t-input" placeholder="뜻을 입력하세요" autocomplete="off" onkeydown="tKey(event)">' +
-    '<button class="ts-btn" onclick="tSubmit()">확인</button>' +
+    '<div class="qz-options" id="t-opts">';
+  opts.forEach(function(o) {
+    var cor = (o === w.meaning) ? "1" : "0";
+    html += '<button class="qz-opt" data-cor="' + cor + '" onclick="tAns(this)">' + esc(o) + '</button>';
+  });
+  html += '</div>' +
+    '<button class="ts-btn" id="t-next" style="display:none;margin-top:16px;" onclick="tNext()">' +
+      (tci === tList.length - 1 ? '결과 보기 →' : '다음 →') + '</button>' +
   '</div>';
   document.getElementById("tbox").innerHTML = html;
-  document.getElementById("tinput").focus();
   speak(w.word);
 }
-function tKey(e) { if(e.keyCode === 13) tSubmit(); }
-function isSim(input, correct) {
-  var norm = function(s) { return s.replace(/\s/g,"").replace(/[~\-·,]/g,"").toLowerCase(); };
-  var a = norm(input), c = norm(correct);
-  if (a === c) return true;
-  if (a.length >= 2 && c.indexOf(a) >= 0) return true;
-  var core = c.replace(/하다|되다|시키다|이다/g,"").trim();
-  if (core.length >= 2 && a.indexOf(core) >= 0) return true;
-  return false;
-}
-function tSubmit() {
-  var ans = document.getElementById("tinput").value.trim();
+function tAns(btn) {
+  if(tLocked) return;
+  tLocked = true;
   var w = rawWords[tList[tci]];
-  if(isSim(ans, w.meaning)) {
+  var isCor = btn.dataset.cor === "1";
+  var opts = document.querySelectorAll("#t-opts .qz-opt");
+  for(var i=0; i<opts.length; i++) {
+    if(opts[i].dataset.cor === "1") opts[i].classList.add("correct");
+    opts[i].style.pointerEvents = "none";
+  }
+  if(isCor) {
     tScore++;
     tRights.push(w.word);
   } else {
-    tWrongs.push({ word: w.word, input: ans || "(공백)", correct: w.meaning });
+    btn.classList.add("wrong");
+    tWrongs.push({ word: w.word, input: btn.textContent, correct: w.meaning });
   }
+  document.getElementById("t-next").style.display = "block";
+}
+function tNext() {
   tci++;
   showTest();
 }
@@ -1090,13 +1031,12 @@ function copyResult() {
 }
 
 function switchTab(t) {
-  ["list","flash","quiz","test"].forEach(function(n) {
+  ["list","flash","test"].forEach(function(n) {
     document.getElementById("tb-"+n).classList.toggle("active", n===t);
     document.getElementById("tab-"+n).classList.toggle("active", n===t);
   });
   if (t==="list")  { renderRangeBar("lrbar", lri, "setLR"); renderList(); }
   if (t==="flash") { renderRangeBar("fcrbar", fri, "setFR"); initFC(); }
-  if (t==="quiz")  { initQuiz(); }
   if (t==="test")  { renderSetup(); }
 }
 
